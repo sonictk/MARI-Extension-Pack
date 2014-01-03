@@ -6,14 +6,14 @@ Contributors
 -----------------
 
 - Jens Kafitz
-Web: www.campi3d.com        
+Web: www.campi3d.com
 Email: info@campi3d.com
 
-- Miguel A Santiago Jr.        
-Web: www.digiteck3d.com       
+- Miguel A Santiago Jr.
+Web: www.digiteck3d.com
 Email: miguel@digiteck3d.com
 
-- Orlando Esponda  
+- Orlando Esponda
 - Antoni Kujawa
 
       
