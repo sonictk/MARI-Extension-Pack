@@ -5,13 +5,9 @@ Copyright (c) 2013-2014 www.mari.ideascale.com. All Rights Reserved.
 Contributors
 -----------------
 
-- Jens Kafitz
-Web: www.campi3d.com
-Email: info@campi3d.com
+- Jens Kafitz www.campi3d.com // info@campi3d.com
 
-- Miguel A Santiago Jr.
-Web: www.digiteck3d.com
-Email: miguel@digiteck3d.com
+- Miguel A Santiago Jr. www.digiteck3d.com // miguel@digiteck3d.com
 
 - Orlando Esponda
 - Antoni Kujawa
