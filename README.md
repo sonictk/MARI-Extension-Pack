@@ -1,8 +1,9 @@
-MARI@IDEASCALE SCRIPT & NODE MIRROR 
-01/03/2014
-=====================================================================================  
+MARI@IDEASCALE SCRIPT & NODE MIRROR
+=====================================================================================
+Copyright (c) 2013-2014 www.mari.ideascale.com. All Rights Reserved.
 
-Contributors: ============================================================================
+Contributors
+-----------------
 
 - Jens Kafitz
 Web: www.campi3d.com        
@@ -16,7 +17,8 @@ Email: miguel@digiteck3d.com
 - Antoni Kujawa
 
       
-License: ============================================================================
+License
+-----------------
 
 This program is free software: you can redistribute it and/or modify it under the terms 
 of the GNU General Public License as published by the Free Software Foundation, either 
@@ -29,7 +31,8 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with this program.  
 If not, see <http://www.gnu.org/licenses/>.
 
-Info: =============================================================================== 
+Info
+-----------------
 
 A Mirror of www.mari.ideascale.com.
 This includes all User Content including Python Scripts and user created Nodes
@@ -40,7 +43,8 @@ A collabarative space for development is available here:
 https://github.com/campi3d/IdeascaleNodePack
 
 
-Installation: =======================================================================
+Installation
+-----------------
 
 Take scripts and put them into your user preference script directory. Or any startup
 script path that Mari has set. Once these are in place, Mari on startup will run through
@@ -52,7 +56,8 @@ Example:
   • On Linux: /Mari/Scripts/
   • On Windows: Documents/Mari/Scripts/ 
 
-History: ============================================================================
+History
+-----------------
 
  - 01/03/14 Initial commit
 
