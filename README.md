@@ -56,6 +56,8 @@ History
 -----------------
 
  - 01/03/14 Initial commit
+ - 01/07/14 Fixes for MAC+Linux, recommited with Capital S in Script Directory so Linux is happy
+ - 01/08/14 RegisterSetRange.py was missing final registerSetRange() so Node wasn't loaded
 
 
 
