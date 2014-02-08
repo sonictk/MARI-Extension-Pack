@@ -64,6 +64,7 @@ History: =======================================================================
 # - 08/17/13 released
 # - 11/18/13 Mari 2.5 compatible version released and colorSelectors added
 #  -12/14/13 Re-release with new Folder Structure
+#  -02/08/14 Autoloader structure added
 
 Credits: ============================================================================
 

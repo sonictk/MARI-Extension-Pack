@@ -52,7 +52,7 @@ Example:
 
 Where to find the nodes: ============================================================
 
-The Grade+ Node will appear under the Custom Folder in the Adjustment Layer Dialog.
+The setRange Node will appear under the Custom Folder in the Adjustment Layer Dialog.
 
 
 History: ============================================================================
@@ -64,6 +64,8 @@ History: =======================================================================
 11/30/13 Mari 2.5 Version released
 
 12/14/13 Re-released for Mari 2.5 with new Folder Structure
+
+02/08/14 New Autoloader Structure
 
 
 

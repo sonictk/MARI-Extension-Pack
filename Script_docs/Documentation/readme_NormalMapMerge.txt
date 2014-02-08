@@ -55,6 +55,7 @@ History: =======================================================================
 
 # 11/30//13 Re-released for Mari 2.5 
 # 12/14/13  Re-released for Mari 2.5 with proper Folder Structure
+# 02/08/14  New Autoloader structure
 
 
 

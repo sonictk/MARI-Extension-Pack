@@ -61,6 +61,7 @@ History: =======================================================================
 04/12/13 - 1.0 release
 11/30/13 - Release for Mari 2.5
 12/15/13 - Re-release for Mari 2.5 with new Folder Structure
+02/08/14 - New Autoloader Structure
 
 
 

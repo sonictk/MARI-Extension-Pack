@@ -27,7 +27,7 @@ This is a modification of the default Mari Procedurals. Added functionality incl
 Requirements: =======================================================================
 
 - Mari 2.5 or above
-- MARI Function Library 1.0 or above (http://mari.ideascale.com/)
+- MARI Function Library 1.06.005 or above (http://mari.ideascale.com/)
 
 
 Installation: =======================================================================
@@ -52,7 +52,7 @@ Example:
 
 Where to find the nodes: ============================================================
 
-The new nodes are located under the /Procedurals/Custom/ Icon. The Nodes are carrying the Label "Legacy ID"
+The new nodes are located under the /Procedurals/Custom/Legacy Icon.
 
 
 History: ============================================================================
@@ -62,6 +62,7 @@ History:
 04/15/13 released V1.0
 11/29/13 Released V1.1 for Mari 2.5. Modified for consitency with DT3D Function Library
 12/14/13 Re-released for Mari 2.5 with new Folder Structure
+02/08/14 New Autoloader Structure
 
 Credits: ============================================================================
 

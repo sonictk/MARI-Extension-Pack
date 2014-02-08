@@ -57,6 +57,7 @@ History: =======================================================================
 # 12/15/13 Re-released for Mari 2.5 with new Folder Structure
 # 		   Fixed a bug that was causing Alphas to be threshold'ed as well, causing transparent
 # 		   areas to appear on the layer
+# 02/08/14 New Autoloader Structure
 
 
 Credits: ============================================================================

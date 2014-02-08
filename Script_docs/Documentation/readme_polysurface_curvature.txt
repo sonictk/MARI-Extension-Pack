@@ -31,7 +31,7 @@ best to bury the node as a part of a mask stack or apply a gaussian filter after
 Requirements: =======================================================================
 
 - Mari 2.5 or above
-- MARI Function Lib 1.06 or higher available at mari.ideascale.com
+- MARI Function Lib 1.06.005 or higher available at mari.ideascale.com
 
 
 
@@ -61,3 +61,4 @@ with the cursor in the Layer Palette and start typing "PolySurface Curvature"
 History: ============================================================================
 
 # - 12/16/13 - First Release for Mari 2.5. 
+# - 02/08/14 - New Autoloader Structure

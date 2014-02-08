@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Requirements: This Node Library requires MARI FunctionLibary 1.06 or higher
+# Requirements: This Node Library requires MARI FunctionLibary 1.06.005 or higher
 # Available at: http://mari.ideascale.com/
 # ------------------------------------------------------------------------------
 # FBM Pack A - fbm+, multiFBM, vector FBM
@@ -24,13 +24,13 @@ fBm, vector fbm and multi-fBm procedural nodes useful for weathering, masking an
 Requirements: =======================================================================
 
 - Mari 2.5 or above
-- MARI Function Library 1.06 or above (http://mari.ideascale.com/)
+- MARI Function Library 1.06.005 or above (http://mari.ideascale.com/)
 
 
 Installation: =======================================================================
 
 
-Please download and install the MARI Function Library V1.06 or higher at 
+Please download and install the MARI Function Library V1.06.005 or higher at 
 http://mari.ideascale.com/
 
 
@@ -71,7 +71,7 @@ History: =======================================================================
 # 				Added Thresholding to all FBMs
 # 				Added Ability to propagate negative noise values as either black or transparent into the end result
 # 				Removed Propagation Features from multiFBM to reduce node handling complexity
-
+# - 02/08/14	Updated with new Autoloader Structure
 
 Credits: ============================================================================
 

@@ -28,7 +28,7 @@ A new multiFractal Node for Mari useful for aging effects, unique patterns and t
 Requirements: =======================================================================
 
 - Mari 2.5 or above
-- MARI Function Library 1.06 or above (http://mari.ideascale.com/)
+- MARI Function Library 1.06.005 or above (http://mari.ideascale.com/)
 
 
 
@@ -67,3 +67,4 @@ History: =======================================================================
 # 				Replaced transform controls with the ones from the MARI Function Library
 # 				Added Thresholding Controls
 # - 12/15/13	Re-released for Mari 2.5 with new Folder Structure
+# - 02/08/14	Autoloader structure
