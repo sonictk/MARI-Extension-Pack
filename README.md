@@ -2,6 +2,10 @@ IDEASCALE SCRIPT & NODE MIRROR
 =====================================================================================
 Copyright (c) 2013-2014 www.mari.ideascale.com. All Rights Reserved.
 
+Version
+-----------------
+1.10 master
+
      
 Info
 -----------------
