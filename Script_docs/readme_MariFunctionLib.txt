@@ -71,7 +71,7 @@ History: =======================================================================
 
 # - 10/15/13	V1.0 Release of Procedural Function Library
 # - 12/14/13    V1.06 Release of Procedural Function Library
-# 				Fixed bug in vec4 softThreshold Function
+# 		Fixed bug in vec4 softThreshold Function
 
 
 
