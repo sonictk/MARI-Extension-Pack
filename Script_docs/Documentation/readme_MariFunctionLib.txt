@@ -52,7 +52,7 @@ to improve and add to it yourself. So you are free to do with it what you will.
 
 A collabarative space for development is available here:
 
-http://github.com/DigiTecK3D/DT3D_Mari-Procedural-Library
+https://github.com/campi3d/IdeascaleNodePack
 
 
 Installation: =======================================================================
@@ -72,6 +72,8 @@ History: =======================================================================
 # - 10/15/13	V1.0 Release of Procedural Function Library
 # - 12/14/13    V1.06 Release of Procedural Function Library
 # 		Fixed bug in vec4 softThreshold Function
+# - 07/01/13    MAC+Linux Fixes
+# - 02/08/14    V1.06.005 release with new autoloader structure
 
 
 

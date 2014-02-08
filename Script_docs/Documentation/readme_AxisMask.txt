@@ -1,12 +1,12 @@
 # ------------------------------------------------------------------------------
-# Requirements: This Node Library requires MARI FunctionLibary 1.06
+# Requirements: This Node Library requires Mari 2.5 (+) and MARI FunctionLibary 1.06 (+)
+# Available at: http://mari.ideascale.com/
 # ------------------------------------------------------------------------------
-# Camo Procedural - to create miltiary pattern
-# Copyright (c) 2013 Antoni Kujawa. All Rights Reserved.
+# Axis Mask - A simplified way to mask an object based on directions.
+# Copyright (c) 2013 Jens Kafitz. All Rights Reserved.
 # ------------------------------------------------------------------------------
-# Author: Antoni Kujawa
-# ------------------------------------------------------------------------------
-# Contributor: Jens Kafitz
+# Author: Jens Kafitz | Mari Ideascale
+# Web: www.campi3d.com
 # Web: www.mari.ideascale.com
 # Email: info@campi3d.com
 # ------------------------------------------------------------------------------
@@ -25,23 +25,34 @@
 # ------------------------------------------------------------------------------
 
 
-Info: =============================================================================== 
+Information and Usage: ==============================================================
 
-A Camo procedurals that has been made by editing the maths in the Fractal Noise.
+The Axis Mask node simplifies the process of masking an object based on directions.
+Previously you would be required to add a Object Normal or Custom Object Normal Node
+and use multiple Adjustments to try and isolate the correct axis, adding multiple
+substacks to your main layer stack.
+
+The Axis Mask combines multiple steps into one single easy to use and create Mask Node.
+Simply select the Axis you wish to Mask out (multiples are possible).
+A Falloff Control allows you to finetune the gradient, while the jitter allows for some
+randomization of the mask.
+
+Other features include ScreenMode ("Black is transparent") and post-rotation for masks that
+aren't supposed to be aligned perfectly in object space.
+
 
 
 Requirements: =======================================================================
 
 - Mari 2.5 or above
-- MARI Function Library 1.06 or above http://mari.ideascale.com/
-
+- MARI Function Library 1.06.005 or above 
 
 
 Installation: =======================================================================
 
 
-Please download and install the MARI Function Library V1.06 or higher at 
-http://mari.ideascale.com/
+Please download and install the MARI Function Library V1.06 or higher at mari.ideascale.com
+
 
 Take scripts and put them into your user preference script directory. Or any startup
 script path that Mari has set. Once these are in place, Mari on startup will run through
@@ -58,17 +69,19 @@ Example:
 
 Where to find the nodes: ============================================================
 
-The new node is located under Procedurals/Custom/Pattern/Camo AK
+The new nodes are located under the Procedural Icon in Folder Geometry/Custom
 
 
 History: ============================================================================
 
-12/14/13 Release with new (final) structure
-11/30/13 Mari 2.5 Release, added Seed,Scale and Rotate functionality conform with MARI Function Lib 1.0
-06/06/13 Release
+# History:
+# - 02/1/14		1.0 Release
+# - 02/08/14	1.01 Release with new Autoloader Structure
 
 
+Credits: ============================================================================
 
+Based on Custom Surface Normal available at mari.ideascale.com
 
  
         

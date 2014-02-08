@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Requirements: This Node Library requires MARI FunctionLibary 1.06
+# Requirements: This Node Library requires MARI FunctionLibary 1.06.005
 # Available at: http://mari.ideascale.com/
 # ------------------------------------------------------------------------------
 # Custom Object Normal - added controls to influence normal orientation
@@ -32,7 +32,7 @@ This is a modification of the default Mari Object Normal. Added functionality in
 Requirements: =======================================================================
 
 - Mari 2.5 or above
-- MARI Function Library 1.06 or above 
+- MARI Function Library 1.06.005 or above 
 
 
 
@@ -66,7 +66,8 @@ History: =======================================================================
 # History:
 # - 04/15/13	1.0 Release
 # - 11/15/13	1.1 Release for Mari 2.5, modified for consistency with DT3D Function Lib
-# - 12/14/13	Release for Mari 2.5 with final python and folder structure
+# - 12/14/13	Release for Mari 2.5 with python structure
+# - 02/08/13	Release with new Autoloader Structure
 
 Credits: ============================================================================
 

@@ -67,7 +67,7 @@ PLEASE UNINSTALL PREVIOUS VERSIONS BY:
 
 Adding new nodes, shaders and functions
 -----------------
-Refer to the contents of the SDK_Docs folder for information
+Refer to the contents of the Script_Docs/SDK folder for information
 
 
 

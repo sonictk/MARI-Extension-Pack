@@ -1,5 +1,5 @@
 <Node>
-  <LibraryVersion>1.06</LibraryVersion>
+  <LibraryVersion>1.06.005</LibraryVersion>
   <BS_GpuNoiseLib>Brian Sharpe GPU Noise Lib</BS_GpuNoiseLib>
   <DT3D_CellularNoiseLib>DT3D Cellular Lib</DT3D_CellularNoiseLib>
   <AL_GaborNoiseLib>Anders Langlands Gabor Lib</AL_GaborNoiseLib>

@@ -31,7 +31,7 @@ more planned for the future.
 Requirements: =======================================================================
 
 - Mari 2.5 or above
-- MARI Function Library 1.06 or above 
+- MARI Function Library 1.06.005 or above 
 
 
 
@@ -66,6 +66,7 @@ History: =======================================================================
 #				Final Python and Folder Structure for mari.ideascale.com
 #				Exponential Frequency Growth
 #				Flow Paintable Gabor Noise
+# - 02/08/14    Released with new Autoloader Structure
 
 Credits: ============================================================================
 
