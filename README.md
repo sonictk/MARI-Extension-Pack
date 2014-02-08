@@ -63,13 +63,7 @@ PLEASE UNINSTALL PREVIOUS VERSIONS BY:
 
 Adding new nodes
 -----------------
-The library structure mimics Mari's Default Structure. 
-Node XMLs, glslc and glslh files are automatically loaded without the need for extra python scripts.
-Nodes are added to Adjustments or Procedurals depending on the base folder they sit in.
-Sorting into subcategories is done via a custom tag inside the XML Files for example
-<Category>Geometry/Custom/</Category> will place the node inside the Geometry Folder in Mari's Procedural Menu with a subfolder /Custom/
-
-Stubs for Shaders (Difuse, Specular and Standalone) are available in the Lighting subfolder and are evaluated on load if you place files in there.
+Refer to the contents of the SDK_Docs folder for information
 
 
 
