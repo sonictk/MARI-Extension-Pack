@@ -61,7 +61,7 @@ PLEASE UNINSTALL PREVIOUS VERSIONS BY:
 - deleting any previous RegisterNODENAME.py file in the /script/ directory.
 
 
-Adding new nodes
+Adding new nodes, shaders and functions
 -----------------
 Refer to the contents of the SDK_Docs folder for information
 
