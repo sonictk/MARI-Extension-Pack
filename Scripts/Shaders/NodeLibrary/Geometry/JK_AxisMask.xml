@@ -4,7 +4,8 @@
 // Axis Mask to better isolate directions. Requires MARI Function Library 1.06 or higher
 
 
-    <ID>AxisMask</ID>
+    <ID>Axis Mask</ID>
+    <Category>Geometry/Custom/</Category>
     <DefaultName>Axis Mask</DefaultName>
     <Cost>0.003</Cost>
     <CostDescription>Some Calculations</CostDescription>

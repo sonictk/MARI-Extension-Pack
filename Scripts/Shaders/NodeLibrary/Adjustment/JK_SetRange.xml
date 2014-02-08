@@ -1,7 +1,8 @@
 <Node>
 /* mari.ideascale.com Jens Kafitz, 2013 A Maya Style Set Range Node */
 
-<ID>SetRange</ID>
+<ID>Set Range</ID>
+<Category>/Custom/</Category>
 <DefaultName>Set Range</DefaultName>
 <Cost>0.006</Cost>
 <CostDescription>Some calculations</CostDescription>
