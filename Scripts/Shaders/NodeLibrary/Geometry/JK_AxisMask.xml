@@ -1,0 +1,122 @@
+<Node>
+
+// mari.ideascale.com, Jens Kafitz, 2013
+// Axis Mask to better isolate directions. Requires MARI Function Library 1.06 or higher
+
+
+    <ID>AxisMask</ID>
+    <DefaultName>Axis Mask</DefaultName>
+    <Cost>0.003</Cost>
+    <CostDescription>Some Calculations</CostDescription>
+    <Inputs>
+        <Input Name="Input" />
+    </Inputs>
+
+    <Attributes>
+
+    <Attribute Name="sX"            PrettyName="X"                                      Type="bool"     Min="false"  Max="true" >false</Attribute>
+    <Attribute Name="sminX"         PrettyName="-X"                                     Type="bool"     Min="false"  Max="true" >false</Attribute>
+    <Attribute Name="sY"            PrettyName="Y"                                      Type="bool"     Min="false"  Max="true" >true</Attribute>
+    <Attribute Name="sminY"         PrettyName="-Y"                                     Type="bool"     Min="false"  Max="true" >false</Attribute>
+    <Attribute Name="sZ"            PrettyName="Z"                                      Type="bool"     Min="false"  Max="true" >false</Attribute>
+    <Attribute Name="sminZ"         PrettyName="-Z"                                     Type="bool"     Min="false"  Max="true" >false</Attribute>
+    <Attribute Name="jitter"        PrettyName="Jitter"                 Group="Remap"   Type="double"   Min="0.00000000000001"  Max="1">0.00000000000001</Attribute>
+    <Attribute Name="FO"            PrettyName="Falloff"                Group="Remap"   Type="curve"                            >0,0,0.4025,0,0.47,0.137273,0.52,0.834091,0.575,0.996364,1,1</Attribute>
+    
+    <Attribute Name="Transparent"   PrettyName="Black is transparent"   Group="Remap"   Type="bool"     Min="false"  Max="true" >false</Attribute>
+    <Attribute Name="Inv"           PrettyName="Invert"                 Group="Remap"   Type="bool"     Min="false"  Max="true" >false</Attribute>
+    <Attribute Name="rX"            PrettyName="Rotate X"               Group="Rotate"  Type="double"   Min="0"      Max="360"  >0</Attribute>
+    <Attribute Name="rY"            PrettyName="Rotate Y"               Group="Rotate"  Type="double"   Min="0"      Max="360"  >0</Attribute>
+    <Attribute Name="rZ"            PrettyName="Rotate Z"               Group="Rotate"  Type="double"   Min="0"      Max="360"  >0</Attribute>
+    </Attributes>
+
+
+    <Contexts>
+
+        <Context Type="NodeGraphView">
+            <Inputs>
+                <Input Name="Input"><Pos>0,-50</Pos></Input>
+            </Inputs>
+        </Context>
+
+        <Context Type="GLSL">
+            <Shader ShaderType='Fragment'>
+
+                <Inputs>
+                    <Input Name="Input"> <Default>vec4(State.Normal,1.0)</Default> </Input>
+                </Inputs>
+			</Shader>
+
+            <Shader ShaderType='TessEvaluation'>
+                <Inputs>
+                    <Input Name="Input"> <Default>vec4(State.Normal.xyz,1.0)</Default> </Input>
+                </Inputs>
+            </Shader>
+
+
+            <Shader>
+                <Body><![CDATA[
+
+
+    // Build Rotational vec3 from Sliders
+    vec3 rotate = vec3($rX,$rY,$rZ);
+
+    // Build modified State.Normal via MARI Function Library Call
+    vec3 _P = positionTransform(State.Normal,vec3(0.0),rotate,vec3(1.0));
+    
+    // Divisor for P in FBM Jitter Function
+    float pow_J = pow($jitter,length(_P));
+
+    //FBM Function for Jitter Effect.  
+    float J = smoothfBm(_P/vec3(pow_J),6.0,1.0,1.0,1.0,0.5)-1.0;
+
+    // Mix between jittered and unjittered result. Mix is never 100percent jittered since values are too high
+    vec3 P = mix(_P,_P + vec3(J),$jitter/4);
+
+    // Separating positive and negative Ps to determine direction
+    float X = clamp(P.x,0.000000000,1000000000000000.0);
+    float minX = clamp(P.x,0.0000000000,1000000000000000.0) - P.x;
+
+    float Y = clamp(P.y,0.000000000,1000000000000000.0);
+    float minY = clamp(P.y,0.000000000,1000000000000000.0) - P.y;
+
+    float Z = clamp(P.z,0.000000000,1000000000000000.0);
+    float minZ = clamp(P.z,0.000000000,1000000000000000.0) - P.z;
+
+
+    float zero_a = 0.0;
+
+    // Mixing the clamped directions against 0 based on UI selection
+    float resA = mix(zero_a,X,$sX);
+    float resB = mix(zero_a,minX,$sminX);
+    float resC = mix(zero_a,Y,$sY);
+    float resD = mix(zero_a,minY,$sminY);
+    float resE = mix(zero_a,Z,$sZ);
+    float resF = mix(zero_a,minZ,$sminZ);
+
+
+    // Blending all UI Selections together
+
+    float _res = max(resA,resB);
+    _res = max(_res,resC);
+    _res = max(_res,resD);
+    _res = max(_res,resE);
+    _res = max(_res,resF);
+
+    // Looking Up result against Falloff Curve
+    _res = mriCurveLookup($FO,_res);
+
+    // Inverting
+    _res = mix(_res,1-_res,$Inv);
+
+
+    // Output. If Transparent color result is completely white and mask result is in alpha
+	Output = mix(vec4(_res,_res,_res,1.0),vec4(1.0,1.0,1.0,_res),$Transparent);
+    
+     ]]></Body>
+            </Shader>
+
+        </Context>
+    </Contexts>
+</Node>
+
