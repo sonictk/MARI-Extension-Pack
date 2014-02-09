@@ -2,7 +2,8 @@ IDEASCALE SCRIPT & NODE MIRROR
 =====================================================================================
 Copyright (c) 2013-2014 www.mari.ideascale.com. All Rights Reserved.
 
-Version: 1.10 master
+Nodepack Version: 1.11 master
+MARI Function Library Version: 1.07
 -----------------
 
 
@@ -50,8 +51,8 @@ Example:
 Conflicts with previous Nodepack Versions
 -----------------
 
- With version 1.10 of this Nodepack the structure has been changed by moving
-all Nodes into aSubfolder /Shaders/. 
+On version 1.10  of this Nodepack the structure has been changed by moving
+all Nodes into a Subfolder /Shaders/. 
 If you have previous versions of the Nodes or FunctionLibraries
 installed they will conflict.
 
@@ -75,6 +76,8 @@ Contributors
 -----------------
 
 - Miguel A Santiago Jr. www.digiteck3d.com // miguel@digiteck3d.com
+
+- Nicholas Breslow www.nbreslow.com //
 
 - Jens Kafitz www.campi3d.com // info@campi3d.com
 
