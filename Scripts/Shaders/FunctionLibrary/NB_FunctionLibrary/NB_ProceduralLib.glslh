@@ -1,0 +1,38 @@
+// Mari 2.5v2 Implementation by Nicholas Breslow (http://nbreslow.com)
+// This program is free software: GNU General Public License v3.
+// See license distributed with file for more information.
+
+//Utility Functions
+float nb_sq(float x);
+
+//Functions for evaluating values with a bit of UV offset.
+float nbF(float f0, vec2 dUV);
+vec2 nbF(vec2 f0, vec2 dUV);
+vec3 nbF(vec3 f0, vec2 dUV);
+
+//Functions for aliasing & smoothing
+float nb_AAstep(float threshold, float value);
+
+//Random Functions
+float nb_randomHash(float input);
+float nb_randomHash(vec2 input);
+float nb_randomFloat(vec2 input);
+
+//Distance Functions
+float nb_distanceSquared(float x, float y, float z);
+float nb_distanceReal(float x, float y, float z);
+float nb_distanceQuadratic(float x, float y, float z);
+
+//Matrix Functions
+mat3 nb_rotationMatrix3(vec3 inAxis, float angle);
+mat4 nb_rotationMatrix4(vec3 inAxis, float angle);
+
+//Curve Functions
+float nb_almostIdentity(float x, float m, float n);
+float nb_impulse(float k, float x);
+float nb_cubicPulse(float c, float w, float x);
+float nb_expStep(float x, float k, float n);
+float nb_parabola(float x, float k);
+
+//Shading Functions
+float nb_luminance(vec3 colorIn);
