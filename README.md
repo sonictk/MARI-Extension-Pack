@@ -85,6 +85,12 @@ Contributors
 - Antoni Kujawa
 
 
+Thank you
+-----------------
+
+Yasin Hasanian for MAC QA
+
+
 License
 -----------------
 
