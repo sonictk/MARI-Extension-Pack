@@ -2,10 +2,8 @@ IDEASCALE SCRIPT & NODE MIRROR
 =====================================================================================
 Copyright (c) 2013-2014 www.mari.ideascale.com. All Rights Reserved.
 
-Nodepack Version: 1.11 master
-MARI Function Library Version: 1.07
+Nodepack Version: 1.11 master   //   MARI Function Library Version: 1.07
 -----------------
-
 
      
 Info
