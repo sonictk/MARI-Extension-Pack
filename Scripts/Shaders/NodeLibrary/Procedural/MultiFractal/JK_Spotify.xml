@@ -27,6 +27,11 @@
    <Attribute Name="invertR" PrettyName="Invert" Group="Extra Attributes" Type="bool" Min="false" Max="true">false</Attribute>
    <Attribute Name="useClamp" PrettyName="Clamp Values" Group="Extra Attributes" Type="bool" Min="false" Max="true">true</Attribute>
    
+    <Attribute Name="colorA" PrettyName="Color A" Group="Color" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(0,0,0,1)</Attribute>
+    <Attribute Name="colorB" PrettyName="Color B" Group="Color" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(1,1,1,1)</Attribute>
+    
+
+
     <Attribute Name="Seed" PrettyName="Seed" Type="double" Min="1" Max="100000" Logarithmic="1">1</Attribute> 
     <Attribute Name="XOffset" PrettyName="X Offset" Group="Offsets" Type="double" Min="0" Max="100" Logarithmic="1">0</Attribute>
     <Attribute Name="YOffset" PrettyName="Y Offset" Group="Offsets" Type="double" Min="0" Max="100" Logarithmic="1">0</Attribute>
@@ -198,7 +203,7 @@ for( i=1; i<octaves; i++ )
     result = mix(resultInv,Threshold,float($invertR));    
 
 
-    Output = vec4(result,result,result,1.0);
+    Output = mix($colorA,$colorB,result);
 
 
                 ]]></Body>

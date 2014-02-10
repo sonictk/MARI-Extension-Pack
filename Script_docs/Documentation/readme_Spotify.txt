@@ -68,3 +68,4 @@ History: =======================================================================
 # 				Added Thresholding Controls
 # - 12/15/13	Re-released for Mari 2.5 with new Folder Structure
 # - 02/08/14	Autoloader structure
+# - 02/10/14	Color A/B added
