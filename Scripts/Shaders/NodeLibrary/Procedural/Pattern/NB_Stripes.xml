@@ -53,15 +53,17 @@ uv += vec2($UOffset, $VOffset);
 // UnBias UV tile
 uv += vec2(0.5);
 
+// Stripes
 vec2 shapePos = 2.0 * fract(uv) - 1.0;
-vec2 shape =  abs(shapePos) / $Scale;
-float radius = 1.0;
+float shape =  abs(shapePos) / $Scale;
+shape = 1.0 - shape;
 
-float shapeGradient = mriCurveLookup($Falloff, shape.x);
+float shapeGradient = mriCurveLookup($Falloff, shape);
 shapeGradient = (shapeGradient-$Start)/($End-$Start);
 
 // Color
-Output.rgb = vec3(mix($shapeColor*shapeGradient,$backColor, nb_AAstep(radius, shape)));
+float Offset = 1.0/(32.0 * 1024.0);
+Output.rgb = vec3(mix($backColor,$shapeColor*shapeGradient, nb_AAstep(Offset, shape)));
 Output.a = 1.0;
 
 	]]></Body>
