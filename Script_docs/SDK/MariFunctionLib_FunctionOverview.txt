@@ -348,8 +348,8 @@ vec4 softThreshold(float threshold, float bound, vec4 colorInput)
 //   /FunctionLibrary/JK_FunctionLibrary/ID_ProceduralLib.glslc
 //Remap Function for Floats, vec4s and vec3s
 float remap(float input, float OldMin, float OldMax, float NewMin, float NewMax, float Multiplier);
-vec4 remap(vec4 input, float OldMin, float OldMax, float NewMin, float NewMax, float Multiplier);
-vec3 remap(vec3 input, float OldMin, float OldMax, float NewMin, float NewMax, float Multiplier);
+vec4 remap(vec4 input, vec4 OldMin, vec4 OldMax, vec4 NewMin, vec4 NewMax, vec4 Multiplier);
+vec3 remap(vec3 input, vec3 OldMin, vec3 OldMax, vec3 NewMin, vec3 NewMax, vec3 Multiplier);
 
 
 

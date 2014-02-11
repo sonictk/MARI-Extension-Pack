@@ -46,10 +46,10 @@ vec4 softThreshold(float threshold, float bound, vec4 value);
 float remap(float value, float oldMin, float oldMax, float newMin, float newMax, float multiplier);
 
 // remap function for color vec4 (color with alpha)
-vec4 remap(vec4 value, float oldMin, float oldMax, float newMin, float newMax, float multiplier);
+vec4 remap(vec4 value, vec4 oldMin, vec4 oldMax, vec4 newMin, vec4 newMax, vec4 multiplier);
 
 // remap function for color vec3
-vec3 remap(vec3 value, float oldMin, float oldMax, float newMin, float newMax, float multiplier);
+vec3 remap(vec3 value, vec3 oldMin, vec3 oldMax, vec3 newMin, vec3 newMax, vec3 multiplier);
 
 // vsnoise(p) - vector-valued perlin noise on a 3-d domain.
 float vsnoise(vec3 P);
