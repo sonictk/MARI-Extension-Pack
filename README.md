@@ -19,6 +19,23 @@ A collabarative space for development is available here:
 https://github.com/campi3d/IdeascaleNodePack
 
 
+GIT Workflow
+-----------------
+We have adopted the git flow branching model. 
+
+SUBBRANCH -> DEV -> RELEASE CANDIDATE (Optional) -> MASTER
+
+MASTER is always a released version. 
+DEV is the sum of all Development (more or less stable)
+Development Branches (referred to as "sub branch" in this document)  are branched off DEV. 
+
+Once a sub branch is completed, a pull request is made to DEV. 
+If many changes are made to DEV from different Collaborators:
+
+a RELEASE CANDIDATE Branch may be created from DEV before merged into MASTER.
+
+
+
 History
 -----------------
 
