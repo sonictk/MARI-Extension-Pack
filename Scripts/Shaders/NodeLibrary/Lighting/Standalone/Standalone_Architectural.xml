@@ -233,7 +233,8 @@ float ReflectYaw = .5 - atan(ReflectDir_WorldSpace.z, -ReflectDir_WorldSpace.x) 
 float ReflectPitch = .5 - asin(ReflectDir_WorldSpace.y) / PI;
 float ReflectionTraceBias = 1.0/max(nb_sq(ReflectionRoughnessScale), 0.15);
 vec3 ReflectionTrace = textureLod($EnvironmentMap, vec2(ReflectYaw,ReflectPitch), ReflectionTraceBias).rgb;
-vec3 Reflection = (ReflectionColorScaled != 0 && $HighlightsOnly==false) ? ReflectionTrace * ReflectionColorScaled : vec3(0.0);
+float ReflectionColorScaledValue = ReflectionColorScaled.r + ReflectionColorScaled.g + ReflectionColorScaled.b;
+vec3 Reflection = (ReflectionColorScaledValue != 0.0 && $HighlightsOnly==false) ? ReflectionTrace * ReflectionColorScaled : vec3(0.0);
 
 ///* Refraction *///
 vec3 RefractDir_CamSpace = refract(I,N,$ThinWalled == true ? 1.0 : Eta);
@@ -248,7 +249,7 @@ vec3 Refraction = RefractionTrace * RefractionColorScaled;
 // 1 - Basic - Diffuse + Ambient
 // 2 - Full  - Diffuse + Ambient + Specular + Reflection + Refraction
 
-Output.rgb = u_MriLightingMode==0 ? #DiffuseColor.rgb : (Diffuse*DiffuseColorScaled) + Ambient;
+Output.rgb  = u_MriLightingMode==0 ? #DiffuseColor.rgb : (Diffuse*DiffuseColorScaled) + Ambient;
 Output.rgb += u_MriLightingMode==2 ? Reflection + (Specular*SpecularColorScaled) + Refraction + AdditionalColor : vec3(0.0);
 Output.a = #DiffuseColor.a;
 
