@@ -46,6 +46,9 @@ float nb_superEllipse2D(vec2 uv, float Scale, float Corner);
 // Compute a procedural 2D super shape pattern
 float nb_superShape2D(vec2 uv, float Scale, float angle, float a, float b, float m, float n1, float n2, float n3, out float gradient);
 
+// Compute a procedural 2D weave shape pattern
+void nb_superWeave2D(vec2 uv, float contrast, out float d0, out float d1, out float f0, out float f1);
+
 // Functions for aliasing & smoothing
 float nb_AAstep(float threshold, float varyingVal);
 

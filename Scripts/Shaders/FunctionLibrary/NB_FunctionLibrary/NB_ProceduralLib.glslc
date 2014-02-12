@@ -118,6 +118,40 @@ float nb_superShape2D(vec2 uv, float Scale, float angle, float a, float b, float
    return shape;
 }
 
+// Compute a procedural 2D weave shape pattern
+void nb_superWeave2D(vec2 uv, float contrast, out float d0, out float d1, out float f0, out float f1)
+{
+   // PI 
+   float PI = 3.1415927;
+   
+   // Fractional and integer components
+   vec2 f = fract(uv);
+   vec2 i = uv - f;
+   int i0 = int(i[0]);
+   int i1 = int(i[1]);
+
+   // Offset to center
+   vec2 offsetToCenter = vec2(0.5, 0.5);
+
+   // Offset fractional component
+   f = abs(offsetToCenter - f);
+
+   // Create smooth curve from .5 to 1.0
+   vec2 d = vec2(.5,.5) + pow(cos(f * PI), vec2(.75,.75)) / ((100.1-contrast)*0.04);
+
+   // Create alternating overlap
+   float parity = (i0 + i1) % 2;
+   int j0 = (parity > 0) ? 1 : 0;
+   int j1 = 1 - j0;
+
+   // Invert color of the underlap
+   d0 = d[j0];
+   d1 = d[j1];
+   f0 = f[j0];
+   f1 = f[j1];
+   d0 = 1.0 - d0;
+}
+
 // Anti-aliased step for procedurals where 'threshold' is constant and 'varyingVal' is smoothly varying
 // NOTE: dFdx/dFdy causes a problem on ATI cards. Using alternative nb_AAstep below.
 // float nb_AAstep(float threshold, float varyingVal)
