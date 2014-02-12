@@ -1,0 +1,37 @@
+#version 150
+#extension GL_ARB_gpu_shader5 : enable
+
+//! include | Surface.glslh
+
+MriFragmentState State;
+MriSystemFragmentState _State;
+
+// Mari 2.5v2 Implementation by Nicholas Breslow (http://nbreslow.com)
+// This program is free software: GNU General Public License v3.
+// See license distributed with file for more information.
+
+// Compute the square of a given value.
+float nb_sq(float x)
+{
+    return x * x;
+}
+
+// Anti-aliased step for procedurals where 'threshold' is constant and 'varyingVal' is smoothly varying
+// NOTE: dFdx/dFdy causes a problem on ATI cards. Using alternative nb_AAstep below.
+// float nb_AAstep(float threshold, float varyingVal)
+// {
+// 	float afwidth = 0.7 * length(vec2(dFdx(varyingVal), dFdy(varyingVal)));
+// 	return smoothstep(threshold-afwidth, threshold+afwidth, varyingVal);
+// }
+float nb_AAstep(float threshold, float varyingVal)
+{
+	float afwidth = 0.7 * clamp((varyingVal - threshold) / (1.0 - threshold),0.0,1.0);
+	return smoothstep(threshold-afwidth, threshold+afwidth, varyingVal);
+}
+
+
+// Compute the CIE luminance (Rec. 709) of a given color
+float nb_luminance(vec3 colorIn)
+{
+    return colorIn.r * 0.212671 + colorIn.g * 0.715160 + colorIn.b * 0.072169;
+}

@@ -1,0 +1,12 @@
+// Mari 2.5v2 Implementation by Nicholas Breslow (http://nbreslow.com)
+// This program is free software: GNU General Public License v3.
+// See license distributed with file for more information.
+
+//Utility Functions
+float nb_sq(float x);
+
+//Functions for aliasing & smoothing
+float nb_AAstep(float threshold, float varyingVal);
+
+//Shading Functions
+float nb_luminance(vec3 colorIn);

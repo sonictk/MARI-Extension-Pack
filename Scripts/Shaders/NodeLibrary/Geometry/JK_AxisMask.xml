@@ -112,7 +112,7 @@
 
 
     // Output. If Transparent color result is completely white and mask result is in alpha
-	Output = mix(vec4(_res,_res,_res,1.0),vec4(1.0,1.0,1.0,_res),$Transparent);
+	Output = mix(vec4(_res,_res,_res,1.0),vec4(1.0,1.0,1.0,_res),float($Transparent));
     
      ]]></Body>
             </Shader>

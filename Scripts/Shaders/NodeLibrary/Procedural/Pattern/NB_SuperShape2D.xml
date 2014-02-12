@@ -1,0 +1,84 @@
+<Node>
+	<ID>SuperShape_2D</ID>
+	  <Category>Procedural/Custom/Pattern/</Category>
+	<Attributes>
+		<Attribute Name="a" PrettyName="A" Group="" Type="double" Min="0.0" Max="10.0">1.0</Attribute>
+		<Attribute Name="b" PrettyName="B" Group="" Type="double" Min="0.0" Max="10.0">1.0</Attribute>
+		<Attribute Name="m" PrettyName="M" Group="" Type="double" Min="0.0" Max="100.0">8.0</Attribute>
+		<Attribute Name="n1" PrettyName="N1" Group="" Type="double" Min="0.0" Max="100.0">6.0</Attribute>
+		<Attribute Name="n2" PrettyName="N2" Group="" Type="double" Min="0.0" Max="100.0">6.0</Attribute>
+		<Attribute Name="n3" PrettyName="N3" Group="" Type="double" Min="0.0" Max="100.0">6.0</Attribute>
+		<Attribute Name="Scale" PrettyName="Scale" Group="" Type="double" Min="0.01" Max="1.0">0.5</Attribute>
+		<Attribute Name="Repeat" PrettyName="Repeat" Group="" Type="double" Min="0.0" Max="200.0">20.0</Attribute>
+		<Attribute Name="Angle" PrettyName="Shape Angle" Group="" Type="float" Min="0.0" Max="360.0">0.0</Attribute>
+		<Attribute Name="Rotation" PrettyName="UV Rotation" Group="Position" Type="float" Min="0.0" Max="360.0">0.0</Attribute>
+		<Attribute Name="UOffset" PrettyName="U Offset" Group="Position" Type="float" Min="0" Max="1">0</Attribute>
+		<Attribute Name="VOffset" PrettyName="V Offset" Group="Position" Type="float" Min="0" Max="1">0</Attribute>
+		<Attribute Name="URepeat" PrettyName="U Repeat" Group="Position" Type="float" Min="0" Max="50" Logarithmic="1">1</Attribute>
+		<Attribute Name="VRepeat" PrettyName="V Repeat" Group="Position" Type="float" Min="0" Max="50" Logarithmic="1">1</Attribute>
+		<Attribute Name="shapeColor" PrettyName="Shape Color" Group="Color" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(1,1,1,1)</Attribute>
+		<Attribute Name="backColor" PrettyName="Background Color" Group="Color" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(0,0,0,1)</Attribute>
+		<Attribute Name="Start" PrettyName="Start" Group="Gradient" Type="float" Min="0.0" Max="1.0">0.0</Attribute>
+		<Attribute Name="End" PrettyName="End" Group="Gradient" Type="float" Min="0.0" Max="1.0">1.0</Attribute>
+		<Attribute Name="Falloff" PrettyName="Falloff" Group="Gradient" Type="curve">0.0,0.0,0.2,0.5,0.4,1.0,1.0,1.0</Attribute>
+	</Attributes>
+	<Contexts>
+	<Context Type="GLSL">
+	<Shader>
+	<Inputs>
+		<Input Name="Input"><Default>vec4(1.0,1.0,1.0,1.0)</Default></Input>
+	</Inputs>
+	<Body><![CDATA[
+
+// Super Shape "Superformula"
+// Credit: "A generic geometric transformation that unifies a wide range of natural and abstract shapes" Gielis, Johan, American Journal of Botany 90 (3) p.333–338, 2003
+// Source: http://www.amjbot.org/cgi/content/abstract/90/3/333
+// Mari 2.5v2 Implementation by Nicholas Breslow (http://nbreslow.com)
+// This program is free software: GNU General Public License v3.
+// See license distributed with file for more information.
+
+// UV Repeat
+vec2 uv = State.UV * $Repeat;
+
+// UV Rotation
+float rotRads = radians($Rotation);
+float cosAngle = cos(rotRads);
+float sinAngle = sin(rotRads);
+mat2 rotationMatrix = mat2( cosAngle, -sinAngle, sinAngle, cosAngle );
+vec2 offsetToCenter = vec2(0.5, 0.5);
+uv -= offsetToCenter;
+uv = rotationMatrix * uv;
+uv += offsetToCenter;
+
+// U Offset, V Offset
+uv += vec2($UOffset, $VOffset);
+
+// U Repeat, V Repeat
+uv *= vec2($URepeat, $VRepeat);
+
+// Shape Position, Shape Angle
+vec2 position = (fract(uv) * 2.0 - 1.0);
+float angleRads = radians($Angle);
+float angle = atan(position.y, position.x) + angleRads;
+
+// SuperShape
+float r = pow(pow(abs(cos($m*angle/4.0) / $a), $n2) + pow(abs(sin($m*angle/4.0) / $b), $n3), -1.0/$n1);
+float shape = clamp(step(r * $Scale, length(position)), 0.0, 1.0);
+shape = 1.0 - shape;
+
+// TODO: Find distance formula for exact gradient
+// Gradient
+float grad = 1/(r * $Scale / length(position));
+float shapeGradient = mriCurveLookup($Falloff, 1.0-grad);
+shapeGradient = (shapeGradient-$Start)/($End-$Start);
+
+// Color
+float Offset = 1.0/(32.0 * 1024.0);
+Output.rgb = vec3(mix($backColor, $shapeColor*shapeGradient, nb_AAstep(Offset,shape)));
+Output.a = 1.0;
+
+	]]></Body>
+	</Shader>
+	</Context>
+	</Contexts>
+</Node>
