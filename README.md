@@ -39,7 +39,7 @@ a RELEASE CANDIDATE Branch may be created from DEV before merged into MASTER.
 History
 -----------------
 
- - 01/03/14 Initial commit
+ - 01/03/14 Initial commit 
  - 01/07/14 Fixes for MAC+Linux, recommited with Capital S in Script Directory so Linux is happy
  - 01/08/14 RegisterSetRange.py was missing final registerSetRange() so Node wasn't loaded
  - 02/08/14 A new loading structure has been implemented to clean up the clutter in the script directory
