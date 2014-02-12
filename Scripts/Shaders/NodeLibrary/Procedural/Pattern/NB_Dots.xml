@@ -1,5 +1,5 @@
 <Node>
-	<ID>Dots_2D</ID>
+	<ID>Dots 2D</ID>
 	  <Category>Procedural/Custom/Pattern/</Category>
 	<Attributes>
 		<Attribute Name="Scale" PrettyName="Scale" Type="double" Min="0.0" Max="1.0" >0.8</Attribute>
@@ -35,28 +35,17 @@ vec2 uv = fract(State.UV);
 uv -= vec2(0.5);
 
 // UV Rotation
-float rotRads = radians($Rotation);
-float cosAngle = cos(rotRads);
-float sinAngle = sin(rotRads);
-mat2 rotationMatrix = mat2( cosAngle, -sinAngle, sinAngle, cosAngle );
+mat2 rotationMatrix = nb_uvRotation($Rotation);
 uv = rotationMatrix * uv;
 
 // UV Repeat
-uv *= $Repeat;
-
-// U Repeat, V Repeat
-uv *= vec2($URepeat, $VRepeat);
-
-// U Offset, V Offset
-uv += vec2($UOffset, $VOffset);
+uv = nb_uvMod(uv,$Repeat,vec2($URepeat,$VRepeat),vec2($UOffset, $VOffset));
 
 // UnBias UV tile
 uv += vec2(0.5);
 
 // Dots
-vec2 shapePos = 2.0 * fract(uv) - 1.0;
-float shape = clamp(length(shapePos) / max($Scale, 0.001),0.0,1.0);
-shape = 1.0 - shape;
+float shape = nb_dots2D(uv,$Scale);
 
 float shapeGradient = mriCurveLookup($Falloff, shape);
 shapeGradient = (shapeGradient-$Start)/($End-$Start);

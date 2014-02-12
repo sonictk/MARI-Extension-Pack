@@ -1,5 +1,5 @@
 <Node>
-	<ID>SuperShape_2D</ID>
+	<ID>SuperShape 2D</ID>
 	  <Category>Procedural/Custom/Pattern/</Category>
 	<Attributes>
 		<Attribute Name="a" PrettyName="A" Group="" Type="double" Min="0.0" Max="10.0">1.0</Attribute>
@@ -37,38 +37,25 @@
 // This program is free software: GNU General Public License v3.
 // See license distributed with file for more information.
 
-// UV Repeat
-vec2 uv = State.UV * $Repeat;
+// Separate each UV tile into it's own square
+vec2 uv = fract(State.UV);
 
 // UV Rotation
-float rotRads = radians($Rotation);
-float cosAngle = cos(rotRads);
-float sinAngle = sin(rotRads);
-mat2 rotationMatrix = mat2( cosAngle, -sinAngle, sinAngle, cosAngle );
+mat2 rotationMatrix = nb_uvRotation($Rotation);
 vec2 offsetToCenter = vec2(0.5, 0.5);
 uv -= offsetToCenter;
 uv = rotationMatrix * uv;
 uv += offsetToCenter;
 
-// U Offset, V Offset
-uv += vec2($UOffset, $VOffset);
+// UV Repeat
+uv = nb_uvMod(uv,$Repeat,vec2($URepeat,$VRepeat),vec2($UOffset, $VOffset));
 
-// U Repeat, V Repeat
-uv *= vec2($URepeat, $VRepeat);
-
-// Shape Position, Shape Angle
-vec2 position = (fract(uv) * 2.0 - 1.0);
-float angleRads = radians($Angle);
-float angle = atan(position.y, position.x) + angleRads;
-
-// SuperShape
-float r = pow(pow(abs(cos($m*angle/4.0) / $a), $n2) + pow(abs(sin($m*angle/4.0) / $b), $n3), -1.0/$n1);
-float shape = clamp(step(r * $Scale, length(position)), 0.0, 1.0);
-shape = 1.0 - shape;
+// SuperShape and gradient
+float grad;
+float shape = nb_superShape2D(uv,$Scale,$Angle,$a,$b,$m,$n1,$n2,$n3,grad);
 
 // TODO: Find distance formula for exact gradient
 // Gradient
-float grad = 1/(r * $Scale / length(position));
 float shapeGradient = mriCurveLookup($Falloff, 1.0-grad);
 shapeGradient = (shapeGradient-$Start)/($End-$Start);
 
