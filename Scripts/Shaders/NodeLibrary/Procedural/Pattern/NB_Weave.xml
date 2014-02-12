@@ -1,10 +1,10 @@
 <Node>
-	<ID>Weave_2D</ID>
+	<ID>Weave 2D</ID>
 	  <Category>Procedural/Custom/Pattern/</Category>
 	<Attributes>
 		<Attribute Name="Repeat" PrettyName="Repeat" Group="" Type="double" Min="0.0" Max="200.0">40.0</Attribute>
 		<Attribute Name="Width" PrettyName="Width" Group="" Type="double" Min="0.0" Max="100.0">80.0</Attribute>
-		<Attribute Name="Angle" PrettyName="Rotation Angle" Group="Position" Type="float" Min="0.0" Max="360.0">0.0</Attribute>
+		<Attribute Name="Rotation" PrettyName="UV Rotation" Group="Position" Type="float" Min="0.0" Max="360.0">0.0</Attribute>
 		<Attribute Name="UOffset" PrettyName="U Offset" Group="Position" Type="float" Min="0" Max="1">0</Attribute>
 		<Attribute Name="VOffset" PrettyName="V Offset" Group="Position" Type="float" Min="0" Max="1">0</Attribute>
 		<Attribute Name="URepeat" PrettyName="U Repeat" Group="Position" Type="float" Min="0" Max="50" Logarithmic="1">1</Attribute>
@@ -24,54 +24,28 @@
 	</Inputs>
 	<Body><![CDATA[
 
-// Super Shape "Superformula"
-// Source: http://www.amjbot.org/cgi/content/abstract/90/3/333
 // Mari 2.5v2 Implementation by Nicholas Breslow (http://nbreslow.com)
 // This program is free software: GNU General Public License v3.
 // See license distributed with file for more information.
 
 float PI = 3.1415927;
-vec2 uv = State.UV * $Repeat;
 
-// Angle
-float angleRads = radians($Angle);
-float cosAngle = cos(angleRads);
-float sinAngle = sin(angleRads);
-mat2 rotationMatrix = mat2( cosAngle, -sinAngle, sinAngle, cosAngle );
+// Separate each UV tile into it's own square
+vec2 uv = fract(State.UV);
+
+// UV Rotation
+mat2 rotationMatrix = nb_uvRotation($Rotation);
 vec2 offsetToCenter = vec2(0.5, 0.5);
 uv -= offsetToCenter;
 uv = rotationMatrix * uv;
 uv += offsetToCenter;
 
-// Offset
-uv += vec2($UOffset, $VOffset);
+// UV Repeat
+uv = nb_uvMod(uv,$Repeat,vec2($URepeat,$VRepeat),vec2($UOffset, $VOffset));
 
-// Scale
-uv *= vec2($URepeat, $VRepeat);
-
-// Fractional and integer components
-vec2 f = fract(uv);
-vec2 i = uv - f;
-int i0 = int(i[0]);
-int i1 = int(i[1]);
-
-// Offset fractional component
-f = abs(offsetToCenter - f);
-
-// Create smooth curve from .5 to 1.0
-vec2 d = vec2(.5,.5) + pow(cos(f * PI), vec2(.75,.75)) / ((100-$Contrast)*.04);
-
-// Create alternating overlap
-float parity = (i0 + i1) % 2;
-int j0 = (parity > 0) ? 1 : 0;
-int j1 = 1 - j0;
-
-// Invert color of the underlap
-float d0 = d[j0];
-float d1 = d[j1];
-float f0 = f[j0];
-float f1 = f[j1];
-d0 = 1 - d0;
+// Weave Pattern
+float d0,d1,f0,f1;
+nb_superWeave2D(uv,$Contrast,d0,d1,f0,f1);
 
 float Width = $Width*.005;
 vec3 Result = vec3((f0 < Width) ? d1 : ((f1 < Width) ? d0 : 0));
