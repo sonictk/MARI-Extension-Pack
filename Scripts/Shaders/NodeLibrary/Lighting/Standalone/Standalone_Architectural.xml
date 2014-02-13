@@ -1,7 +1,7 @@
 <Node>
     <ID>Architectural</ID>
     <Inputs>
-        <Input Name="DiffuseColor" PrettyName="Diffuse Color"></Input>
+        <Input Name="DiffuseColor" PrettyName="Diffuse Color" PreferredInput='1'></Input>
         <Input Name="DiffuseWeight" PrettyName="Diffuse Weight"></Input>
         <Input Name="DiffuseRoughness" PrettyName="Diffuse Roughness"></Input>
         <Input Name="ReflectionColor" PrettyName="Reflection Color"></Input>
@@ -13,8 +13,9 @@
         <Input Name="RefractionRoughness" PrettyName="Refraction Glossiness"></Input>
         <Input Name="Anisotropy" PrettyName="Anisotropy"></Input>
         <Input Name="AnisotropyRotation" PrettyName="Anisotropy Rotation"></Input>
-        <Input Name="Normal"></Input>
         <Input Name="AmbientOcclusion" PrettyName="Ambient Occlusion"></Input>
+        <Input Name="Normal" />
+        <Input Name="Vector" />
     </Inputs>
     <Attributes>
         <Attribute Name="DiffuseWeight" PrettyName="Diffuse Weight" Type="double" Min="0.0" Max="1.0">0.5</Attribute>
@@ -44,7 +45,14 @@
         <Tag>_notcacheable</Tag>
         <Tag>_standalone</Tag>
     </Tags>
-    <Contexts>
+        <Contexts>
+        <Context Type="NodeGraphView">
+            <Inputs>
+                <Input Name="DiffuseColor"><Pos>0,-50</Pos></Input>
+                <Input Name="Normal"><Pos>30,-50</Pos></Input>
+                <Input Name="Vector"><Pos>-30,-50</Pos></Input>
+            </Inputs>
+        </Context>
     <Context Type="GLSL">
     <Shader ShaderType='Fragment'>
     <Inputs>
@@ -60,8 +68,9 @@
         <Input Name="RefractionRoughness"><Default>vec4(1,1,1,1)</Default></Input>
         <Input Name="Anisotropy"><Default>vec4(1,1,1,1)</Default></Input>
         <Input Name="AnisotropyRotation"><Default>vec4(1,1,1,1)</Default></Input>
-        <Input Name="Normal"><Default>vec4(0,0,1,1)</Default></Input>
         <Input Name="AmbientOcclusion"><Default>vec4(vec3(1.0-State.AmbientOcclusion),1.0)</Default></Input>
+        <Input Name="Normal"><Default>vec4(0,0,1,1)</Default></Input>
+        <Input Name="Vector"><Default>vec4(State.TangentInEyeSpaceFromProjectionCamera.xyz,1)</Default></Input>
     </Inputs>
     <Body><![CDATA[
 
@@ -99,6 +108,8 @@ vec3 AdditionalColor = $AdditionalColor.rgb * (1.0/2.2); // Gamma corrected
 // Useful Functions
 float IdotN = dot(I,N);
 float VdotN = dot(V,N);
+// Causes white sparks on edges. Disabling for now.
+//if( VdotN <= 0.0) { N = -N; VdotN = 1.0 - VdotN; }
 
 // Fresnel
 float IOR = #IOR.r * $IOR;
@@ -176,7 +187,7 @@ if ($AnisotropyChannel == 0) // -1: the base rotation follows the local object c
 }
 if ($AnisotropyChannel == 1) // -2: the base rotation follows the bump basis vectors 
 {
-    vec3 U_dir = State.TangentInEyeSpaceFromViewCamera;
+    vec3 U_dir = #Vector.xyz;
     vec3 V_dir = State.BitangentInEyeSpaceFromViewCamera;
     float cos_Angle = cos(Angle);
     float sin_Angle = sin(Angle);
