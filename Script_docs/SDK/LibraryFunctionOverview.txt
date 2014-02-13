@@ -337,9 +337,15 @@ vec3 translate( vec3 P, vec3 trans);
 // desired axis to multiply the position point 
 mat3 rotation(float angle, vec3 axis);
 
-//   /FunctionLibrary/NB_FunctionLibrary/NB_ProceduralLib.glslc
+// /FunctionLibrary/NB_FunctionLibrary/NB_ProceduralLib.glslc
 // Compute the UV rotation matrix
 mat2 nb_uvRotation(float angle)
+
+
+// Rotates the UVs per Patch, feed in State.UV or equivalent
+// pivotU and pivotV can be used to set rotational pivot on a patch (corner, center)
+// Output is UV Vec2
+vec2 patchRotate(vec2 uvCoord, float angle, float pivotU, float pivotV);
 
 
 //   /FunctionLibrary/DT3D_FunctionLibrary/DT3D_ProceduralLib.glslc
