@@ -71,7 +71,17 @@ float smoothfBm (vec3 P, float octaves, float lacunarity, float gain, float amp,
 // most incoming values are smoothed so this function is suitable for non-constant in-values.
 float smoothVfBm (vec3 P, float octaves, float lacunarity, float gain, float amp, float scale, float freqOffset);
 
+// patchCoord
+// Returns one offset coordinate per patch/udim
+// Useful for example to set pivots per patch
+// x and y represent offsets from the default coordinate (lower left corner of each patch)
+vec2 patchCoord(float x, float y);
+
 // patchRotate
 // Rotates the UVs per Patch, feed in State.UV ( no fract() )
 // pivotU and pivotV can be used to set rotational pivot on a patch (corner, center)
 vec2 patchRotate(vec2 uvCoord, float angle, float pivotU, float pivotV);
+
+// relUVTransform
+// Performs all UV Transformation based on a pivot defined per UDIM
+vec2 relUVTransform(vec2 uvCoord, float RotationAngle, vec2 Offset, vec2 Repeat, float pivotU, float pivotV);

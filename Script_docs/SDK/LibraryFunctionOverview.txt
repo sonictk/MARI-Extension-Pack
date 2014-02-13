@@ -17,10 +17,11 @@
 // 2) multiFractal Functions
 // 3) Voronoi Functions
 // 4) Gabor Noise Functions
-// 6) Vector/Position Modification Functions
-// 7) Value Functions
-// 8) Value Interpolation Functions
-// 9) Distance Functions
+// 6) Position Modification Functions
+// 7) UV Modification Functions
+// 8) Value Functions
+// 9) Value Interpolation Functions
+// 10) Distance Functions
 // ---------------------------------------------
 
 
@@ -324,7 +325,7 @@ vec4 DT3D_GaborNoise(vec3 Po, vec4 colorA, vec4 colorB, float frequency, vec3 or
 
 // ---------------------------------------------
 // ---------------------------------------------
-// Vector/Position Modification Functions
+// Position Modification Functions
 // ---------------------------------------------
 // ---------------------------------------------
 
@@ -337,16 +338,6 @@ vec3 translate( vec3 P, vec3 trans);
 // desired axis to multiply the position point 
 mat3 rotation(float angle, vec3 axis);
 
-// /FunctionLibrary/NB_FunctionLibrary/NB_ProceduralLib.glslc
-// Compute the UV rotation matrix
-mat2 nb_uvRotation(float angle)
-
-
-// Rotates the UVs per Patch, feed in State.UV or equivalent
-// pivotU and pivotV can be used to set rotational pivot on a patch (corner, center)
-// Output is UV Vec2
-vec2 patchRotate(vec2 uvCoord, float angle, float pivotU, float pivotV);
-
 
 //   /FunctionLibrary/DT3D_FunctionLibrary/DT3D_ProceduralLib.glslc
 // scale the position point in xyz
@@ -357,9 +348,55 @@ vec3 scale( vec3 P, vec3 scale);
 vec3 positionTransform(vec3 P, vec3 Trans, vec3 Rot, vec3 Scale);
 
 
+
+
+
+
+
+
+
+
+
+
+// ---------------------------------------------
+// ---------------------------------------------
+// UV Modification Functions
+// ---------------------------------------------
+// ---------------------------------------------
+
+
 //   /FunctionLibrary/NB_FunctionLibrary/NB_ProceduralLib.glslc
 // Compute the UV repeat and offset on the UV Coords
 vec2 nb_uvMod(vec2 uv, float repeat, vec2 uvRepeat, vec2 uvOffset)
+
+
+
+// /FunctionLibrary/NB_FunctionLibrary/NB_ProceduralLib.glslc
+// Compute the UV rotation matrix
+mat2 nb_uvRotation(float angle)
+
+
+// relUVTransform
+// Performs all UV Transformation based on a pivot defined per UDIM
+vec2 relUVTransform(vec2 uvCoord, float RotationAngle, vec2 Offset, vec2 Repeat, float pivotU, float pivotV);
+
+
+// patchCoord
+// Returns one offset coordinate per patch/udim
+// Useful for example to set pivots per patch
+// x and y represent offsets from the default coordinate (lower left corner of each patch)
+vec2 patchCoord(float x, float y);
+
+
+// Rotates the UVs per Patch, feed in State.UV or equivalent
+// pivotU and pivotV can be used to set rotational pivot on a patch (corner, center)
+// Output is UV Vec2
+vec2 patchRotate(vec2 uvCoord, float angle, float pivotU, float pivotV);
+
+
+
+
+
 
 
 
