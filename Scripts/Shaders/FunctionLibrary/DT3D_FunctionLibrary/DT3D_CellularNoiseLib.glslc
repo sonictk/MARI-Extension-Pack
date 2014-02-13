@@ -35,6 +35,8 @@ float pxslThreshold(float threshold, float value);
 // a anti-aliased version of step for procedurals  
 // 'threshold' is constant , 'value' is smoothly varying
 //float aastep(float threshold , float value);
+//
+////////////////////////////////////////////////////////////////////////////////
 
 // random float generator [0,1]
 float rnd_1d(vec2 x)

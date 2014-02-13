@@ -74,6 +74,8 @@ History: =======================================================================
 # 		Fixed bug in vec4 softThreshold Function
 # - 07/01/13    MAC+Linux Fixes
 # - 02/08/14    V1.06.005 release with new autoloader structure
+# - 02/11/14    Fixed a bug with vec3+vec4 remaps
+
 
 
 
