@@ -376,11 +376,13 @@ vec2 nb_uvMod(vec2 uv, float repeat, vec2 uvRepeat, vec2 uvOffset)
 mat2 nb_uvRotation(float angle)
 
 
+//   /FunctionLibrary/JK_FunctionLibrary/ID_ProceduralLib.glslc
 // relUVTransform
 // Performs all UV Transformation based on a pivot defined per UDIM
 vec2 relUVTransform(vec2 uvCoord, float RotationAngle, vec2 Offset, vec2 Repeat, float pivotU, float pivotV);
 
 
+//   /FunctionLibrary/JK_FunctionLibrary/ID_ProceduralLib.glslc
 // patchCoord
 // Returns one offset coordinate per patch/udim
 // Useful for example to set pivots per patch
@@ -388,6 +390,7 @@ vec2 relUVTransform(vec2 uvCoord, float RotationAngle, vec2 Offset, vec2 Repeat,
 vec2 patchCoord(float x, float y);
 
 
+//   /FunctionLibrary/JK_FunctionLibrary/ID_ProceduralLib.glslc
 // Rotates the UVs per Patch, feed in State.UV or equivalent
 // pivotU and pivotV can be used to set rotational pivot on a patch (corner, center)
 // Output is UV Vec2
