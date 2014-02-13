@@ -23,6 +23,8 @@ GIT Workflow
 -----------------
 We have adopted the git flow branching model. 
 
+A demo video is available here: https://vimeo.com/86492303
+
 SUBBRANCH -> DEV -> RELEASE CANDIDATE (Optional) -> MASTER
 
 MASTER is always a released version. 
