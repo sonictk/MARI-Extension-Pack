@@ -28,8 +28,25 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.  
 ////////////////////////////////////////////////////////////////////////////////
 
-// forward declarations from other include functions
-//
+
+/********************
+* Includes
+********************/
+
+
+//! include | Surface.glslh
+
+MriFragmentState State;
+MriSystemFragmentState _State;
+
+
+
+
+
+/******************************************************
+* Forward declarations from other library functions
+*******************************************************/
+
 // perlin noise
 float Perlin3D( vec3 P );
 // simplex noise
@@ -38,10 +55,25 @@ float SimplexPerlin3D(vec3 P);
 vec4 mriRgb2Hsv(vec4 colorIn);
 // hsv to rgb
 vec4 mriHsv2Rgb(vec4 colorIn);
+// UV Rotational Matrix
+mat2 nb_uvRotation(float angle);
+
+
+
+
+
+
+
+
+
+
+
+
 
 // box filtered step function 
 // the boxstep function is somewhere between step and smoothstep. 
 // it is the result of the convolution of a box filter with a step edge. 
+
 float boxStep(float low, float high, float value)
 {
 	float tmp = (value - low) / (high -  low);
@@ -49,7 +81,11 @@ float boxStep(float low, float high, float value)
 	return clmp;
 }
 
+
+
+
 // smooth function
+
 float rsmooth(float x, float a_n, float b_n)
 {
 	float _smooth = smoothstep(0.0,1.0,x);
@@ -58,7 +94,11 @@ float rsmooth(float x, float a_n, float b_n)
 	return _smooth;
 }
 
+
+
+
 // frequency smoothing function
+
 float freqSmooth(float d, float x, float a_n, float b_n)
 {
 	float tmp = floor(x)-mod(x,1.0);
@@ -66,12 +106,16 @@ float freqSmooth(float d, float x, float a_n, float b_n)
 	return tmp_n;
 }
 
+
+
 //   soft threshold float,vec4
 //   inputs: 
 //   value/color    input to compute
 //   threshold      the pivot value
 //   bound          a value that is added and subtracted from the pivot
 //threshold function for the given float value with a feather value
+
+
 float softThreshold(float threshold, float bound, float value)
 {
 	float bounds = bound;
@@ -83,7 +127,10 @@ float softThreshold(float threshold, float bound, float value)
 	return result;
 }
 
+
+
 // threshold function for the given vec4 with a feather value
+
 vec4 softThreshold(float threshold, float bound, vec4 colorInput)
 {
 	vec4 colThreshold = vec4(threshold,threshold,threshold,1.0);
@@ -99,7 +146,9 @@ vec4 softThreshold(float threshold, float bound, vec4 colorInput)
 	return resultAlpha;
 }
 
+
 // remap function for float
+
 float remap(float value, float oldMin, float oldMax, float newMin, float newMax, float multiplier)
 { 
 	float old = (value - oldMin) / (oldMax - oldMin);
@@ -108,7 +157,9 @@ float remap(float value, float oldMin, float oldMax, float newMin, float newMax,
 	return scale;
 }
 
+
 // remap function for color vec4 (color with alpha)
+
 vec4 remap(vec4 value, vec4 oldMin, vec4 oldMax, vec4 newMin, vec4 newMax, vec4 multiplier)
 {
 	vec4 old = (value - oldMin) / (oldMax - oldMin);
@@ -117,7 +168,9 @@ vec4 remap(vec4 value, vec4 oldMin, vec4 oldMax, vec4 newMin, vec4 newMax, vec4 
 	return scale;
 }
 
+
 // remap function for color vec3
+
 vec3 remap(vec3 value, vec3 oldMin, vec3 oldMax, vec3 newMin, vec3 newMax, vec3 multiplier)
 {
 	vec3 old = (value - oldMin) / (oldMax - oldMin);
@@ -125,6 +178,8 @@ vec3 remap(vec3 value, vec3 oldMin, vec3 oldMax, vec3 newMin, vec3 newMax, vec3 
 	vec3 scale = vec3(new * multiplier);
 	return scale;
 }
+
+
 
 // -----------------------------------------------------------------------------
 // based on noises.h by larry gritz, advanced renderman
@@ -230,3 +285,117 @@ float smoothVfBm (vec3 P, float octaves, float lacunarity, float gain, float amp
 	}
 	return sum;
 }
+
+
+
+
+// patchCoord
+// Returns one offset coordinate per patch/udim
+// Useful for example to set pivots per patch
+// x and y represent offsets from the default coordinate (lower left corner of each patch)
+vec2 patchCoord(float x, float y)
+{
+vec2 patchCoord;
+vec2 pivot = vec2(-x,-y);
+
+// Generate UDIM Number per Patch
+
+int _udim_id = (int(floor(State.UV.s)) + int(floor(State.UV.t)) *10 + 1001);
+
+
+// Generate main Offset Coordinate based on UDIM
+
+    int uCo =  ((_udim_id-1000)%10);
+
+        if (uCo == 0)
+           {
+              uCo = 10;
+            }
+
+    uCo -= 1;
+
+    
+    int vCo =  ((_udim_id-1000)/10);
+
+// Generate OffsetCoordinate with user defined per patch pivot
+
+patchCoord =   pivot - vec2(uCo,vCo);
+
+return patchCoord;
+}
+
+
+
+
+
+// patchRotate
+// Rotates the UVs per Patch, feed in State.UV ( no fract() )
+// pivotU and pivotV can be used to set rotational pivot on a patch (corner, center)
+vec2 patchRotate(vec2 uvCoord, float angle, float pivotU, float pivotV)
+{
+
+vec2 patchRotate;
+
+// Generate rotationMatrix
+mat2 rotationMatrix = nb_uvRotation(angle);
+
+
+// Generate OffsetCoordinate with user defined per patch pivot
+
+  vec2 offsetToCenter =   patchCoord(pivotU,pivotV);
+
+
+// Perform Offset and rotation
+
+  patchRotate = uvCoord + offsetToCenter;
+
+  patchRotate = rotationMatrix * patchRotate;
+
+ // Reset Offset
+
+  patchRotate = patchRotate - offsetToCenter;
+
+  return patchRotate;
+
+
+  }
+
+
+
+// relUVTransform
+// Performs all UV Transformation based on a pivot defined per UDIM
+vec2 relUVTransform(vec2 uvCoord, float RotationAngle, vec2 Offset, vec2 Repeat, float pivotU, float pivotV)
+{
+
+vec2 relativeUVTransform;
+
+
+// Generate OffsetCoordinate with user defined per patch pivot
+
+  vec2 offsetToCenter =   patchCoord(pivotU,pivotV);
+
+
+// Generate rotationMatrix
+mat2 rotationMatrix = nb_uvRotation(RotationAngle);
+
+
+// Perform Offset and rotation
+
+  relativeUVTransform = uvCoord + offsetToCenter ;
+
+  relativeUVTransform = rotationMatrix * relativeUVTransform;
+  
+
+// Perform Scale,Repeat
+
+  relativeUVTransform *= Repeat;
+
+ // Reset Offset
+
+  relativeUVTransform = relativeUVTransform - offsetToCenter + Offset;
+
+  return relativeUVTransform;
+
+
+  }
+
