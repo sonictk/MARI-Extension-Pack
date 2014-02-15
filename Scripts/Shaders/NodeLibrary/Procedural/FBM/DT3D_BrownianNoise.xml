@@ -23,9 +23,9 @@
 		<Attribute Name="scaleY" PrettyName="Scale Y" Group="Transform Scale" Type="float" Min="0" Max="100" Logarithmic="1">1</Attribute>
 		<Attribute Name="scaleZ" PrettyName="Scale Z" Group="Transform Scale" Type="float" Min="0" Max="100" Logarithmic="1">1</Attribute>
 /**********************************************************************************************/ 
-		<Attribute Name="rotateX" PrettyName="Rotate X" Group="Transform Rotate" Type="float" Min="0" Max="360" Logarithmic="1">0</Attribute>
-		<Attribute Name="rotateY" PrettyName="Rotate Y" Group="Transform Rotate" Type="float" Min="0" Max="360" Logarithmic="1">0</Attribute>
-		<Attribute Name="rotateZ" PrettyName="Rotate Z" Group="Transform Rotate" Type="float" Min="0" Max="360" Logarithmic="1">0</Attribute>
+		<Attribute Name="rotateX" PrettyName="Rotate X" Group="Transform Rotate" Type="float" Min="0" Max="360">0</Attribute>
+		<Attribute Name="rotateY" PrettyName="Rotate Y" Group="Transform Rotate" Type="float" Min="0" Max="360">0</Attribute>
+		<Attribute Name="rotateZ" PrettyName="Rotate Z" Group="Transform Rotate" Type="float" Min="0" Max="360">0</Attribute>
 /**********************************************************************************************/ 		
 		<Attribute Name="transX" PrettyName="Translate X" Group="Transform Translate" Type="float" Min="0" Max="100" Logarithmic="1">0</Attribute>
 		<Attribute Name="transY" PrettyName="Translate Y" Group="Transform Translate" Type="float" Min="0" Max="100" Logarithmic="1">0</Attribute>
