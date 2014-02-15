@@ -15,10 +15,10 @@
     <Attribute Name="colorA" PrettyName="Color A" Group="Color" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(1,1,1,1)</Attribute>
     <Attribute Name="colorB" PrettyName="Color B" Group="Color" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(0,0,0,1)</Attribute>
 /**********************************************************************************************/
-    <Attribute Name="Size" Group="Scale" Type="double" Min="0" Max="2">0.5</Attribute>
-    <Attribute Name="Seed" Group="Scale" PrettyName="Seed" Type="double" Min="1" Max="100000" Logarithmic="1">1</Attribute> 
-    <Attribute Name="Roughness" Group="Scale"  Type="double" Min="0" Max="2">0.5</Attribute>
-    <Attribute Name="Invert" PrettyName="Invert"  Group="Scale"  Type="bool"  Min="false" Max="true" Description="Inverts the Noise result before ColorA+B are applied" >false</Attribute>
+    <Attribute Name="Size" Group="Size" Type="double" Min="0" Max="2">0.5</Attribute>
+    <Attribute Name="Seed" Group="Size" PrettyName="Seed" Type="double" Min="1" Max="100000" Logarithmic="1">1</Attribute> 
+    <Attribute Name="Roughness" Group="Size"  Type="double" Min="0" Max="2">0.5</Attribute>
+    <Attribute Name="Invert" PrettyName="Invert"  Group="Size"  Type="bool"  Min="false" Max="true" Description="Inverts the Noise result before ColorA+B are applied" >false</Attribute>
 /**********************************************************************************************/    
     <Attribute Name="uv"   PrettyName="UV Space" Group="Space" Type="bool" Min="false"   Max="true" Description="Runs the noise 2d uv based, use offset/scale x/y and rotate z" >false</Attribute>
  /**********************************************************************************************/    
