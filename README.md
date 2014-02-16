@@ -2,9 +2,9 @@ IDEASCALE SCRIPT & NODE MIRROR
 =====================================================================================
 Copyright (c) 2013-2014 www.mari.ideascale.com. All Rights Reserved.
 
-Version: 1.10 master
------------------
-
+Version:
+-----------
+Nodepack :  1.20 master //  MARI Function Library: 1.07
 
      
 Info
@@ -23,6 +23,8 @@ GIT Workflow
 -----------------
 We have adopted the git flow branching model. 
 
+A demo video is available here: https://vimeo.com/86492303
+
 SUBBRANCH -> DEV -> RELEASE CANDIDATE (Optional) -> MASTER
 
 MASTER is always a released version. 
@@ -39,7 +41,7 @@ a RELEASE CANDIDATE Branch may be created from DEV before merged into MASTER.
 History
 -----------------
 
- - 01/03/14 Initial commit
+ - 01/03/14 Initial commit 
  - 01/07/14 Fixes for MAC+Linux, recommited with Capital S in Script Directory so Linux is happy
  - 01/08/14 RegisterSetRange.py was missing final registerSetRange() so Node wasn't loaded
  - 02/08/14 A new loading structure has been implemented to clean up the clutter in the script directory
@@ -67,8 +69,8 @@ Example:
 Conflicts with previous Nodepack Versions
 -----------------
 
- With version 1.10 of this Nodepack the structure has been changed by moving
-all Nodes into aSubfolder /Shaders/. 
+On version 1.10  of this Nodepack the structure has been changed by moving
+all Nodes into a Subfolder /Shaders/. 
 If you have previous versions of the Nodes or FunctionLibraries
 installed they will conflict.
 
@@ -92,6 +94,8 @@ Contributors
 -----------------
 
 - Miguel A Santiago Jr. www.digiteck3d.com // miguel@digiteck3d.com
+
+- Nicholas Breslow www.nbreslow.com //
 
 - Jens Kafitz www.campi3d.com // info@campi3d.com
 
