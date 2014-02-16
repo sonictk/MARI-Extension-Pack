@@ -42,6 +42,9 @@ vec3 Specular = vec3(0.0);
 float SpecularRoughness = clamp(($SpecularRoughness*#SpecularRoughness.r), 0.001,0.999);
 float AnisotropicRotation = $AnisotropicRotation*#AnisotropicRotation.r;
 
+vec3 X,Y; // Grab X & Y
+nb_tangentVectors(N,AnisotropicRotation,X,Y);
+
 for(int i=0;i<4;i++)
 {
     // Light Visibility
@@ -50,33 +53,9 @@ for(int i=0;i<4;i++)
     // Light Direction
     vec3 L = normalize(u_MriLightSources[i].Position.xyz - State.FragmentPositionInEyeSpaceFromViewCamera);
     
-    float NdotL = dot(N,L);
-    float NdotV = dot(N,V);
-
-    if ( NdotL*NdotV > 0.0 )
-    {
-        vec2 AnisoRoughness = vec2(SpecularRoughness, (SpecularRoughness / max($Anisotropy,0.001))); // Roughness
-        vec3 AnisoDirection = vec3(1.0-AnisotropicRotation,0.0+AnisotropicRotation,0.0); // Tangent Direction
-        vec3 X = normalize(cross(N,AnisoDirection)); // Tangent
-        vec3 Y = normalize(cross(N,X)); // Bitangent
-        vec3 H = normalize(L+V); // Half-Vector
-        
-        float NdotH = dot(N,H);
-        float HdotX = dot(H,X);
-        float HdotY = dot(H,Y);
-
-        float FirstTerm = 1.0 / sqrt(NdotL*NdotV);
-        float SecondTerm = 1.0/(12.57 * AnisoRoughness.x * AnisoRoughness.y);
-        float A = -2.0 * ( pow((HdotX/AnisoRoughness.x),2) + pow((HdotY/AnisoRoughness.y),2) );
-        float B = 1.0 + NdotH;
-        float ThirdTerm = exp(A/B);
-        float ssNdotL = smoothstep(0,0.25,NdotL); // Optional Addition
-        float Irradiance = max(0.0,ssNdotL);
-
-        // Ward Anisotropic Specular
-        float SpecTerm = FirstTerm * SecondTerm * ThirdTerm * Irradiance;
-        Specular += SpecTerm * u_MriLightSources[i].SpecularColor.rgb * lightVisibility;
-    }
+    // Ward Anisotropic Specular
+    float SpecTerm = nb_wardAnisotropic(N,V,L,X,Y,SpecularRoughness,$Anisotropy);
+    Specular += SpecTerm * u_MriLightSources[i].SpecularColor.rgb * lightVisibility;
 }
 
 Output.rgb = Specular * #Specular.r * #SpecularColor.rgb;
