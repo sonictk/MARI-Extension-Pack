@@ -13,20 +13,23 @@
   </Inputs>
 
   <Attributes>
+  /**********************************************************************************************/  
+    <Attribute Name="colorA"      PrettyName="Color A"         Group="Color"     Type="color"   Min="(0,0,0,1)" Max="(1,1,1,1)"           >(1,1,1,1)</Attribute>
+    <Attribute Name="colorB"      PrettyName="Color B"         Group="Color"     Type="color"   Min="(0,0,0,1)" Max="(1,1,1,1)"           >(0,0,0,1)</Attribute>
+    /**********************************************************************************************/  
     <Attribute Name="Size"                                      Group="Base"  Type="double"   Min="0"       Max="1"                      Description="The general feature size" >0.4</Attribute>
     <Attribute Name="octaves"                                   Group="Base"  Type="float"    Min="0"       Max="8"                      Description="Visual complexitity of noise" >3</Attribute>  
     <Attribute Name="lacunarity"                                Group="Base"  Type="double"   Min="0"       Max="8"                      Description="Frequency spacing between successive octaves" >4</Attribute>   
     <Attribute Name="Amp"         PrettyName="Amplitute"        Group="Base"  Type="double"   Min="0.0001"  Max="1"                      Description="Each successive octave gets multiplied gain*amplitute, smaller values result in less contrast between frequencies" >0.5</Attribute>
     <Attribute Name="FreqOffset"  PrettyName="Offset"           Group="Base"  Type="double"   Min="0.0001"  Max="1"                      Description="Frequency Offset" >0.5</Attribute>
-    <Attribute Name="gain"                                      Group="Base"  Type="double"   Min="0"       Max="1"                      Description="Each successive octave gets multiplied gain*amplitute, smaller values result in less contrast for the overal result">1</Attribute>
-    
     <Attribute Name="SeedBase"    PrettyName="Seed"             Group="Base"  Type="double"   Min="1"       Max="100000" Logarithmic="1" Description="frequency">1</Attribute>
+/**********************************************************************************************/     
+    <Attribute Name="gain"                                      Group="Base"  Type="double"   Min="0"       Max="1"                      Description="Each successive octave gets multiplied gain*amplitute, smaller values result in less contrast for the overal result">1</Attribute>
     <Attribute Name="Threshold"   PrettyName="Threshold"        Group="Base"  Type="double"   Min="0"       Max="1"                      Description="Threshold of final result" >0.1</Attribute>
     <Attribute Name="Clip"        PrettyName="Soft Clip Result" Group="Base"  Type="double"   Min="0.001"   Max="1"                      Description="extends the threshold box by a fixed value up and down">0.6</Attribute>
-    <Attribute Name="Absolut"     PrettyName="Absolute Values"     Group="Base" Type="bool"    Min="false" Max="true"                   Description="By default positive and negative noise values will all be treated as positive making for a denser noise. This will remove any negative noise values">false</Attribute>
-    <Attribute Name="Invert"      PrettyName="Invert"           Group="Base"     Type="bool"    Min="false" Max="true"                   Description="Inverts the Noise result before ColorA+B are applied" >false</Attribute>
-
-    
+    <Attribute Name="Absolut"     PrettyName="Absolute Values"  Group="Base"  Type="bool"    Min="false" Max="true"                   Description="By default positive and negative noise values will all be treated as positive making for a denser noise. This will remove any negative noise values">false</Attribute>
+    <Attribute Name="Invert"      PrettyName="Invert"           Group="Base"  Type="bool"    Min="false" Max="true"                   Description="Inverts the Noise result before ColorA+B are applied" >false</Attribute>
+/**********************************************************************************************/     
     <Attribute Name="PreviewA"    PrettyName="Preview Handle A" Group="Handle A" Type="bool"    Min="false" Max="true"                   Description="Shows you the Result from the Fractal in Handle A" >false</Attribute>
     <Attribute Name="HandleA"                                   Group="Handle A" Type="stringlist"                                       Description="Which feature from Base Noise to be driven by secondary noise" >Octave,None,Size,Octave,Lacunarity,Amplitute,Offset,Gain</Attribute>
     <Attribute Name="ASize"                                     Group="Handle A" Type="double"  Min="0"     Max="1"                      Description="The general feature size for HandleA" >0.5</Attribute>
@@ -42,7 +45,7 @@
     <Attribute Name="ClipA"       PrettyName="Negative as black"    Group="Handle A" Type="bool"    Min="false" Max="true"                   Description="By default positive and negative noise values will all be treated as positive making for a denser noise. This will remove any negative noise values">false</Attribute>
     <Attribute Name="EnforceA"    PrettyName="Negative as transparent"  Group="Handle A" Type="bool" Min="false" Max="true"                Description="When Clip Negative is turned on, this will enforce the clipped areas trhoughout the entire fractal, so any further modification only affects the existing shapes">false</Attribute>
 
-   
+/**********************************************************************************************/ 
 
     <Attribute Name="PreviewB"    PrettyName="Preview Handle B" Group="Handle B" Type="bool"    Min="false" Max="true"                   Description="Shows you the Result from the Fractal in Handle B" >false</Attribute>
     <Attribute Name="HandleB"                                   Group="Handle B" Type="stringlist"                                       Description="Which feature from Base Noise to be driven by tertiary noise" >None,None,Size,Octave,Lacunarity,Amplitute,Offset,Gain</Attribute>
@@ -59,28 +62,25 @@
     <Attribute Name="ClipB"       PrettyName="Negative as black"    Group="Handle B" Type="bool"    Min="false" Max="true"                   Description="By default positive and negative noise values will all be treated as positive making for a denser noise. This will remove any negative noise values">false</Attribute>
     <Attribute Name="EnforceB"    PrettyName="Negative as transparent"  Group="Handle B" Type="bool" Min="false" Max="true"                Description="When Clip Negative is turned on, this will enforce the clipped areas trhoughout the entire fractal, so any further modification only affects the existing shapes. This can work in combination with Propagate Additive">false</Attribute>
    
-   
+/**********************************************************************************************/    
+    <Attribute Name="uv"         PrettyName="UV Space"        Group="Transform Space"      Type="bool"   Min="false"     Max="true"  Description="Runs the noise 2d uv based, use offset/scale x/y and rotate z" >false</Attribute>
+  
+    <Attribute Name="trB"         PrettyName="Base"     Group="Transform Space"   Type="bool"   Min="false" Max="true"                   Description="Applies the transformation to the base fractal" >true</Attribute>
+    <Attribute Name="trhA"        PrettyName="Handle A" Group="Transform Space" Type="bool" Min="false" Max="true"                   Description="Applies the transformation to the fractal in Handel A" >true</Attribute>  
+    <Attribute Name="trhB"        PrettyName="Handle B" Group="Transform Space" Type="bool" Min="false" Max="true"                   Description="Applies the transformation to the fractal in Handel B" >true</Attribute>
+
+    <Attribute Name="XScale"      PrettyName="Scale X"        Group="Transform Scale"   Type="double" Min="0"     Max="100"   Logarithmic="1"     >1</Attribute>
+    <Attribute Name="YScale"      PrettyName="Scale Y"        Group="Transform Scale"   Type="double" Min="0"     Max="100"   Logarithmic="1"     >1</Attribute>
+    <Attribute Name="ZScale"      PrettyName="Scale Z"        Group="Transform Scale"   Type="double" Min="0"     Max="100"   Logarithmic="1"     >1</Attribute>
     
-    <Attribute Name="colorA"      PrettyName="Color A"         Group="Color"     Type="color"   Min="(0,0,0,1)" Max="(1,1,1,1)"           >(1,1,1,1)</Attribute>
-    <Attribute Name="colorB"      PrettyName="Color B"         Group="Color"     Type="color"   Min="(0,0,0,1)" Max="(1,1,1,1)"           >(0,0,0,1)</Attribute>
+    <Attribute Name="rX"          PrettyName="Rotate X"       Group="Transform Rotate"   Type="double" Min="0"     Max="360"                       >0</Attribute>
+    <Attribute Name="rY"          PrettyName="Rotate Y"       Group="Transform Rotate"   Type="double" Min="0"     Max="360"                       >0</Attribute>
+    <Attribute Name="rZ"          PrettyName="Rotate Z"       Group="Transform Rotate"   Type="double" Min="0"     Max="360"                       >0</Attribute>
 
+    <Attribute Name="XOffset"     PrettyName="Translate X"       Group="Transform Translate"   Type="double" Min="0"     Max="100"   Logarithmic="1"     >0</Attribute>
+    <Attribute Name="YOffset"     PrettyName="Translate Y"       Group="Transform Translate"   Type="double" Min="0"     Max="100"   Logarithmic="1"     >0</Attribute>
+    <Attribute Name="ZOffset"     PrettyName="Translate Z"       Group="Transform Translate"   Type="double" Min="0"     Max="100"   Logarithmic="1"     >0</Attribute>
 
-    <Attribute Name="trB"         PrettyName="Transform Base" Group="Transform"   Type="bool"   Min="false" Max="true"                   Description="Applies the transformation to the base fractal" >true</Attribute>
-    <Attribute Name="trhA"        PrettyName="Transform Handle A" Group="Transform" Type="bool" Min="false" Max="true"                   Description="Applies the transformation to the fractal in Handel A" >true</Attribute>  
-    <Attribute Name="trhB"        PrettyName="Transform Handle B" Group="Transform" Type="bool" Min="false" Max="true"                   Description="Applies the transformation to the fractal in Handel B" >true</Attribute>
-
-    <Attribute Name="XOffset"     PrettyName="X Offset"       Group="Transform"   Type="double" Min="0"     Max="100"   Logarithmic="1"     >0</Attribute>
-    <Attribute Name="YOffset"     PrettyName="Y Offset"       Group="Transform"   Type="double" Min="0"     Max="100"   Logarithmic="1"     >0</Attribute>
-    <Attribute Name="ZOffset"     PrettyName="Z Offset"       Group="Transform"   Type="double" Min="0"     Max="100"   Logarithmic="1"     >0</Attribute>
-
-
-    <Attribute Name="XScale"      PrettyName="X Scale"        Group="Transform"   Type="double" Min="0"     Max="100"   Logarithmic="1"     >1</Attribute>
-    <Attribute Name="YScale"      PrettyName="Y Scale"        Group="Transform"   Type="double" Min="0"     Max="100"   Logarithmic="1"     >1</Attribute>
-    <Attribute Name="ZScale"      PrettyName="Z Scale"        Group="Transform"   Type="double" Min="0"     Max="100"   Logarithmic="1"     >1</Attribute>
-    
-    <Attribute Name="rX"          PrettyName="Rotate X"       Group="Transform"   Type="double" Min="0"     Max="360"                       >0</Attribute>
-    <Attribute Name="rY"          PrettyName="Rotate Y"       Group="Transform"   Type="double" Min="0"     Max="360"                       >0</Attribute>
-    <Attribute Name="rZ"          PrettyName="Rotate Z"       Group="Transform"   Type="double" Min="0"     Max="360"                       >0</Attribute>
 
 
   </Attributes>
@@ -107,7 +107,10 @@
 
   // Size for Base Noise. Needs to be build first in order to grab values for exponential Offset Growth for large scene sizes
   float size_pow = (pow(10000.0,$Size*$Size)-1.0) + 0.0001;
-                        
+     
+  /********************
+  *3D Position Based
+  ********************/                        
 
 // build the needed vector attributes for position transform
   vec3 trans = (vec3($XOffset,$YOffset,$ZOffset)*size_pow);
@@ -115,9 +118,26 @@
   vec3 scale = vec3($XScale,$YScale,$ZScale);
       
 // transform the position to translate,rotate,scale the position
-  vec3 InputScaleBase = positionTransform(State.Position,trans,rotate,scale) / size_pow;
-  vec3 _Input = State.Position;
+  vec3 InputScaleBase3d = positionTransform(State.Position,trans,rotate,scale) / size_pow;
+  vec3 _Input3d = State.Position;
 
+  /********************
+  *UV Based
+  ********************/ 
+
+
+  vec2 UVOffset = vec2($XOffset,$YOffset);
+  vec2 UVScale = vec2($XScale,$YScale); 
+ 
+  vec2 InputScaleUV = relUVTransform(State.UV,$rZ,UVOffset,UVScale,0.5,0.5)/ normalize(size_pow);
+
+
+  /********************
+  *Mix 3d/uv
+  ********************/
+
+  vec3 InputScaleBase = mix(InputScaleBase3d,vec3(InputScaleUV,1.0),$uv);
+  vec3 _Input = mix(State.Position,vec3(State.UV,1.0),$uv);
 
 
   // Transform Base Noise
