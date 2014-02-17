@@ -1,5 +1,5 @@
 <Node>
-    <ID>WardAnisotropic</ID>
+    <ID>Ward Anisotropic</ID>
     <Inputs>
         <Input Name="SpecularColor" PrettyName="Specular Color" PreferredInput='1'></Input>
         <Input Name="Specular" PrettyName="Specular Weight"></Input>

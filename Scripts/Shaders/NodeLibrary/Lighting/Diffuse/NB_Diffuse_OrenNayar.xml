@@ -1,5 +1,5 @@
 <Node>
-    <ID>OrenNayar</ID>
+    <ID>Oren Nayar</ID>
     <Inputs>
         <Input Name="DiffuseColor" PrettyName="Diffuse Color" PreferredInput='1'></Input>
         <Input Name="DiffuseRoughness" PrettyName="Diffuse Roughness"></Input>
