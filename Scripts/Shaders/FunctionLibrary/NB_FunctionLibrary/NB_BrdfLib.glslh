@@ -25,8 +25,19 @@
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.    
 ////////////////////////////////////////////////////////////////////////////////
 
+// Clamp value to 0...1 'float'
+float nb_saturate(float v);
+
+// Computes the fresnel function using 
+// using the schlick approximation
+float nb_fresnel(vec3 I, vec3 N, float ior);
+
 // Calculate the tangent and binormal from the input normal vector
 void nb_tangentVectors(vec3 N, float anisotropicRotation, out vec3 X, out vec3 Y);
+
+// Sample the environment texture for a latitude longitude 
+// map in the supplied direction for reflection mapping
+vec3 nb_envLatMap2D(sampler2D sampler, vec3 dir);
 
 // Oren Nayar Diffuse
 // "Generalization of Lambert's Reflectance Model" M. Oren and S.K. Nayar, SIGGRAPH p.239-246, July, 1994
