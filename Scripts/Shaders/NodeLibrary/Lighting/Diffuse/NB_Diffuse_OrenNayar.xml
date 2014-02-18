@@ -22,34 +22,34 @@
     </Inputs>
     <Body><![CDATA[
 
-// Oren Nayar Diffuse
-// "Generalization of Lambert's Reflectance Model" M. Oren and S.K. Nayar, SIGGRAPH p.239-246, July, 1994
-// Mari 2.5v2 Implementation by Nicholas Breslow (http://nbreslow.com)
-// This program is free software: GNU General Public License v3.
-// See license distributed with file for more information.
-
-vec3 V = normalize(-State.ViewVectorInEyeSpaceFromViewCamera);
-vec3 N = #Normal.xyz;
-
-vec3 Diffuse = vec3(0.0);
-float DiffuseRoughness = clamp($DiffuseRoughness*#DiffuseRoughness.r, 0.001,0.999);
-
-for(int i=0;i<4;i++)
-{
-    // Light Direction
-    vec3 L = normalize(u_MriLightSources[i].Position.xyz - State.FragmentPositionInEyeSpaceFromViewCamera);
-
-    // Light Visibility
-    float lightVisibility = mriLightVisibility( i, State.Position);
-
     // Oren Nayar Diffuse
-    float orenNayar = nb_orenNayar(V,N,L,DiffuseRoughness);
-    
-    Diffuse += (orenNayar) * u_MriLightSources[i].DiffuseColor.rgb * lightVisibility;
-}
+    // "Generalization of Lambert's Reflectance Model" M. Oren and S.K. Nayar, SIGGRAPH p.239-246, July, 1994
+    // Mari 2.5v2 Implementation by Nicholas Breslow (http://nbreslow.com)
+    // This program is free software: GNU General Public License v3.
+    // See license distributed with file for more information.
 
-Output.rgb = Diffuse * #DiffuseColor.rgb;
-Output.a = #DiffuseColor.a;
+    vec3 V = normalize(-State.ViewVectorInEyeSpaceFromViewCamera);
+    vec3 N = #Normal.xyz;
+
+    vec3 Diffuse = vec3(0.0);
+    float DiffuseRoughness = clamp($DiffuseRoughness*#DiffuseRoughness.r, 0.001,0.999);
+
+    for(int i=0;i<4;i++)
+    {
+        // Light Direction
+        vec3 L = normalize(u_MriLightSources[i].Position.xyz - State.FragmentPositionInEyeSpaceFromViewCamera);
+
+        // Light Visibility
+        float lightVisibility = mriLightVisibility( i, State.Position);
+
+        // Oren Nayar Diffuse
+        float orenNayar = nb_orenNayar(V,N,L,DiffuseRoughness);
+        
+        Diffuse += (orenNayar) * u_MriLightSources[i].DiffuseColor.rgb * lightVisibility;
+    }
+
+    Output.rgb = Diffuse * #DiffuseColor.rgb;
+    Output.a = #DiffuseColor.a;
 
     ]]></Body>
     </Shader>
