@@ -3,28 +3,28 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Mari Procedural Shader Library Registration
 // Copyright (c) 2014 Nicholas Breslow. All Rights Reserved.
-//////////////////////////////////////////////////////////////////////////////// 
-// File: NB_BrdfLib.glslc   
+////////////////////////////////////////////////////////////////////////////////
+// File: NB_BrdfLib.glslc
 // Description: Shading library for various BRDF shading models.
 ////////////////////////////////////////////////////////////////////////////////
-// Author: Nicholas Breslow         
-// Web: www.nbreslow.com                
+// Author: Nicholas Breslow
+// Web: www.nbreslow.com
 // Email: nick@nbreslow.com
 ////////////////////////////////////////////////////////////////////////////////
 // Date: Feb 15, 2014
 ////////////////////////////////////////////////////////////////////////////////
-// This program is free software: you can redistribute it and/or modify     
-// it under the terms of the GNU General Public License as published by     
-// the Free Software Foundation, either version 3 of the License, or        
-// (at your option) any later version.                                      
-//                                                                          
-// This program is distributed in the hope that it will be useful,          
-// but WITHOUT ANY WARRANTY; without even the implied warranty of           
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the            
-// GNU General Public License for more details.                             
-//                                                                          
-// You should have received a copy of the GNU General Public License        
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.    
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ////////////////////////////////////////////////////////////////////////////////
 
 #define PI 3.1415
@@ -35,14 +35,14 @@ float nb_saturate(float v)
     return clamp(v,0.0,1.0);
 }
 
-// Computes the fresnel function using 
+// Computes the fresnel function using
 // using the schlick approximation
 float nb_fresnel(vec3 I, vec3 N, float eta)
 {
    float VdotN = nb_saturate(dot(-I,N));
    float F0 = (1.0-eta)/(1.0+eta); F0 *= F0;
    float fresnel = F0 + (1.0 - F0) * pow(1.0 - VdotN, 5.0);
-   
+
    return fresnel;
 }
 
@@ -50,29 +50,29 @@ float nb_fresnel(vec3 I, vec3 N, float eta)
 void nb_tangentVectors(vec3 N, float anisotropicRotation, out vec3 X, out vec3 Y)
 {
     // Tangent Direction
-    vec3 anisoDirection = vec3(1.0 - anisotropicRotation,0.0 + anisotropicRotation,0.0); 
+    vec3 anisoDirection = vec3(1.0 - anisotropicRotation,0.0 + anisotropicRotation,0.0);
 
     // Tangent and Bitangent
-    X = normalize(cross(N,anisoDirection)); 
+    X = normalize(cross(N,anisoDirection));
     Y = normalize(cross(N,X));
 }
 
-// Sample the environment texture for a latitude longitude 
+// Sample the environment texture for a latitude longitude
 // map in the supplied direction for reflection mapping
-vec3 nb_envLatMap2D(sampler2D sampler, vec3 dir) 
+vec3 nb_envLatMap2D(sampler2D sampler, vec3 dir)
 {
     // Convert Dir To Spherical Coordinates
     float phi = 0.5 - atan(dir.z, -dir.x) / (2.0 * PI);
     float theta = 0.5 - asin(dir.y) / PI;
     vec2 uv = vec2(phi,theta);
 
-    // Lookup In Equirectangular Map 
+    // Lookup In Equirectangular Map
     return texture(sampler,uv).xyz;
 }
 
 // Oren Nayar Diffuse
 // "Generalization of Lambert's Reflectance Model" M. Oren and S.K. Nayar, SIGGRAPH p.239-246, July, 1994
-// oren nayar diffuse variant implementation source by Nicholas Breslow (www.nbreslow.com)
+// oren nayar diffuse variant implementation
 float nb_orenNayar(vec3 I, vec3 N, vec3 L, float roughness)
 {
     // Constant Variables
@@ -95,7 +95,7 @@ float nb_orenNayar(vec3 I, vec3 N, vec3 L, float roughness)
 
     // Cos Phi Calculation
     if (cos_phi_diff>=0)
-    {    
+    {
         B = B * sin(alpha) * tan(beta) * max(0.0,cos_phi_diff);
     }
     else
@@ -109,7 +109,7 @@ float nb_orenNayar(vec3 I, vec3 N, vec3 L, float roughness)
 
 // Ward Anisotropic Specular
 // “Measuring and Modelling Anisotropic Reflection” Gregory J. Ward, Computer Graphics 26, 2, July 1992
-// Ward Anisotropic variant implementation source by Nicholas Breslow (www.nbreslow.com)
+// Ward Anisotropic variant implementation
 float nb_wardAnisotropic(vec3 N, vec3 I, vec3 L, vec3 X, vec3 Y, float SpecularRoughness, float Anisotropy)
 {
     // Anisotropic Roughness Variables
@@ -124,7 +124,7 @@ float nb_wardAnisotropic(vec3 N, vec3 I, vec3 L, vec3 X, vec3 Y, float SpecularR
     float NdotH = nb_saturate(dot(N,H));
     float HdotX = dot(H,X);
     float HdotY = dot(H,Y);
-    
+
     // Ward Anisotropic Terms
     float FirstTerm = 1.0 / sqrt(clamp(NdotL*NdotV,0.01,1));
     float SecondTerm = 1.0 / (12.57 * AnisoRoughness.x * AnisoRoughness.y);
@@ -142,11 +142,11 @@ float nb_wardAnisotropic(vec3 N, vec3 I, vec3 L, vec3 X, vec3 Y, float SpecularR
 
 // Ward Isotropic Specular
 // “Measuring and Modelling Anisotropic Reflection” Gregory J. Ward, Computer Graphics 26, 2, July 1992
-// Ward Anisotropic variant implementation source by Nicholas Breslow (www.nbreslow.com)
+// Ward Anisotropic variant implementation
 float nb_wardIsotropic(vec3 N, vec3 I, vec3 L, float SpecularRoughness)
 {
     // Half-Vector
-    vec3 H = normalize(L+I); 
+    vec3 H = normalize(L+I);
 
     // Dot Product Variables
     float NdotL = nb_saturate(dot(N,L));

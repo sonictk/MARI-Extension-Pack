@@ -43,97 +43,97 @@
         <Tag>_standalone</Tag>
     </Tags>
     <Contexts>
-    <Context Type="GLSL">
-    <Shader ShaderType='Fragment'>
-    <Inputs>
-        <Input Name="Diffuse"><Default>vec4(0,0,0,0)</Default></Input>
-        <Input Name="Normal"><Default>vec4(0,0,1,1)</Default></Input>
-    </Inputs>
-    <Body><![CDATA[
+        <Context Type="GLSL">
+            <Shader ShaderType='Fragment'>
+                <Inputs>
+                    <Input Name="Diffuse"><Default>vec4(0,0,0,0)</Default></Input>
+                    <Input Name="Normal"><Default>vec4(0,0,1,1)</Default></Input>
+                </Inputs>
+                <Body><![CDATA[
 
-// Development Shader
-// Mari 2.5v2 Implementation by Nicholas Breslow (http://nbreslow.com)
+                // Development Shader
+                // Mari 2.5v2 Implementation by Nicholas Breslow (http://nbreslow.com)
 
-///* MriFragmentState Struct Members *///
-// vec3 State.Position
-// vec2 State.UV
-// vec3 State.Normal
-// vec3 State.Tangent
-// vec3 State.Bitangent
-// float State.AmbientOcclusion
-// float State.PatchId
-// float State.FaceId // Not Implemented
+                ///* MriFragmentState Struct Members *///
+                // vec3 State.Position
+                // vec2 State.UV
+                // vec3 State.Normal
+                // vec3 State.Tangent
+                // vec3 State.Bitangent
+                // float State.AmbientOcclusion
+                // float State.PatchId
+                // float State.FaceId // Not Implemented
 
-// vec3 State.NormalInEyeSpaceFromViewCamera
-// vec3 State.TangentInEyeSpaceFromViewCamera
-// vec3 State.BitangentInEyeSpaceFromViewCamera
-// vec3 State.ViewVectorInEyeSpaceFromViewCamera
-// vec3 State.FragmentPositionInEyeSpaceFromViewCamera
+                // vec3 State.NormalInEyeSpaceFromViewCamera
+                // vec3 State.TangentInEyeSpaceFromViewCamera
+                // vec3 State.BitangentInEyeSpaceFromViewCamera
+                // vec3 State.ViewVectorInEyeSpaceFromViewCamera
+                // vec3 State.FragmentPositionInEyeSpaceFromViewCamera
 
-// vec3 State.NormalInEyeSpaceFromProjectionCamera
-// vec3 State.TangentInEyeSpaceFromProjectionCamera
-// vec3 State.BitangentInEyeSpaceFromProjectionCamera
-// vec3 State.ViewVectorInEyeSpaceFromProjectionCamera
-// vec3 State.FragmentPositionInEyeSpaceFromProjectionCamera
-// vec3 State.FragmentPositionInNdcSpaceFromProjectionCamera
+                // vec3 State.NormalInEyeSpaceFromProjectionCamera
+                // vec3 State.TangentInEyeSpaceFromProjectionCamera
+                // vec3 State.BitangentInEyeSpaceFromProjectionCamera
+                // vec3 State.ViewVectorInEyeSpaceFromProjectionCamera
+                // vec3 State.FragmentPositionInEyeSpaceFromProjectionCamera
+                // vec3 State.FragmentPositionInNdcSpaceFromProjectionCamera
 
-if ($StatePosition == true) Output = vec4(State.Position,1.0);
-if ($StateUV == true) Output = vec4(State.UV,0.0,1.0);
-if ($StateNormal == true) Output = vec4(State.Normal,1.0);
-if ($StateTangent == true) Output = vec4(State.Tangent,1.0);
-if ($StateBitangent == true) Output = vec4(State.Bitangent,1.0);
-if ($StateAmbientOcclusion == true) Output = vec4(1.0 - State.AmbientOcclusion,1.0 - State.AmbientOcclusion,1.0 - State.AmbientOcclusion,1.0);
-if ($StatePatchId == true) Output = vec4(State.PatchId/20,State.PatchId/20,State.PatchId/20,1.0);
+                if ($StatePosition == true) Output = vec4(State.Position,1.0);
+                if ($StateUV == true) Output = vec4(State.UV,0.0,1.0);
+                if ($StateNormal == true) Output = vec4(State.Normal,1.0);
+                if ($StateTangent == true) Output = vec4(State.Tangent,1.0);
+                if ($StateBitangent == true) Output = vec4(State.Bitangent,1.0);
+                if ($StateAmbientOcclusion == true) Output = vec4(1.0 - State.AmbientOcclusion,1.0 - State.AmbientOcclusion,1.0 - State.AmbientOcclusion,1.0);
+                if ($StatePatchId == true) Output = vec4(State.PatchId/20,State.PatchId/20,State.PatchId/20,1.0);
 
-if ($StateNormalInEyeSpaceFromViewCamera == true) Output = vec4(State.NormalInEyeSpaceFromViewCamera,1.0);
-if ($StateTangentInEyeSpaceFromViewCamera == true) Output = vec4(State.TangentInEyeSpaceFromViewCamera,1);
-if ($StateBitangentInEyeSpaceFromViewCamera == true) Output = vec4(State.BitangentInEyeSpaceFromViewCamera,1.0);
-if ($StateViewVectorInEyeSpaceFromViewCamera == true) Output = vec4(State.ViewVectorInEyeSpaceFromViewCamera,1.0);
-if ($StateFragmentPositionInEyeSpaceFromViewCamera == true) Output = vec4(State.FragmentPositionInEyeSpaceFromViewCamera,1.0);
+                if ($StateNormalInEyeSpaceFromViewCamera == true) Output = vec4(State.NormalInEyeSpaceFromViewCamera,1.0);
+                if ($StateTangentInEyeSpaceFromViewCamera == true) Output = vec4(State.TangentInEyeSpaceFromViewCamera,1);
+                if ($StateBitangentInEyeSpaceFromViewCamera == true) Output = vec4(State.BitangentInEyeSpaceFromViewCamera,1.0);
+                if ($StateViewVectorInEyeSpaceFromViewCamera == true) Output = vec4(State.ViewVectorInEyeSpaceFromViewCamera,1.0);
+                if ($StateFragmentPositionInEyeSpaceFromViewCamera == true) Output = vec4(State.FragmentPositionInEyeSpaceFromViewCamera,1.0);
 
-if ($StateNormalInEyeSpaceFromProjectionCamera == true) Output = vec4(State.NormalInEyeSpaceFromProjectionCamera,1.0);
-if ($StateTangentInEyeSpaceFromProjectionCamera == true) Output = vec4(State.TangentInEyeSpaceFromProjectionCamera,1.0);
-if ($StateBitangentInEyeSpaceFromProjectionCamera == true) Output = vec4(State.biTangentInEyeSpaceFromProjectionCamera,1.0);
-if ($StateViewVectorInEyeSpaceFromProjectionCamera == true) Output = vec4(State.ViewVectorInEyeSpaceFromProjectionCamera,1.0);
-if ($StateFragmentPositionInEyeSpaceFromProjectionCamera == true) Output = vec4(State.FragmentPositionInEyeSpaceFromProjectionCamera,1.0);
-if ($StateFragmentPositionInNdcSpaceFromProjectionCamera == true) Output = vec4(State.FragmentPositionInNdcSpaceFromProjectionCamera,1.0);
-
-
-///* View Space Vectors *///
-vec3 V = normalize(-State.ViewVectorInEyeSpaceFromViewCamera); // View
-vec3 I = normalize(State.ViewVectorInEyeSpaceFromViewCamera); // Incident
-vec3 N = normalize(#Normal.xyz); // Normal
-vec3 L; // Light
-for(int i=0;i<4;i++){L += normalize(u_MriLightSources[i].Position.xyz - State.FragmentPositionInEyeSpaceFromViewCamera);}
-vec3 H = normalize(L+V); // Half
-
-if ($ViewVector == true) Output = vec4(V,1.0);
-if ($IncidentVector == true) Output = vec4(I,1.0);
-if ($NormalVector == true) Output = vec4(N,1.0);
-if ($LightVector == true) Output = vec4(L,1.0);
-if ($HalfVector == true) Output = vec4(H,1.0);
+                if ($StateNormalInEyeSpaceFromProjectionCamera == true) Output = vec4(State.NormalInEyeSpaceFromProjectionCamera,1.0);
+                if ($StateTangentInEyeSpaceFromProjectionCamera == true) Output = vec4(State.TangentInEyeSpaceFromProjectionCamera,1.0);
+                if ($StateBitangentInEyeSpaceFromProjectionCamera == true) Output = vec4(State.biTangentInEyeSpaceFromProjectionCamera,1.0);
+                if ($StateViewVectorInEyeSpaceFromProjectionCamera == true) Output = vec4(State.ViewVectorInEyeSpaceFromProjectionCamera,1.0);
+                if ($StateFragmentPositionInEyeSpaceFromProjectionCamera == true) Output = vec4(State.FragmentPositionInEyeSpaceFromProjectionCamera,1.0);
+                if ($StateFragmentPositionInNdcSpaceFromProjectionCamera == true) Output = vec4(State.FragmentPositionInNdcSpaceFromProjectionCamera,1.0);
 
 
-///* Dot Products *///
-float LdotN = max(dot(L,N),0.0);
-float LdotH = clamp( dot(L,H), 0.001, 0.999);
-float VdotH = dot(V,H);
-float NdotH = clamp( dot(N,H), 0.001, 0.999);
-float NdotH2 = NdotH*NdotH;
-float VdotN = dot(V,N);
+                ///* View Space Vectors *///
+                vec3 V = normalize(-State.ViewVectorInEyeSpaceFromViewCamera); // View
+                vec3 I = normalize(State.ViewVectorInEyeSpaceFromViewCamera); // Incident
+                vec3 N = normalize(#Normal.xyz); // Normal
+                vec3 L; // Light
+                for(int i=0;i<4;i++){L += normalize(u_MriLightSources[i].Position.xyz - State.FragmentPositionInEyeSpaceFromViewCamera);}
+                vec3 H = normalize(L+V); // Half
+
+                if ($ViewVector == true) Output = vec4(V,1.0);
+                if ($IncidentVector == true) Output = vec4(I,1.0);
+                if ($NormalVector == true) Output = vec4(N,1.0);
+                if ($LightVector == true) Output = vec4(L,1.0);
+                if ($HalfVector == true) Output = vec4(H,1.0);
 
 
-if ($LdotN == true) Output = vec4(LdotN,LdotN,LdotN,1.0);
-if ($LdotH == true) Output = vec4(LdotH,LdotH,LdotH,1.0);
-if ($VdotH == true) Output = vec4(VdotH,VdotH,VdotH,1.0);
-if ($NdotH == true) Output = vec4(NdotH,NdotH,NdotH,1.0);
-if ($NdotH2 == true) Output = vec4(NdotH2,NdotH2,NdotH2,1.0);
-if ($VdotN == true) Output = vec4(VdotN,VdotN,VdotN,1.0);
+                ///* Dot Products *///
+                float LdotN = max(dot(L,N),0.0);
+                float LdotH = clamp( dot(L,H), 0.001, 0.999);
+                float VdotH = dot(V,H);
+                float NdotH = clamp( dot(N,H), 0.001, 0.999);
+                float NdotH2 = NdotH*NdotH;
+                float VdotN = dot(V,N);
 
-///* Suppress Value *///
-if ($SuppressX == true) Output *= vec4(0.0,1.0,1.0,1.0);
-if ($SuppressY == true) Output *= vec4(1.0,0.0,1.0,1.0);
-if ($SuppressZ == true) Output *= vec4(1.0,1.0,0.0,1.0);
+
+                if ($LdotN == true) Output = vec4(LdotN,LdotN,LdotN,1.0);
+                if ($LdotH == true) Output = vec4(LdotH,LdotH,LdotH,1.0);
+                if ($VdotH == true) Output = vec4(VdotH,VdotH,VdotH,1.0);
+                if ($NdotH == true) Output = vec4(NdotH,NdotH,NdotH,1.0);
+                if ($NdotH2 == true) Output = vec4(NdotH2,NdotH2,NdotH2,1.0);
+                if ($VdotN == true) Output = vec4(VdotN,VdotN,VdotN,1.0);
+
+                ///* Suppress Value *///
+                if ($SuppressX == true) Output *= vec4(0.0,1.0,1.0,1.0);
+                if ($SuppressY == true) Output *= vec4(1.0,0.0,1.0,1.0);
+                if ($SuppressZ == true) Output *= vec4(1.0,1.0,0.0,1.0);
 
                 ]]></Body>
             </Shader>

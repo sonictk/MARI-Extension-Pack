@@ -18,51 +18,45 @@
         <Tag>_specular</Tag>
     </Tags>
     <Contexts>
-    <Context Type="GLSL">
-    <Shader ShaderType='Fragment'>
-    <Inputs>
-        <Input Name="SpecularColor"><Default>vec4(1,1,1,1)</Default></Input>
-        <Input Name="Specular"><Default>vec4(1,1,1,1)</Default></Input>
-        <Input Name="SpecularRoughness"><Default>vec4(1,1,1,1)</Default></Input>
-        <Input Name="Anisotropy"><Default>vec4(1,1,1,1)</Default></Input>
-        <Input Name="AnisotropicRotation"><Default>vec4(1,0,0,0)</Default></Input>
-        <Input Name="Normal"><Default>vec4(0,0,1,1)</Default></Input>
-    </Inputs>
-    <Body><![CDATA[
+        <Context Type="GLSL">
+            <Shader ShaderType='Fragment'>
+                <Inputs>
+                    <Input Name="SpecularColor"><Default>vec4(1,1,1,1)</Default></Input>
+                    <Input Name="Specular"><Default>vec4(1,1,1,1)</Default></Input>
+                    <Input Name="SpecularRoughness"><Default>vec4(1,1,1,1)</Default></Input>
+                    <Input Name="Anisotropy"><Default>vec4(1,1,1,1)</Default></Input>
+                    <Input Name="AnisotropicRotation"><Default>vec4(1,0,0,0)</Default></Input>
+                    <Input Name="Normal"><Default>vec4(0,0,1,1)</Default></Input>
+                </Inputs>
+                <Body><![CDATA[
 
-    // Ward Anisotropic Specular
-    // “Measuring and Modelling Anisotropic Reflection” Gregory J. Ward, Computer Graphics 26, 2, July 1992
-    // Mari 2.5v2 Implementation by Nicholas Breslow (http://nbreslow.com)
-    // This program is free software: GNU General Public License v3.
-    // See license distributed with file for more information.
+                vec3 V = normalize(-State.ViewVectorInEyeSpaceFromViewCamera);
+                vec3 N = #Normal.xyz;
+                vec3 Specular = vec3(0.0);
+                float SpecularRoughness = clamp(($SpecularRoughness*#SpecularRoughness.r), 0.001,0.999);
+                float AnisotropicRotation = $AnisotropicRotation*#AnisotropicRotation.r;
 
-    vec3 V = normalize(-State.ViewVectorInEyeSpaceFromViewCamera);    
-    vec3 N = #Normal.xyz;
-    vec3 Specular = vec3(0.0);
-    float SpecularRoughness = clamp(($SpecularRoughness*#SpecularRoughness.r), 0.001,0.999);
-    float AnisotropicRotation = $AnisotropicRotation*#AnisotropicRotation.r;
+                vec3 X,Y; // Grab X & Y
+                nb_tangentVectors(N,AnisotropicRotation,X,Y);
 
-    vec3 X,Y; // Grab X & Y
-    nb_tangentVectors(N,AnisotropicRotation,X,Y);
+                for(int i=0;i<4;i++)
+                {
+                    // Light Visibility
+                    float lightVisibility = mriLightVisibility( i, State.Position);
 
-    for(int i=0;i<4;i++)
-    {
-        // Light Visibility
-        float lightVisibility = mriLightVisibility( i, State.Position);
+                    // Light Direction
+                    vec3 L = normalize(u_MriLightSources[i].Position.xyz - State.FragmentPositionInEyeSpaceFromViewCamera);
 
-        // Light Direction
-        vec3 L = normalize(u_MriLightSources[i].Position.xyz - State.FragmentPositionInEyeSpaceFromViewCamera);
-        
-        // Ward Anisotropic Specular
-        float SpecTerm = nb_wardAnisotropic(N,V,L,X,Y,SpecularRoughness,$Anisotropy);
-        Specular += SpecTerm * u_MriLightSources[i].SpecularColor.rgb * lightVisibility;
-    }
+                    // Ward Anisotropic Specular
+                    float SpecTerm = nb_wardAnisotropic(N,V,L,X,Y,SpecularRoughness,$Anisotropy);
+                    Specular += SpecTerm * u_MriLightSources[i].SpecularColor.rgb * lightVisibility;
+                }
 
-    Output.rgb = Specular * #Specular.r * #SpecularColor.rgb;
-    Output.a = #SpecularColor.a;
+                Output.rgb = Specular * #Specular.r * #SpecularColor.rgb;
+                Output.a = #SpecularColor.a;
 
-    ]]></Body>
-    </Shader>
-    </Context>
+                ]]></Body>
+            </Shader>
+        </Context>
     </Contexts>
 </Node>

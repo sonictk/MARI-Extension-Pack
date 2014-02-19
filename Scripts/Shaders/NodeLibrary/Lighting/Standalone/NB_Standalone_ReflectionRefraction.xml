@@ -25,91 +25,86 @@
         <Tag>_standalone</Tag>
     </Tags>
     <Contexts>
-    <Context Type="GLSL">
-    <Shader ShaderType='Fragment'>
-    <Inputs>
-        <Input Name="DiffuseColor"><Default>vec4(0,0,0,0)</Default></Input>
-        <Input Name="DiffuseWeight"><Default>vec4(1,1,1,1)</Default></Input>
-        <Input Name="ReflectionColor"><Default>vec4(1,1,1,1)</Default></Input>
-        <Input Name="ReflectionWeight"><Default>vec4(1,1,1,1)</Default></Input>
-        <Input Name="RefractionColor"><Default>vec4(1,1,1,1)</Default></Input>
-        <Input Name="RefractionWeight"><Default>vec4(1,1,1,1)</Default></Input>
-        <Input Name="IOR"><Default>vec4(1,1,1,1)</Default></Input>
-        <Input Name="Normal"><Default>vec4(0,0,1,1)</Default></Input>
-        <Input Name="AmbientOcclusion"><Default>vec4(vec3(1.0-State.AmbientOcclusion),1.0)</Default></Input>
-    </Inputs>
-    <Body><![CDATA[
+        <Context Type="GLSL">
+            <Shader ShaderType='Fragment'>
+                <Inputs>
+                    <Input Name="DiffuseColor"><Default>vec4(0,0,0,0)</Default></Input>
+                    <Input Name="DiffuseWeight"><Default>vec4(1,1,1,1)</Default></Input>
+                    <Input Name="ReflectionColor"><Default>vec4(1,1,1,1)</Default></Input>
+                    <Input Name="ReflectionWeight"><Default>vec4(1,1,1,1)</Default></Input>
+                    <Input Name="RefractionColor"><Default>vec4(1,1,1,1)</Default></Input>
+                    <Input Name="RefractionWeight"><Default>vec4(1,1,1,1)</Default></Input>
+                    <Input Name="IOR"><Default>vec4(1,1,1,1)</Default></Input>
+                    <Input Name="Normal"><Default>vec4(0,0,1,1)</Default></Input>
+                    <Input Name="AmbientOcclusion"><Default>vec4(vec3(1.0-State.AmbientOcclusion),1.0)</Default></Input>
+                </Inputs>
+                <Body><![CDATA[
 
-// Reflection & Refraction with Equirectangular Environment HDR
-// Mari 2.5v2 Implementation by Nicholas Breslow (http://nbreslow.com)
-// This program is free software: GNU General Public License v3.
-// See license distributed with file for more information.
+                vec3 I = normalize(State.ViewVectorInEyeSpaceFromViewCamera);
+                vec3 N = normalize(#Normal.xyz);
 
-vec3 I = normalize(State.ViewVectorInEyeSpaceFromViewCamera);
-vec3 N = normalize(#Normal.xyz);
+                vec3 Diffuse = vec3(0.0);
+                float DiffuseScale = $DiffuseWeight * #DiffuseWeight.r;
+                float ReflectionScale = $ReflectionWeight * #ReflectionWeight.r;
+                float RefractionScale = $RefractionWeight * #RefractionWeight.r;
+                vec3 AO = vec3(1.0 - $AmbientOcclusion * vec3(1.0-#AmbientOcclusion.rgb));
 
-vec3 Diffuse = vec3(0.0);
-float DiffuseScale = $DiffuseWeight * #DiffuseWeight.r;
-float ReflectionScale = $ReflectionWeight * #ReflectionWeight.r;
-float RefractionScale = $RefractionWeight * #RefractionWeight.r;
-vec3 AO = vec3(1.0 - $AmbientOcclusion * vec3(1.0-#AmbientOcclusion.rgb));
+                // Fresnel
+                float IOR = #IOR.r * $IOR;
+                float Fresnel = nb_fresnel(I,N,IOR);
 
-// Fresnel
-float IOR = #IOR.r * $IOR;
-float Fresnel = nb_fresnel(I,N,IOR);
+                // Weights
+                vec3 ReflectionColorScaled = #ReflectionColor.rgb * ReflectionScale * Fresnel;
 
-// Weights
-vec3 ReflectionColorScaled = #ReflectionColor.rgb * ReflectionScale * Fresnel;
+                // Energy Conservation
+                float DiffuseScaleEC = DiffuseScale
+                                     * (1.0-min(nb_luminance(#RefractionColor.rgb)*RefractionScale,1.0))
+                                     * (1.0-min(nb_luminance(ReflectionColorScaled),1.0));
+                float RefractionScaleEC = RefractionScale
+                                     * (1.0-min(nb_luminance(ReflectionColorScaled),1.0));
 
-// Energy Conservation
-float DiffuseScaleEC = DiffuseScale
-                     * (1.0-min(nb_luminance(#RefractionColor.rgb)*RefractionScale,1.0)) 
-                     * (1.0-min(nb_luminance(ReflectionColorScaled),1.0));
-float RefractionScaleEC = RefractionScale 
-                     * (1.0-min(nb_luminance(ReflectionColorScaled),1.0));
+                // Weights Cont.
+                vec3 RefractionColorScaled = #RefractionColor.rgb * RefractionScaleEC * (1.0 - Fresnel);
+                vec3 DiffuseColorScaled = #DiffuseColor.rgb * DiffuseScaleEC;
 
-// Weights Cont.
-vec3 RefractionColorScaled = #RefractionColor.rgb * RefractionScaleEC * (1.0 - Fresnel);
-vec3 DiffuseColorScaled = #DiffuseColor.rgb * DiffuseScaleEC;
+                // Reflection
+                vec4 ReflectDir_WorldSpace = vec4(reflect(I,N),0.0) * u_MriViewMatrix;
+                vec3 ReflectionTrace = nb_envLatMap2D($EnvironmentMap, ReflectDir_WorldSpace.xyz);
+                vec3 Reflection = ReflectionTrace * ReflectionColorScaled;
 
-// Reflection
-vec4 ReflectDir_WorldSpace = vec4(reflect(I,N),0.0) * u_MriViewMatrix;
-vec3 ReflectionTrace = nb_envLatMap2D($EnvironmentMap, ReflectDir_WorldSpace.xyz);
-vec3 Reflection = ReflectionTrace * ReflectionColorScaled;
+                // Refraction
+                vec4 RefractDir_WorldSpace = vec4(refract(I,N,1.0/IOR),0.0) * u_MriViewMatrix;
+                vec3 RefractionTrace = nb_envLatMap2D($EnvironmentMap, RefractDir_WorldSpace.xyz);
+                vec3 Refraction = RefractionTrace * RefractionColorScaled;
 
-// Refraction
-vec4 RefractDir_WorldSpace = vec4(refract(I,N,1.0/IOR),0.0) * u_MriViewMatrix;
-vec3 RefractionTrace = nb_envLatMap2D($EnvironmentMap, RefractDir_WorldSpace.xyz);
-vec3 Refraction = RefractionTrace * RefractionColorScaled;
+                // Ambient * AO
+                vec3 Ambient = ($Ambient * DiffuseColorScaled) * AO;
 
-// Ambient * AO
-vec3 Ambient = ($Ambient * DiffuseColorScaled) * AO;
+                for (int i=0;i<4;i++)
+                {
+                    // Light Visibility
+                    float lightVisibility = mriLightVisibility(i, State.Position);
 
-for (int i=0;i<4;i++)
-{
-    // Light Visibility
-    float lightVisibility = mriLightVisibility(i, State.Position);
-    
-    // Light Direction
-    vec3 L = normalize(u_MriLightSources[i].Position.xyz - State.FragmentPositionInEyeSpaceFromViewCamera);
+                    // Light Direction
+                    vec3 L = normalize(u_MriLightSources[i].Position.xyz - State.FragmentPositionInEyeSpaceFromViewCamera);
 
-    // Useful Functions
-    float NdotL = max(dot(N,L),0.0);
+                    // Useful Functions
+                    float NdotL = max(dot(N,L),0.0);
 
-    // Lambert Diffuse
-    Diffuse += NdotL * u_MriLightSources[i].DiffuseColor.rgb * lightVisibility;
-}
+                    // Lambert Diffuse
+                    Diffuse += NdotL * u_MriLightSources[i].DiffuseColor.rgb * lightVisibility;
+                }
 
-// 0 - Flat  - Diffuse
-// 1 - Basic - Diffuse + Ambient
-// 2 - Full  - Diffuse + Ambient + Reflection + Refraction
+                // 0 - Flat  - Diffuse
+                // 1 - Basic - Diffuse + Ambient
+                // 2 - Full  - Diffuse + Ambient + Reflection + Refraction
 
-Output.rgb = u_MriLightingMode==0 ? #DiffuseColor.rgb : (Diffuse*DiffuseColorScaled) + Ambient;
-Output.rgb += u_MriLightingMode==2 ? Reflection + Refraction : vec3(0.0);
-Output.a = #DiffuseColor.a;
+                Output.rgb = u_MriLightingMode==0 ? #DiffuseColor.rgb : (Diffuse*DiffuseColorScaled) + Ambient;
+                Output.rgb += u_MriLightingMode==2 ? Reflection + Refraction : vec3(0.0);
+                Output.a = #DiffuseColor.a;
 
-    ]]></Body>
-    </Shader>
-    </Context>
+                ]]></Body>
+            </Shader>
+        </Context>
     </Contexts>
 </Node>
