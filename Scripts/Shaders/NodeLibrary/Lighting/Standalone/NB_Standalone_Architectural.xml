@@ -1,5 +1,5 @@
 <Node>
-    <ID>Architectural</ID>
+    <ID>Mia Material BRDF</ID>
     <Inputs>
         <Input Name="DiffuseColor" PrettyName="Diffuse Color" PreferredInput='1'></Input>
         <Input Name="DiffuseWeight" PrettyName="Diffuse Weight"></Input>
