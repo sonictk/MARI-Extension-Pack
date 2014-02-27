@@ -18,25 +18,25 @@
         <Input Name="Vector" />
     </Inputs>
     <Attributes>
-        <Attribute Name="DiffuseWeight" PrettyName="Diffuse Weight" Type="double" Min="0.0" Max="1.0">0.5</Attribute>
-        <Attribute Name="DiffuseRoughness" PrettyName="Diffuse Roughness" Type="double" Min="0.0" Max="1.0">0.0</Attribute>
-        <Attribute Name="ReflectionWeight" PrettyName="Reflectivity" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
-        <Attribute Name="ReflectionRoughness" PrettyName="Reflection Glossiness" Type="double" Min="0.15" Max="1.0">0.6</Attribute>
-        <Attribute Name="HighlightsOnly" PrettyName="HighlightsOnly" Type="bool">false</Attribute>
-        <Attribute Name="Metal" PrettyName="Metal Material" Type="bool">false</Attribute>
-        <Attribute Name="IOR" PrettyName="Index of Refraction" Type="double" Min="0.001" Max="25.0">1.4</Attribute>
-        <Attribute Name="RefractionWeight" PrettyName="Transparency" Type="double" Min="0.0" Max="1.0">0.0</Attribute>
-        <Attribute Name="RefractionRoughness" PrettyName="Refraction Glossiness" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
-        <Attribute Name="ThinWalled" PrettyName="Thin Walled" Type="bool">false</Attribute>
+        <Attribute Name="DiffuseWeight" PrettyName="Diffuse Weight" Group="Diffuse" Type="double" Min="0.0" Max="1.0">0.5</Attribute>
+        <Attribute Name="DiffuseRoughness" PrettyName="Diffuse Roughness" Group="Diffuse" Type="double" Min="0.0" Max="1.0">0.0</Attribute>
+        <Attribute Name="ReflectionWeight" PrettyName="Reflectivity" Group="Reflection" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
+        <Attribute Name="ReflectionRoughness" PrettyName="Reflection Glossiness" Group="Reflection" Type="double" Min="0.15" Max="1.0">0.6</Attribute>
+        <Attribute Name="HighlightsOnly" PrettyName="Highlights Only" Group="Reflection" Type="bool">false</Attribute>
+        <Attribute Name="Metal" PrettyName="Metal Material" Group="Reflection" Type="bool">false</Attribute>
+        <Attribute Name="IOR" PrettyName="Index of Refraction" Group="Refraction" Type="double" Min="0.001" Max="25.0">1.4</Attribute>
+        <Attribute Name="RefractionWeight" PrettyName="Transparency" Group="Refraction" Type="double" Min="0.0" Max="1.0">0.0</Attribute>
+        <Attribute Name="RefractionRoughness" PrettyName="Refraction Glossiness" Group="Refraction" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
+        <Attribute Name="ThinWalled" PrettyName="Thin Walled" Group="Refraction" Type="bool">false</Attribute>
+        <Attribute Name="Anisotropy" PrettyName="Anisotropy" Group="Anisotropy" Type="double" Min="0.1" Max="10.0">1.0</Attribute>
+        <Attribute Name="AnisotropyRotation" PrettyName="Anisotropy Rotation" Group="Anisotropy" Type="double" Min="0.0" Max="1.0">0.0</Attribute>
+        <Attribute Name="AnisotropyChannel" PrettyName="Anisotropy Channel" Group="Anisotropy" Type="stringlist">-1,-1,-2</Attribute>
         <Attribute Name="UseFresnel" PrettyName="Use Fresnel Reflection" Group="BRDF" Type="bool">false</Attribute>
         <Attribute Name="BRDF_0" PrettyName="0 Degree Reflection" Group="BRDF" Type="double" Min="0.0" Max="1.0">0.2</Attribute>
         <Attribute Name="BRDF_90" PrettyName="90 Degree Reflection" Group="BRDF" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
         <Attribute Name="BRDF_Curve" PrettyName="BRDF Curve" Group="BRDF" Type="double" Min="0.0" Max="20.0">5.0</Attribute>
-        <Attribute Name="Anisotropy" PrettyName="Anisotropy" Group="Anisotropy" Type="double" Min="0.1" Max="10.0">1.0</Attribute>
-        <Attribute Name="AnisotropyRotation" PrettyName="Anisotropy Rotation" Group="Anisotropy" Type="double" Min="0.0" Max="1.0">0.0</Attribute>
-        <Attribute Name="AnisotropyChannel" PrettyName="Anisotropy Channel" Group="Anisotropy" Type="stringlist">-1,-1,-2</Attribute>
-        <Attribute Name="Ambient" Type="double" Min="0.0" Max="1.0">0.0</Attribute>
-        <Attribute Name="AmbientOcclusion" PrettyName="Ambient Occlusion" Type="double" Min="0.0" Max="2.0">0.0</Attribute>
+        <Attribute Name="Ambient" PrettyName="Ambient" Group="Ambient Occlusion" Type="double" Min="0.0" Max="1.0">0.0</Attribute>
+        <Attribute Name="AmbientOcclusion" PrettyName="Ambient Occlusion" Group="Ambient Occlusion" Type="double" Min="0.0" Max="2.0">0.0</Attribute>
         <Attribute Name="EnvironmentMap" PrettyName="Environment Map" Group="Environment" Type="image"></Attribute>
         <Attribute Name="SpecularBalance" PrettyName="Specular Balance" Group="Advanced" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
         <Attribute Name="AdditionalColor" PrettyName="AdditionalColor" Group="Advanced" Type="color">0.0,0.0,0.0,1.0</Attribute>
