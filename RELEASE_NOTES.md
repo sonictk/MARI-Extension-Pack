@@ -29,7 +29,7 @@ Added Features:
 - new procedural superEllipse. A procedural creating anything from rounded rectangles to ellipses.
 - new procedural Dot Pattern. An improved Dot Procedural which a lot of cool extras
 - new procedural Stripes. An improved Stripes Procedural which a lot of cool extras
-- new utility Procedural Falloff Map, giving you a fresnel effect. This is a visual helper only and is not bakeable/convert to paintable.
+- new environment Falloff Map, giving you a fresnel effect. This is a visual helper only and is not bakeable/convert to paintable.
 
 Feature Improvements:
 -----------
@@ -37,6 +37,7 @@ Feature Improvements:
 - UI improvements have been made for a variety of nodes to give a more unified user experience between nodes
 - Color A/B has been added to "Spotify" Node.
 - various Bugfixes in Library
+- Adjustment "NormalMapMerge" was deprecated since Mari now has this functionality build in
 
 
 Development:
