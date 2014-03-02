@@ -37,17 +37,6 @@ If many changes are made to DEV from different Collaborators:
 a RELEASE CANDIDATE Branch may be created from DEV before merged into MASTER.
 
 
-
-History
------------------
-
- - 01/03/14 Initial commit 
- - 01/07/14 Fixes for MAC+Linux, recommited with Capital S in Script Directory so Linux is happy
- - 01/08/14 RegisterSetRange.py was missing final registerSetRange() so Node wasn't loaded
- - 02/08/14 A new loading structure has been implemented to clean up the clutter in the script directory
-
-
-
 Installation
 -----------------
 
@@ -58,7 +47,7 @@ the console will allow you to see the modules loading up. This is where if in an
 the loading fails it will let you know. 
 
 Example:
-  • On Linux: /Mari/Scripts/
+  • On Linux+Mac: ~/Mari/Scripts/
   • On Windows: Documents/Mari/Scripts/ 
 
   After Installation and Mari Restart please check your Python Console under "Python/Show Console" Menu
@@ -95,11 +84,13 @@ Contributors
 
 - Miguel A Santiago Jr. www.digiteck3d.com // miguel@digiteck3d.com
 
-- Nicholas Breslow www.nbreslow.com //
+- Nicholas Breslow www.nbreslow.com // nick@nbreslow.com
 
 - Jens Kafitz www.campi3d.com // info@campi3d.com
 
 - Ben Neall www.bneall.blogspot.co.nz //  bneall@gmail.com
+
+- Antonio Neto
 
 - Orlando Esponda
 
