@@ -20,7 +20,7 @@ Requirements:
 
 Added Features:
 -----------
-- new BRDF Standalone Shader "Architectural" mimicking very closely results and handling of Mental Ray's mia_material_x
+- new BRDF Standalone Shader "MIA Material BRDF" mimicking very closely results and handling of Mental Ray's mia_material_x
 - new BRDF Difuse Shaders with Energy Conservation such as OrenNayar Difuse
 - new BRDF Specular Shaders with Energy Conservation such as WardAnisotropic and WardIsotropic
 - new procedural superShape. A complex procedural with an large amount of shape variations based on the "Superformula"
@@ -29,13 +29,14 @@ Added Features:
 - new procedural superEllipse. A procedural creating anything from rounded rectangles to ellipses.
 - new procedural Dot Pattern. An improved Dot Procedural which a lot of cool extras
 - new procedural Stripes. An improved Stripes Procedural which a lot of cool extras
-- new utility Shader Falloff Map, giving you a fresnel effect
+- new utility Procedural Falloff Map, giving you a fresnel effect. This is a visual helper only and is not bakeable/convert to paintable.
 
 Feature Improvements:
 -----------
 - previously existing noise and fractal nodes can now be switched to UV Space via the "Space/UV Space" Checkbox. 
 - UI improvements have been made for a variety of nodes to give a more unified user experience between nodes
 - Color A/B has been added to "Spotify" Node.
+- various Bugfixes in Library
 
 
 Development:
