@@ -1,6 +1,6 @@
 <Node>
     <ID>Falloff Map</ID>
-    <Category>Utilities/</Category>
+    <Category>Environment/Custom/</Category>
     <Cost>0.01</Cost>
     <CostDescription>Some calculations</CostDescription>
     <Attributes>
