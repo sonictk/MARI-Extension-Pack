@@ -1,4 +1,4 @@
-Release Notes for Ideascale Node/Shader Pack 1.20
+Release Notes for Node/Shader Pack 1.20
 =====================================================================================
 
 Release Date
@@ -15,7 +15,7 @@ Best bits of 1.20:
 
 Requirements:
 -----------
-This Node+Shader Pack requires MARI 2.5v2 or higher.
+- This Node+Shader Pack requires MARI 2.5v2 or higher.
 
 
 Added Features:
@@ -40,6 +40,7 @@ Feature Improvements:
 
 Development:
 -----------
+- Documentation improvements in Script_Docs/SDK Folder for new Developers
 - new Functions for modifying UV Space have been added. Refer to section 7) of the Function Overview in the SDK Documentation
 - new Distance Functions have been added. Refer to section 10)  of the Function Overview in the SDK Documentation
 - new Value Functions have been added. Refer to section 8)  of the Function Overview in the SDK Documentation
