@@ -31,7 +31,7 @@ more planned for the future.
 Requirements: =======================================================================
 
 - Mari 2.5 or above
-- MARI Function Library 1.06.005 or above 
+- MARI Function Library 1.07 or above 
 
 
 
@@ -48,7 +48,7 @@ the console will allow you to see the modules loading up. This is where if in an
 the loading fails it will let you know. 
 
 Example:
-	• On Linux: /Mari/Scripts/
+	• On Linux+Mac: ~/Mari/Scripts/
 	• On Windows: Documents/Mari/Scripts/	
 
 
@@ -67,7 +67,7 @@ History: =======================================================================
 #				Exponential Frequency Growth
 #				Flow Paintable Gabor Noise
 # - 02/08/14    Released with new Autoloader Structure
-
+# - 03/03/14    Added UVSpace Transformations, refactored UI
 Credits: ============================================================================
 
 

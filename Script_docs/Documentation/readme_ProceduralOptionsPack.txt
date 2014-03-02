@@ -27,7 +27,7 @@ This is a modification of the default Mari Procedurals. Added functionality incl
 Requirements: =======================================================================
 
 - Mari 2.5 or above
-- MARI Function Library 1.06.005 or above (http://mari.ideascale.com/)
+- MARI Function Library 1.07 or above (http://mari.ideascale.com/)
 
 
 Installation: =======================================================================
@@ -45,7 +45,7 @@ the loading fails it will let you know.
 
 
 Example:
-	• On Linux: /Mari/Scripts/
+	• On Linux+Mac: ~/Mari/Scripts/
 	• On Windows: Documents/Mari/Scripts/	
 
 
@@ -59,10 +59,11 @@ History: =======================================================================
 
 History:
 
-04/15/13 released V1.0
-11/29/13 Released V1.1 for Mari 2.5. Modified for consitency with DT3D Function Library
-12/14/13 Re-released for Mari 2.5 with new Folder Structure
-02/08/14 New Autoloader Structure
+# - 04/15/13 released V1.0
+# - 11/29/13 Released V1.1 for Mari 2.5. Modified for consitency with DT3D Function Library
+# - 12/14/13 Re-released for Mari 2.5 with new Folder Structure
+# - 02/08/14 New Autoloader Structure
+# - 03/03/14 Added UVSpace Transformations, refactored UI
 
 Credits: ============================================================================
 
