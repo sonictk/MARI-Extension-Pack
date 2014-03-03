@@ -39,7 +39,7 @@ import xml.etree.ElementTree as ET
 base_path = os.path.dirname(__file__)
 default_shader_path = '%s/NodeLibrary' % base_path
 default_lib_path = '%s/FunctionLibrary' % base_path
-lib_version = '1.06'
+lib_version = '1.07'
 min_mari_version = '2.5'
 current_mari_version = '2.5'
 
