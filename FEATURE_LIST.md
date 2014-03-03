@@ -10,7 +10,7 @@ Core features include a vast array of custom noises and fractals as well as new 
 
 Requirements:
 ----------
-- This Shader/Node Pack requires MARI 2.5v2 or higher.
+This Shader/Node Pack requires MARI 2.5v2 or higher.
 
 
 FEATURE LIST
