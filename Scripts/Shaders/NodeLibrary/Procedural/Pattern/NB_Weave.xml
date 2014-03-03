@@ -51,8 +51,9 @@
                 Result = (Result-$Start)/($End-$Start);
 
                 // Color
-                Output.rgb = vec3(mix($colorB,$colorA,mriCurveLookup($Falloff,Result)));
-                Output.a = 1.0;
+                float shape_mix = mriCurveLookup($Falloff,Result);
+                Output.rgb = vec3(mix($colorB,$colorA,shape_mix));
+                Output.a = mix($colorB.a,$colorA.a,shape_mix);
 
                 ]]></Body>
             </Shader>
