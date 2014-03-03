@@ -1,10 +1,10 @@
-DigiTecK3D Procedural Node Library
-Copyright (c) 2013 DigiTecK3D. All Rights Reserved.
+Difuse Oren Nayar
+Copyright (c) 2014 Nicholas Breslow. All Rights Reserved.
 =====================================================================================  
                       	
-Author: Miguel A Santiago Jr.       	
-Web: www.digiteck3d.com				
-Email: miguel@digiteck3d.com
+Author: Nicholas Breslow      	
+Web: www.nbreslow.com			
+Email: nick@nbreslow.com
     		
 License: ============================================================================
 
@@ -21,29 +21,15 @@ If not, see <http://www.gnu.org/licenses/>.
 
 Info: =============================================================================== 
 
-This is a Mari procedural nodelibrary that adds new procedural types like 
-
-/Procedural/Custom/Voronoi/Cellular
-/Adjustment/Custom/Paintable Gabor, 
-/Procedural/Custom/Perlin/Inigo
-/Procedural/Custom/Perlin/Turbulence
-/Procedural/Custom/FBM/Brownian
-/Procedural/Custom/multiFractal/Ridged Multi Noise
-
-
-
+A difuse component shader using the Oren Nayar Shading Model
 
 Requirements: =======================================================================
 
 - Mari 2.5 or above
-- MARI Function Library 1.07 or above 
-
+- MARI Functionlibrary 1.07 or higher (available at mari.ideascale.com)
 
 
 Installation: =======================================================================
-
-
-Please download and install the MARI Function Library at mari.ideascale.com
 
 
 Take scripts and put them into your user preference script directory. Or any startup
@@ -52,29 +38,20 @@ the scripts folder and load the procedural library. Going to the Python tab and 
 the console will allow you to see the modules loading up. This is where if in any case
 the loading fails it will let you know. 
 
+
 Example:
 	• On Linux+Mac: ~/Mari/Scripts/
 	• On Windows: Documents/Mari/Scripts/	
 
 
+
 Where to find the nodes: ============================================================
 
-The new nodes are located under the /Procedurals/Custom/ Icon. 
-Paintable Gabor Node is located under /Adjustments/Custom/
+The Shader can be added via the "Choose Difuse & Specular" Option in the Mari Shader Palette
 
 
 History: ============================================================================
 
-
-# - 10/15/13	Release 1.0 of DT3D Procedural Node Library
-# - 12/14/13	Release of 1.06 of DT3D Procedural Node Library
-#				Final Python and Folder Structure for mari.ideascale.com
-#				Exponential Frequency Growth
-#				Flow Paintable Gabor Noise
-# - 02/08/14    Released with new Autoloader Structure
-# - 03/03/14    Added UVSpace Transformations, refactored UI
+03/04/2014 Release v1.0
 
 
-
- 
-        

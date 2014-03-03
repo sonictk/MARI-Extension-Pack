@@ -3,7 +3,7 @@ Release Notes for Node/Shader Pack 1.20
 
 Release Date
 -----------
-4 March 2014
+TBD
 
 
 Best bits of 1.20:
@@ -29,7 +29,7 @@ Added Features:
 - new procedural superEllipse. A procedural creating anything from rounded rectangles to ellipses.
 - new procedural Dot Pattern. An improved Dot Procedural which a lot of cool extras
 - new procedural Stripes. An improved Stripes Procedural which a lot of cool extras
-- new environment Falloff Map with options for Fresnel, Distance etc.. This is a visual helper only and is not bakeable/convert to paintable.
+- new environment Falloff Map with options for Fresnel, Distance etc.. This is not bakeable/convert to paintable but for visual enhancements + channel masking
 
 Feature Improvements:
 -----------
