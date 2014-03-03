@@ -52,8 +52,9 @@
 
                 // Color
                 float Offset = 1.0/(32.0 * 1024.0);
-                Output.rgb = vec3(mix($backColor, $shapeColor*shapeGradient, nb_AAstep(Offset, shape)));
-                Output.a = 1.0;
+                float shape_mix = (nb_AAstep(Offset, shape)*shapeGradient);
+                Output.rgb = vec3(mix($backColor, $shapeColor, clamp(shape_mix,0.0,1.0)));
+                Output.a = mix($backColor.a, $shapeColor.a, clamp(shape_mix,0.0,1.0));
 
                 ]]></Body>
             </Shader>
