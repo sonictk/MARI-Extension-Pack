@@ -32,9 +32,11 @@ DEV is the sum of all Development (more or less stable)
 Development Branches (referred to as "sub branch" in this document)  are branched off DEV. 
 
 Once a sub branch is completed, a pull request is made to DEV. 
-If many changes are made to DEV from different Collaborators:
-
+If many changes are made to DEV from different Collaborators,
 a RELEASE CANDIDATE Branch may be created from DEV before merged into MASTER.
+
+In order to keep track of things it would be good if major new features just get noted down in the release notes within the DEV Branch
+so we have some sort of easy way to assemble release information.
 
 
 Installation
