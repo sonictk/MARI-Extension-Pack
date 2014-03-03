@@ -1,15 +1,15 @@
-FEATURE DESCRIPTION IDEASCALE SHADER/NODE PACK
+FEATURE DESCRIPTION
 =====================================================================================
 
 
 INFORMATION:
------------
+----------
 The Ideascale Shader/Nodepack is an open-source compilation of shaders, adjustments and procedurals for Mari.
 Core features include a vast array of custom noises and fractals as well as new shaders matching offline render packages.
 
 
 Requirements:
------------
+----------
 - This Shader/Node Pack requires MARI 2.5v2 or higher.
 
 
