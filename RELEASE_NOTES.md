@@ -1,4 +1,4 @@
-Release Notes for Node/Shader Pack 1.20
+Release Notes for Shader/Nodepack 1.20
 =====================================================================================
 
 Release Date
