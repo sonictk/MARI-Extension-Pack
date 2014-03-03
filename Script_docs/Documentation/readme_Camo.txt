@@ -33,7 +33,7 @@ A Camo procedurals that has been made by editing the maths in the Fractal Noise.
 Requirements: =======================================================================
 
 - Mari 2.5 or above
-- MARI Function Library 1.06.005 or above http://mari.ideascale.com/
+- MARI Function Library 1.07 or above http://mari.ideascale.com/
 
 
 
@@ -51,7 +51,7 @@ the loading fails it will let you know.
 
 
 Example:
-	• On Linux: /Mari/Scripts/
+	• On Linux+Mac: ~/Mari/Scripts/
 	• On Windows: Documents/Mari/Scripts/	
 
 
@@ -67,7 +67,7 @@ History: =======================================================================
 06/06/13 Release
 11/30/13 Mari 2.5 Release, added Seed,Scale and Rotate functionality conform with MARI Function Lib 1.0
 02/08/14 Release with new structure
-
+03/03/14 Added UVSpace Transformation, refactored UI
 
 
 

@@ -21,9 +21,14 @@ If not, see <http://www.gnu.org/licenses/>.
 
 Info: =============================================================================== 
 
-This is a Mari procedural nodelibrary that adds new procedural types like Cellular, Gabor, 
-Perlin, Value, Simplex, Brownian, Turbulence, Inigo Multi-Fractal, Ridged Fractal noise and 
-more planned for the future. 
+This is a Mari procedural nodelibrary that adds new procedural types like 
+
+/Procedural/Custom/Voronoi/Cellular
+/Adjustment/Custom/Paintable Gabor, 
+/Procedural/Custom/Perlin/Inigo
+/Procedural/Custom/Perlin/Turbulence
+/Procedural/Custom/FBM/Brownian
+/Procedural/Custom/multiFractal/Ridged Multi Noise
 
 
 
@@ -31,7 +36,7 @@ more planned for the future.
 Requirements: =======================================================================
 
 - Mari 2.5 or above
-- MARI Function Library 1.06.005 or above 
+- MARI Function Library 1.07 or above 
 
 
 
@@ -48,7 +53,7 @@ the console will allow you to see the modules loading up. This is where if in an
 the loading fails it will let you know. 
 
 Example:
-	• On Linux: /Mari/Scripts/
+	• On Linux+Mac: ~/Mari/Scripts/
 	• On Windows: Documents/Mari/Scripts/	
 
 
@@ -67,8 +72,8 @@ History: =======================================================================
 #				Exponential Frequency Growth
 #				Flow Paintable Gabor Noise
 # - 02/08/14    Released with new Autoloader Structure
+# - 03/03/14    Added UVSpace Transformations, refactored UI
 
-Credits: ============================================================================
 
 
  

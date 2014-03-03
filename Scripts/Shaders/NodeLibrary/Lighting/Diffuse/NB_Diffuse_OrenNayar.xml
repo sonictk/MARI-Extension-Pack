@@ -1,5 +1,5 @@
 <Node>
-    <ID>OrenNayar</ID>
+    <ID>Oren Nayar</ID>
     <Inputs>
         <Input Name="DiffuseColor" PrettyName="Diffuse Color" PreferredInput='1'></Input>
         <Input Name="DiffuseRoughness" PrettyName="Diffuse Roughness"></Input>
@@ -13,46 +13,40 @@
         <Tag>_diffuse</Tag>
     </Tags>
     <Contexts>
-    <Context Type="GLSL">
-    <Shader ShaderType='Fragment'>
-    <Inputs>
-        <Input Name="DiffuseColor"><Default>vec4(0,0,0,0)</Default></Input>
-        <Input Name="DiffuseRoughness"><Default>vec4(1,1,1,1)</Default></Input>
-        <Input Name="Normal"><Default>vec4(0,0,1,1)</Default></Input>
-    </Inputs>
-    <Body><![CDATA[
+        <Context Type="GLSL">
+            <Shader ShaderType='Fragment'>
+                <Inputs>
+                    <Input Name="DiffuseColor"><Default>vec4(0,0,0,0)</Default></Input>
+                    <Input Name="DiffuseRoughness"><Default>vec4(1,1,1,1)</Default></Input>
+                    <Input Name="Normal"><Default>vec4(0,0,1,1)</Default></Input>
+                </Inputs>
+                <Body><![CDATA[
 
-// Oren Nayar Diffuse
-// "Generalization of Lambert's Reflectance Model" M. Oren and S.K. Nayar, SIGGRAPH p.239-246, July, 1994
-// Mari 2.5v2 Implementation by Nicholas Breslow (http://nbreslow.com)
-// This program is free software: GNU General Public License v3.
-// See license distributed with file for more information.
+                vec3 V = normalize(-State.ViewVectorInEyeSpaceFromViewCamera);
+                vec3 N = #Normal.xyz;
 
-vec3 V = normalize(-State.ViewVectorInEyeSpaceFromViewCamera);
-vec3 N = #Normal.xyz;
+                vec3 Diffuse = vec3(0.0);
+                float DiffuseRoughness = clamp($DiffuseRoughness*#DiffuseRoughness.r, 0.001,0.999);
 
-vec3 Diffuse = vec3(0.0);
-float DiffuseRoughness = clamp($DiffuseRoughness*#DiffuseRoughness.r, 0.001,0.999);
+                for(int i=0;i<4;i++)
+                {
+                    // Light Direction
+                    vec3 L = normalize(u_MriLightSources[i].Position.xyz - State.FragmentPositionInEyeSpaceFromViewCamera);
 
-for(int i=0;i<4;i++)
-{
-    // Light Direction
-    vec3 L = normalize(u_MriLightSources[i].Position.xyz - State.FragmentPositionInEyeSpaceFromViewCamera);
+                    // Light Visibility
+                    float lightVisibility = mriLightVisibility( i, State.Position);
 
-    // Light Visibility
-    float lightVisibility = mriLightVisibility( i, State.Position);
+                    // Oren Nayar Diffuse
+                    float orenNayar = nb_orenNayar(V,N,L,DiffuseRoughness);
 
-    // Oren Nayar Diffuse
-    float orenNayar = nb_orenNayar(V,N,L,DiffuseRoughness);
-    
-    Diffuse += (orenNayar) * u_MriLightSources[i].DiffuseColor.rgb * lightVisibility;
-}
+                    Diffuse += (orenNayar) * u_MriLightSources[i].DiffuseColor.rgb * lightVisibility;
+                }
 
-Output.rgb = Diffuse * #DiffuseColor.rgb;
-Output.a = #DiffuseColor.a;
+                Output.rgb = Diffuse * #DiffuseColor.rgb;
+                Output.a = #DiffuseColor.a;
 
-    ]]></Body>
-    </Shader>
-    </Context>
+                ]]></Body>
+            </Shader>
+        </Context>
     </Contexts>
 </Node>

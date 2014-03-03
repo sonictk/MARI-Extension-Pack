@@ -2,18 +2,23 @@ MARI Function Library 1.06
 Copyright (c) 2013 DigiTecK3D. All Rights Reserved.
 =====================================================================================  
                       	
-Original Author: Miguel A Santiago Jr.       	
-Web: www.digiteck3d.com				
-Email: miguel@digiteck3d.com
-MASTER GIT: https://github.com/DigiTecK3D/DT3D_Mari-Procedural-Library
-
 
 Contributors: ============================================================================
+
+Author: Miguel A Santiago Jr.       	
+Web: www.digiteck3d.com				
+Email: miguel@digiteck3d.com
+
 
 Author: Jens Kafitz
 Web: www.campi3d.com				
 Email: info@campi3d.com
-GIT Branch: https://github.com/campi3d/DT3D_Mari-Procedural-Library
+
+
+
+Author: Nicholas Breslow
+Web: http://nbreslow.com/			
+Email: nick@nbreslow.com
 
     		
 License: ============================================================================
@@ -64,7 +69,7 @@ the console will allow you to see the modules loading up. This is where if in an
 the loading fails it will let you know. 
 
 Example:
-	• On Linux: /Mari/Scripts/
+	• On Linux/MAC: /Mari/Scripts/
 	• On Windows: Documents/Mari/Scripts/	
 
 History: ============================================================================
@@ -75,6 +80,8 @@ History: =======================================================================
 # - 07/01/13    MAC+Linux Fixes
 # - 02/08/14    V1.06.005 release with new autoloader structure
 # - 02/11/14    Fixed a bug with vec3+vec4 remaps
+# - 03/03/14    v1.07 release. NB_ Function Branch added, various additions in ID + DT3D Library
+#               Updated SDK Documentation
 
 
 

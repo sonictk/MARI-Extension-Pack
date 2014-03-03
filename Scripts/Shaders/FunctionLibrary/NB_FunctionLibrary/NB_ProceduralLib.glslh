@@ -1,28 +1,28 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Mari Procedural Shader Library Registration
 // Copyright (c) 2014 Nicholas Breslow. All Rights Reserved.
-//////////////////////////////////////////////////////////////////////////////// 
-// File: NB_ProceduralLib.glslc	
+////////////////////////////////////////////////////////////////////////////////
+// File: NB_ProceduralLib.glslc
 // Description: Procedural library for various procedural functions.
 ////////////////////////////////////////////////////////////////////////////////
-// Author: Nicholas Breslow       	
-// Web: www.nbreslow.com				
+// Author: Nicholas Breslow
+// Web: www.nbreslow.com
 // Email: nick@nbreslow.com
 ////////////////////////////////////////////////////////////////////////////////
 // Date: Feb 12, 2014
 ////////////////////////////////////////////////////////////////////////////////
-// This program is free software: you can redistribute it and/or modify		
-// it under the terms of the GNU General Public License as published by		
-// the Free Software Foundation, either version 3 of the License, or		
-// (at your option) any later version.										
-//																			
-// This program is distributed in the hope that it will be useful,			
-// but WITHOUT ANY WARRANTY; without even the implied warranty of			
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the			
-// GNU General Public License for more details.								
-//																			
-// You should have received a copy of the GNU General Public License		
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.	
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ////////////////////////////////////////////////////////////////////////////////
 
 // Utility Functions
@@ -41,9 +41,13 @@ float nb_dots2D(vec2 uv, float Scale);
 float nb_stripes2D(vec2 uv, float Scale);
 
 // Compute a procedural 2D super ellipse pattern
+// Source: http://en.wikipedia.org/wiki/Superellipse
 float nb_superEllipse2D(vec2 uv, float Scale, float Corner);
 
 // Compute a procedural 2D super shape pattern
+// Credit: "A generic geometric transformation that unifies a wide range of natural
+// and abstract shapes" Gielis, Johan, American Journal of Botany 90 (3) p.333–338, 2003
+// Source: http://www.amjbot.org/cgi/content/abstract/90/3/333
 float nb_superShape2D(vec2 uv, float Scale, float angle, float a, float b, float m, float n1, float n2, float n3, out float gradient);
 
 // Compute a procedural 2D weave shape pattern

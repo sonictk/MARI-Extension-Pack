@@ -1,33 +1,33 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Mari Ideascale Procedural Library
 // Copyright (c) 2013 Jens Kafitz. All Rights Reserved.
-//////////////////////////////////////////////////////////////////////////////// 
-// File: ID_ProceduralLib.glslh 
+////////////////////////////////////////////////////////////////////////////////
+// File: ID_ProceduralLib.glslh
 // Description: Procedural library for various procedural functions.
-////////////////////////////////////////////////////////////////////////////////                
+////////////////////////////////////////////////////////////////////////////////
 // Author: Jens Kafitz | Mari Ideascale
-// Web: www.campi3d.com      
-// Web: www.mari.ideascale.com         
+// Web: www.campi3d.com
+// Web: www.mari.ideascale.com
 // Email: info@campi3d.com
-////////////////////////////////////////////////////////////////////////////////                                          
+////////////////////////////////////////////////////////////////////////////////
 // Date: Dec 20, 2013
 ////////////////////////////////////////////////////////////////////////////////
-// This program is free software: you can redistribute it and/or modify   
-// it under the terms of the GNU General Public License as published by   
-// the Free Software Foundation, either version 3 of the License, or    
-// (at your option) any later version.                    
-//                                      
-// This program is distributed in the hope that it will be useful,      
-// but WITHOUT ANY WARRANTY; without even the implied warranty of     
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the      
-// GNU General Public License for more details.               
-//                                      
-// You should have received a copy of the GNU General Public License    
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.  
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ////////////////////////////////////////////////////////////////////////////////
 
-// the boxStep function is somewhere between step and smoothstep. it is the 
-// result of the convolution of a box filter with a step edge. 
+// the boxStep function is somewhere between step and smoothstep. it is the
+// result of the convolution of a box filter with a step edge.
 float boxStep(float low, float high, float value);
 
 // smooth function using a combination of smoothstep and boxStep

@@ -28,7 +28,7 @@ A new multiFractal Node for Mari useful for aging effects, unique patterns and t
 Requirements: =======================================================================
 
 - Mari 2.5 or above
-- MARI Function Library 1.06.005 or above (http://mari.ideascale.com/)
+- MARI Function Library 1.07 or above (http://mari.ideascale.com/)
 
 
 
@@ -47,7 +47,7 @@ the loading fails it will let you know.
 
 
 Example:
-	• On Linux: /Mari/Scripts/
+	• On Linux+Mac: ~/Mari/Scripts/
 	• On Windows: Documents/Mari/Scripts/	
 
 
@@ -69,3 +69,4 @@ History: =======================================================================
 # - 12/15/13	Re-released for Mari 2.5 with new Folder Structure
 # - 02/08/14	Autoloader structure
 # - 02/10/14	Color A/B added
+# - 03/03/14    Added UVSpace Transformations, refactored UI

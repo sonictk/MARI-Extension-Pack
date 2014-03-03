@@ -1,4 +1,4 @@
-IDEASCALE SCRIPT & NODE MIRROR
+IDEASCALE SHADER/NODE MIRROR
 =====================================================================================
 Copyright (c) 2013-2014 www.mari.ideascale.com. All Rights Reserved.
 
@@ -32,56 +32,11 @@ DEV is the sum of all Development (more or less stable)
 Development Branches (referred to as "sub branch" in this document)  are branched off DEV. 
 
 Once a sub branch is completed, a pull request is made to DEV. 
-If many changes are made to DEV from different Collaborators:
-
+If many changes are made to DEV from different Collaborators,
 a RELEASE CANDIDATE Branch may be created from DEV before merged into MASTER.
 
-
-
-History
------------------
-
- - 01/03/14 Initial commit 
- - 01/07/14 Fixes for MAC+Linux, recommited with Capital S in Script Directory so Linux is happy
- - 01/08/14 RegisterSetRange.py was missing final registerSetRange() so Node wasn't loaded
- - 02/08/14 A new loading structure has been implemented to clean up the clutter in the script directory
-
-
-
-Installation
------------------
-
-Take scripts and put them into your user preference script directory. Or any startup
-script path that Mari has set. Once these are in place, Mari on startup will run through
-the scripts folder and load the procedural library. Going to the Python tab and showing
-the console will allow you to see the modules loading up. This is where if in any case
-the loading fails it will let you know. 
-
-Example:
-  • On Linux: /Mari/Scripts/
-  • On Windows: Documents/Mari/Scripts/ 
-
-  After Installation and Mari Restart please check your Python Console under "Python/Show Console" Menu
-  for any errors.
-
-
-
-Conflicts with previous Nodepack Versions
------------------
-
-On version 1.10  of this Nodepack the structure has been changed by moving
-all Nodes into a Subfolder /Shaders/. 
-If you have previous versions of the Nodes or FunctionLibraries
-installed they will conflict.
-
- After Installation and Mari Restart please check your Python Console under Python/Show Console
- for any errors.
-
-PLEASE UNINSTALL PREVIOUS VERSIONS BY:
-
-- deleting Folder /scripts/FunctionLibrary
-- deleting Folder /scripts/NodeLibrary
-- deleting any previous RegisterNODENAME.py file in the /script/ directory.
+In order to keep track of things it would be good if major new features just get noted down in the release notes within the DEV Branch
+so we have some sort of easy way to assemble release information.
 
 
 Adding new nodes, shaders and functions
@@ -95,11 +50,13 @@ Contributors
 
 - Miguel A Santiago Jr. www.digiteck3d.com // miguel@digiteck3d.com
 
-- Nicholas Breslow www.nbreslow.com //
+- Nicholas Breslow www.nbreslow.com // nick@nbreslow.com
 
 - Jens Kafitz www.campi3d.com // info@campi3d.com
 
 - Ben Neall www.bneall.blogspot.co.nz //  bneall@gmail.com
+
+- Antonio Neto
 
 - Orlando Esponda
 

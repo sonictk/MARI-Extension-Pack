@@ -1,4 +1,4 @@
-License: ============================================================================
+Info: ============================================================================
 
 SDK Library information regarding development usage and developer integration ideology
 for new coming developers looking into adding and extending the library future.  
@@ -13,10 +13,10 @@ Its best to try to follow how the folder and file naming convection are currentl
 fileFunctionName.glslc -- This is the equivalent of a source file
 fileFunctionName.glslh -- This is the equivalent of a header file 
 
-Create your own Sub-folder to keep things separate and organized, while also allowing to give credit internal to developers.
+Create your own Sub-folder to keep things separate and organized, while also allowing to give credit to developers.
 Example: ~\Scripts\Shaders\FunctionLibrary\USER_FunctionLibrary -- Its best to have an initial for yourself to prefix all files.
 
-An example that is currently is set in the library "DT3D_" - Miguel A Santiago Jr "JK_"- Jens Kafitz etc...
+An example that  currently is set in the library "DT3D_" - Miguel A Santiago Jr "JK_"- Jens Kafitz etc...
 With this system you can prefix any nodes added into the library from the XML nodes, to Function libraries 
 Example: USER_NewNode.xml, USER_Procedurals.glslc etc... 
 
@@ -54,7 +54,7 @@ them into five types, Adjustment, Procedural, Diffuse, Specular, Standalone shad
 The only additional tag that must be added into the XML nodes as part of the autoloader library is
 a sorting tag for allowing to subcategories the XML nodes. 
 
-This tag must be in place for Adjustment and Procedural nodes, if note the nodes will fail to register 
+This tag must be in place for Adjustment and Procedural nodes, if not the nodes will fail to register 
 The tag that is required follows as such.. <Category></Category>
 
 Example: <Category>Geometry/Custom/</Category> 

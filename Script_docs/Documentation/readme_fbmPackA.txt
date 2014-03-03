@@ -24,7 +24,7 @@ fBm, vector fbm and multi-fBm procedural nodes useful for weathering, masking an
 Requirements: =======================================================================
 
 - Mari 2.5 or above
-- MARI Function Library 1.06.005 or above (http://mari.ideascale.com/)
+- MARI Function Library 1.07 or above (http://mari.ideascale.com/)
 
 
 Installation: =======================================================================
@@ -42,7 +42,7 @@ the loading fails it will let you know.
 
 
 Example:
-	• On Linux: /Mari/Scripts/
+	• On Linux+Mac: ~/Mari/Scripts/
 	• On Windows: Documents/Mari/Scripts/	
 
 
@@ -72,6 +72,7 @@ History: =======================================================================
 # 				Added Ability to propagate negative noise values as either black or transparent into the end result
 # 				Removed Propagation Features from multiFBM to reduce node handling complexity
 # - 02/08/14	Updated with new Autoloader Structure
+# - 03/03/14    Added UVSpace Transformations, refactored UI
 
 Credits: ============================================================================
 

@@ -1,0 +1,60 @@
+Falloff Map
+Copyright (c) 2014 Antonio Neto. All Rights Reserved.
+=====================================================================================  
+                      	
+Author: Antonio Neto  
+   		
+License: ============================================================================
+
+This program is free software: you can redistribute it and/or modify it under the terms 
+of the GNU General Public License as published by the Free Software Foundation, either 
+version 3 of the License, or (at your option) any later version.										
+																			
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+See the GNU General Public License for more details.								
+																			
+You should have received a copy of the GNU General Public License along with this program.  
+If not, see <http://www.gnu.org/licenses/>.
+
+Info: =============================================================================== 
+
+A Node to add Falloff Effects based on Facing Ratio, Surface Luminance and ZDepth.
+Please note, these effects are non-bakeable. When converted to paintable the result will be transparent.
+This node is for visual enhancements as well as channel mask purposes.
+
+Requirements: =======================================================================
+
+- Mari 2.5 or above
+
+Installation: =======================================================================
+
+
+
+Take scripts and put them into your user preference script directory. Or any startup
+script path that Mari has set. Once these are in place, Mari on startup will run through
+the scripts folder and load the procedural library. Going to the Python tab and showing
+the console will allow you to see the modules loading up. This is where if in any case
+the loading fails it will let you know. 
+
+
+Example:
+	• On Linux+Mac: ~/Mari/Scripts/
+	• On Windows: Documents/Mari/Scripts/	
+
+
+
+Where to find the nodes: ============================================================
+
+The Node will appear under the Custom Folder in the /Procedurals/Environment/ Folder
+
+
+History: ============================================================================
+
+# 3/3/14 Released v1.0 for Mari 2.5
+
+
+
+
+ 
+        
