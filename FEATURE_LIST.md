@@ -20,7 +20,7 @@ FEATURE LIST
 Adjustment Layers:
 -----------
 - Grade+
-A Grade Node with more nuke like functionality such as color picking, limit to color channels etc.
+-- A Grade Node with more nuke like functionality such as color picking, limit to color channels etc.
 
 - Normal Map Intensity
 An Adjustment Layer that let's you easily and mathematically correct adjust the scale of your normal mao
