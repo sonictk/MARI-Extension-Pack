@@ -13,7 +13,9 @@ the console will allow you to see the modules loading up. This is where if in an
 the loading fails it will let you know. 
 
 Example:
+
   • On Linux+MAC: ~/Mari/Scripts/
+
   • On Windows: /Documents/Mari/Scripts/ 
 
   After Installation and Mari Restart please check your Python Console under "Python/Show Console" Menu
