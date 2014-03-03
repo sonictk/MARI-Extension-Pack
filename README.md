@@ -1,4 +1,4 @@
-IDEASCALE SCRIPT & NODE MIRROR
+IDEASCALE SHADER/NODE MIRROR
 =====================================================================================
 Copyright (c) 2013-2014 www.mari.ideascale.com. All Rights Reserved.
 
