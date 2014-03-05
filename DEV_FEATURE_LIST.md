@@ -130,10 +130,6 @@ Shaders:
 
 A energy conserving shader mimicking mental ray's mia_material_x in look and handling
 
-- Reflection/Refraction (standalone)
-
-A shader with an implementation of reflection and refraction for things like glass
-
 - OrenNayar (difuse)
 
 A difuse component shader using the Oren Nayar Shading Model
