@@ -67,7 +67,7 @@ float nb_dots2D(vec2 uv, float Scale)
 {
    // Dots 2D
    vec2 shapePos = 2.0 * fract(uv) - 1.0;
-   float shape = clamp(length(shapePos) / max(Scale,0.001),0.0,1.0);
+   float shape = float( clamp(length(shapePos) / max(Scale,0.001),0.0,1.0) );
    shape = 1.0 - shape;
 
    // Dots
@@ -79,7 +79,7 @@ float nb_stripes2D(vec2 uv, float Scale)
 {
    // Stripes 2D
    vec2 shapePos = 2.0 * fract(uv) - 1.0;
-   float shape =  abs(shapePos) / Scale;
+   float shape =  float (abs(shapePos) / Scale);
    shape = 1.0 - shape;
 
    // Stripes
@@ -92,7 +92,7 @@ float nb_superEllipse2D(vec2 uv, float Scale, float Corner)
 {
    // Super Ellipse 2D
    vec2 shapePos = 2.0 * fract(uv) - 1.0;
-   float shape = clamp(pow((abs(shapePos.x/Scale)),Corner) + pow((abs(shapePos.y/Scale)),Corner),0.0,1.0);
+   float shape = float( clamp(pow((abs(shapePos.x/Scale)),Corner) + pow((abs(shapePos.y/Scale)),Corner),0.0,1.0) );
    shape = 1.0 - shape;
 
    // Super Ellipse
@@ -112,7 +112,7 @@ float nb_superShape2D(vec2 uv, float Scale, float angle, float a, float b, float
 
    // Super Shape 2D
    float r = pow(pow(abs(cos(m*angles/4.0) / a), n2) + pow(abs(sin(m*angles/4.0) / b), n3), -1.0/n1);
-   float shape = clamp(step(r * Scale, length(position)), 0.0, 1.0);
+   float shape = float (clamp(step(r * Scale, length(position)), 0.0, 1.0));
    shape = 1.0 - shape;
 
    // Super Shape Gradient
