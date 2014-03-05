@@ -1,9 +1,23 @@
+Release Notes for Shader/Nodepack 1.30
+=====================================================================================
+
+Release Date
+-----------
+TBA
+
+
+Added Features:
+-----------
+
+
+
+
 Release Notes for Shader/Nodepack 1.20
 =====================================================================================
 
 Release Date
 -----------
-TBD
+5 March 2014
 
 
 Best bits of 1.20:
