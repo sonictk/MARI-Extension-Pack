@@ -112,7 +112,7 @@
 
                 // blend between 2d and 3d space position
                 vec3 InputScaleBase = mix(InputScaleBase3d,vec3(InputScaleUV,1.0),float($uv));
-                vec3 _Input = mix(State.Position,vec3(State.UV,1.0),$uv);
+                vec3 _Input = mix(State.Position,vec3(State.UV,1.0),float($uv));
 
                 // transform base noise
                 vec3 seedBaseA = InputScaleBase +vec3($SeedBase);
