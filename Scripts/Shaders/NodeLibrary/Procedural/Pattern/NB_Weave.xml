@@ -47,7 +47,7 @@
                 nb_superWeave2D(uv,$Contrast,d0,d1,f0,f1);
 
                 float Width = $Width*.005;
-                vec3 Result = vec3((f0 < Width) ? d1 : ((f1 < Width) ? d0 : 0));
+                float Result = (f0 < Width) ? d1 : ((f1 < Width) ? d0 : 0);
                 Result = (Result-$Start)/($End-$Start);
 
                 // Color

@@ -58,6 +58,7 @@
                         Blend += mix($FrontColor, $SideColor, 1-Fresnel);
                     }
                     Blend /= numLights;
+                    #endif
                 }
 
                 // Distance Blend Mode

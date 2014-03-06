@@ -85,7 +85,7 @@
                 vec2 InputScaleUV = relUVTransform(State.UV,$rZ,UVOffset,UVScale,0.5,0.5);
 
                 // blend between 2d and 3d space position
-                vec3 P = mix(P3d,vec3(InputScaleUV,1.0),$uv);
+                vec3 P = mix(P3d,vec3(InputScaleUV,1.0),float($uv));
 
                 // general variables for use
                 float FillSpots = $FillSpots;
