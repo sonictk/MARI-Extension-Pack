@@ -31,8 +31,14 @@
 // include files
 //
 //! include | Surface.glslh
-MriFragmentState State;
-MriSystemFragmentState _State;
+
+
+// Not a good solution but this avoids the clashing Variables when Displacement is active
+// TO DO: Check how this affects Displacement Preview/Display
+
+MriFragmentState jkState;
+MriSystemFragmentState _jkState;
+
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -252,7 +258,7 @@ vec2 patchCoord(float x, float y)
     vec2 pivot = vec2(-x,-y);
 
     // Generate UDIM Number per Patch
-    int _udim_id = (int(floor(State.UV.s)) + int(floor(State.UV.t)) *10 + 1001);
+    int _udim_id = (int(floor(jkState.UV.s)) + int(floor(jkState.UV.t)) *10 + 1001);
 
     // Generate main Offset Coordinate based on UDIM
     int uCo =  ((_udim_id-1000)%10);
