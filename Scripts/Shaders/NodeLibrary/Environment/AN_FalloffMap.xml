@@ -27,7 +27,7 @@
                 // Facing Ratio Mode
                 if ($FalloffType == 0)
                 {
-                    float VdotN = dot(State.ViewVectorInEyeSpaceFromViewCamera, State.NormalInEyeSpaceFromViewCamera);
+                    float VdotN = dot(State.ViewVectorInEyeSpaceFromProjectionCamera, State.NormalInEyeSpaceFromProjectionCamera);
                     float Fresnel = clamp((abs(VdotN) - $FalloffStart) / ($FalloffEnd - $FalloffStart), 0.0, 1.0);
                     Blend  = mix($FrontColor, $SideColor, 1-Fresnel);
                     if ($FalloffStart > 0.5)
