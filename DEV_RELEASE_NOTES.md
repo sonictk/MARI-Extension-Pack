@@ -8,6 +8,7 @@ TBA
 
 Added Features:
 -----------
+- Squid Skin - organic Noise Pattern
 
 Bugfixes:
 -----------
