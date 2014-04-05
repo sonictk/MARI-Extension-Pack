@@ -17,7 +17,7 @@
         <Attribute Name="octaves" Group="Size" Type="float" Min="0" Max="8" Description="Visual complexitity of noise">3</Attribute>
         <Attribute Name="lacunarity" Group="Size" Type="double" Min="0" Max="8" Description="Frequency spacing between successive octaves">4</Attribute>
         <Attribute Name="FOffset" PrettyName="Offset" Group="Size" Type="double" Min="0.0001" Max="1" Description="Frequency Offset">0.5</Attribute>
-        <Attribute Name="P" PrettyName="P" Group="Size" Type="double" Min="1" Max="100000" Logarithmic="1" Description="frequency">1</Attribute>
+        <Attribute Name="Seed" PrettyName="Seed" Group="Size" Type="double" Min="1" Max="100000" Logarithmic="1" Description="frequency">1</Attribute>
         <!--===============================================================================================================-->
         <Attribute Name="Amp" PrettyName="Amplitute" Group="Modifiers" Type="double" Min="0.0001" Max="1" Description="Scaling factor between successive octaves" >1</Attribute>
         <Attribute Name="gain" Group="Modifiers" Type="double" Min="0" Max="1" Description="The Contrast of the Noise">1.0</Attribute>
