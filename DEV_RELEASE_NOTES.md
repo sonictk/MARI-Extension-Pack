@@ -9,10 +9,11 @@ TBA
 Added Features:
 -----------
 - Squid Skin - organic Noise Pattern
+- Cavity Map from Tangent Space Normal - Using a Tangent space normal map will output you a pseudo cavity map
 
 Bugfixes:
 -----------
-- Turning on Displacement in Shaders no longer causes a Shader Error
+- Turning on Displacement in Shaders no longer causes a Shader Error (EDIT: REGRESSSION - currently breaks UVCentre)
 - Baking Paint with the Falloff Map active in a Channel Mask no longer causes the baked paint to shift
 
 
