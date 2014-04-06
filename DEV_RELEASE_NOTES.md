@@ -10,6 +10,12 @@ Added Features:
 -----------
 - Squid Skin - organic Noise Pattern
 - Cavity Map from Tangent Space Normal - Using a Tangent space normal map will output you a pseudo cavity map
+- CamoTwo - a more flexible Camo procedural was added allowing for 3 color steps. Layer them up by setting Color A to transparent for more elaborate effects
+
+Feature Improvements:
+-----------
+- The original Camo Procedural is now called "Camo (2 Colors)".
+
 
 Bugfixes:
 -----------

@@ -1,7 +1,7 @@
 # ------------------------------------------------------------------------------
 # Requirements: This Node Library requires MARI FunctionLibary 1.06.005
 # ------------------------------------------------------------------------------
-# Camo Procedural - to create miltiary pattern
+# Camo Procedurals - to create miltiary patterns
 # Copyright (c) 2013 Antoni Kujawa. All Rights Reserved.
 # ------------------------------------------------------------------------------
 # Author: Antoni Kujawa
@@ -27,7 +27,8 @@
 
 Info: =============================================================================== 
 
-A Camo procedurals that has been made by editing the maths in the Fractal Noise.
+Camo procedurals to create military patterns. One supporting 2 Colors, one with 3 Colors.
+You can easily layer them up to create more elaborate effects by Setting Color A to transparent for example.
 
 
 Requirements: =======================================================================
@@ -58,7 +59,7 @@ Example:
 
 Where to find the nodes: ============================================================
 
-The new node is located under Procedurals/Custom/Pattern/Camo AK
+The new nodes are located under Procedurals/Custom/Pattern/
 
 
 History: ============================================================================
@@ -68,6 +69,7 @@ History: =======================================================================
 11/30/13 Mari 2.5 Release, added Seed,Scale and Rotate functionality conform with MARI Function Lib 1.0
 02/08/14 Release with new structure
 03/03/14 Added UVSpace Transformation, refactored UI
+04/05/14 Second Camo Procedural with 3 colors added
 
 
 

@@ -1,23 +1,25 @@
 <Node>
-    <ID>Camo (2 Colors)</ID>
-    <Category>Procedural/Custom/Pattern/</Category>
-    <Tags>
-        <Tag>_procedural</Tag>
-    </Tags>
-    <DefaultName>Camo</DefaultName>
-    <Description>AK. Modified fractal maths to create camouflage based procedural</Description>
-    <Cost>0.1</Cost>
-    <CostDescription>Texture reads</CostDescription>
-    <Inputs>
-        <Input Name="Input"/>
-    </Inputs>
-    <Attributes>
+  <ID>Camo (3 Colors) </ID>
+  <Category>Procedural/Custom/Pattern/</Category>
+  <Tags>
+    <Tag>_procedural</Tag>
+  </Tags>
+  <DefaultName>Camo</DefaultName>
+  <Description>Modified fractal maths to create camouflage based procedural. It has 3 inputs</Description>
+  <Cost>0.1</Cost>
+  <CostDescription>Texture reads</CostDescription>
+  <Inputs>
+    <Input Name="Input"/>
+  </Inputs>
+  <Attributes>
         <!--===============================================================================================================-->
         <Attribute Name="colorA" PrettyName="Color A" Group="Color" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(0.262,0.253,0.012,1)</Attribute>
         <Attribute Name="colorB" PrettyName="Color B" Group="Color" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(0.014,0.209,0.018,1)</Attribute>
+        <Attribute Name="colorC" PrettyName="Color C" Group="Color" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(0.054,0.150,0.035,1)</Attribute>
         <!--===============================================================================================================-->
         <Attribute Name="Size" Group="Size" Type="double" Min="0" Max="2">0.5</Attribute>
-        <Attribute Name="Roughness" Group="Size" Type="double" Min="0" Max="3">2</Attribute>
+        <Attribute Name="Spacing"  Type="double" Group="Size" Min="0" Max="1">0.5</Attribute>
+        <Attribute Name="Roughness" Group="Size" Type="double" Min="0" Max="2">0.0</Attribute>
         <Attribute Name="Seed" Group="Size" PrettyName="Seed" Type="double" Min="1" Max="100000" Logarithmic="1">1</Attribute>
         <Attribute Name="Invert"  PrettyName="Invert" Group="Size" Type="bool" Min="false" Max="true" Description="Inverts the Noise result before ColorA+B are applied" >false</Attribute>
         <!--===============================================================================================================-->
@@ -35,7 +37,8 @@
         <Attribute Name="YOffset" PrettyName="Translate Y" Group="Transform Translate" Type="double" Min="0" Max="100" Logarithmic="1">0</Attribute>
         <Attribute Name="ZOffset" PrettyName="Translate Z" Group="Transform Translate" Type="double" Min="0" Max="100" Logarithmic="1">0</Attribute>
         <!--===============================================================================================================-->
-    </Attributes>
+   
+  </Attributes>
     <Contexts>
         <Context Type="NodeGraphView">
             <Inputs>
@@ -56,53 +59,54 @@
             <Shader>
                 <Body><![CDATA[
 
-                // compensate for scene size by applying eponential growth
-                float size_pow = (pow(10000.0,$Size*$Size)-1.0) + 0.0001;
 
-                // 3d space surface position
-                // build the needed vector attributes for position transform, offset max growths exponentially
-                vec3 trans = (vec3($XOffset,$YOffset,$ZOffset)*size_pow) + vec3($Seed);
-                vec3 rotate = vec3($rX,$rY,$rZ);
-                vec3 scale = vec3($XScale,$YScale,$ZScale);
 
-                // transform the position to translate,rotate,scale the position
-                vec3 P = positionTransform(State.Position,trans,rotate,scale);
+    // compensate for scene size by applying eponential growth
+    float size_pow = (pow(10000.0,$Size*$Size)-1.0) + 0.0001;
 
-                // 2d uv space surface position
-                // build the needed vector attributes for position transform, offset max growths exponentially
-                vec2 UVOffset = vec2($XOffset,$YOffset) + vec2($Seed);
-                vec2 UVScale = vec2($XScale,$YScale);
+    // 3d space surface position
+    // build the needed vector attributes for position transform, offset max growths exponentially
+    vec3 trans = (vec3($XOffset,$YOffset,$ZOffset)*size_pow) + vec3($Seed);
+    vec3 rotate = vec3($rX,$rY,$rZ);
+    vec3 scale = vec3($XScale,$YScale,$ZScale);
 
-                // transform the position to translate,rotate,scale the position
-                vec2 InputScaleUV = relUVTransform(State.UV,$rZ,UVOffset,UVScale,0.5,0.5)/ (size_pow);
+    // transform the position to translate,rotate,scale the position
+    vec3 P = positionTransform(State.Position,trans,rotate,scale);
 
-                // blend between 2d and 3d space position
-                P = mix(P,vec3(InputScaleUV,1.0),float($uv));
+    // 2d uv space surface position
+    // build the needed vector attributes for position transform, offset max growths exponentially
+    vec2 UVOffset = vec2($XOffset,$YOffset) + vec2($Seed);
+    vec2 UVScale = vec2($XScale,$YScale);
 
-                // noise variables
-                float noise_val = 0.4;
-                float sharpness = log2(2.0 + 99.0 * $Roughness) / log2(100.0);
+    // transform the position to translate,rotate,scale the position
+    vec2 InputScaleUV = relUVTransform(State.UV,$rZ,UVOffset,UVScale,0.5,0.5)/ (size_pow);
 
-                // noise multi loop
-                for(int i=0;i<10;i++)
-                {
-                   vec3 scaled_seed = pow(1.0,float(i)) * P / size_pow;
-                   noise_val += noise(scaled_seed) / pow(5.0 - 4.0 * sharpness,float(i));
-                }
+    // blend between 2d and 3d space position
+    P = mix(P,vec3(InputScaleUV,1.0),float($uv));
 
-                // noise values
-                noise_val = noise_val * 0.5 + 0.5;
-                noise_val = noise_val * $Roughness;
-                noise_val = clamp(noise_val,0.0,1.0);
+    float size = $Size;
+    float roughness = $Spacing;
+    vec3 seed = P;
+    float noise_val = 0.4;
+    float sharpness = log2(2.0+99.0*roughness)/log2(100.0);
+    for(int i=0;i<10;i++)
+    {
+        vec3 scaled_seed = pow(1.0,float(i)) * seed.rgb / size_pow;
+        noise_val += noise(scaled_seed)/pow(5.0-4.0*sharpness,float(i));
+    }
+    noise_val = noise_val*0.5 + 0.5;
+    noise_val = clamp(noise_val,0.0,1.0);
+    noise_val = mix(noise_val,1.0-noise_val,float($Invert));
 
-                // invert result
-                float _invertResult = float($Invert);
-
-                // camo pattern
-                Output = mix(mix($colorB,$colorA,noise_val),mix($colorA,$colorB,noise_val),_invertResult);
+    float rangeA = softThreshold(0.33,float($Roughness),noise_val);
+    float rangeB = softThreshold(0.67,float($Roughness),noise_val);
+    vec4 result = mix($colorB,$colorA,rangeB);
+    result = mix(result,$colorC,1.0-rangeA);
+    Output = result;
 
                 ]]></Body>
             </Shader>
-         </Context>
+        </Context>
     </Contexts>
 </Node>
+
