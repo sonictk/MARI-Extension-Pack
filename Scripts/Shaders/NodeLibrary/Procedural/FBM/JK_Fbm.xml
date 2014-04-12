@@ -68,7 +68,7 @@
 
                 // 3d space surface position
                 // build the needed vector attributes for position transform, offset max growths exponentially
-                vec3 trans = (vec3($XOffset,$YOffset,$ZOffset)*size_pow) + vec3($P);
+                vec3 trans = (vec3($XOffset,$YOffset,$ZOffset)*size_pow) + vec3($Seed);
                 vec3 rotate = vec3($rX,$rY,$rZ);
                 vec3 scale = vec3($XScale,$YScale,$ZScale);
 
@@ -77,7 +77,7 @@
 
                 // 2d uv space surface position
                 // build the needed vector attributes for position transform, offset max growths exponentially
-                vec2 UVOffset = vec2($XOffset,$YOffset) + vec2($P);
+                vec2 UVOffset = vec2($XOffset,$YOffset) + vec2($Seed);
                 vec2 UVScale = vec2($XScale,$YScale);
 
                 // transform the position to translate,rotate,scale the position
