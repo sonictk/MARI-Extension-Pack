@@ -47,6 +47,8 @@
                     <Input Name="Input"><Default>vec4(1,1,1,1)</Default></Input>
                 </Inputs>
                 <Body><![CDATA[
+                
+                #if defined MRI_SHADER_FRAGMENT || defined MRI_SHADER_TESS_EVALUATION
 
                 // compensate for scene size by applying eponential growth
                 float freq_pow = (pow($frequency,$frequency)-1.0) + 0.01;
@@ -82,7 +84,7 @@
 
                 // gabor noise function
                 Output = DT3D_GaborNoise(P,$colorA,$colorB,$frequency,direction,$bandwidth,$truncate,$impulses,1245,$noiseType);
-
+#endif
                 ]]></Body>
             </Shader>
         </Context>
