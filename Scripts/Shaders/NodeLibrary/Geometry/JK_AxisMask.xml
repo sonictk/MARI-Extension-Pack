@@ -42,6 +42,7 @@
                 <Shader>
                 <Body><![CDATA[
 
+                #if defined MRI_SHADER_FRAGMENT || defined MRI_SHADER_TESS_EVALUATION
                 // build rotational vec3 from sliders
                 vec3 rotate = vec3($rX,$rY,$rZ);
 
@@ -92,6 +93,7 @@
 
                 // output. if transparent color result is completely white and mask result is in alpha
                 Output = mix(vec4(_res,_res,_res,1.0),vec4(1.0,1.0,1.0,_res),float($Transparent));
+                #endif
 
                 ]]></Body>
             </Shader>

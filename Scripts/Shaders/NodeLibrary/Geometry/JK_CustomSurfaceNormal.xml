@@ -36,6 +36,7 @@
                 </Shader>
             <Shader>
                 <Body><![CDATA[
+                #if defined MRI_SHADER_FRAGMENT || defined MRI_SHADER_TESS_EVALUATION
 
                 float g = $rP;
                 float h = $oP;
@@ -58,7 +59,7 @@
 
                 vec4 rotationResult = vec4(P, #Input.a);
                 Output = rotationResult;
-
+                #endif
                 ]]></Body>
             </Shader>
         </Context>
