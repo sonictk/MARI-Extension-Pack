@@ -43,8 +43,15 @@
 
                 float tuneCurvature = $Adjust*size_pow;
 
+                #if defined MRI_SHADER_TESS_EVALUATION
+                float curvN = 0.0;
+                float curvP = 0.0;
+
+                #else defined MRI_SHADER_FRAGMENT
                 float curvN = length(fwidth(N));
                 float curvP = length(fwidth(P));
+
+                #endif
 
                 float mixer = clamp(curvN,0,1) / curvP;
 
@@ -54,6 +61,7 @@
                 float _mix = mix(curvature,inv_curv,float($Invert));
 
                 Output = vec4(_mix,_mix,_mix,1.0);
+                
 
                 ]]></Body>
             </Shader>
