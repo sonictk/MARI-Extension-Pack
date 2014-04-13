@@ -75,7 +75,8 @@ float smoothVfBm (vec3 P, float octaves, float lacunarity, float gain, float amp
 // Returns one offset coordinate per patch/udim
 // Useful for example to set pivots per patch
 // x and y represent offsets from the default coordinate (lower left corner of each patch)
-vec2 patchCoord(float x, float y);
+// uvCoord should be STATE.UV
+vec2 patchCoord(vec2 uvCoord, float x, float y);
 
 // patchRotate
 // Rotates the UVs per Patch, feed in State.UV ( no fract() )

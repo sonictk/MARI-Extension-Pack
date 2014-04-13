@@ -387,7 +387,8 @@ vec2 relUVTransform(vec2 uvCoord, float RotationAngle, vec2 Offset, vec2 Repeat,
 // Returns one offset coordinate per patch/udim
 // Useful for example to set pivots per patch
 // x and y represent offsets from the default coordinate (lower left corner of each patch)
-vec2 patchCoord(float x, float y);
+// uvCoord should be STATE.UV
+vec2 patchCoord(vec2 uvCoord, float x, float y);
 
 
 //   /FunctionLibrary/JK_FunctionLibrary/ID_ProceduralLib.glslc

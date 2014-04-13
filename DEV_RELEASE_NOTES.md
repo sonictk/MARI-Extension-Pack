@@ -19,8 +19,19 @@ Feature Improvements:
 
 Bugfixes:
 -----------
-- Turning on Displacement in Shaders no longer causes a Shader Error (EDIT: REGRESSSION - currently breaks UVCentre)
-- Baking Paint with the Falloff Map active in a Channel Mask no longer causes the baked paint to shift
+- Turning on Displacement in Shaders no longer causes a Shader Error
+- UV Mode for Noises that was broken in Nodepack 1.21 is now fixed
+- Baking Paint with the Falloff Map active in a Channel Mask no longer causes the baked paint to shift 
+  (for Facing Ration + Shadow/Light Mode).
+
+
+Known Issues & Workarounds:
+-----------
+When a Nodepack Node is used in a Channel that is plugged into the ChannelMask (Projection Palette), 
+projecting Paint from the Paintbuffer will throw an error. This is related to a MARI Bug that we will
+need the Foundry to fix.
+The current workaround is to cache any Nodepack Node in the Channel, at which point the Channel Mask will work.
+
 
 
 

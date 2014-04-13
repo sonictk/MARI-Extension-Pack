@@ -33,12 +33,6 @@
 //! include | Surface.glslh
 
 
-// Not a good solution but this avoids the clashing Variables when Displacement is active
-// TO DO: Check how this affects Displacement Preview/Display
-
-MriFragmentState jkState;
-MriSystemFragmentState _jkState;
-
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -252,13 +246,15 @@ float smoothVfBm (vec3 P, float octaves, float lacunarity, float gain, float amp
 // Returns one offset coordinate per patch/udim
 // Useful for example to set pivots per patch
 // x and y represent offsets from the default coordinate (lower left corner of each patch)
-vec2 patchCoord(float x, float y)
+
+
+vec2 patchCoord( vec2 uv, float x, float y) 
 {
-    vec2 patchCoord;
+    vec2 patchPivot;
     vec2 pivot = vec2(-x,-y);
 
     // Generate UDIM Number per Patch
-    int _udim_id = (int(floor(jkState.UV.s)) + int(floor(jkState.UV.t)) *10 + 1001);
+    int _udim_id = (int(floor(uv.s)) + int(floor(uv.t)) *10 + 1001);
 
     // Generate main Offset Coordinate based on UDIM
     int uCo =  ((_udim_id-1000)%10);
@@ -273,10 +269,11 @@ vec2 patchCoord(float x, float y)
     int vCo =  ((_udim_id-1000)/10);
 
     // Generate OffsetCoordinate with user defined per patch pivot
-    patchCoord =   pivot - vec2(uCo,vCo);
+    patchPivot =   pivot - vec2(uCo,vCo);
 
-    return patchCoord;
+    return patchPivot;
 }
+
 
 // patchRotate
 // Rotates the UVs per Patch, feed in State.UV ( no fract() )
@@ -289,7 +286,7 @@ vec2 patchRotate(vec2 uvCoord, float angle, float pivotU, float pivotV)
     mat2 rotationMatrix = nb_uvRotation(angle);
 
     // Generate OffsetCoordinate with user defined per patch pivot
-    vec2 offsetToCenter =   patchCoord(pivotU,pivotV);
+    vec2 offsetToCenter =   patchCoord(uvCoord,pivotU,pivotV);
 
 
     // Perform Offset and rotation
@@ -309,7 +306,7 @@ vec2 relUVTransform(vec2 uvCoord, float RotationAngle, vec2 Offset, vec2 Repeat,
     vec2 relativeUVTransform;
 
     // Generate OffsetCoordinate with user defined per patch pivot
-    vec2 offsetToCenter =   patchCoord(pivotU,pivotV);
+    vec2 offsetToCenter =   patchCoord(uvCoord,pivotU,pivotV);
 
     // Generate rotationMatrix
     mat2 rotationMatrix = nb_uvRotation(RotationAngle);
