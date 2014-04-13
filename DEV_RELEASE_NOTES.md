@@ -29,7 +29,7 @@ Known Issues & Workarounds:
 When a Nodepack Node is used in a Channel that is plugged into the ChannelMask (Projection Palette), 
 projecting Paint from the Paintbuffer will throw an error. This is related to a MARI Bug that we will
 need the Foundry to fix.
-The current workaround is to cache any Nodepack Node in the Channel, at which point the Paint Projection will work.
+The current workaround is to cache any Nodepack Node in the Channel, at which point the Channel Mask will work.
 
 
 
