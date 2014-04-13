@@ -21,7 +21,8 @@ Bugfixes:
 -----------
 - Turning on Displacement in Shaders no longer causes a Shader Error
 - UV Mode for Noises that was broken in Nodepack 1.21 is now fixed
-- Baking Paint with the Falloff Map active in a Channel Mask no longer causes the baked paint to shift (for FacingRatio Mode).
+- Baking Paint with the Falloff Map active in a Channel Mask no longer causes the baked paint to shift 
+  (for Facing Ration + Shadow/Light Mode).
 
 
 Known Issues & Workarounds:

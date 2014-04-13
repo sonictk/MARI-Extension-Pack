@@ -52,7 +52,7 @@
                         {
                             numLights += 1;
                         }
-                        vec3 L = normalize(u_MriLightSources[i].Position.xyz - State.FragmentPositionInEyeSpaceFromViewCamera);
+                        vec3 L = normalize(u_MriLightSources[i].Position.xyz - State.FragmentPositionInEyeSpaceFromProjectionCamera);
                         float NdotL = dot(State.Normal, L);
                         float Fresnel = clamp((abs(NdotL*lightVisibility) - $FalloffStart) / ($FalloffEnd - $FalloffStart), 0.0, 1.0);
                         Blend += mix($FrontColor, $SideColor, 1-Fresnel);
