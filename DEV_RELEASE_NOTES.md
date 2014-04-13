@@ -8,29 +8,33 @@ TBA
 
 Added Features:
 -----------
-- Squid Skin - organic Noise Pattern
+- Squid Skin Procedural - organic Noise Pattern
 - Cavity Map from Tangent Space Normal - Using a Tangent space normal map will output you a pseudo cavity map
-- CamoTwo - a more flexible Camo procedural was added allowing for 3 color steps. Layer them up by setting Color A to transparent for more elaborate effects
 
 Feature Improvements:
 -----------
-- The original Camo Procedural is now called "Camo (2 Colors)".
+- Military Camo - a more flexible Camo procedural was added allowing for 3 color steps. Layer them up by setting Color A to transparent for more elaborate effects
+- The original Camo Procedural with 2 Colors has been deprecated. You can use the new Military Camo with a Spacing of 0 for the same effect.
 
 
 Bugfixes:
 -----------
-- Turning on Displacement in Shaders no longer causes a Shader Error
-- UV Mode for Noises that was broken in Nodepack 1.21 is now fixed
+- Turning on Displacement in Shaders no longer causes a Shader Error when the Nodepack is installed
+- UV Mode for Noises that broke in Nodepack 1.21 Maintenance release is now fixed
 - Baking Paint with the Falloff Map active in a Channel Mask no longer causes the baked paint to shift 
   (for Facing Ration + Shadow/Light Mode).
+ - Custom Object Normal, Axis Mask, Paintable Gabor and PolysurfaceCurvature will no longer show an 
+   error when used in a displacement preview channel
 
 
 Known Issues & Workarounds:
 -----------
-When a Nodepack Node is used in a Channel that is plugged into the ChannelMask (Projection Palette), 
+- When a Nodepack Node is used in a Channel that is plugged into the ChannelMask (Projection Palette), 
 projecting Paint from the Paintbuffer will throw an error. This is related to a MARI Bug that we will
 need the Foundry to fix.
 The current workaround is to cache any Nodepack Node in the Channel, at which point the Channel Mask will work.
+
+- the paintableGabor can crash Mari when used in a Displacement Preview Channel. The current workaround is to cache the GaborNoise.
 
 
 
