@@ -1,0 +1,162 @@
+<Node>
+  <DefaultName>ColorRangeToMask</DefaultName>
+  <ID>ColorRange to Mask</ID>
+  <Category>/Custom/</Category>
+  <Cost>0.005</Cost>
+  <CostDescription>Some calculations</CostDescription>
+  <Tags>
+    <Tag>_adjustment</Tag>
+  </Tags>
+    <Inputs>
+        <Input Name="Input"></Input>
+    </Inputs>
+    <Attributes>
+        <Attribute Name="preview" PrettyName = "Show Background" Group="Color Picking" Type="bool" Min="true" Max="false">false</Attribute>
+        <Attribute Name="wipe" Group="Color Picking" Type="float" Min="0.0" Max="1.0">0.5</Attribute>
+        <Attribute Name="inverseBuffer" PrettyName = "Reverse Wipe" Group="Color Picking" Type="bool" Min="true" Max="false">false</Attribute>
+        
+        <Attribute Name="AdditiveSlots" PrettyName = "Additive Slots" Group="Global" Type="int" Min="0" Max="4">1</Attribute>
+        <Attribute Name="SubtrSlots" PrettyName = "Subtractive Slots" Group="Global" Type="int" Min="0" Max="4">0</Attribute>
+        <Attribute Name="weight" PrettyName = "+/- bias" Group="Global" Type="float" Min="-4.0" Max="4.0">0.0</Attribute>
+        <Attribute Name="globFuzz" PrettyName = "Gain" Group="Global" Type="float" Min="0.0" Max="1.0">0.5</Attribute>
+        <Attribute Name="Enhance" PrettyName = "Enhance Selection" Group="Global" Type="bool" Min="true" Max="false">false</Attribute>
+        <Attribute Name="Invert" PrettyName = "Invert" Group="Global" Type="bool" Min="true" Max="false">false</Attribute>
+
+        <Attribute Name="Color1" PrettyName = "Color A" Group="Additive Selection" Type="color" >(1.0,1.0,1.0,1)</Attribute>
+        <Attribute Name="FuzzinessA" PrettyName = "Expand A" Group="Additive Selection" Type="float" Min="0.01" Max="1.0">0.5</Attribute>
+        <Attribute Name="Color2" PrettyName = "Color B" Group="Additive Selection" Type="color" >(1.0,1.0,1.0,1)</Attribute>
+        <Attribute Name="FuzzinessB" PrettyName = "Expand B" Group="Additive Selection" Type="float" Min="0.01" Max="1.0">0.5</Attribute>
+        <Attribute Name="Color3" PrettyName = "Color C" Group="Additive Selection" Type="color" >(1.0,1.0,1.0,1)</Attribute>
+        <Attribute Name="FuzzinessC" PrettyName = "Expand C" Group="Additive Selection" Type="float" Min="0.01" Max="1.0">0.5</Attribute>
+        <Attribute Name="Color4" PrettyName = "Color D" Group="Additive Selection" Type="color" >(1.0,1.0,1.0,1)</Attribute>
+        <Attribute Name="FuzzinessD" PrettyName = "Expand D" Group="Additive Selection" Type="float" Min="0.01" Max="1.0">0.5</Attribute>
+        
+        <Attribute Name="Color5" PrettyName = "Color A" Group="Subtractive Selection" Type="color" >(1.0,1.0,1.0,1)</Attribute>
+        <Attribute Name="FuzzinessE" PrettyName = "Expand A" Group="Subtractive Selection" Type="float" Min="0.01" Max="1.0">0.5</Attribute>
+        <Attribute Name="Color6" PrettyName = "Color B" Group="Subtractive Selection" Type="color" >(1.0,1.0,1.0,1)</Attribute>
+        <Attribute Name="FuzzinessF" PrettyName = "Expand B" Group="Subtractive Selection" Type="float" Min="0.01" Max="1.0">0.5</Attribute>
+        <Attribute Name="Color7" PrettyName = "Color C" Group="Subtractive Selection" Type="color" >(1.0,1.0,1.0,1)</Attribute>
+        <Attribute Name="FuzzinessG" PrettyName = "Expand C" Group="Subtractive Selection" Type="float" Min="0.01" Max="1.0">0.5</Attribute>
+        <Attribute Name="Color8" PrettyName = "Color D" Group="Subtractive Selection" Type="color" >(1.0,1.0,1.0,1)</Attribute>
+        <Attribute Name="FuzzinessH" PrettyName = "Expand D" Group="Subtractive Selection" Type="float" Min="0.01" Max="1.0">0.5</Attribute>
+        
+
+    </Attributes>
+  <Contexts>
+    <Context Type="NodeGraphView">
+        <Inputs>
+            <Input Name="Input"><Pos>0,-50</Pos></Input>
+        </Inputs>
+    </Context>
+    <Context Type="GLSL">
+        <Shader>
+            <Inputs>
+                <Input Name="Input"><Default>vec4(1,1,1,1)</Default></Input>
+            </Inputs>
+            <Body><![CDATA[
+
+    vec2 _buffer = _State.ProjectionCoord.xy;
+    float d = (_buffer-($wipe-0.005))/(($wipe+0.005)-($wipe-0.005));
+    float d1 = clamp(mix(0.0,1.0,d),0.0,1.0);
+    d = mix(d1,1.0-d1,float($inverseBuffer));
+
+
+// SELECTION ENHANCEMENT MIX VARIABLES
+
+        vec4 trhsv_input = #Input;
+        vec4 trhsv_input_1 = $Color1;
+        vec4 trhsv_input_2 = $Color2;
+        vec4 trhsv_input_3 = $Color3;
+        vec4 trhsv_input_4 = $Color4;
+        vec4 trhsv_input_5 = $Color5;
+        vec4 trhsv_input_6 = $Color6;
+        vec4 trhsv_input_7 = $Color7;
+        vec4 trhsv_input_8 = $Color8;
+
+
+  if ($Enhance == true)
+  {
+
+
+         trhsv_input = jk_enhanceSelection(#Input,0.2,0.3,3.5);
+
+    // Converting Additive Colors
+
+        trhsv_input_1 = jk_enhanceSelection($Color1,0.2,0.3,3.5);
+        trhsv_input_2 =  ($AdditiveSlots>1) ? jk_enhanceSelection($Color2,0.2,0.3,3.5) : vec4(0.0);
+        trhsv_input_3 =  ($AdditiveSlots>2) ? jk_enhanceSelection($Color3,0.2,0.3,3.5) : vec4(0.0);
+        trhsv_input_4 =  ($AdditiveSlots>3) ? jk_enhanceSelection($Color4,0.2,0.3,3.5) : vec4(0.0);
+
+    // Converting Subtractive Colors
+
+            if ($SubtrSlots > 0)
+            {
+
+        trhsv_input_5 = jk_enhanceSelection($Color5,0.2,0.3,3.5);
+        trhsv_input_6 =  ($SubtrSlots>1) ? jk_enhanceSelection($Color6,0.2,0.3,3.5) : vec4(0.0);
+        trhsv_input_7 =  ($SubtrSlots>2) ? jk_enhanceSelection($Color7,0.2,0.3,3.5) : vec4(0.0);
+        trhsv_input_7 =  ($SubtrSlots>3) ? jk_enhanceSelection($Color8,0.2,0.3,3.5) : vec4(0.0);
+
+            }
+
+      }
+
+
+    vec4 input_mix_smart = mix(#Input,trhsv_input,float($Enhance));
+
+    float DistanceA = length( input_mix_smart.rgb - trhsv_input_1.rgb);
+    float DistanceB = length( input_mix_smart.rgb - trhsv_input_2.rgb);
+    float DistanceC = length( input_mix_smart.rgb - trhsv_input_3.rgb);
+    float DistanceD = length( input_mix_smart.rgb - trhsv_input_4.rgb);
+
+    float DistanceE = length( input_mix_smart.rgb - trhsv_input_5.rgb);
+    float DistanceF = length( input_mix_smart.rgb - trhsv_input_6.rgb);
+    float DistanceG = length( input_mix_smart.rgb - trhsv_input_7.rgb);
+    float DistanceH = length( input_mix_smart.rgb - trhsv_input_8.rgb);
+
+    float MaskAdd1 = clamp( 2 * ($globFuzz - (DistanceA / $FuzzinessA)), 0.0, 1.0);
+    float MaskAdd2 = clamp( 2 * ($globFuzz - (DistanceB / $FuzzinessB)), 0.0, 1.0);
+    float MaskAdd3 = clamp( 2 * ($globFuzz - (DistanceC / $FuzzinessC)), 0.0, 1.0);
+    float MaskAdd4 = clamp( 2 * ($globFuzz - (DistanceD / $FuzzinessD)), 0.0, 1.0);
+
+    float MaskSub5 = clamp( 2 * ($globFuzz - (DistanceE / $FuzzinessE)), 0.0, 1.0);
+    float MaskSub6 = clamp( 2 * ($globFuzz - (DistanceF / $FuzzinessF)), 0.0, 1.0);
+    float MaskSub7 = clamp( 2 * ($globFuzz - (DistanceG / $FuzzinessG)), 0.0, 1.0);
+    float MaskSub8 = clamp( 2 * ($globFuzz - (DistanceH / $FuzzinessH)), 0.0, 1.0);
+
+    float MaskAdd[4] = float[4](MaskAdd1,MaskAdd2,MaskAdd3,MaskAdd4);
+    float MaskSub[4] = float[4](MaskSub5,MaskSub6,MaskSub7,MaskSub8);
+
+    float resultAdd,resultSub;
+    
+    for (int i = 0; i< $AdditiveSlots; ++i)
+                    {
+                        resultAdd += MaskAdd[i];
+                    }
+
+    for (int i = 0; i< $SubtrSlots; ++i)
+                    {
+                        resultSub += MaskSub[i];
+                    }
+
+
+    float weightPlus = (float($weight) - 4) / - 2 +1;
+    float weightMinus =  (float($weight) + 4) / 2 + 1;
+    
+    float result = clamp((resultAdd*weightPlus) - (resultSub*weightMinus),0.0,1.0);
+
+    vec3 preview = #Input.rgb;
+    
+    float _range = (clamp(result,0.0,1.0));
+    vec3 range = vec3(mix(_range,1.0-_range,float($Invert)));
+
+    vec3 previewSplit = mix(range,preview,d);
+
+    Output = vec4 (mix(range,previewSplit,float($preview)),#Input.a);
+
+            ]]></Body>
+        </Shader>
+    </Context>
+  </Contexts>
+
+</Node>

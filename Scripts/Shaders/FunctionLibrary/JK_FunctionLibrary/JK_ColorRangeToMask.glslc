@@ -1,0 +1,48 @@
+////////////////////////////////////////////////////////////////////////////////
+// Mari Ideascale Procedural Library
+// Copyright (c) 2013 Jens Kafitz. All Rights Reserved.
+////////////////////////////////////////////////////////////////////////////////
+// File: JK_ColorRangeToMask.glslc
+// Description: Required Functions for ColorRange To Mask Node.
+////////////////////////////////////////////////////////////////////////////////
+// Author: Jens Kafitz | Mari Ideascale
+// Web: www.campi3d.com
+// Web: www.mari.ideascale.com
+// Email: info@campi3d.com
+////////////////////////////////////////////////////////////////////////////////
+// Date: April 16, 2014
+////////////////////////////////////////////////////////////////////////////////
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+////////////////////////////////////////////////////////////////////////////////
+
+
+// Forward declarations
+vec4 mriRgb2Hsv(vec4 colorIn);
+vec4 mriHsv2Rgb(vec4 colorIn);
+
+
+// Enhancing picked Colorranges by applying a vibrancy function for Saturation
+// Default Values for ColorRange to mask are (InputColor,0.2,0.3,3.5)
+
+vec4 fullVibrance(vec4 inputColor,float max, float min, float power)
+{ 
+         vec4 input_hsv = mriRgb2Hsv(inputColor);
+         float satClamp = input_hsv.g;
+         float range = 1.0 - (((max - min) * satClamp) + min) ;
+         float saturation = pow(range,power);
+         satClamp = satClamp + saturation;
+         input_hsv = mriHsv2Rgb(vec4(input_hsv.r,satClamp,input_hsv.b,1.0));
+         return input_hsv;
+	
+}
