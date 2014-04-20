@@ -38,6 +38,8 @@ Node Description: ==============================================================
 Background:		Allows you to show the result of the Channel without the Adjustment applied.
 				This is useful for color picking.
 
+Stencil:		Will overlay the mask over the background
+
 Wipe:			A viewport wipe between picked Colors and Background
 
 Reverse Wipe:	Invert the Screenwipe
@@ -52,10 +54,17 @@ Subtr. Slots:	The Amount of Colors to be sampled for additive selection (max 4)
 
 Gain:			The higher the value the more you will blow out your selection
 
-Enhance:		With Enhance ticked on all color evaluations will be run on saturated versions.
-				This can help to fill gaps in your selection
-
 Invert:			Will Invert the selection result
+
+
+--- Enhance SELECTION ---
+
+
+Enhance:		With Enhance ticked on all color evaluations will be run on saturated versions.
+		 	This can help to fill gaps in your selection
+
+Min/Max:		Will set the minimum values for the curve along which the saturation is increased.
+
 
 --- ADDITIVE SELECTION ---
 

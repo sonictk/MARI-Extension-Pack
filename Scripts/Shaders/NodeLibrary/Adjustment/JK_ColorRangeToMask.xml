@@ -11,7 +11,8 @@
         <Input Name="Input"></Input>
     </Inputs>
     <Attributes>
-        <Attribute Name="preview" PrettyName = "Show Background" Group="Color Picking" Type="bool" Min="true" Max="false">false</Attribute>
+        <Attribute Name="preview" PrettyName = "Show Background" Group="Color Picking" Type="bool" Min="true" Max="false">true</Attribute>
+        <Attribute Name="stencil" PrettyName = "Stencil" Group="Color Picking" Type="bool" Min="true" Max="false">true</Attribute>
         <Attribute Name="wipe" Group="Color Picking" Type="float" Min="0.0" Max="1.0">0.5</Attribute>
         <Attribute Name="inverseBuffer" PrettyName = "Reverse Wipe" Group="Color Picking" Type="bool" Min="true" Max="false">false</Attribute>
         
@@ -62,6 +63,7 @@
     float d = (_buffer-($wipe-0.005))/(($wipe+0.005)-($wipe-0.005));
     float d1 = clamp(mix(0.0,1.0,d),0.0,1.0);
     d = mix(d1,1.0-d1,float($inverseBuffer));
+
 
 
 // SELECTION ENHANCEMENT MIX VARIABLES
@@ -149,13 +151,14 @@
     float weightPlus = (float($weight) - 4) / - 2 +1;
     float weightMinus =  (float($weight) + 4) / 2 + 1;
     
-    float result = clamp((resultAdd*weightPlus) - (resultSub*weightMinus),0.0,1.0);
+    float result = clamp(((resultAdd*weightPlus) - (resultSub*weightMinus)),0.0,1.0);
 
     vec3 preview = #Input.rgb;
     
     float _range = (clamp(result,0.0,1.0));
     vec3 range = vec3(mix(_range,1.0-_range,float($Invert)));
 
+    range = mix(range,preview,(1-range)*(float($stencil)*float($preview)));
     vec3 previewSplit = mix(range,preview,d);
 
     Output = vec4 (mix(range,previewSplit,float($preview)),#Input.a);
