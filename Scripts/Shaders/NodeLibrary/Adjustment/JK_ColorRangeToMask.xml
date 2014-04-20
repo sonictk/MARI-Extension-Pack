@@ -78,24 +78,24 @@
   {
 
 
-         trhsv_input = jk_enhanceSelection(#Input,0.2,0.3,3.5);
+         trhsv_input = fullVibrance(#Input,0.2,0.3,3.5);
 
     // Converting Additive Colors
 
-        trhsv_input_1 = jk_enhanceSelection($Color1,0.2,0.3,3.5);
-        trhsv_input_2 =  ($AdditiveSlots>1) ? jk_enhanceSelection($Color2,0.2,0.3,3.5) : vec4(0.0);
-        trhsv_input_3 =  ($AdditiveSlots>2) ? jk_enhanceSelection($Color3,0.2,0.3,3.5) : vec4(0.0);
-        trhsv_input_4 =  ($AdditiveSlots>3) ? jk_enhanceSelection($Color4,0.2,0.3,3.5) : vec4(0.0);
+        trhsv_input_1 = fullVibrance($Color1,0.2,0.3,3.5);
+        trhsv_input_2 =  ($AdditiveSlots>1) ? fullVibrance($Color2,0.2,0.3,3.5) : vec4(0.0);
+        trhsv_input_3 =  ($AdditiveSlots>2) ? fullVibrance($Color3,0.2,0.3,3.5) : vec4(0.0);
+        trhsv_input_4 =  ($AdditiveSlots>3) ? fullVibrance($Color4,0.2,0.3,3.5) : vec4(0.0);
 
     // Converting Subtractive Colors
 
             if ($SubtrSlots > 0)
             {
 
-        trhsv_input_5 = jk_enhanceSelection($Color5,0.2,0.3,3.5);
-        trhsv_input_6 =  ($SubtrSlots>1) ? jk_enhanceSelection($Color6,0.2,0.3,3.5) : vec4(0.0);
-        trhsv_input_7 =  ($SubtrSlots>2) ? jk_enhanceSelection($Color7,0.2,0.3,3.5) : vec4(0.0);
-        trhsv_input_7 =  ($SubtrSlots>3) ? jk_enhanceSelection($Color8,0.2,0.3,3.5) : vec4(0.0);
+        trhsv_input_5 = fullVibrance($Color5,0.2,0.3,3.5);
+        trhsv_input_6 =  ($SubtrSlots>1) ? fullVibrance($Color6,0.2,0.3,3.5) : vec4(0.0);
+        trhsv_input_7 =  ($SubtrSlots>2) ? fullVibrance($Color7,0.2,0.3,3.5) : vec4(0.0);
+        trhsv_input_7 =  ($SubtrSlots>3) ? fullVibrance($Color8,0.2,0.3,3.5) : vec4(0.0);
 
             }
 
