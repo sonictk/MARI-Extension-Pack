@@ -19,8 +19,11 @@
         <Attribute Name="SubtrSlots" PrettyName = "Subtractive Slots" Group="Global" Type="int" Min="0" Max="4">0</Attribute>
         <Attribute Name="weight" PrettyName = "+/- bias" Group="Global" Type="float" Min="-4.0" Max="4.0">0.0</Attribute>
         <Attribute Name="globFuzz" PrettyName = "Gain" Group="Global" Type="float" Min="0.0" Max="1.0">0.5</Attribute>
-        <Attribute Name="Enhance" PrettyName = "Enhance Selection" Group="Global" Type="bool" Min="true" Max="false">false</Attribute>
         <Attribute Name="Invert" PrettyName = "Invert" Group="Global" Type="bool" Min="true" Max="false">false</Attribute>
+
+        <Attribute Name="Enhance" PrettyName = "Enhance Selection" Group="Enhance Selection" Type="bool" Min="true" Max="false">false</Attribute>
+        <Attribute Name="RangeMin" PrettyName = "Range Min" Group="Enhance Selection" Type="float" Min="0.0" Max="1.0">0.2</Attribute>
+        <Attribute Name="RangeMax" PrettyName = "Range Max" Group="Enhance Selection" Type="float" Min="0.0" Max="1.0">0.3</Attribute>
 
         <Attribute Name="Color1" PrettyName = "Color A" Group="Additive Selection" Type="color" >(1.0,1.0,1.0,1)</Attribute>
         <Attribute Name="FuzzinessA" PrettyName = "Expand A" Group="Additive Selection" Type="float" Min="0.01" Max="1.0">0.5</Attribute>
@@ -75,27 +78,30 @@
 
 
   if ($Enhance == true)
-  {
+  {     
+        float rangeMin = float($RangeMin);
+        float rangeMax = float($RangeMax);
 
 
-         trhsv_input = fullVibrance(#Input,0.2,0.3,3.5);
+
+         trhsv_input = fullVibrance(#Input,rangeMin,rangeMax,3.5);
 
     // Converting Additive Colors
 
-        trhsv_input_1 = fullVibrance($Color1,0.2,0.3,3.5);
-        trhsv_input_2 =  ($AdditiveSlots>1) ? fullVibrance($Color2,0.2,0.3,3.5) : vec4(0.0);
-        trhsv_input_3 =  ($AdditiveSlots>2) ? fullVibrance($Color3,0.2,0.3,3.5) : vec4(0.0);
-        trhsv_input_4 =  ($AdditiveSlots>3) ? fullVibrance($Color4,0.2,0.3,3.5) : vec4(0.0);
+        trhsv_input_1 = fullVibrance($Color1,rangeMin,rangeMax,3.5);
+        trhsv_input_2 =  (float($AdditiveSlots)>1.00) ? fullVibrance($Color2,rangeMin,rangeMax,3.5) : vec4(0.0);
+        trhsv_input_3 =  (float($AdditiveSlots)>2.00) ? fullVibrance($Color3,rangeMin,rangeMax,3.5) : vec4(0.0);
+        trhsv_input_4 =  (float($AdditiveSlots)>3.00) ? fullVibrance($Color4,rangeMin,rangeMax,3.5) : vec4(0.0);
 
     // Converting Subtractive Colors
 
             if ($SubtrSlots > 0)
             {
 
-        trhsv_input_5 = fullVibrance($Color5,0.2,0.3,3.5);
-        trhsv_input_6 =  ($SubtrSlots>1) ? fullVibrance($Color6,0.2,0.3,3.5) : vec4(0.0);
-        trhsv_input_7 =  ($SubtrSlots>2) ? fullVibrance($Color7,0.2,0.3,3.5) : vec4(0.0);
-        trhsv_input_7 =  ($SubtrSlots>3) ? fullVibrance($Color8,0.2,0.3,3.5) : vec4(0.0);
+        trhsv_input_5 = fullVibrance($Color5,rangeMin,rangeMax,3.5);
+        trhsv_input_6 =  (float($SubtrSlots)>1.00) ? fullVibrance($Color6,rangeMin,rangeMax,3.5) : vec4(0.0);
+        trhsv_input_7 =  (float($SubtrSlots)>2.00) ? fullVibrance($Color7,rangeMin,rangeMax,3.5) : vec4(0.0);
+        trhsv_input_8 =  (float($SubtrSlots)>3.00) ? fullVibrance($Color8,rangeMin,rangeMax,3.5) : vec4(0.0);
 
             }
 
