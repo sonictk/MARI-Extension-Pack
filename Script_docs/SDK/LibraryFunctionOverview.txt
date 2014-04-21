@@ -461,6 +461,9 @@ float nb_sq(float x)
  // random float generator [0,1]
  float rnd_1d(vec2 x);
 
+ // Enhancing picked Colorranges by applying a vibrancy function for Saturation
+vec4 fullVibrance(vec4 inputColor,float max, float min, float power)
+
 
 
 
