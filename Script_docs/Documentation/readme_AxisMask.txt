@@ -77,6 +77,7 @@ History: =======================================================================
 # History:
 # - 02/1/14		1.0 Release
 # - 02/08/14	1.01 Release with new Autoloader Structure
+# - 04/21/14	1.02 Release. Fixed an Error when used in a Channel plugged into Displacement preview
 
 
 Credits: ============================================================================

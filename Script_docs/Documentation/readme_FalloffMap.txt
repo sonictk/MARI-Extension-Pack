@@ -52,6 +52,7 @@ The Node will appear under the Custom Folder in the /Procedurals/Environment/ Fo
 History: ============================================================================
 
 # 3/3/14 Released v1.0 for Mari 2.5
+# 04/21/14 Stabilized Paint Baking for Facing Ratio and Shadow/Light Mode
 
 
 

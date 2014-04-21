@@ -68,6 +68,7 @@ History: =======================================================================
 # - 11/15/13	1.1 Release for Mari 2.5, modified for consistency with DT3D Function Lib
 # - 12/14/13	Release for Mari 2.5 with python structure
 # - 02/08/13	Release with new Autoloader Structure
+# - 04/21/13	Fixed a bug when Node was used in Shader Displacement Preview
 
 Credits: ============================================================================
 

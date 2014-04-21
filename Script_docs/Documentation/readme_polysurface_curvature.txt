@@ -62,3 +62,4 @@ History: =======================================================================
 
 # - 12/16/13 - First Release for Mari 2.5. 
 # - 02/08/14 - New Autoloader Structure
+# - 04/21/14 - Fixed Shader Error when Node used in a Displacement Preview

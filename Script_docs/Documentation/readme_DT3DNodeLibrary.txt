@@ -32,7 +32,7 @@ This is a Mari procedural nodelibrary that adds new procedural types like
 
 Known issues: =======================================================================
 
-Paintable Gabor is prone to causing Diaplay Driver crashes when used in the Displacement Preview
+Paintable Gabor is prone to causing Display Driver crashes after a while when used in the Displacement Preview
 Slot of a Shader
 
 
@@ -76,6 +76,9 @@ History: =======================================================================
 #				Flow Paintable Gabor Noise
 # - 02/08/14    Released with new Autoloader Structure
 # - 03/03/14    Added UVSpace Transformations, refactored UI
+# - 04/21/14    Gabor will no longer throw an error when used in a Displacement Preview Shader,
+				however it is discouraged to use it in such a way due to stability issues in the Displacement preview.
+				
 
 
 
