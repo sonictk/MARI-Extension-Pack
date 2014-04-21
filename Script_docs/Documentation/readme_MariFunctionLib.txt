@@ -82,7 +82,7 @@ History: =======================================================================
 # - 02/11/14    Fixed a bug with vec3+vec4 remaps
 # - 03/03/14    v1.07 release. NB_ Function Branch added, various additions in ID + DT3D Library
 #               Updated SDK Documentation
-
+# - 04/21/14    v1.07.05 release. Fixed a problem with UV Transformations, added Vibrance() Function
 
 
 
