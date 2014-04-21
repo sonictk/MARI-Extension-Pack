@@ -30,7 +30,10 @@ This is a Mari procedural nodelibrary that adds new procedural types like
 /Procedural/Custom/FBM/Brownian
 /Procedural/Custom/multiFractal/Ridged Multi Noise
 
+Known issues: =======================================================================
 
+Paintable Gabor is prone to causing Diaplay Driver crashes when used in the Displacement Preview
+Slot of a Shader
 
 
 Requirements: =======================================================================
