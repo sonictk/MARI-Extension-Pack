@@ -1,0 +1,242 @@
+<Node>
+  <ID> Cylindrical Projection</ID>
+  <Category>Environment/Custom/</Category>
+  <DefaultName>Cylindrical Projection</DefaultName>
+  <Cost>0.01</Cost>
+  <CostDescription>Some calculations</CostDescription>
+  <Description>Project Image as Cylindrical Projection</Description>
+  <Inputs>
+      <Input Name="Mask"></Input>
+      <Input Name="Position"></Input>
+      <Input Name="Normal"></Input>
+  </Inputs>
+  <Attributes>
+   <!--===============================================================================================================-->
+  <Attribute Name="Map"           PrettyName="TextureMap"        Group="Texture Map"  Type="image" GenerateMipMaps="false"   ></Attribute>  
+  <Attribute Name="ImageRot"      PrettyName="Image Rotation"    Group="Texture Map"  Type="double" Min="0"     Max="360"    >0</Attribute>
+  <!--===============================================================================================================-->
+  <Attribute Name="RepX"          PrettyName="RepeatU"          Group="UV Size"     Type="double" Min="0"     Max="100"    >1</Attribute>
+  <Attribute Name="RepY"          PrettyName="RepeatV"          Group="UV Size"     Type="double" Min="0"     Max="100"    >1</Attribute>
+  <Attribute Name="WorldScale"    PrettyName="WorldScale"       Group="UV Size"     Type="double" Min="0"     Max="1000"    >5</Attribute>
+  <!--===============================================================================================================-->
+  <Attribute Name="Length"        PrettyName="Length"           Group="Cylinder Dimension"   Type="double" Min="0"     Max="1000"    >100</Attribute>
+  <Attribute Name="R"             PrettyName="Radius"           Group="Cylinder Dimension"   Type="double" Min="0.00001"     Max="100"    >1000</Attribute>
+  <!--===============================================================================================================-->
+  <Attribute Name="ClipC"         PrettyName="Plane Slice Start"    Group="Pie Clip"            Type="double" Min="0"      Max="1"     >0.0</Attribute>
+  <Attribute Name="ClipCFine"     PrettyName="Offset"           Group="Pie Clip"            Type="double" Min="-1"      Max="1"     >0.0</Attribute>
+  <Attribute Name="ClipD"         PrettyName="Plane Slice End"      Group="Pie Clip"            Type="double" Min="0"      Max="1"     >1.0</Attribute>
+  <Attribute Name="ClipDFine"     PrettyName="Offset"           Group="Pie Clip"            Type="double" Min="-1"      Max="1"     >0.0</Attribute>
+  <Attribute Name="ClipA"         PrettyName="Slice Start"      Group="Pie Clip"            Type="double" Min="0"      Max="360"     >0</Attribute>
+  <Attribute Name="ClipAFine"     PrettyName="Offset"           Group="Pie Clip"            Type="double" Min="-5"      Max="5"     >0.0</Attribute>
+  <Attribute Name="ClipB"         PrettyName="Slice End"        Group="Pie Clip"            Type="double" Min="0"      Max="360"     >360</Attribute>
+  <Attribute Name="ClipBFine"     PrettyName="Offset"           Group="Pie Clip"            Type="double" Min="-5"      Max="5"     >0.0</Attribute>
+  <!--===============================================================================================================-->
+  <Attribute Name="XOffset"       PrettyName="X Offset"         Group="Transform Offset"   Type="double"  Min="-10000"     Max="10000"    >0</Attribute>
+  <Attribute Name="XFine"         PrettyName="Offset"           Group="Transform Offset"   Type="double" Min="-10"     Max="10"       >0</Attribute>
+  <Attribute Name="YOffset"       PrettyName="Y Offset"         Group="Transform Offset"   Type="double" Min="-10000"     Max="10000" >0</Attribute>
+  <Attribute Name="YFine"         PrettyName="Offset"           Group="Transform Offset"   Type="double" Min="-10"     Max="10"        >0</Attribute>
+  <Attribute Name="ZOffset"       PrettyName="Z Offset"         Group="Transform Offset"   Type="double"  Min="-10000"     Max="10000"  >0</Attribute>
+  <Attribute Name="ZFine"         PrettyName="Offset"            Group="Transform Offset"   Type="double" Min="-10"     Max="10"        >0</Attribute>
+  <!--===============================================================================================================-->
+  <Attribute Name="rX"            PrettyName="Rotate X"         Group="Transform Rotate"   Type="double" Min="0"     Max="360"                       >90</Attribute>
+  <Attribute Name="rY"            PrettyName="Rotate Y"         Group="Transform Rotate"   Type="double" Min="0"     Max="360"                       >0</Attribute>
+  <Attribute Name="rZ"            PrettyName="Rotate Z"         Group="Transform Rotate"   Type="double" Min="0"     Max="360"                       >0</Attribute>
+  <!--===============================================================================================================-->
+  <Attribute Name="PreviewPos"    PrettyName="Display Object Position as Color Value"     Group="Transform Helpers"   Type="bool"                      >false</Attribute>
+  <Attribute Name="ObjCentre"     PrettyName="Move Initial Offset to Object's Centre"            Group="Transform Helpers"   Type="bool"                      >false</Attribute>
+  <Attribute Name="OffsetMult"    PrettyName="Transform / Clip Offset Multiplier"                          Group="Transform Helpers"            Type="double" Min="0.001"      Max="100"     >1.0</Attribute>
+  <!--===============================================================================================================-->  
+
+  </Attributes>
+    <Contexts>
+      <Context Type="NodeGraphView">
+          <Inputs>
+              <Input Name="Mask"><Pos>100,0</Pos></Input>
+              <Input Name="Position"><Pos>100,-20</Pos></Input>
+              <Input Name="Normal"><Pos>100,+20</Pos></Input>
+          </Inputs>
+      </Context>
+      <Context Type="GLSL">
+          <Shader ShaderType='Fragment'>
+              <Inputs>
+                  <Input Name="Position"></Input>
+                  <Input Name="Normal"><Default>State.Normal</Default></Input>
+              </Inputs>
+          </Shader>
+
+          <Shader ShaderType='TessEvaluation'>
+              <Inputs>
+                  <Input Name="Position"><Default>State.Position</Default></Input>
+                  <Input Name="Normal"><Default>State.Normal</Default></Input>
+              </Inputs>
+          </Shader>
+
+          <Shader>
+              <Inputs>
+                  <Input Name="Mask"><Default>vec4(1,1,1,1)</Default></Input>
+                  <Input Name="Position"><Default>vec3(0,0,0)</Default></Input>
+                  <Input Name="Normal"><Default>vec3(0,0,1)</Default></Input>
+              </Inputs>
+              <Body>
+    <![CDATA[
+
+
+const float PI=3.1415926538979 ;
+
+
+//-----------------------------------------------------------
+// Transformation Projection Cylinder
+//-----------------------------------------------------------
+
+float XOffset = $XOffset + ($XFine*$OffsetMult);
+float YOffset = $YOffset + ($YFine*$OffsetMult);
+float ZOffset = $ZOffset + ($ZFine*$OffsetMult);
+vec3 trans = vec3(XOffset,YOffset,ZOffset);
+vec3 rotate = vec3($rX,$rY,$rZ);
+
+
+vec3 scale = vec3(float($WorldScale),float($WorldScale),1.0);
+vec3 _P = mix(State.Position,State.Position-u_MriObjectCenter,float($ObjCentre));
+vec3 _PP = positionTransform(_P,trans,rotate,scale);
+
+float x= _PP.x;
+float y= _PP.z;
+float z= _PP.y;
+
+
+// Generating Original Position with just rotation as well. 
+// This is necessary to evaluate Radius and Length correctly when Cylinder is rotated
+
+vec3 _PPOrig = positionTransform(_P,vec3(0.0),rotate,vec3(1.0));
+
+
+//-----------------------------------------------------------
+// Image Rotation
+//-----------------------------------------------------------
+
+float angleRads = radians( $ImageRot);
+float cosAngle = cos( angleRads);
+float sinAngle = sin( angleRads);
+mat2 ImageRot = mat2( cosAngle, -sinAngle, sinAngle, cosAngle );
+
+
+//-----------------------------------------------------------
+// Main Cylindrical Projection Coordinates
+//-----------------------------------------------------------
+
+
+
+float ss = 1-(atan(x,z) + PI ) / (2.0*PI);
+float tt = (1-y)/float($Length);
+vec2 _uv = vec2(ss,tt);
+vec2 _uvP = vec2(ss,(1.0-y));
+vec2 rep = vec2($RepX,$RepY)*vec2($WorldScale);
+
+vec2 _uvC = _uv*rep;
+
+
+
+//-----------------------------------------------------------
+// Alpha Clipping - Pie Style
+//-----------------------------------------------------------
+
+vec2 _uvA1 = (_uvP)/4.0;
+vec2 _uvA2 = (_uvP)/(length(_PP.z)+float($Length));
+
+
+// Vertical Clip in Angle of Cylinder
+
+float Angle = 0.0 ;
+vec2 N_1 = -vec2(cos(Angle),sin(Angle));
+N_1 = normalize(N_1);
+vec2 P_1 = N_1*0.5+vec2(0.5);
+float d_1 = -dot(N_1,P_1)+vec2(0.5);
+float D_1 = (dot(N_1,_uvA1)+d_1)/length(P_1);
+D_1 /=0.5;
+D_1 = fract(1.0-D_1);
+
+
+// // Horizontal Clip in Percentage of Cylinder Length
+
+float Angle_2 = 90*(PI/180.0);
+vec2 N_2 = -vec2(cos(Angle_2),sin(Angle_2)) ;
+N_2 = (N_2);
+vec2 P_2 = N_2*0.5+vec2(0.5);
+float d_2 = -dot(N_2,P_2)+vec2(0.5);
+float D_2 = (dot(N_2,_uvA2));
+D_2 /=0.5;
+D_2 = 1.0-D_2;
+
+
+// Clip Values
+
+float ClipA = $ClipA/360 + $ClipAFine/360;
+float ClipB = $ClipB/360 + $ClipBFine/360;
+float ClipC = $ClipC + ( ($ClipCFine*$OffsetMult) /10);
+float ClipD = $ClipD + ( ($ClipDFine*$OffsetMult) /10);
+
+// Hard edged clip
+
+float D1 = (D_1-ClipA)/((ClipA+0.0000000000000000000000000000000001)-ClipA);
+float D2 = 1-((D_1-ClipB)/((ClipB+0.0000000000000000000000000000000001)-ClipB));
+float D3 = (D_2-ClipC)/((ClipC+0.0000000000000000000000000000000001)-ClipC);
+float D4 = 1-((D_2-ClipD)/((ClipD+0.0000000000000000000000000000000001)-ClipD));
+
+
+// creating black and white clip mask from Pie Clip
+
+float mixval_1 = mix(vec4(0.0),vec4(1.0),D1);
+float mixval_2 = mix(vec4(0.0),vec4(1.0),D2);
+float mixval_3 = mix(vec4(0.0),vec4(1.0),D3);
+float mixval_4 = mix(vec4(0.0),vec4(1.0),D4);
+
+
+// Creating Alpha Result from PieClipMask
+
+float AlphaResult = min((mixval_1*mixval_2),(mixval_3*mixval_4)) ;
+
+
+// Generating Projection Bound Limits from Length and Radius
+
+vec3 boundingBox;
+boundingBox.x = ( (_PPOrig.x > ($XOffset + ($XFine*$OffsetMult) + $R)) || (_PPOrig.x < ($XOffset + ($XFine*$OffsetMult) - $R)) ) ? 0.0 : 1.0; 
+boundingBox.y = ( (_PPOrig.y > ($YOffset + ($YFine*$OffsetMult) + $R)) || (_PPOrig.y < ($YOffset + ($YFine*$OffsetMult) - $R)) ) ? 0.0 : 1.0; 
+boundingBox.z = ( (_PPOrig.z > ($ZOffset + ($ZFine*$OffsetMult) + ($Length) )) || (_PPOrig.z < ($ZOffset + ($ZFine*$OffsetMult) - ($Length) )) ) ? 0.0 : 1.0; 
+float boxAlpha = (boundingBox.x*boundingBox.y*boundingBox.z);
+
+
+
+//-----------------------------------------------------------
+// Result combining
+//-----------------------------------------------------------
+
+
+vec4 result;
+
+// Position Preview vs Projection Result
+
+if ($PreviewPos) 
+  {
+    result = vec4(State.Position,1.0);
+  }
+
+else
+  {
+  vec4 ColorResult = texture2D( $Map, _uvC*ImageRot);
+  result = ColorResult;
+
+// Alpha Combination from ImageAlpha, PieClipMask and ProjectionBoundingBox
+
+  result.a =  (AlphaResult*ColorResult.a) * boxAlpha ;
+  }
+
+Output = result;
+
+
+
+        ]]>
+              </Body>
+          </Shader>
+      </Context>
+  </Contexts>
+</Node>
