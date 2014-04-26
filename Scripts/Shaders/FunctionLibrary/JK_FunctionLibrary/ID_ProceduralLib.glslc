@@ -280,7 +280,7 @@ vec2 patchCoord( vec2 uv, float x, float y)
 // pivotU and pivotV can be used to set rotational pivot on a patch (corner, center)
 vec2 patchRotate(vec2 uvCoord, float angle, float pivotU, float pivotV)
 {
-    vec2 patchRotate;
+    vec2 patchRotation;
 
     // Generate rotationMatrix
     mat2 rotationMatrix = nb_uvRotation(angle);
@@ -290,13 +290,13 @@ vec2 patchRotate(vec2 uvCoord, float angle, float pivotU, float pivotV)
 
 
     // Perform Offset and rotation
-    patchRotate = uvCoord + offsetToCenter;
-    patchRotate = rotationMatrix * patchRotate;
+    patchRotation = uvCoord + offsetToCenter;
+    patchRotation = rotationMatrix * patchRotation;
 
     // Reset Offset
-    patchRotate = patchRotate - offsetToCenter;
+    patchRotation = patchRotation - offsetToCenter;
 
-    return patchRotate;
+    return patchRotation;
 }
 
 // relUVTransform
