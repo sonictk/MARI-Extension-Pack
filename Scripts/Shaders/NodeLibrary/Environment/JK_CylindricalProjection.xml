@@ -139,13 +139,10 @@ vec3 _PP = positionTransform(_PzP,trans,rot,scale);
 
 
 
-
-
 // Generating Original Position with just rotation as well. 
 // This is necessary to evaluate Radius and Length correctly when Cylinder is rotated
 
 vec3 _PPOrig = positionTransform(_P,vec3(0.0),vec3($rX,$rY,$rZ),scale);
-
 
 
 
@@ -202,23 +199,6 @@ D_1 /=0.5;
 D_1 = fract(1.0-D_1);
 
 
-// Horizontal Clip in Percentage of Cylinder Length
-// Old method, doesn't work correctly of length
-
-float Angle_2 = 90*(PI/180.0);
-vec2 N_2 = -vec2(cos(Angle_2),sin(Angle_2)) ;
-N_2 = (N_2);
-vec2 P_2 = N_2*0.5+vec2(0.5);
-float d_2 = -dot(N_2,P_2)+vec2(0.5);
-float D_2 = (dot(N_2,_uvA2));
-D_2 /=0.5;
-D_2 = 1.0-D_2;
-
-// Plane Size Clip of Cylinder - new
-
-
-
-
 // Clip Values
 
 float ClipA = $ClipA/360 + $ClipAFine/360;
@@ -230,21 +210,15 @@ float ClipD = $ClipD + ( ($ClipDFine*$OffsetMult) /10);
 
 float D1 = (D_1-ClipA)/((ClipA+0.0000000000000000000000000000000001)-ClipA);
 float D2 = 1-((D_1-ClipB)/((ClipB+0.0000000000000000000000000000000001)-ClipB));
-float D3 = (D_2-ClipC)/((ClipC+0.0000000000000000000000000000000001)-ClipC);
-float D4 = 1-((D_2-ClipD)/((ClipD+0.0000000000000000000000000000000001)-ClipD));
-
 
 // creating black and white clip mask from Pie Clip
 
 float mixval_1 = mix(vec4(0.0),vec4(1.0),D1);
 float mixval_2 = mix(vec4(0.0),vec4(1.0),D2);
-float mixval_3 = mix(vec4(0.0),vec4(1.0),D3);
-float mixval_4 = mix(vec4(0.0),vec4(1.0),D4);
 
+// Creating Alpha Result from PieSliceMask, horizontal Segment clipping is created via Projection Limits
 
-// Creating Alpha Result from PieClipMask
-
-float AlphaResult = min((mixval_1*mixval_2),(mixval_3*mixval_4)) ;
+float AlphaResult = mixval_1*mixval_2 ;
 
 
 // Generating Projection Bound Limits from Length and Radius
@@ -252,11 +226,12 @@ float AlphaResult = min((mixval_1*mixval_2),(mixval_3*mixval_4)) ;
 vec3 boundingBox;
 boundingBox.x = ( (_PPOrig.x > (XOffset + $R)) || (_PPOrig.x < (XOffset - $R)) ) ? 0.0 : 1.0; 
 boundingBox.y = ( (_PPOrig.y > (YOffset + $R)) || (_PPOrig.y < (YOffset - $R)) ) ? 0.0 : 1.0; 
-boundingBox.z = ( (_PP.z > (ZOffset + ($Length) )) || (_PP.z < (ZOffset - ($Length) )) ) ? 0.0 : 1.0; 
 
-// Version with Offset of Length to Base of Cylinder. Problems with correct numbers from Offset so not user friendly
-// boundingBox.z = ( (_PP.z > (ZOffset + ($Length/2.0) )) || (_PP.z < (ZOffset - ($Length/2.0) )) ) ? 0.0 : 1.0; 
+// Original without Plane Slicing
+// boundingBox.z = ( (_PP.z  > (ZOffset + ($Length) )) || (_PP.z < (ZOffset - ($Length) )) ) ? 0.0 : 1.0; 
 
+// Using "Length" method for evaluating Slice Clip. Comparing Value of Z + ZOffset + Length to get proper Z Size of Cylinder
+boundingBox.z = ( (_PP.z + (ClipC*$Length*2) > (ZOffset + ($Length) )) || (_PP.z - ((1.0-ClipD)*$Length*2)< (ZOffset - ($Length) )) ) ? 0.0 : 1.0; 
 
 
 
@@ -286,8 +261,8 @@ else
 // Alpha Combination from ImageAlpha, PieClipMask and ProjectionBoundingBox
 
 // With Clipping mask Reactivate when done
-  // result.a =  (AlphaResult*ColorResult.a) * boxAlpha ;
-    result.a =  clamp( (ColorResult.a) * boxAlpha,0.0,1.0) ;
+  result.a =  (AlphaResult*ColorResult.a) * boxAlpha ;
+    // result.a =  clamp( (ColorResult.a) * boxAlpha,0.0,1.0) ;
   }
 
 Output = result;
