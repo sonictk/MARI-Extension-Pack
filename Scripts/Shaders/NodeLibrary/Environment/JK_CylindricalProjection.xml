@@ -10,19 +10,19 @@
   </Inputs>
   <Attributes>
    <!--===============================================================================================================-->
-  <Attribute Name="Debug"    PrettyName="Debug Pattern"           Group="Texture Map"   Type="bool"                      >false</Attribute>
+  <Attribute Name="Debug"         PrettyName="Debug Pattern"     Group="Texture Map"   Type="bool"                      >false</Attribute>
   <Attribute Name="Map"           PrettyName="Texture Map"       Group="Texture Map"  Type="image" GenerateMipMaps="false"   ></Attribute>  
   <Attribute Name="ImageRot"      PrettyName="Image Rotation"    Group="Texture Map"  Type="double" Min="0"     Max="360"    >0</Attribute>
-  <Attribute Name="Spin"          PrettyName="Slide UVs"       Group="Texture Map"  Type="double" Min="0"     Max="360"    >0</Attribute>
+  <Attribute Name="Spin"          PrettyName="Slide UVs"         Group="Texture Map"  Type="double" Min="0"     Max="360"    >0</Attribute>
   <!--===============================================================================================================-->
   <Attribute Name="Length"        PrettyName="Length"           Group="Cylinder Dimension"   Type="double" Min="0"     Max="1000"    >50</Attribute>
   <Attribute Name="R"             PrettyName="Radius"           Group="Cylinder Dimension"   Type="double" Min="0.00001"     Max="1000"    >1000</Attribute>
   <!--===============================================================================================================-->
   <Attribute Name="RepX"          PrettyName="RepeatU"          Group="UV Size"     Type="double" Min="0"     Max="100"    >1</Attribute>
   <Attribute Name="RepY"          PrettyName="RepeatV"          Group="UV Size"     Type="double" Min="0"     Max="100"    >20</Attribute>
-  <Attribute Name="WorldScale"    PrettyName="UV Scale"       Group="UV Size"     Type="double" Min="0"     Max="100"    >5</Attribute>
+  <Attribute Name="WorldScale"    PrettyName="UV Scale"         Group="UV Size"     Type="double" Min="0"     Max="100"    >5</Attribute>
   <!--===============================================================================================================-->
-   <Attribute Name="XOffset"       PrettyName="X Offset"         Group="Offset Pivot (World)"   Type="double"  Min="-10000"     Max="10000"    >0</Attribute>
+   <Attribute Name="XOffset"       PrettyName="X Offset"        Group="Offset Pivot (World)"   Type="double"  Min="-10000"     Max="10000"    >0</Attribute>
   <Attribute Name="XFine"         PrettyName="Offset"           Group="Offset Pivot (World)"   Type="double" Min="-10"     Max="10"       >0</Attribute>
   <Attribute Name="YOffset"       PrettyName="Y Offset"         Group="Offset Pivot (World)"   Type="double" Min="-10000"     Max="10000" >0</Attribute>
   <Attribute Name="YFine"         PrettyName="Offset"           Group="Offset Pivot (World)"   Type="double" Min="-10"     Max="10"        >0</Attribute>
@@ -38,13 +38,13 @@
   <Attribute Name="rlZ"            PrettyName="Rotate Z"         Group="Transform Rotate (Local)"   Type="double" Min="0"     Max="360"                       >0</Attribute>
   <!--===============================================================================================================-->
   <Attribute Name="ClipC"         PrettyName="Plane Slice Start" Group="Pie Clip"            Type="double" Min="0"      Max="1"     >0.0</Attribute>
-  <Attribute Name="ClipCFine"     PrettyName="Offset"           Group="Pie Clip"            Type="double" Min="-1"      Max="1"     >0.0</Attribute>
-  <Attribute Name="ClipD"         PrettyName="Plane Slice End"  Group="Pie Clip"            Type="double" Min="0"      Max="1"     >1.0</Attribute>
-  <Attribute Name="ClipDFine"     PrettyName="Offset"           Group="Pie Clip"            Type="double" Min="-1"      Max="1"     >0.0</Attribute>
-  <Attribute Name="ClipA"         PrettyName="Pie Slice Start"      Group="Pie Clip"            Type="double" Min="0"      Max="360"     >0</Attribute>
-  <Attribute Name="ClipAFine"     PrettyName="Offset"           Group="Pie Clip"            Type="double" Min="-5"      Max="5"     >0.0</Attribute>
-  <Attribute Name="ClipB"         PrettyName="Pie Slice End"        Group="Pie Clip"            Type="double" Min="0"      Max="360"     >360</Attribute>
-  <Attribute Name="ClipBFine"     PrettyName="Offset"           Group="Pie Clip"            Type="double" Min="-5"      Max="5"     >0.0</Attribute>
+  <Attribute Name="ClipCFine"     PrettyName="Offset"            Group="Pie Clip"            Type="double" Min="-1"      Max="1"     >0.0</Attribute>
+  <Attribute Name="ClipD"         PrettyName="Plane Slice End"   Group="Pie Clip"            Type="double" Min="0"      Max="1"     >1.0</Attribute>
+  <Attribute Name="ClipDFine"     PrettyName="Offset"            Group="Pie Clip"            Type="double" Min="-1"      Max="1"     >0.0</Attribute>
+  <Attribute Name="ClipA"         PrettyName="Pie Slice Start"   Group="Pie Clip"            Type="double" Min="0"      Max="360"     >0</Attribute>
+  <Attribute Name="ClipAFine"     PrettyName="Offset"            Group="Pie Clip"            Type="double" Min="-5"      Max="5"     >0.0</Attribute>
+  <Attribute Name="ClipB"         PrettyName="Pie Slice End"     Group="Pie Clip"            Type="double" Min="0"      Max="360"     >360</Attribute>
+  <Attribute Name="ClipBFine"     PrettyName="Offset"            Group="Pie Clip"            Type="double" Min="-5"      Max="5"     >0.0</Attribute>
   <!--===============================================================================================================-->
   <Attribute Name="PreviewPos"    PrettyName="Display Object Position as Color Value"           Group="Transform Helpers"   Type="bool"                      >false</Attribute>
   <Attribute Name="InvertZ"    PrettyName="Reverse Base Orientation"           Group="Transform Helpers"   Type="bool"                      >false</Attribute>
@@ -79,7 +79,7 @@
 
 
 // TO DO:
-// Rotation is still broken somehow. No clue.
+// Radius clipping is broken
 
 
 
@@ -100,47 +100,22 @@ vec3 rotl = (vec3($rlX,$rlY,$rlZ));
 vec3 fixed_scale = vec3(1.0);
 
 
-// _P is the original mix between user set values and if checkbox marked, Object Centre
 vec3 _P = State.Position;
+// // _PzP is used to set the centre point for the length of the cylinder. Length scale pivot is set to base value set in translation
+// vec3 _PzP = vec3(_P.x,_P.y,_P.z);
 
-// _PzP is used to set the centre point for the length of the cylinder. Length scale pivot is set to base value set in translation
-vec3 _PzP = vec3(_P.x,_P.y,_P.z);
 
-
-//..........................................................................................
-// Trying different things for the rotation pivot
-//..........................................................................................
-
-// DON't ADD ANY VALUES HERE OR THERE CENTER WILL CHANGE
+// World Space Rotation and secondary "local" transformation around the defined pivot
 vec3 _oPP = positionTransform(_P,trans,rot,fixed_scale);
 vec3 _PP = translate(_oPP,-transl);
-    
-    // float radian = PI/180.0;
-    // float angleA = $rX / 360 ;
-    // float angleB = $rY / 360 ;
-    // float angleC = $rZ / 360;
-
-    // mat3 rotx = rotation($rlX,vec3(angleA,angleB,angleC));
-    // mat3 roty = rotation($rlY,vec3(angleA,angleB,angleC));
-    // mat3 rotz = rotation($rlZ,vec3(angleA,angleB,angleC));
-
-    // _PP = _PP * (rotx * roty * rotz);
-// _PP = positionTransform(_PP,vec3(0.0),-rot,vec3(1.0));
 _PP = positionTransform(_PP,vec3(1.0),rotl,vec3(1.0));
-// _PP = positionTransform(_PP,vec3(0.0),rot,vec3(1.0));
 _PP = translate(_PP,transl);
 
 
-
-//..........................................................................................
-
-
-// Generating Original Position with just rotation as well. 
-// This is necessary to evaluate Radius and Length correctly when Cylinder is rotated
-
-
+// Temp. Remove unless something is need for Radius
+//-----------------------------------------------------------
 vec3 _PPOrig = _PP;
-
+//-----------------------------------------------------------
 
 
 //-----------------------------------------------------------
@@ -231,8 +206,9 @@ float boxAlpha = clamp((boundingBox.x*boundingBox.y*boundingBox.z),0.0,1.0);
 //-----------------------------------------------------------
 
 
-// vec4 result;
-vec4 prevPos = vec4(State.Position,1.0);
+// prevPos is State.Position without changes
+vec4 prevPos = vec4(_P,1.0);
+
 _uvC = (_uvC*ImageRot)+vec2(0.0,trans.z);
 vec4 ColorResult = texture2D( $Map,_uvC) ;
 ColorResult = ($Debug) ? vec4(vec3(nb_superEllipse2D(_uvC/vec2(1,1), 0.9, 50)),1.0) : ColorResult;
