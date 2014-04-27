@@ -8,7 +8,7 @@
         <Attribute Name="SideColor" PrettyName="Side Color" Group="Falloff Parameters" Type="color" Description="Defines the color of the Normals that are look at 90º in relation to the viewing angle">(1.0,1.0,1.0,1)</Attribute>
         <Attribute Name="FalloffStart" PrettyName="Falloff Start" Group="Falloff Parameters" Type="double" Description="Adjust where the falloff start. 1 it makes starts where the normals face the camera, while 0 means towards the edge." Min="0" Max="1">0</Attribute>
         <Attribute Name="FalloffEnd" PrettyName="Falloff End" Group="Falloff Parameters" Type="double" Description="Adjust where the falloff end. 1 it makes starts where the normals face the camera, while 0 means towards the edge." Min="0" Max="1">1</Attribute>
-        <Attribute Name="FalloffType" PrettyName="Falloff Type" Group="Falloff Parameters" Type="userenum" Description="Chooses the kind of falloff. This are based on 3DS Max Falloff Map node.">0, 0,1,2, Facing Ratio, Shadow/Light, Distance Blend</Attribute>
+        <Attribute Name="FalloffType" PrettyName="Falloff Type" Group="Falloff Parameters" Type="userenum" Description="Chooses the kind of falloff. This are based on 3DS Max Falloff Map node.">0, 0,1, Facing Ratio, Shadow/Light</Attribute>
     </Attributes>
     <Tags>
         <Tag>_notcacheable</Tag>
@@ -61,12 +61,6 @@
                     #endif
                 }
 
-                // Distance Blend Mode
-                if ($FalloffType == 2)
-                {
-                    float Fresnel = clamp((abs(gl_FragDepth) - $FalloffStart) / ($FalloffEnd - $FalloffStart), 0.0, 1.0);
-                    Blend = mix($FrontColor, $SideColor, 1-Fresnel );
-                }
 
                 Output = Blend;
                 ]]>
