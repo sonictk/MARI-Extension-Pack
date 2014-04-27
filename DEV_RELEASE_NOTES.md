@@ -23,9 +23,10 @@ Bugfixes:
 - Turning on Displacement in Shaders no longer causes a Shader Error when the Nodepack is installed
 - UV Mode for Noises that broke in Nodepack 1.21 Maintenance release is now fixed
 - Baking Paint with the Falloff Map active in a Channel Mask no longer causes the baked paint to shift 
-  (for Facing Ration + Shadow/Light Mode).
+- Depth Mode on the Falloff Map has been removed due to instability. Use the Depth Mode in the Projection Palette instead
  - Custom Object Normal, Axis Mask, Paintable Gabor and PolysurfaceCurvature will no longer show an 
    error when used in a displacement preview channel
+
 
 
 Known Issues & Workarounds:
