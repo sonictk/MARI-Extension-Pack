@@ -79,8 +79,7 @@
 
 
 // TO DO:
-// Radius clipping is broken. Also it doesn't seem to rotate
-// Take out positionTransform and replace with rotation() only
+// Reactivate Radius in Projection Coordinated when done.
 
 
 
@@ -88,7 +87,7 @@ const float PI=3.1415926538979 ;
 
 
 //-----------------------------------------------------------
-// Transformation Projection Cylinder
+// Transformation Variables
 //-----------------------------------------------------------
 
 float XOffset = $XOffset + ($XFine*$OffsetMult);
@@ -100,36 +99,38 @@ vec3 transObj = u_MriObjectCenter;
 vec3 rot = (vec3($rX,$rY,$rZ));
 vec3 rotl = (vec3($rlX,$rlY,$rlZ));
 vec3 fixed_scale = vec3(1.0);
-
-
 vec3 _P = State.Position;
 vec3 _PObj = transObj - _P;
 
 
-// World Space Rotation and secondary "local" transformation around the defined pivot
+//-----------------------------------------------------------
+// Transformation: World Space Rotation and secondary "local" transformation around the defined pivot
+//-----------------------------------------------------------
 
-//ROtating around object centre then moving back
+//Rotating around object centre then moving back to original position
 vec3 _PP = translate(_P,_PObj);
-_PP = positionTransform(_PP,vec3(0.0),rot,vec3(1.0));
+mat3 rotObjx = rotation(rot.x,vec3(1.0,0.0,0.0));
+mat3 rotObjy = rotation(rot.y,vec3(0.0,1.0,0.0));
+mat3 rotObjz = rotation(rot.z,vec3(0.0,0.0,1.0));
+_PP = _PP * (rotObjx * rotObjy * rotObjz);
 _PP = translate(_PP,-_PObj);
 
 //Translating to Pivot
-vec3 _oPP = positionTransform(_PP,trans,vec3(0.0),fixed_scale);
+vec3 _oPP = translate(_PP,trans);
 
-// Local rotation around offset pivot
+//Rotating around Pivot then moving back to original position
 _PP = translate(_oPP,-transl);
-_PP = positionTransform(_PP,vec3(1.0),rotl,vec3(1.0));
+mat3 rotLocalx = rotation(rotl.x,vec3(1.0,0.0,0.0));
+mat3 rotLocaly = rotation(rotl.y,vec3(0.0,1.0,0.0));
+mat3 rotLocalz = rotation(rotl.z,vec3(0.0,0.0,1.0));
+_PP = _PP * (rotLocalx * rotLocaly * rotLocalz);
 _PP = translate(_PP,transl);
-
-
-// Temp. Remove unless something is need for Radius
-//-----------------------------------------------------------
-vec3 _PPOrig = _PP;
 //-----------------------------------------------------------
 
 
+
 //-----------------------------------------------------------
-// Image Rotation Matrix & Sin
+// Image Rotation Matrix & Spin
 //-----------------------------------------------------------
 
 float angleRads = radians( $ImageRot);
@@ -140,10 +141,8 @@ mat2 ImageRot = mat2( cosAngle, -sinAngle, sinAngle, cosAngle );
 float spin = $Spin/360;
 
 //-----------------------------------------------------------
-// Main Cylindrical Projection Coordinates
+// Main Cylindrical UV Projection Coordinates
 //-----------------------------------------------------------
-
-
 
 float ss = 1-(atan(_PP.x,_PP.y) + PI ) / (2.0*PI);
 float tt = (1-_PP.z)/float($Length);
@@ -151,8 +150,10 @@ vec2 _uv = vec2(ss,tt);
 vec2 _uvP = vec2(ss,(1.0-_PP.z));
 vec2 rep = vec2($RepX,$RepY)/vec2($WorldScale);
 
-vec2 _uvC = ((_uv+spin)*rep*$R);
 
+// TEMPORARILIY DEACTIVATED RADIUS
+vec2 _uvC = ((_uv+spin)*rep*$R);
+// vec2 _uvC = ((_uv+spin)*rep);
 
 
 //-----------------------------------------------------------
@@ -190,22 +191,27 @@ float D2 = 1-((D_1-ClipB)/((ClipB+0.0000000000000000000000000000000001)-ClipB));
 float mixval_1 = mix(vec4(0.0),vec4(1.0),clamp(D1,0.0,1.0));
 float mixval_2 = mix(vec4(0.0),vec4(1.0),clamp(D2,0.0,1.0));
 
-// Creating Alpha Result from PieSliceMask, Slice Pie clipping is created via Projection Limits
+// Creating Alpha Result from PieSliceMask, Pie Slice clipping is created via Projection Limits
 
 float AlphaResult = mixval_1*mixval_2 ;
 
 
-// Generating Projection Bound Limits from Length and Radius
+//-----------------------------------------------------------
+// WORKING ON RADIUS
+//-----------------------------------------------------------
 
 vec3 boundingBox;
-boundingBox.x = ( (_PPOrig.x > (XOffset + $R )) || (_PPOrig.x < (XOffset - $R)) ) ? 0.0 : 1.0; 
-boundingBox.y = ( (_PPOrig.y > (YOffset + $R)) || (_PPOrig.y < (YOffset - $R)) ) ? 0.0 : 1.0; 
+boundingBox.x = ( (_PP.x + transl.x > (XOffset + $R )) || (_PP.x + transl.x < (XOffset - $R)) ) ? 0.0 : 1.0; 
+boundingBox.y = ( (_PP.y + transl.y > (YOffset + $R)) || (_PP.y  + transl.y < (YOffset - $R)) ) ? 0.0 : 1.0; 
+
+
+//-----------------------------------------------------------
+
 
 float offset = mix(($ZOffset-$Length),($ZOffset+$Length),float($InvertZ));
 
 // Using "Length" method for evaluating Slice Clip. Comparing Value of Z + ZOffset + Length to get proper Z Size of Cylinder
 boundingBox.z = ( (_PP.z + offset + (ClipC*$Length*2) > (ZOffset + ($Length) )) || (_PP.z + offset - ((1.0-ClipD)*$Length*2)< (ZOffset - ($Length) )) ) ? 0.0 : 1.0; 
-
 
 float boxAlpha = clamp((boundingBox.x*boundingBox.y*boundingBox.z),0.0,1.0);
 
@@ -221,8 +227,14 @@ vec4 prevPos = vec4(_P,1.0);
 
 _uvC = (_uvC*ImageRot)+vec2(0.0,trans.z);
 vec4 ColorResult = texture2D( $Map,_uvC) ;
+
+// Debug Pattern Mix
 ColorResult = ($Debug) ? vec4(vec3(nb_superEllipse2D(_uvC/vec2(1,1), 0.9, 50)),1.0) : ColorResult;
+
+// Alpha Combination from Length, Radius, Pie Clipping and Image Alpha
 ColorResult.a =   (AlphaResult*ColorResult.a) * boxAlpha ; 
+
+// Position Preview Mix
 Output = mix(ColorResult,prevPos,float($PreviewPos));
 
 
