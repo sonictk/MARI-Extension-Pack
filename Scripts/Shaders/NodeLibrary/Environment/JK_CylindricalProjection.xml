@@ -29,13 +29,13 @@
   <Attribute Name="ZOffset"       PrettyName="Z Offset"         Group="Offset Pivot (World)"   Type="double"  Min="-10000"     Max="10000"  >0</Attribute>
   <Attribute Name="ZFine"         PrettyName="Offset"           Group="Offset Pivot (World)"   Type="double" Min="-10"     Max="10"        >0</Attribute>
   <!--===============================================================================================================-->
-  <Attribute Name="rX"            PrettyName="Rotate X"         Group="Transform Rotate (World)"   Type="double" Min="0"     Max="360"                       >90</Attribute>
-  <Attribute Name="rY"            PrettyName="Rotate Y"         Group="Transform Rotate (World)"   Type="double" Min="0"     Max="360"                       >0</Attribute>
-  <Attribute Name="rZ"            PrettyName="Rotate Z"         Group="Transform Rotate (World)"   Type="double" Min="0"     Max="360"                       >0</Attribute>
+  <Attribute Name="rX"            PrettyName="Rotate X"         Group="Transform Rotate (Object Centre)"   Type="double" Min="-180"     Max="180"                       >90</Attribute>
+  <Attribute Name="rY"            PrettyName="Rotate Y"         Group="Transform Rotate (Object Centre)"   Type="double" Min="-180"     Max="180"                       >0</Attribute>
+  <Attribute Name="rZ"            PrettyName="Rotate Z"         Group="Transform Rotate (Object Centre)"   Type="double" Min="-180"     Max="180"                       >0</Attribute>
   <!--===============================================================================================================-->
-  <Attribute Name="rlX"            PrettyName="Rotate X"         Group="Transform Rotate (Local)"   Type="double" Min="0"     Max="360"                       >0</Attribute>
-  <Attribute Name="rlY"            PrettyName="Rotate Y"         Group="Transform Rotate (Local)"   Type="double" Min="0"     Max="360"                       >0</Attribute>
-  <Attribute Name="rlZ"            PrettyName="Rotate Z"         Group="Transform Rotate (Local)"   Type="double" Min="0"     Max="360"                       >0</Attribute>
+  <Attribute Name="rlX"            PrettyName="Rotate X"         Group="Transform Rotate (Cylinder Base)"   Type="double" Min="-180"     Max="180"                       >0</Attribute>
+  <Attribute Name="rlY"            PrettyName="Rotate Y"         Group="Transform Rotate (Cylinder Base)"   Type="double" Min="-180"     Max="180"                       >0</Attribute>
+  <Attribute Name="rlZ"            PrettyName="Rotate Z"         Group="Transform Rotate (Cylinder Base)"   Type="double" Min="-180"     Max="180"                       >0</Attribute>
   <!--===============================================================================================================-->
   <Attribute Name="ClipC"         PrettyName="Plane Slice Start" Group="Pie Clip"            Type="double" Min="0"      Max="1"     >0.0</Attribute>
   <Attribute Name="ClipCFine"     PrettyName="Offset"            Group="Pie Clip"            Type="double" Min="-1"      Max="1"     >0.0</Attribute>
@@ -79,7 +79,8 @@
 
 
 // TO DO:
-// Radius clipping is broken
+// Radius clipping is broken. Also it doesn't seem to rotate
+// Take out positionTransform and replace with rotation() only
 
 
 
@@ -95,19 +96,28 @@ float YOffset = $YOffset + ($YFine*$OffsetMult);
 float ZOffset = $ZOffset + ($ZFine*$OffsetMult) ;
 vec3 trans = vec3(XOffset,YOffset,ZOffset);
 vec3 transl = vec3(XOffset,YOffset,0.0);
+vec3 transObj = u_MriObjectCenter;
 vec3 rot = (vec3($rX,$rY,$rZ));
 vec3 rotl = (vec3($rlX,$rlY,$rlZ));
 vec3 fixed_scale = vec3(1.0);
 
 
 vec3 _P = State.Position;
-// // _PzP is used to set the centre point for the length of the cylinder. Length scale pivot is set to base value set in translation
-// vec3 _PzP = vec3(_P.x,_P.y,_P.z);
+vec3 _PObj = transObj - _P;
 
 
 // World Space Rotation and secondary "local" transformation around the defined pivot
-vec3 _oPP = positionTransform(_P,trans,rot,fixed_scale);
-vec3 _PP = translate(_oPP,-transl);
+
+//ROtating around object centre then moving back
+vec3 _PP = translate(_P,_PObj);
+_PP = positionTransform(_PP,vec3(0.0),rot,vec3(1.0));
+_PP = translate(_PP,-_PObj);
+
+//Translating to Pivot
+vec3 _oPP = positionTransform(_PP,trans,vec3(0.0),fixed_scale);
+
+// Local rotation around offset pivot
+_PP = translate(_oPP,-transl);
 _PP = positionTransform(_PP,vec3(1.0),rotl,vec3(1.0));
 _PP = translate(_PP,transl);
 
