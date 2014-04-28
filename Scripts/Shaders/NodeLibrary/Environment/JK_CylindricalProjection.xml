@@ -23,20 +23,17 @@
   <Attribute Name="RepY"          PrettyName="RepeatV"          Group="UV Size"     Type="double" Min="0"     Max="100"    >20</Attribute>
   <Attribute Name="WorldScale"    PrettyName="UV Scale"         Group="UV Size"     Type="double" Min="0"     Max="100"    >5</Attribute>
   <!--===============================================================================================================-->
-   <Attribute Name="XOffset"       PrettyName="X Offset"        Group="Offset Pivot (World)"   Type="double"  Min="-10000"     Max="10000"    >0</Attribute>
-  <Attribute Name="XFine"         PrettyName="Offset"           Group="Offset Pivot (World)"   Type="double" Min="-10"     Max="10"       >0</Attribute>
-  <Attribute Name="YOffset"       PrettyName="Y Offset"         Group="Offset Pivot (World)"   Type="double" Min="-10000"     Max="10000" >0</Attribute>
-  <Attribute Name="YFine"         PrettyName="Offset"           Group="Offset Pivot (World)"   Type="double" Min="-10"     Max="10"        >0</Attribute>
-  <Attribute Name="ZOffset"       PrettyName="Z Offset"         Group="Offset Pivot (World)"   Type="double"  Min="-10000"     Max="10000"  >0</Attribute>
-  <Attribute Name="ZFine"         PrettyName="Offset"           Group="Offset Pivot (World)"   Type="double" Min="-10"     Max="10"        >0</Attribute>
+  <Attribute Name="PreviewPos"    PrettyName="Display Object Position as Color Value"           Group="Cylinder Pivot"   Type="bool"                      >false</Attribute>
+  <Attribute Name="XOffset"       PrettyName="X Offset"        Group="Cylinder Pivot"   Type="double"  Min="-10000"     Max="10000"    >0</Attribute>
+  <Attribute Name="XFine"         PrettyName="Offset"           Group="Cylinder Pivot"   Type="double" Min="-10"     Max="10"       >0</Attribute>
+  <Attribute Name="YOffset"       PrettyName="Y Offset"         Group="Cylinder Pivot"   Type="double" Min="-10000"     Max="10000" >0</Attribute>
+  <Attribute Name="YFine"         PrettyName="Offset"           Group="Cylinder Pivot"   Type="double" Min="-10"     Max="10"        >0</Attribute>
+  <Attribute Name="ZOffset"       PrettyName="Z Offset"         Group="Cylinder Pivot"   Type="double"  Min="-10000"     Max="10000"  >0</Attribute>
+  <Attribute Name="ZFine"         PrettyName="Offset"           Group="Cylinder Pivot"   Type="double" Min="-10"     Max="10"        >0</Attribute>
   <!--===============================================================================================================-->
-  <Attribute Name="rX"            PrettyName="Rotate X"         Group="Transform Rotate (Object Centre)"   Type="double" Min="-180"     Max="180"                       >90</Attribute>
-  <Attribute Name="rY"            PrettyName="Rotate Y"         Group="Transform Rotate (Object Centre)"   Type="double" Min="-180"     Max="180"                       >0</Attribute>
-  <Attribute Name="rZ"            PrettyName="Rotate Z"         Group="Transform Rotate (Object Centre)"   Type="double" Min="-180"     Max="180"                       >0</Attribute>
-  <!--===============================================================================================================-->
-  <Attribute Name="rlX"            PrettyName="Rotate X"         Group="Transform Rotate (Offset Pivot)"   Type="double" Min="-180"     Max="180"                       >0</Attribute>
-  <Attribute Name="rlY"            PrettyName="Rotate Y"         Group="Transform Rotate (Offset Pivot)"   Type="double" Min="-180"     Max="180"                       >0</Attribute>
-  <Attribute Name="rlZ"            PrettyName="Rotate Z"         Group="Transform Rotate (Offset Pivot)"   Type="double" Min="-180"     Max="180"                       >0</Attribute>
+  <Attribute Name="rX"            PrettyName="Rotate X"         Group="Transform Rotate (Around Pivot)"   Type="double" Min="-180"     Max="180"                       >90</Attribute>
+  <Attribute Name="rY"            PrettyName="Rotate Y"         Group="Transform Rotate (Around Pivot)"   Type="double" Min="-180"     Max="180"                       >0</Attribute>
+  <Attribute Name="rZ"            PrettyName="Rotate Z"         Group="Transform Rotate (Around Pivot)"   Type="double" Min="-180"     Max="180"                       >0</Attribute>
   <!--===============================================================================================================-->
   <Attribute Name="ClipC"         PrettyName="Plane Slice Start" Group="Pie Clip"            Type="double" Min="0"      Max="1"     >0.0</Attribute>
   <Attribute Name="ClipCFine"     PrettyName="Offset"            Group="Pie Clip"            Type="double" Min="-1"      Max="1"     >0.0</Attribute>
@@ -47,8 +44,7 @@
   <Attribute Name="ClipB"         PrettyName="Pie Slice End"     Group="Pie Clip"            Type="double" Min="0"      Max="360"     >360</Attribute>
   <Attribute Name="ClipBFine"     PrettyName="Offset"            Group="Pie Clip"            Type="double" Min="-5"      Max="5"     >0.0</Attribute>
   <!--===============================================================================================================-->
-  <Attribute Name="PreviewPos"    PrettyName="Display Object Position as Color Value"           Group="Transform Helpers"   Type="bool"                      >false</Attribute>
-  <Attribute Name="InvertZ"    PrettyName="Reverse Base Orientation"           Group="Transform Helpers"   Type="bool"                      >false</Attribute>
+  <Attribute Name="InvertZ"    PrettyName="Reverse Base Orientation"           Group="Transform Helpers"   Type="bool"                      >true</Attribute>
   <Attribute Name="OffsetMult"    PrettyName="Transform / Clip Offset Multiplier"                 Group="Transform Helpers"            Type="double" Min="0.001"      Max="100"     >1.0</Attribute>
   <!--===============================================================================================================-->  
 
@@ -79,10 +75,8 @@
     <![CDATA[
 
 
-// TO DO:
-// Reactivate Radius in Projection Coordinated when done.
-
-
+// TO DO: SLICE CLIPPING BUSTED
+// SLIDE UVs still necessary ?
 
 const float PI=3.1415926538979 ;
 
@@ -96,38 +90,20 @@ float YOffset = $YOffset + ($YFine*$OffsetMult);
 float ZOffset = $ZOffset + ($ZFine*$OffsetMult) ;
 vec3 trans = vec3(XOffset,YOffset,ZOffset);
 vec3 transl = vec3(XOffset,YOffset,0.0);
-vec3 transObj = u_MriObjectCenter;
 vec3 rot = (vec3($rX,$rY,$rZ));
-vec3 rotl = (vec3($rlX,$rlY,$rlZ));
-vec3 fixed_scale = vec3(1.0);
 vec3 _P = State.Position;
-vec3 _PObj = transObj - _P;
-
 
 //-----------------------------------------------------------
-// Transformation: World Space Rotation and secondary "local" transformation around the defined pivot
+// Transformation to Pivot
 //-----------------------------------------------------------
 
-//Rotating around object centre then moving back to original position
-vec3 _PP = translate(_P,_PObj);
+
+// //Rotating around object centre then moving back to original position
+vec3 _PP = translate(_P,trans);
 mat3 rotObjx = rotation(rot.x,vec3(1.0,0.0,0.0));
 mat3 rotObjy = rotation(rot.y,vec3(0.0,1.0,0.0));
 mat3 rotObjz = rotation(rot.z,vec3(0.0,0.0,1.0));
 _PP = _PP * (rotObjx * rotObjy * rotObjz);
-_PP = translate(_PP,-_PObj);
-
-//Translating to Pivot, leaving this out even though we are doing a negative translation would give different results
-vec3 _oPP = translate(_PP,trans);
-
-//Rotating around Pivot then moving back to original position
-_PP = translate(_oPP,-transl);
-mat3 rotLocalx = rotation(rotl.x,vec3(1.0,0.0,0.0));
-mat3 rotLocaly = rotation(rotl.y,vec3(0.0,1.0,0.0));
-mat3 rotLocalz = rotation(rotl.z,vec3(0.0,0.0,1.0));
-_PP = _PP * (rotLocalx * rotLocaly * rotLocalz);
-_PP = translate(_PP,transl);
-//-----------------------------------------------------------
-
 
 
 //-----------------------------------------------------------
@@ -170,7 +146,7 @@ vec2 P_1 = N_1*0.5+vec2(0.5);
 float d_1 = -dot(N_1,P_1)+vec2(0.5);
 float D_1 = (dot(N_1,_uvA1)+d_1)/length(P_1);
 D_1 /=0.5;
-D_1 = fract(1.0-D_1);
+D_1 = (1.0-D_1);
 
 
 // Clip Values for Slice and Plane Slice Clip
@@ -205,7 +181,8 @@ boundingBox.y = ( (ppy > (YOffset + $R)) || (ppy < (YOffset - $R)) ) ? 0.0 : 1.0
 
 
 // Using "Length" method for evaluating Slice Clip. Comparing Value of Z + ZOffset + Length to get proper Z Size of Cylinder
-float offset = mix(($ZOffset-$Length),($ZOffset+$Length),float($InvertZ));
+// A small 0.02 margin is applied so the cap of the cylinder is visible
+float offset = mix(($ZOffset-$Length),($ZOffset+$Length-0.5),float($InvertZ));
 boundingBox.z = ( (_PP.z + offset + (ClipC*$Length*2) > (ZOffset + ($Length) )) || (_PP.z + offset - ((1.0-ClipD)*$Length*2)< (ZOffset - ($Length) )) ) ? 0.0 : 1.0; 
 
 
@@ -229,6 +206,7 @@ ColorResult = ($Debug) ? vec4(vec3(nb_superEllipse2D(_uvC/vec2(1,1), 0.9, 50)),1
 
 // Alpha Combination from Length, Radius, Pie Clipping and Image Alpha
 ColorResult.a =   (AlphaResult*ColorResult.a) * boxAlpha ; 
+
 
 // Position Preview Mix
 Output = mix(ColorResult,prevPos,float($PreviewPos));
