@@ -33,9 +33,9 @@
   <Attribute Name="rY"            PrettyName="Rotate Y"         Group="Transform Rotate (Object Centre)"   Type="double" Min="-180"     Max="180"                       >0</Attribute>
   <Attribute Name="rZ"            PrettyName="Rotate Z"         Group="Transform Rotate (Object Centre)"   Type="double" Min="-180"     Max="180"                       >0</Attribute>
   <!--===============================================================================================================-->
-  <Attribute Name="rlX"            PrettyName="Rotate X"         Group="Transform Rotate (Cylinder Base)"   Type="double" Min="-180"     Max="180"                       >0</Attribute>
-  <Attribute Name="rlY"            PrettyName="Rotate Y"         Group="Transform Rotate (Cylinder Base)"   Type="double" Min="-180"     Max="180"                       >0</Attribute>
-  <Attribute Name="rlZ"            PrettyName="Rotate Z"         Group="Transform Rotate (Cylinder Base)"   Type="double" Min="-180"     Max="180"                       >0</Attribute>
+  <Attribute Name="rlX"            PrettyName="Rotate X"         Group="Transform Rotate (Offset Pivot)"   Type="double" Min="-180"     Max="180"                       >0</Attribute>
+  <Attribute Name="rlY"            PrettyName="Rotate Y"         Group="Transform Rotate (Offset Pivot)"   Type="double" Min="-180"     Max="180"                       >0</Attribute>
+  <Attribute Name="rlZ"            PrettyName="Rotate Z"         Group="Transform Rotate (Offset Pivot)"   Type="double" Min="-180"     Max="180"                       >0</Attribute>
   <!--===============================================================================================================-->
   <Attribute Name="ClipC"         PrettyName="Plane Slice Start" Group="Pie Clip"            Type="double" Min="0"      Max="1"     >0.0</Attribute>
   <Attribute Name="ClipCFine"     PrettyName="Offset"            Group="Pie Clip"            Type="double" Min="-1"      Max="1"     >0.0</Attribute>
@@ -115,7 +115,7 @@ mat3 rotObjz = rotation(rot.z,vec3(0.0,0.0,1.0));
 _PP = _PP * (rotObjx * rotObjy * rotObjz);
 _PP = translate(_PP,-_PObj);
 
-//Translating to Pivot
+//Translating to Pivot, leaving this out even though we are doing a negative translation would give different results
 vec3 _oPP = translate(_PP,trans);
 
 //Rotating around Pivot then moving back to original position
@@ -147,20 +147,16 @@ float spin = $Spin/360;
 float ss = 1-(atan(_PP.x,_PP.y) + PI ) / (2.0*PI);
 float tt = (1-_PP.z)/float($Length);
 vec2 _uv = vec2(ss,tt);
-vec2 _uvP = vec2(ss,(1.0-_PP.z));
 vec2 rep = vec2($RepX,$RepY)/vec2($WorldScale);
-
-
-// TEMPORARILIY DEACTIVATED RADIUS
 vec2 _uvC = ((_uv+spin)*rep*$R);
-// vec2 _uvC = ((_uv+spin)*rep);
+
 
 
 //-----------------------------------------------------------
 // Alpha Clipping - Pie Style and Radius Projection Clipping
 //-----------------------------------------------------------
 
-vec2 _uvA1 = ((_uvP +spin) )/4.0;
+vec2 _uvA1 = ((_uvC +spin) )/4.0;
 
 // Slice Clip in Angle of Cylinder
 
@@ -195,23 +191,20 @@ float mixval_2 = mix(vec4(0.0),vec4(1.0),clamp(D2,0.0,1.0));
 
 float AlphaResult = mixval_1*mixval_2 ;
 
+// Radius Alpha Eval
 
-//-----------------------------------------------------------
-// WORKING ON RADIUS
-//-----------------------------------------------------------
+float ppx = _PP.x + transl.x;
+float ppy= _PP.y + transl.y;
 
 vec3 boundingBox;
-boundingBox.x = ( (_PP.x + transl.x > (XOffset + $R )) || (_PP.x + transl.x < (XOffset - $R)) ) ? 0.0 : 1.0; 
-boundingBox.y = ( (_PP.y + transl.y > (YOffset + $R)) || (_PP.y  + transl.y < (YOffset - $R)) ) ? 0.0 : 1.0; 
+boundingBox.x = ( (ppx > (XOffset + $R )) || (ppx < (XOffset - $R)) ) ? 0.0 : 1.0; 
+boundingBox.y = ( (ppy > (YOffset + $R)) || (ppy < (YOffset - $R)) ) ? 0.0 : 1.0; 
 
-
-//-----------------------------------------------------------
-
-
-float offset = mix(($ZOffset-$Length),($ZOffset+$Length),float($InvertZ));
 
 // Using "Length" method for evaluating Slice Clip. Comparing Value of Z + ZOffset + Length to get proper Z Size of Cylinder
+float offset = mix(($ZOffset-$Length),($ZOffset+$Length),float($InvertZ));
 boundingBox.z = ( (_PP.z + offset + (ClipC*$Length*2) > (ZOffset + ($Length) )) || (_PP.z + offset - ((1.0-ClipD)*$Length*2)< (ZOffset - ($Length) )) ) ? 0.0 : 1.0; 
+
 
 float boxAlpha = clamp((boundingBox.x*boundingBox.y*boundingBox.z),0.0,1.0);
 
