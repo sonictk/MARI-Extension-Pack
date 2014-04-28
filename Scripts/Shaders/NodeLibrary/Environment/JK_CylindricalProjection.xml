@@ -15,6 +15,7 @@
   <Attribute Name="ImageRot"      PrettyName="Image Rotation"    Group="Texture Map"  Type="double" Min="0"     Max="360"    >0</Attribute>
   <Attribute Name="Spin"          PrettyName="Slide UVs"         Group="Texture Map"  Type="double" Min="0"     Max="360"    >0</Attribute>
   <!--===============================================================================================================-->
+  <Attribute Name="LockUV"        PrettyName="Lock UV Scale"    Group="Cylinder Dimension"   Type="bool"                      >false</Attribute>
   <Attribute Name="Length"        PrettyName="Length"           Group="Cylinder Dimension"   Type="double" Min="0"     Max="1000"    >50</Attribute>
   <Attribute Name="R"             PrettyName="Radius"           Group="Cylinder Dimension"   Type="double" Min="0.00001"     Max="1000"    >1000</Attribute>
   <!--===============================================================================================================-->
@@ -145,10 +146,12 @@ float spin = $Spin/360;
 //-----------------------------------------------------------
 
 float ss = 1-(atan(_PP.x,_PP.y) + PI ) / (2.0*PI);
-float tt = (1-_PP.z)/float($Length);
+float uvscaleL = mix(float($Length),50.0,float($LockUV));
+float tt = (1-_PP.z)/float(uvscaleL);
 vec2 _uv = vec2(ss,tt);
 vec2 rep = vec2($RepX,$RepY)/vec2($WorldScale);
-vec2 _uvC = ((_uv+spin)*rep*$R);
+float uvscaleR = mix(float($R),1000.0,float($LockUV));
+vec2 _uvC = ((_uv+vec2(spin,0.0))*rep*uvscaleR);
 
 
 
