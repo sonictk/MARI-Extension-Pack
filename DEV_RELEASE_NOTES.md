@@ -8,6 +8,7 @@ TBA
 
 Added Features:
 -----------
+- Cylindrical Projection - a full Cylindrical Projection Node, optimized for easy setup in 3D Space.
 - Color Range to Mask - a powerful Adjustment Shader similar to Photoshop's Select Color Range
 - Squid Skin Procedural - organic Noise Pattern
 - Cavity Map from Tangent Space Normal - Using a Tangent space normal map will output you a pseudo cavity map
