@@ -78,6 +78,7 @@ Node Reference Guide: ==========================================================
 Debug Pattern: A procedurally generated grid pattern to give quick feedback for UV Size and Projection Alignment
 Texture Map: The Map you want to project
 Rotate Map: Rotates the Map before projecting it
+Slide: 	    Slides the texture along Z (Length) of cylinder
 
 -- CYLINDER DIMENSION --
 
@@ -85,8 +86,11 @@ Lock UV Scale: 	With LockUV Scale turned on, UV Scale will be adjusted for chang
 		consistent.
 
 Length:		Length of the Projection Cylinder.
+
 Radius:		Radius of the Projection Cylinder. This determines mainly the end of the projection from the Cylinder Outwards.
 		Projection Clipping is currently square for performance reasons
+
+Squash:		Will squash the cylinder around X (negative values) or y (positive values)
 
 -- UV SIZE --
 
@@ -140,6 +144,9 @@ Offet					A Slider with a smaller range to make fine adjustents to Pie Slice Cli
 -- Transform Helpers --
 
 Most sliders of the node are sized to work with large objects such as Trees, Towers etc.. The following Multipliers can help with smaller scene sizes
+
+Global Multiplier			Multiplies against all Transform Helpers. Sort of like one slider to rule them all.
+
 
 Length/Radius Multiplier		By setting the value lower you can get more adjust the Slider of the Length + Radius Setting to your scene needs
 

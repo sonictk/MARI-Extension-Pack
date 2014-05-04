@@ -11,8 +11,9 @@
   <Attributes>
    <!--===============================================================================================================-->
   <Attribute Name="Debug"         PrettyName="Debug Pattern"     Group="Texture Map"   Type="bool"                      >false</Attribute>
-  <Attribute Name="Map"           PrettyName="Texture Map"       Group="Texture Map"  Type="image" GenerateMipMaps="1"   ></Attribute>  
+  <Attribute Name="Map"           PrettyName="Texture Map"       Group="Texture Map"  Type="image" GenerateMipMaps="false"   ></Attribute>  
   <Attribute Name="ImageRot"      PrettyName="Image Rotation"    Group="Texture Map"  Type="double" Min="0"     Max="360"    >0</Attribute>
+  <Attribute Name="Slide"         PrettyName="Slide"             Group="Texture Map"  Type="double" Min="-2"     Max="2"       >0</Attribute>
   <!--===============================================================================================================-->
   <Attribute Name="LockUV"        PrettyName="Lock UV Scale"    Group="Cylinder Dimension"   Type="bool"                      >false</Attribute>
   <Attribute Name="Length"        PrettyName="Length"           Group="Cylinder Dimension"   Type="double" Min="0"     Max="1000"    >50</Attribute>
@@ -109,6 +110,7 @@ vec3 _PP = translate(_P,trans);
 mat3 rotObjx = rotation(rot.x,vec3(1.0,0.0,0.0));
 mat3 rotObjy = rotation(rot.y,vec3(0.0,1.0,0.0));
 mat3 rotObjz = rotation(rot.z,vec3(0.0,0.0,1.0));
+
 _PP = _PP * (rotObjx * rotObjy * rotObjz);
 _PP = scale(_PP,flatScale);
 
@@ -130,11 +132,7 @@ float ss = 1-( (atan(_PP.x,_PP.y) + PI ) / (2.0*PI));
 
 float uvscaleL = mix(leng,50.0*($Le_Ra_Mult*$GlobalMult),float($LockUV));
 float tt = (1-_PP.z)/float(uvscaleL);
-vec2 _uv = vec2(ss,tt);
-
-
-
-
+vec2 _uv = vec2(ss,tt+$Slide);
 
 vec2 rep = vec2($RepX,$RepY)/vec2($WorldScale);
 float uvscaleR = mix(float(rad),1000.0*($Le_Ra_Mult*$GlobalMult),float($LockUV));
