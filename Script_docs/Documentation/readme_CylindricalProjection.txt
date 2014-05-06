@@ -62,12 +62,12 @@ Example:
 
 Node Tutorials: ==============================================================
 
-A full demo video is available here:
+A full demo video is available here: https://vimeo.com/94145101
+A Quick Demo on how to position the projection is available here: https://vimeo.com/93711136
 
--- Accurately placing the projection in 3D Space -- 
+or refer to the readme_CylindricalProjection_QuickStart.jpg in your Script_Docs/Documentation Folder for a 
+visual guide how to place a projection accurately in seconds even on objects with complex rotations/offsets.
 
-Refer to the readme_CylindricalProjection_QuickStart.jpg in your Script_Docs/Documentation Folder for a 
-visual guide how to place a projection accurately in seconds even on objects with complex rotations/offsets
 
 
 Node Reference Guide: ==============================================================

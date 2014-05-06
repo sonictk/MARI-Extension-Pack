@@ -38,7 +38,7 @@
   <Attribute Name="rYo"           PrettyName="Offset"         Group="Transform Rotate (Around Pivot)"   Type="double" Min="-5.0"     Max="5.0"                       >0</Attribute>
   <Attribute Name="rZ"            PrettyName="Rotate Z"         Group="Transform Rotate (Around Pivot)"   Type="double" Min="-180"     Max="180"                       >0</Attribute>
   <Attribute Name="rZo"           PrettyName="Offset"         Group="Transform Rotate (Around Pivot)"   Type="double" Min="-5.0"     Max="5.0"                       >0</Attribute>
-  <Attribute Name="InvertZ"       PrettyName="Flip Z"        Group="Transform Rotate (Around Pivot)"   Type="bool"                      >true</Attribute>
+  <Attribute Name="InvertZ"       PrettyName="Flip Z"        Group="Transform Rotate (Around Pivot)"   Type="bool"                      >false</Attribute>
   <!--===============================================================================================================-->
   <Attribute Name="ClipC"         PrettyName="Plane Slice Start" Group="Pie Clip"            Type="double" Min="0"      Max="1"     >0.0</Attribute>
   <Attribute Name="ClipCFine"     PrettyName="Offset"            Group="Pie Clip"            Type="double" Min="-1"      Max="1"     >0.0</Attribute>
