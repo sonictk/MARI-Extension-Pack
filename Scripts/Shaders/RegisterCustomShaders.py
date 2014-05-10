@@ -58,6 +58,8 @@ def libNamerNode():
     if libNamer:  # found library parse xml file
         xml = ET.parse('%s/%s' % (default_lib_path, "LibraryNamer.xml"))
         root = xml.getroot()
+    else:
+        root = "none"
 
     return (libNamer, root)  # return check, xml root
 
@@ -150,7 +152,7 @@ def loadShaders():
         root = xml.getroot()
 
         # check for the name id tag
-        shaderName = root.find('ID')
+        shaderName = root.find('DefaultName')
         # check to see if tag is set
         if shaderName != None:
             # grab our xml set name
