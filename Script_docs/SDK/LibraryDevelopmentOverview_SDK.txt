@@ -51,6 +51,15 @@ register the node automatically without the need for writing anymore python regi
 The autoloader will use the default tags that are found in the Mari XML file structure and place
 them into five types, Adjustment, Procedural, Diffuse, Specular, Standalone shader
 
+A tag structure must be followed, mostly in line with Mari's Default System.
+
+The name of the Node as it appears in Mari's UI is used from Mari's Default XML Attribute 
+<DefaultName></DefaultName>. Example: <DefaultName>Axis Mask</DefaultName>
+
+The ID of the Node. This is a unique Name that allows Mari to identify the Node, regardless of the name
+it has in the UI. The <ID></ID> should never change between Versions of the Node to allow Mari to
+convert between Versions. Example: <ID>Axis Mask</ID>
+
 The only additional tag that must be added into the XML nodes as part of the autoloader library is
 a sorting tag for allowing to subcategories the XML nodes. 
 
@@ -59,6 +68,7 @@ The tag that is required follows as such.. <Category></Category>
 
 Example: <Category>Geometry/Custom/</Category> 
 for example will place the node inside the Geometry Folder in Mari's Procedural Menu with a sub-folder /Custom/
+
 
 
 Adding Lighting Shaders : ==============================================================
@@ -70,8 +80,13 @@ since shaders are not allowed to be set into subcategories. So lighting shaders 
 ~\Scripts\Shaders\NodeLibrary\Lighting\Specular\
 ~\Scripts\Shaders\NodeLibrary\Lighting\Standalone\
 
-The Name of the Shader is extracted from the <ID></ID> Tag  
-Example: <ID>BRDF Lambert</ID>
+The Name of the Shader in the Mari UI is extracted from the <DefaultName></DefaultName> Tag  
+Example: <DefaultName>BRDF Lambert</DefaultName>
 So make sure what you want the name of the shader to be displayed as is set here.
+
+In addition Mari requires an <ID> Tag to be set.
+This is a unique Name that allows Mari to identify the Node, regardless of the name
+it has in the UI. The <ID></ID> should never change between Versions of the Shader to allow Mari to
+convert between Versions. Example: <ID>BRDF Lambert</ID>
 
 ========================================================================================
