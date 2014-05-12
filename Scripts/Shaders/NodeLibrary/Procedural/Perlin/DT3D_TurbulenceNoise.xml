@@ -1,5 +1,6 @@
 <Node>
     <ID>Turbulence Noise</ID>
+    <DefaultName>Turbulence Noise</DefaultName>
     <Category>Procedural/Custom/Perlin/</Category>
     <Inputs>
         <Input Name="Input"></Input>

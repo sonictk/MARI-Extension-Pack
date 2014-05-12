@@ -1,5 +1,6 @@
 <Node>
     <ID>Brownian Noise</ID>
+    <DefaultName>Brownian Noise</DefaultName>
     <Category>Procedural/Custom/FBM/</Category>
     <Inputs>
         <Input Name="Input"></Input>

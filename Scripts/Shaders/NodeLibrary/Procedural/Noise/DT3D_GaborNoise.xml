@@ -1,6 +1,7 @@
 <Node>
     <ID>Paintable Gabor Noise</ID>
-    <Category>Custom/</Category>
+    <DefaultName>Paintable Gabor Noise</DefaultName>
+    <Category>/Custom/</Category>
     <Tags>
         <Tag>_adjustment</Tag>
     </Tags>

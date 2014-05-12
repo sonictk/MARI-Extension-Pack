@@ -1,7 +1,7 @@
 <Node>
     <ID>fBm+</ID>
     <Category>Procedural/Custom/FBM/</Category>
-    <DefaultName>fbm</DefaultName>
+    <DefaultName>FBM+</DefaultName>
     <Description>Basic fractal brownian motion</Description>
     <Cost>0.08</Cost>
     <CostDescription>Texture reads</CostDescription>

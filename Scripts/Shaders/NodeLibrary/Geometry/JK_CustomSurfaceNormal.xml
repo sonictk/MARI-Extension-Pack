@@ -1,7 +1,7 @@
 <Node>
     <ID>Custom Object Normal</ID>
     <Category>Geometry/Custom/</Category>
-    <DefaultName>Custom Normal</DefaultName>
+    <DefaultName>Custom Object Normal</DefaultName>
     <Cost>0.002</Cost>
     <CostDescription>Trivial operation</CostDescription>
     <Inputs>

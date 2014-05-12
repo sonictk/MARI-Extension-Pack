@@ -4,7 +4,7 @@
   <Tags>
     <Tag>_procedural</Tag>
   </Tags>
-  <DefaultName>Camo</DefaultName>
+  <DefaultName>Military Camo</DefaultName>
   <Description>Modified fractal maths to create camouflage based procedural. It has 3 inputs</Description>
   <Cost>0.1</Cost>
   <CostDescription>Texture reads</CostDescription>

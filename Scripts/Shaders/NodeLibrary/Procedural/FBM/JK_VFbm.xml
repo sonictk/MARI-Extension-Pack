@@ -1,7 +1,7 @@
 <Node>
     <ID>Vec fBm</ID>
     <Category>Procedural/Custom/FBM/</Category>
-    <DefaultName>Vfbm</DefaultName>
+    <DefaultName>Vec FBM</DefaultName>
     <Description>Vector fractal brownian motion</Description>
     <Cost>0.08</Cost>
     <CostDescription>Texture reads</CostDescription>

@@ -1,5 +1,6 @@
 <Node>
     <ID>Perlin Noise</ID>
+    <DefaultName>Perlin Noise</DefaultName>
     <Category>Procedural/Custom/Perlin/</Category>
     <Inputs>
         <Input Name="Input"></Input>

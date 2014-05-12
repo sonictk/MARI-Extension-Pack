@@ -1,5 +1,6 @@
 <Node>
     <ID>Ridged Multi Noise</ID>
+    <DefaultName>Ridged Multi Noise</DefaultName>
     <Category>Procedural/Custom/MultiFractal/</Category>
     <Inputs>
         <Input Name="Input"></Input>

@@ -1,7 +1,7 @@
 <Node>
     <ID>Legacy Turbulence</ID>
     <Category>Procedural/Custom/Noise/</Category>
-    <DefaultName>Turbulence</DefaultName>
+    <DefaultName>Legacy Turbulence</DefaultName>
     <Description>Turbulence pattern generated from multiple octaves of absolute values of Perlin Noise</Description>
     <Cost>0.1</Cost>
     <CostDescription>Texture reads</CostDescription>

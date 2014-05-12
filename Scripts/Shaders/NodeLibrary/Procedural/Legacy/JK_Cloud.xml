@@ -1,7 +1,7 @@
 <Node>
     <ID>Legacy Cloud</ID>
     <Category>Procedural/Custom/Noise/</Category>
-    <DefaultName>Cloud</DefaultName>
+    <DefaultName>Legacy Cloud</DefaultName>
     <Description>Cloud pattern generated from multiple octaves of Perlin Noise</Description>
     <Cost>0.1</Cost>
     <CostDescription>Texture reads</CostDescription>

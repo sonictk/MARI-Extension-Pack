@@ -1,5 +1,6 @@
 <Node>
     <ID>SuperShape 2D</ID>
+    <DefaultName>SuperShape 2D</DefaultName>
     <Category>Procedural/Custom/Pattern/</Category>
     <Attributes>
         <!--===============================================================================================================-->

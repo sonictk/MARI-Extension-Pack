@@ -1,5 +1,6 @@
 <Node>
     <ID>Reflection Refraction</ID>
+    <DefaultName>Reflection Refraction</DefaultName>
     <Inputs>
         <Input Name="DiffuseColor" PrettyName="Diffuse Color"></Input>
         <Input Name="DiffuseWeight" PrettyName="Diffuse Weight"></Input>

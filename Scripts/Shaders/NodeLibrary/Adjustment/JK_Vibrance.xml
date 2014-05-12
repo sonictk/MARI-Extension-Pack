@@ -1,6 +1,6 @@
 <Node>
     <ID>Vibrance</ID>
-    <Category>Custom/</Category>
+    <Category>/Custom/</Category>
     <DefaultName>Vibrance</DefaultName>
     <Cost>0.0004</Cost>
     <CostDescription>Possibly some texture reads</CostDescription>

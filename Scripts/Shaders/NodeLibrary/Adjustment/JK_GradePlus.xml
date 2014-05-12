@@ -1,7 +1,7 @@
 <Node>
     <ID>Grade+</ID>
     <Category>/Custom/</Category>
-    <DefaultName>Grade</DefaultName>
+    <DefaultName>Grade+</DefaultName>
     <Cost>0.005</Cost>
     <CostDescription>Some calculations</CostDescription>
     <Tags>

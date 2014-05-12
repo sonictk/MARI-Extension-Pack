@@ -1,7 +1,7 @@
 <Node>
     <ID>Legacy Squiggle</ID>
     <Category>Procedural/Custom/Noise/</Category>
-    <DefaultName>Squiggle</DefaultName>
+    <DefaultName>Legacy Squiggle</DefaultName>
     <Description>Squiggle look pattern by taking absolute value of Perlin Noise</Description>
     <Cost>0.1</Cost>
     <CostDescription>Texture reads</CostDescription>

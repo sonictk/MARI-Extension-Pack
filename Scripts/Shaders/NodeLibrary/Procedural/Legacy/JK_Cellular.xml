@@ -1,7 +1,7 @@
 <Node>
     <ID>Legacy Cellular</ID>
     <Category>Procedural/Custom/Voronoi/</Category>
-    <DefaultName>Cellular</DefaultName>
+    <DefaultName>Legacy Cellular</DefaultName>
     <Description>Basic Cellular Noise</Description>
     <Cost>0.1</Cost>
     <CostDescription>Calculations</CostDescription>

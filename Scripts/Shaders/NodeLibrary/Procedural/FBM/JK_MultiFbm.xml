@@ -1,7 +1,7 @@
 <Node>
     <ID>Multi fBm</ID>
     <Category>Procedural/Custom/FBM/</Category>
-    <DefaultName>multifBm</DefaultName>
+    <DefaultName>Multi FBM</DefaultName>
     <Description>FBM Noise with two additional Noise Drivers</Description>
     <Cost>0.3</Cost>
     <CostDescription>Shader Branching and multiple Fractals</CostDescription>

@@ -1,7 +1,7 @@
 <Node>
     <ID>PolySurface Curvature</ID>
     <Category>Geometry/Custom/</Category>
-    <DefaultName>Surface Curvature</DefaultName>
+    <DefaultName>PolySurface Curvature</DefaultName>
     <Cost>0.004</Cost>
     <CostDescription>Trivial operation</CostDescription>
     <Inputs>

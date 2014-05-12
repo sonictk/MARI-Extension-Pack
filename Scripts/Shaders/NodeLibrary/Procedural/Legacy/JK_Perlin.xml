@@ -1,7 +1,7 @@
 <Node>
     <ID>Legacy Perlin</ID>
     <Category>Procedural/Custom/Perlin/</Category>
-    <DefaultName>Perlin</DefaultName>
+    <DefaultName>Legacy Perlin</DefaultName>
     <Description>Basic Perlin Noise</Description>
     <Cost>0.05</Cost>
     <CostDescription>Texture reads</CostDescription>
