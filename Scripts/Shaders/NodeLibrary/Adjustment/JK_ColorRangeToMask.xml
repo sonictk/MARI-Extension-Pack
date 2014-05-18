@@ -46,6 +46,15 @@
         
 
     </Attributes>
+
+    <Groups>
+        <Group Name="Color Picking" Expanded="true"></Group>
+        <Group Name="Global" Expanded="true"></Group>
+        <Group Name="Enhance Selection" Expanded="false"></Group>
+        <Group Name="Additive Selection" Expanded="true"></Group>
+        <Group Name="Subtractive Selection" Expanded="false"></Group>
+  </Groups>
+
   <Contexts>
     <Context Type="NodeGraphView">
         <Inputs>

@@ -15,9 +15,14 @@
         <Attribute Name="oMax" PrettyName="OldMax" Group="" Type="Vector4f" Min="(-1.0,-1.0,-1.0,0.0)" Max="(1.0,1.0,1.0,1.0)" Logarithmic="1">(1.0,1.0,1.0,1.0)</Attribute>
         <Attribute Name="nMin" PrettyName="NewMin" Group="" Type="Vector4f" Min="(-1.0,-1.0,-1.0,0.0)" Max="(1.0,1.0,1.0,1.0)" Logarithmic="1">(0.0,0.0,0.0,0.0)</Attribute>
         <Attribute Name="nMax" PrettyName="NewMax" Group="" Type="Vector4f" Min="(-1.0,-1.0,-1.0,0.0)" Max="(1.0,1.0,1.0,1.0)" Logarithmic="1">(1.0,1.0,1.0,1.0)</Attribute>
-        <Attribute Name="sMult" PrettyName="MultiplyScale" Group="ExtraAttributes" Type="Vector4f" Min="(-25.0,-25.0,-25.0,0.0)" Max="(25.0,25.0,25.0,1.0)" Logarithmic="1">(1.0,1.0,1.0,1.0)</Attribute>
-        <Attribute Name="useClamp" PrettyName="ClampValues" Group="ExtraAttributes" Type="bool" Min="false" Max="true">true</Attribute>
+        <Attribute Name="sMult" PrettyName="MultiplyScale" Group="Extra Attributes" Type="Vector4f" Min="(-25.0,-25.0,-25.0,0.0)" Max="(25.0,25.0,25.0,1.0)" Logarithmic="1">(1.0,1.0,1.0,1.0)</Attribute>
+        <Attribute Name="useClamp" PrettyName="ClampValues" Group="Extra Attributes" Type="bool" Min="false" Max="true">true</Attribute>
     </Attributes>
+
+    <Groups>
+        <Group Name="Extra Attributes" Expanded="false"></Group>
+    </Groups>
+
     <Contexts>
         <Context Type="NodeGraphView">
             <Inputs>

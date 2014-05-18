@@ -25,11 +25,17 @@
         <Attribute Name="OffsetCol" PrettyName=" " Group="" Type="Color" Min="(0.0,0.0,0.0,0.0)" Max="(4.0,4.0,4.0,4.0)" Logarithmic="1">(1.0,1.0,1.0,1.0)</Attribute>
         <Attribute Name="Gamma" Group="" Type="Vector4f" Min="(0.2,0.2,0.2,0.2)" Max="(5.0,5.0,5.0,5.0)" Logarithmic="1">(1.0,1.0,1.0,1.0)</Attribute>
         <Attribute Name="GammaCol" PrettyName=" " Group="" Type="Color" Min="(0.0,0.0,0.0,0.0)" Max="(4.0,4.0,4.0,4.0)" Logarithmic="1">(1.0,1.0,1.0,1.0)</Attribute>
-        <Attribute Name="Red" Group="" Type="bool" Min="true" Max="false">true</Attribute>
-        <Attribute Name="Green" Group="" Type="bool" Min="true" Max="false">true</Attribute>
-        <Attribute Name="Blue" Group="" Type="bool" Min="true" Max="false">true</Attribute>
-        <Attribute Name="Alpha" Group="" Type="bool" Min="true" Max="false">true</Attribute>
+        <Attribute Name="Red" Group="" Type="bool" Group="Channels" Min="true" Max="false">true</Attribute>
+        <Attribute Name="Green" Group="" Type="bool" Group="Channels" Min="true" Max="false">true</Attribute>
+        <Attribute Name="Blue" Group="" Type="bool" Group="Channels" Min="true" Max="false">true</Attribute>
+        <Attribute Name="Alpha" Group="" Type="bool" Group="Channels" Min="true" Max="false">true</Attribute>
     </Attributes>
+
+    <Groups>
+        <Group Name="Channels" Expanded="false"></Group>
+    </Groups>
+
+
     <Contexts>
         <Context Type="NodeGraphView">
             <Inputs>
