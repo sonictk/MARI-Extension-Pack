@@ -34,6 +34,16 @@
         <Attribute Name="ZOffset" PrettyName="Translate Z" Group="Transform Translate" Type="double" Min="0" Max="100" Logarithmic="1">0</Attribute>
         <!--===============================================================================================================-->
     </Attributes>
+
+    <Groups>
+        <Group Name="Color" Expanded="false"></Group>
+        <Group Name="Size" Expanded="true"></Group>
+        <Group Name="Space" Expanded="false"></Group>
+        <Group Name="Transform Scale" Expanded="false"></Group>
+        <Group Name="Transform Rotate" Expanded="false"></Group>
+        <Group Name="Transform Translate" Expanded="false"></Group>
+    </Groups>
+
     <Contexts>
         <Context Type="NodeGraphView">
             <Inputs>

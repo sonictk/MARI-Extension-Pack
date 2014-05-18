@@ -9,7 +9,9 @@ TBA
 Added Features:
 -----------
 - Cylindrical Projection - a full Cylindrical Projection Node, optimized for easy setup in 3D Space.
+  Demo Videos: https://vimeo.com/93711136 // https://vimeo.com/94145101
 - Color Range to Mask - a powerful Adjustment Shader similar to Photoshop's Select Color Range
+  Demo Video: https://vimeo.com/92507840
 - Squid Skin Procedural - organic Noise Pattern
 - Cavity Map from Tangent Space Normal - Using a Tangent space normal map will output you a pseudo cavity map
 
@@ -17,7 +19,7 @@ Feature Improvements:
 -----------
 - Military Camo - a more flexible Camo procedural was added allowing for 3 color steps. Layer them up by setting Color A to transparent for more elaborate effects
 - The original Camo Procedural with 2 Colors has been deprecated. You can use the new Military Camo with a Spacing of 0 for the same effect.
-- A variety of interface improvements have been made, collapsing less used node groups by default (Mari 2.6v2 only)
+- A variety of interface improvements have been made, collapsing less used node groups by default (Mari 2.6v2+ only)
 
 
 Bugfixes:
