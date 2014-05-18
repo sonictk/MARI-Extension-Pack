@@ -23,7 +23,7 @@ Feature Improvements:
 Bugfixes:
 -----------
 - A missing Library Name File within the FunctionLibrary Directory could cause the Nodepack to not load when mixed with
-  single node releases from Ideascale.
+  single node releases from mari.ideascale.com.
 - various fixes for MAC configurations that had issues with the Nodepack before
 - Turning on Displacement in Shaders no longer causes a Shader Error when the Nodepack is installed
 - UV Mode for Noises that broke in Nodepack 1.21 Maintenance release is now fixed
