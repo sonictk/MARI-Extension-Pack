@@ -17,27 +17,38 @@ Feature Improvements:
 -----------
 - Military Camo - a more flexible Camo procedural was added allowing for 3 color steps. Layer them up by setting Color A to transparent for more elaborate effects
 - The original Camo Procedural with 2 Colors has been deprecated. You can use the new Military Camo with a Spacing of 0 for the same effect.
+- A variety of interface improvements have been made, collapsing less used node groups by default (Mari 2.6v2 only)
 
 
 Bugfixes:
 -----------
+- A missing Library Name File within the FunctionLibrary Directory could cause the Nodepack to not load when mixed with
+  single node releases from Ideascale.
+- various fixes for MAC configurations that had issues with the Nodepack before
 - Turning on Displacement in Shaders no longer causes a Shader Error when the Nodepack is installed
 - UV Mode for Noises that broke in Nodepack 1.21 Maintenance release is now fixed
 - Baking Paint with the Falloff Map active in a Channel Mask no longer causes the baked paint to shift 
-- Depth Mode on the Falloff Map has been removed due to instability. Use the Depth Mode in the Projection Palette instead
- - Custom Object Normal, Axis Mask, Paintable Gabor and PolysurfaceCurvature will no longer show an 
-   error when used in a displacement preview channel
-
+- Depth Mode on the Falloff Map has been removed due to instability. Use the Depth mask in the Projection Palette instead
+- Custom Object Normal, Axis Mask, Paintable Gabor and PolysurfaceCurvature will no longer show an 
+  error when used in a displacement preview channel
 
 
 Known Issues & Workarounds:
 -----------
-- When a Nodepack Node is used in a Channel that is plugged into the ChannelMask (Projection Palette), 
+- When a Nodepack Node is used in a Channel, that is plugged into the ChannelMask (Projection Palette), 
 projecting Paint from the Paintbuffer will throw an error. This is related to a MARI Bug that we will
 need the Foundry to fix.
 The current workaround is to cache any Nodepack Node in the Channel, at which point the Channel Mask will work.
 
-- the paintableGabor can crash Mari when used in a Displacement Preview Channel. The current workaround is to cache the GaborNoise.
+- the paintableGabor can crash nvidia display drivers when used in a Displacement Preview Channel. 
+  The current workaround is to cache the GaborNoise.
+
+
+Developer Notes:
+-----------
+- As of this version of the Nodepack <DefaultName> is used for Node names in the Mari Interface.
+  <ID> will no longer be called but is required by Mari to ensure Version consistency. Please refer
+  to the SDK Docs within your Script_Docs/SDK/ Folder for more information
 
 
 
