@@ -60,7 +60,7 @@
             <Body><![CDATA[
 
     vec2 _buffer = _State.ProjectionCoord.xy;
-    float d = (_buffer-($wipe-0.005))/(($wipe+0.005)-($wipe-0.005));
+    float d = (_buffer.x-($wipe-0.005))/(($wipe+0.005)-($wipe-0.005));
     float d1 = clamp(mix(0.0,1.0,d),0.0,1.0);
     d = mix(d1,1.0-d1,float($inverseBuffer));
 
