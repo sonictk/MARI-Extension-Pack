@@ -1,5 +1,5 @@
 <Node>
-  <DefaultName>ColorRangeToMask</DefaultName>
+  <DefaultName>ColorRange to Mask</DefaultName>
   <ID>ColorRange to Mask</ID>
   <Category>/Custom/</Category>
   <Cost>0.005</Cost>
@@ -22,10 +22,6 @@
         <Attribute Name="globFuzz" PrettyName = "Gain" Group="Global" Type="float" Min="0.0" Max="1.0">0.5</Attribute>
         <Attribute Name="Invert" PrettyName = "Invert" Group="Global" Type="bool" Min="true" Max="false">false</Attribute>
 
-        <Attribute Name="Enhance" PrettyName = "Enhance Selection" Group="Enhance Selection" Type="bool" Min="true" Max="false">false</Attribute>
-        <Attribute Name="RangeMin" PrettyName = "Range Min" Group="Enhance Selection" Type="float" Min="0.0" Max="1.0">0.2</Attribute>
-        <Attribute Name="RangeMax" PrettyName = "Range Max" Group="Enhance Selection" Type="float" Min="0.0" Max="1.0">0.3</Attribute>
-
         <Attribute Name="Color1" PrettyName = "Color A" Group="Additive Selection" Type="color" >(1.0,1.0,1.0,1)</Attribute>
         <Attribute Name="FuzzinessA" PrettyName = "Expand A" Group="Additive Selection" Type="float" Min="0.01" Max="1.0">0.5</Attribute>
         <Attribute Name="Color2" PrettyName = "Color B" Group="Additive Selection" Type="color" >(1.0,1.0,1.0,1)</Attribute>
@@ -44,8 +40,17 @@
         <Attribute Name="Color8" PrettyName = "Color D" Group="Subtractive Selection" Type="color" >(1.0,1.0,1.0,1)</Attribute>
         <Attribute Name="FuzzinessH" PrettyName = "Expand D" Group="Subtractive Selection" Type="float" Min="0.01" Max="1.0">0.5</Attribute>
         
+        <Attribute Name="Enhance" PrettyName = "Enhance Selection" Group="Enhance Selection" Type="bool" Min="true" Max="false">false</Attribute>
+        <Attribute Name="RangeMin" PrettyName = "Range Min" Group="Enhance Selection" Type="float" Min="0.0" Max="1.0">0.2</Attribute>
+        <Attribute Name="RangeMax" PrettyName = "Range Max" Group="Enhance Selection" Type="float" Min="0.0" Max="1.0">0.3</Attribute>
 
     </Attributes>
+
+    <Groups>
+        <Group Name="Enhance Selection" Expanded="false"></Group>
+        <Group Name="Subtractive Selection" Expanded="false"></Group>
+  </Groups>
+
   <Contexts>
     <Context Type="NodeGraphView">
         <Inputs>
@@ -60,7 +65,7 @@
             <Body><![CDATA[
 
     vec2 _buffer = _State.ProjectionCoord.xy;
-    float d = (_buffer-($wipe-0.005))/(($wipe+0.005)-($wipe-0.005));
+    float d = (_buffer.x-($wipe-0.005))/(($wipe+0.005)-($wipe-0.005));
     float d1 = clamp(mix(0.0,1.0,d),0.0,1.0);
     d = mix(d1,1.0-d1,float($inverseBuffer));
 

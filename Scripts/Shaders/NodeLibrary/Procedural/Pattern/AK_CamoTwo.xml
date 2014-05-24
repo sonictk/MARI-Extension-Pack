@@ -4,7 +4,7 @@
   <Tags>
     <Tag>_procedural</Tag>
   </Tags>
-  <DefaultName>Camo</DefaultName>
+  <DefaultName>Military Camo</DefaultName>
   <Description>Modified fractal maths to create camouflage based procedural. It has 3 inputs</Description>
   <Cost>0.1</Cost>
   <CostDescription>Texture reads</CostDescription>
@@ -29,9 +29,9 @@
         <Attribute Name="YScale" PrettyName="Scale Y" Group="Transform Scale" Type="double" Min="0" Max="100" Logarithmic="1">1</Attribute>
         <Attribute Name="ZScale" PrettyName="Scale Z" Group="Transform Scale" Type="double" Min="0" Max="100" Logarithmic="1">1</Attribute>
         <!--===============================================================================================================-->
-        <Attribute Name="rX" PrettyName="Rotate X" Group="Transform Rotation" Type="double" Min="0" Max="360">0</Attribute>
-        <Attribute Name="rY" PrettyName="Rotate Y" Group="Transform Rotation" Type="double" Min="0" Max="360">0</Attribute>
-        <Attribute Name="rZ" PrettyName="Rotate Z" Group="Transform Rotation" Type="double" Min="0" Max="360">0</Attribute>
+        <Attribute Name="rX" PrettyName="Rotate X" Group="Transform Rotate" Type="double" Min="0" Max="360">0</Attribute>
+        <Attribute Name="rY" PrettyName="Rotate Y" Group="Transform Rotate" Type="double" Min="0" Max="360">0</Attribute>
+        <Attribute Name="rZ" PrettyName="Rotate Z" Group="Transform Rotate" Type="double" Min="0" Max="360">0</Attribute>
         <!--===============================================================================================================-->
         <Attribute Name="XOffset" PrettyName="Translate X" Group="Transform Translate" Type="double" Min="0" Max="100" Logarithmic="1">0</Attribute>
         <Attribute Name="YOffset" PrettyName="Translate Y" Group="Transform Translate" Type="double" Min="0" Max="100" Logarithmic="1">0</Attribute>
@@ -39,6 +39,15 @@
         <!--===============================================================================================================-->
    
   </Attributes>
+
+
+    <Groups>
+        <Group Name="Space" Expanded="false"></Group>
+        <Group Name="Transform Scale" Expanded="false"></Group>
+        <Group Name="Transform Rotate" Expanded="false"></Group>
+        <Group Name="Transform Translate" Expanded="false"></Group>
+    </Groups>
+
     <Contexts>
         <Context Type="NodeGraphView">
             <Inputs>

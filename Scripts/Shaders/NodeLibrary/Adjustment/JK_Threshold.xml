@@ -1,6 +1,6 @@
 <Node>
     <ID>Threshold</ID>
-    <Category>Custom/</Category>
+    <Category>/Custom/</Category>
     <DefaultName>Threshold</DefaultName>
     <Cost>0.006</Cost>
     <CostDescription>Some calculations</CostDescription>

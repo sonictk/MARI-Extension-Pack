@@ -1,5 +1,6 @@
 <Node>
     <ID>Brownian Noise</ID>
+    <DefaultName>Brownian Noise</DefaultName>
     <Category>Procedural/Custom/FBM/</Category>
     <Inputs>
         <Input Name="Input"></Input>
@@ -33,6 +34,14 @@
         <Attribute Name="transZ" PrettyName="Translate Z" Group="Transform Translate" Type="float" Min="0" Max="100" Logarithmic="1">0</Attribute>
         <!--===============================================================================================================-->
     </Attributes>
+
+    <Groups>
+        <Group Name="Space" Expanded="false"></Group>
+        <Group Name="Transform Scale" Expanded="false"></Group>
+        <Group Name="Transform Rotate" Expanded="false"></Group>
+        <Group Name="Transform Translate" Expanded="false"></Group>
+    </Groups>
+
     <Contexts>
         <Context Type="GLSL">
             <Shader>

@@ -12,15 +12,20 @@
     <Input Name="Input"/>
   </Inputs>
   <Attributes>
+    <Attribute Name="colorA" PrettyName="Color" Group="" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(0.33,0.134,0.385,1)</Attribute>
     <Attribute Name="Size" Group="" Type="double" Min="0" Max="2">0.4</Attribute>
     <Attribute Name="Strength" Group="" Type="double" Min="0" Max="1">0.4</Attribute>
     <Attribute Name="Sharpness" Group="" Type="double" Min="0" Max="1">0.4</Attribute>
     <Attribute Name="Roughness" Group="" Type="double" Min="0.5" Max="2">1</Attribute>
-    <Attribute Name="colorA" PrettyName="Color" Group="Color" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(0.33,0.134,0.385,1)</Attribute>
     <Attribute Name="XOffset" PrettyName="X Offset" Group="Transform Translate" Type="double" Min="0" Max="100" Logarithmic="1">0</Attribute>
     <Attribute Name="YOffset" PrettyName="Y Offset" Group="Transform Translate" Type="double" Min="0" Max="100" Logarithmic="1">0</Attribute>
     <Attribute Name="ZOffset" PrettyName="Z Offset" Group="Transform Translate" Type="double" Min="0" Max="100" Logarithmic="1">0</Attribute>
   </Attributes>
+
+      <Groups>
+        <Group Name="Transform Translate" Expanded="false"></Group>
+    </Groups>
+
     <Contexts>
         <Context Type="NodeGraphView">
             <Inputs>

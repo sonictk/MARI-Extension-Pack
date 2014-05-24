@@ -1,7 +1,7 @@
 <Node>
     <ID>fBm+</ID>
     <Category>Procedural/Custom/FBM/</Category>
-    <DefaultName>fbm</DefaultName>
+    <DefaultName>FBM+</DefaultName>
     <Description>Basic fractal brownian motion</Description>
     <Cost>0.08</Cost>
     <CostDescription>Texture reads</CostDescription>
@@ -43,6 +43,14 @@
         <Attribute Name="ZOffset" PrettyName="Translate Z" Group="Transform Translate" Type="double" Min="0" Max="100" Logarithmic="1" >0</Attribute>
         <!--===============================================================================================================-->
     </Attributes>
+
+    <Groups>
+        <Group Name="Space" Expanded="false"></Group>
+        <Group Name="Transform Scale" Expanded="false"></Group>
+        <Group Name="Transform Rotate" Expanded="false"></Group>
+        <Group Name="Transform Translate" Expanded="false"></Group>
+    </Groups>
+
     <Contexts>
         <Context Type="NodeGraphView">
             <Inputs>

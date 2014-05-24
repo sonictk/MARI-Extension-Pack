@@ -1,7 +1,7 @@
 <Node>
     <ID>Legacy Turbulence</ID>
     <Category>Procedural/Custom/Noise/</Category>
-    <DefaultName>Turbulence</DefaultName>
+    <DefaultName>Legacy Turbulence</DefaultName>
     <Description>Turbulence pattern generated from multiple octaves of absolute values of Perlin Noise</Description>
     <Cost>0.1</Cost>
     <CostDescription>Texture reads</CostDescription>
@@ -24,15 +24,23 @@
         <Attribute Name="YScale" PrettyName="Scale Y" Group="Transform Scale" Type="double" Min="0" Max="100" Logarithmic="1">1</Attribute>
         <Attribute Name="ZScale" PrettyName="Scale Z" Group="Transform Scale" Type="double" Min="0" Max="100" Logarithmic="1">1</Attribute>
         <!--===============================================================================================================-->
-        <Attribute Name="rX" PrettyName="Rotate X" Group="Transform Rotation" Type="double" Min="0" Max="360">0</Attribute>
-        <Attribute Name="rY" PrettyName="Rotate Y" Group="Transform Rotation" Type="double" Min="0" Max="360">0</Attribute>
-        <Attribute Name="rZ" PrettyName="Rotate Z" Group="Transform Rotation" Type="double" Min="0" Max="360">0</Attribute>
+        <Attribute Name="rX" PrettyName="Rotate X" Group="Transform Rotate" Type="double" Min="0" Max="360">0</Attribute>
+        <Attribute Name="rY" PrettyName="Rotate Y" Group="Transform Rotate" Type="double" Min="0" Max="360">0</Attribute>
+        <Attribute Name="rZ" PrettyName="Rotate Z" Group="Transform Rotate" Type="double" Min="0" Max="360">0</Attribute>
         <!--===============================================================================================================-->
         <Attribute Name="XOffset" PrettyName="Translate X" Group="Transform Translate" Type="double" Min="0" Max="100" Logarithmic="1">0</Attribute>
         <Attribute Name="YOffset" PrettyName="Translate Y" Group="Transform Translate" Type="double" Min="0" Max="100" Logarithmic="1">0</Attribute>
         <Attribute Name="ZOffset" PrettyName="Translate Z" Group="Transform Translate" Type="double" Min="0" Max="100" Logarithmic="1">0</Attribute>
         <!--===============================================================================================================-->
     </Attributes>
+
+    <Groups>
+        <Group Name="Space" Expanded="false"></Group>
+        <Group Name="Transform Scale" Expanded="false"></Group>
+        <Group Name="Transform Rotate" Expanded="false"></Group>
+        <Group Name="Transform Translate" Expanded="false"></Group>
+    </Groups>
+    
     <Contexts>
         <Context Type="NodeGraphView">
             <Inputs>

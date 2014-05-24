@@ -1,5 +1,6 @@
 <Node>
     <ID>Development</ID>
+    <DefaultName>Development</DefaultName>
     <Inputs>
         <Input Name="Diffuse"></Input>
         <Input Name="Normal"></Input>

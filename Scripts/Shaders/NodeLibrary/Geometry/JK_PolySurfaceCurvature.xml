@@ -1,7 +1,7 @@
 <Node>
     <ID>PolySurface Curvature</ID>
     <Category>Geometry/Custom/</Category>
-    <DefaultName>Surface Curvature</DefaultName>
+    <DefaultName>PolySurface Curvature</DefaultName>
     <Cost>0.004</Cost>
     <CostDescription>Trivial operation</CostDescription>
     <Inputs>
@@ -10,7 +10,7 @@
     </Inputs>
     <Attributes>
         <Attribute Name="Adjust" PrettyName="Adjust Curvature" Group="" Type="double" Logarithmic="1" Min="0" Max="1">0.1</Attribute>
-        <Attribute Name="Size" PrettyName="Adjust Scenesize" Group="" Type="double" Logarithmic="1" Min="0" Max="1">0.1</Attribute>
+        <Attribute Name="Size" PrettyName="Adjust Scene Size" Group="" Type="double" Logarithmic="1" Min="0" Max="1">0.1</Attribute>
         <Attribute Name="Invert" PrettyName="Invert" Group="" Type="bool" Min="false" Max="true" Description="Inverts the Noise result before ColorA+B are applied" >false</Attribute>
     </Attributes>
     <Contexts>

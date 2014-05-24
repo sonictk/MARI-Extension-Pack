@@ -1,6 +1,6 @@
 <Node>
     <ID>Normal Map Intensity</ID>
-    <Category>Custom/</Category>
+    <Category>/Custom/</Category>
     <DefaultName>Normal Map Intensity</DefaultName>
     <Cost>0.005</Cost>
     <CostDescription>Some calculations</CostDescription>

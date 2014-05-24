@@ -1,5 +1,5 @@
 <Node>
-  <DefaultName>Cavity from Normal</DefaultName>
+  <DefaultName>Cavity from Tangent Space Normal</DefaultName>
   <ID>Cavity from Tangent Space Normal</ID>
   <Category>/Custom/</Category>
   <Tags>
@@ -16,9 +16,6 @@
         <Attribute Name="md" Group="Cavity Level" Type="double" Min="0.0" Max="1.0">0.5</Attribute>
         <Attribute Name="blk" Group="Cavity Level" Type="double" Min="0.0" Max="1.0">0.0</Attribute>
         <Attribute Name="Invert" Group="" Type="bool" Min="true" Max="false">false</Attribute>
-        <Attribute Name="BumpMode" Group="BumpMode" Type="bool" Min="true" Max="false">false</Attribute>
-        <Attribute Name="BumpWeight" PrettyName="Bump Weight" Group="BumpMode" Type="double" Min="0" Max="10.0" Logarithmic="1">0.1</Attribute>
-  
 
     </Attributes>
   <Contexts>

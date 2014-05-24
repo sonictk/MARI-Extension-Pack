@@ -1,5 +1,6 @@
 <Node>
     <ID>Ridged Multi Noise</ID>
+    <DefaultName>Ridged Multi Noise</DefaultName>
     <Category>Procedural/Custom/MultiFractal/</Category>
     <Inputs>
         <Input Name="Input"></Input>
@@ -34,6 +35,14 @@
         <Attribute Name="transZ" PrettyName="TranslateZ" Group="Transform Translate" Type="float" Min="0" Max="100" Logarithmic="1">0</Attribute>
         <!--===============================================================================================================-->
     </Attributes>
+
+    <Groups>
+        <Group Name="Space" Expanded="false"></Group>
+        <Group Name="Transform Scale" Expanded="false"></Group>
+        <Group Name="Transform Rotate" Expanded="false"></Group>
+        <Group Name="Transform Translate" Expanded="false"></Group>
+    </Groups>
+    
     <Contexts>
         <Context Type="GLSL">
             <Shader>
