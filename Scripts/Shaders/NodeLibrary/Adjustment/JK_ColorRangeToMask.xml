@@ -22,10 +22,6 @@
         <Attribute Name="globFuzz" PrettyName = "Gain" Group="Global" Type="float" Min="0.0" Max="1.0">0.5</Attribute>
         <Attribute Name="Invert" PrettyName = "Invert" Group="Global" Type="bool" Min="true" Max="false">false</Attribute>
 
-        <Attribute Name="Enhance" PrettyName = "Enhance Selection" Group="Enhance Selection" Type="bool" Min="true" Max="false">false</Attribute>
-        <Attribute Name="RangeMin" PrettyName = "Range Min" Group="Enhance Selection" Type="float" Min="0.0" Max="1.0">0.2</Attribute>
-        <Attribute Name="RangeMax" PrettyName = "Range Max" Group="Enhance Selection" Type="float" Min="0.0" Max="1.0">0.3</Attribute>
-
         <Attribute Name="Color1" PrettyName = "Color A" Group="Additive Selection" Type="color" >(1.0,1.0,1.0,1)</Attribute>
         <Attribute Name="FuzzinessA" PrettyName = "Expand A" Group="Additive Selection" Type="float" Min="0.01" Max="1.0">0.5</Attribute>
         <Attribute Name="Color2" PrettyName = "Color B" Group="Additive Selection" Type="color" >(1.0,1.0,1.0,1)</Attribute>
@@ -44,14 +40,14 @@
         <Attribute Name="Color8" PrettyName = "Color D" Group="Subtractive Selection" Type="color" >(1.0,1.0,1.0,1)</Attribute>
         <Attribute Name="FuzzinessH" PrettyName = "Expand D" Group="Subtractive Selection" Type="float" Min="0.01" Max="1.0">0.5</Attribute>
         
+        <Attribute Name="Enhance" PrettyName = "Enhance Selection" Group="Enhance Selection" Type="bool" Min="true" Max="false">false</Attribute>
+        <Attribute Name="RangeMin" PrettyName = "Range Min" Group="Enhance Selection" Type="float" Min="0.0" Max="1.0">0.2</Attribute>
+        <Attribute Name="RangeMax" PrettyName = "Range Max" Group="Enhance Selection" Type="float" Min="0.0" Max="1.0">0.3</Attribute>
 
     </Attributes>
 
     <Groups>
-        <Group Name="Color Picking" Expanded="true"></Group>
-        <Group Name="Global" Expanded="true"></Group>
         <Group Name="Enhance Selection" Expanded="false"></Group>
-        <Group Name="Additive Selection" Expanded="true"></Group>
         <Group Name="Subtractive Selection" Expanded="false"></Group>
   </Groups>
 

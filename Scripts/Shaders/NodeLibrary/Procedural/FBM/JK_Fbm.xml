@@ -45,10 +45,6 @@
     </Attributes>
 
     <Groups>
-        <Group Name="Color" Expanded="false"></Group>
-        <Group Name="Size" Expanded="true"></Group>
-        <Group Name="Modifiers" Expanded="true"></Group>
-        <Group Name="Threshold" Expanded="true"></Group>
         <Group Name="Space" Expanded="false"></Group>
         <Group Name="Transform Scale" Expanded="false"></Group>
         <Group Name="Transform Rotate" Expanded="false"></Group>

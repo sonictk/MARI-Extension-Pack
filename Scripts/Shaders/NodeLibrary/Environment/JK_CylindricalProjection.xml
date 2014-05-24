@@ -58,10 +58,6 @@
   </Attributes>
 
   <Groups>
-        <Group Name="Texture Map" Expanded="true"></Group>
-        <Group Name="Cylinder Dimension" Expanded="true"></Group>
-        <Group Name="UV Size" Expanded="true"></Group>
-        <Group Name="Cylinder Pivot" Expanded="true"></Group>
         <Group Name="Transform Rotate (Around Pivot)" Expanded="false"></Group>
         <Group Name="Pie Clip" Expanded="false"></Group>
         <Group Name="Transform Helpers" Expanded="false"></Group>

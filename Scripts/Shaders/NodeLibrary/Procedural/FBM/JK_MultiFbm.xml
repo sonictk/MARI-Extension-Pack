@@ -71,9 +71,6 @@
     </Attributes>
 
     <Groups>
-        <Group Name="Color" Expanded="false"></Group>
-        <Group Name="Base" Expanded="true"></Group>
-        <Group Name="Handle A" Expanded="true"></Group>
         <Group Name="Handle B" Expanded="false"></Group>
         <Group Name="Transform Space" Expanded="false"></Group>
         <Group Name="Transform Scale" Expanded="false"></Group>

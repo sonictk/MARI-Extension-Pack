@@ -38,9 +38,9 @@
         <Attribute Name="YScale" PrettyName="Scale Y" Group="Transform Scale" Type="double" Min="0" Max="100" Logarithmic="1">1</Attribute>
         <Attribute Name="ZScale" PrettyName="Scale Z" Group="Transform Scale" Type="double" Min="0" Max="100" Logarithmic="1">1</Attribute>
         <!--===============================================================================================================-->
-        <Attribute Name="rX" PrettyName="Rotate X" Group="Transform Rotation" Type="double" Min="0" Max="360">0</Attribute>
-        <Attribute Name="rY" PrettyName="Rotate Y" Group="Transform Rotation" Type="double" Min="0" Max="360">0</Attribute>
-        <Attribute Name="rZ" PrettyName="Rotate Z" Group="Transform Rotation" Type="double" Min="0" Max="360">0</Attribute>
+        <Attribute Name="rX" PrettyName="Rotate X" Group="Transform Rotate" Type="double" Min="0" Max="360">0</Attribute>
+        <Attribute Name="rY" PrettyName="Rotate Y" Group="Transform Rotate" Type="double" Min="0" Max="360">0</Attribute>
+        <Attribute Name="rZ" PrettyName="Rotate Z" Group="Transform Rotate" Type="double" Min="0" Max="360">0</Attribute>
         <!--===============================================================================================================-->
         <Attribute Name="XOffset" PrettyName="Translate X" Group="Transform Translate" Type="double" Min="0" Max="100" Logarithmic="1">0</Attribute>
         <Attribute Name="YOffset" PrettyName="Translate Y" Group="Transform Translate" Type="double" Min="0" Max="100" Logarithmic="1">0</Attribute>
@@ -49,10 +49,6 @@
     </Attributes>
 
     <Groups>
-        <Group Name="Color" Expanded="true"></Group>
-        <Group Name="Size" Expanded="true"></Group>
-        <Group Name="Modifiers" Expanded="true"></Group>
-        <Group Name="Threshold" Expanded="true"></Group>
         <Group Name="Extra Attributes" Expanded="false"></Group>
         <Group Name="Space" Expanded="false"></Group>
         <Group Name="Transform Scale" Expanded="false"></Group>
