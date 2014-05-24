@@ -56,6 +56,13 @@
   <!--===============================================================================================================-->  
 
   </Attributes>
+
+  <Groups>
+        <Group Name="Transform Rotate (Around Pivot)" Expanded="false"></Group>
+        <Group Name="Pie Clip" Expanded="false"></Group>
+        <Group Name="Transform Helpers" Expanded="false"></Group>
+  </Groups>
+  
     <Contexts>
       <Context Type="NodeGraphView">
           <Inputs>

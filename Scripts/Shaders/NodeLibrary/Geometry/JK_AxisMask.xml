@@ -22,6 +22,11 @@
         <Attribute Name="rY" PrettyName="Rotate Y" Group="Rotate" Type="double" Min="0" Max="360" >0</Attribute>
         <Attribute Name="rZ" PrettyName="Rotate Z" Group="Rotate" Type="double" Min="0" Max="360" >0</Attribute>
     </Attributes>
+
+    <Groups>
+        <Group Name="Rotate" Expanded="false"></Group>
+    </Groups>
+
     <Contexts>
         <Context Type="NodeGraphView">
             <Inputs>
