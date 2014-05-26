@@ -148,7 +148,10 @@ def loadShaders():
     # determine attributes
     for shader in shaderDict:
         full_shader_path = shaderDict[shader]
-        xml = ET.parse('%s/%s' % (full_shader_path, shader))
+        if shader.endswith('xml'):
+            xml = ET.parse('%s/%s' % (full_shader_path, shader))
+        else:
+            continue
         root = xml.getroot()
 
         # check for the name id tag
