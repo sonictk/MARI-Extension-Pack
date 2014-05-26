@@ -452,7 +452,7 @@ float SimplexPerlin3D(vec3 P)
 
     //   Normalization factor to scale the final result to a strict 1.0->-1.0 range
     //   x = sqrt( 0.75 ) * 0.5
-    //   NF = 1.0 / ( x * ( ( 0.5 – x*x ) ^ 3 ) * 2.0 )
+    //   NF = 1.0 / ( x * ( ( 0.5 - x*x ) ^ 3 ) * 2.0 )
     //   http://briansharpe.wordpress.com/2012/01/13/simplex-noise/#comment-36
     const float FINAL_NORMALIZATION = 37.837227241611314102871574478976;
 
