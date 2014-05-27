@@ -14,7 +14,7 @@
 # Master Git: https://github.com/DigiTecK3D/DT3D_Mari-Procedural-Library
 # ------------------------------------------------------------------------------
 # History:
-# - 02/04/14    New Auto-Loader Script Intergration.
+# - 02/04/14    New Auto-Loader Script Integration.
 # ------------------------------------------------------------------------------
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -148,7 +148,10 @@ def loadShaders():
     # determine attributes
     for shader in shaderDict:
         full_shader_path = shaderDict[shader]
-        xml = ET.parse('%s/%s' % (full_shader_path, shader))
+        if shader.endswith('xml'):
+            xml = ET.parse('%s/%s' % (full_shader_path, shader))
+        else:
+            continue
         root = xml.getroot()
 
         # check for the name id tag

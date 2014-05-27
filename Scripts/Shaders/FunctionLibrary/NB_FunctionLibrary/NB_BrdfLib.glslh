@@ -45,11 +45,11 @@ vec3 nb_envLatMap2D(sampler2D sampler, vec3 dir);
 float nb_orenNayar(vec3 I, vec3 N, vec3 L, float roughness);
 
 // Ward Anisotropic Specular
-// “Measuring and Modelling Anisotropic Reflection” Gregory J. Ward, Computer Graphics 26, 2, July 1992
+// "Measuring and Modelling Anisotropic Reflection" Gregory J. Ward, Computer Graphics 26, 2, July 1992
 // Ward Anisotropic variant implementation
 float nb_wardAnisotropic(vec3 N, vec3 I, vec3 L, vec3 X, vec3 Y, float SpecularRoughness, float Anisotropy);
 
 // Ward Isotropic Specular
-// “Measuring and Modelling Anisotropic Reflection” Gregory J. Ward, Computer Graphics 26, 2, July 1992
+// "Measuring and Modelling Anisotropic Reflection" Gregory J. Ward, Computer Graphics 26, 2, July 1992
 // Ward Anisotropic variant implementation
 float nb_wardIsotropic(vec3 N, vec3 I, vec3 L, float SpecularRoughness);
