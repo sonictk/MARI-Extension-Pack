@@ -59,7 +59,7 @@ def libNamerNode():
         xml = ET.parse('%s/%s' % (default_lib_path, "LibraryNamer.xml"))
         root = xml.getroot()
     else:
-        root = none
+        root = ""
 
     return (libNamer, root)  # return check, xml root
 
@@ -75,7 +75,7 @@ def libVersion():
     # if check grab version
     if libNamer:
         # check for lib version in xml
-        libVersion = root.find("LibraryVersion")
+        libVersion = (root or "").find("LibraryVersion")
         if libVersion != None:
             # lib xml version found
             current_lib_version = libVersion.text
