@@ -35,55 +35,63 @@ Node Description: ==============================================================
 
 --- COLOR PICKING ---
 
-ShowBackground:		Allows you to show the result of the Channel without the Adjustment applied.
-				This is useful for color picking.
+ShowBackground:
+Allows you to show the result of the Channel without the Adjustment applied. This is useful for color picking.
 
-Wipe:			A viewport wipe between picked Colors and Background
+Wipe:
+A viewport wipe between picked Colors and Background
 
-Reverse Wipe:	Invert the Screenwipe
+Reverse Wipe:
+Invert the Screenwipe
 
-Preview: 		Multiple options for the way the selection is previewed. For a solid Mask set the dropdown to
-				"Grayscale" (same result as turning off "Show background"). The default Option "Stencil" will
-				screen the mask over the background. "BlackMatte" + "WhiteMatte" are conistent with Photoshops
-				Preview Modes, overlaying Black or white over unselected areas.
+Preview:
+Multiple options for the way the selection is previewed. For a solid Mask set the dropdown to "Grayscale" (same result as turning off "Show background"). The default Option "Stencil" will	screen the mask over the background. "BlackMatte" + "WhiteMatte" are conistent with Photoshops 	Preview Modes, overlaying Black or white over unselected areas.
 				
 
 --- GLOBAL ---
 
-Additive Slots:	The Amount of Colors to be sampled for additive selection (max 4)
+Additive Slots:
+The Amount of Colors to be sampled for additive selection (max 4)
 
-Subtr. Slots:	The Amount of Colors to be sampled for additive selection (max 4)
+Subtr. Slots:
+The Amount of Colors to be sampled for additive selection (max 4)
 
-+/- Bias:		Will overpower the Additive Selection (negative values) or Subtr. Selection (pos. values)
++/- Bias:
+Will overpower the Additive Selection (negative values) or Subtr. Selection (pos. values)
 
-Gain:			The higher the value the more you will blow out your selection
+Gain:	
+The higher the value the more you will blow out your selection
 
-Invert:			Will Invert the selection result
+Invert:
+Will Invert the selection result
 
 
 --- Enhance SELECTION ---
 
 
-Enhance:		With Enhance ticked on all color evaluations will be run on saturated versions.
-		 	This can help to fill gaps in your selection
+Enhance:
+With Enhance ticked on all color evaluations will be run on saturated versions. This can help to fill gaps in your selection
 
-Min/Max:		Will set the minimum values for the curve along which the saturation is increased.
+Min/Max:
+Will set the minimum values for the curve along which the saturation is increased.
 
 
 --- ADDITIVE SELECTION ---
 
-Color A,B,C,D 	The Color Picker Slots for additive selection. By default only A is active unless
-				you change the value in the "Global"/Additive Slots" Section
+Color A,B,C,D
+The Color Picker Slots for additive selection. By default only A is active unless you change the value in the "Global"/Additive Slots" Section
 
-Expand A,B,C,D  Will expand the selection of color
+Expand A,B,C,D
+Will expand the selection of color
 
 
 --- SUBTRACTIVE SELECTION ---
 
-Color E,F,G,H 	The Color Picker Slots for subtractive selection. By default deactivated unless
-				you change the value in the "Global"/Subtractive Slots" Section
+Color E,F,G,H
+The Color Picker Slots for subtractive selection. By default deactivated unless you change the value in the "Global"/Subtractive Slots" Section
 
-Expand A,B,C,D  Will expand the selection of color
+Expand A,B,C,D
+Will expand the selection of color
 
 
 
