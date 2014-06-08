@@ -35,14 +35,18 @@ Node Description: ==============================================================
 
 --- COLOR PICKING ---
 
-Background:		Allows you to show the result of the Channel without the Adjustment applied.
+ShowBackground:		Allows you to show the result of the Channel without the Adjustment applied.
 				This is useful for color picking.
-
-Stencil:		Will overlay the mask over the background
 
 Wipe:			A viewport wipe between picked Colors and Background
 
 Reverse Wipe:	Invert the Screenwipe
+
+Preview: 		Multiple options for the way the selection is previewed. For a solid Mask set the dropdown to
+				"Grayscale" (same result as turning off "Show background"). The default Option "Stencil" will
+				screen the mask over the background. "BlackMatte" + "WhiteMatte" are conistent with Photoshops
+				Preview Modes, overlaying Black or white over unselected areas.
+				
 
 --- GLOBAL ---
 
