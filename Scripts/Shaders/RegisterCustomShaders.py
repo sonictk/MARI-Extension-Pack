@@ -59,7 +59,7 @@ def libNamerNode():
         xml = ET.parse('%s/%s' % (default_lib_path, "LibraryNamer.xml"))
         root = xml.getroot()
     else:
-        root = "none"
+        root = none
 
     return (libNamer, root)  # return check, xml root
 
