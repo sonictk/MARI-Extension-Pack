@@ -1,15 +1,16 @@
-# ------------------------------------------------------------------------------
-# Requirements: This Node Library requires MARI FunctionLibary 1.06.005
-# ------------------------------------------------------------------------------
+#---------------------------------------------------------------
+# Requirements: 
+# This Node Library requires MARI FunctionLibary 1.06.005
+#---------------------------------------------------------------
 # Camo Procedurals - to create miltiary patterns
 # Copyright (c) 2013 Antoni Kujawa. All Rights Reserved.
-# ------------------------------------------------------------------------------
+#---------------------------------------------------------------
 # Author: Antoni Kujawa
-# ------------------------------------------------------------------------------
+#----------------------------------------------------------------
 # Contributor: Jens Kafitz
 # Web: www.mari.ideascale.com
 # Email: info@campi3d.com
-# ------------------------------------------------------------------------------
+#---------------------------------------------------------------
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -22,23 +23,22 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-# ------------------------------------------------------------------------------
+#----------------------------------------------------------------
 
-
-Info: =============================================================================== 
+Info: =================================================================
 
 Camo procedurals to create military patterns. One supporting 2 Colors, one with 3 Colors.
 You can easily layer them up to create more elaborate effects by Setting Color A to transparent for example.
 
 
-Requirements: =======================================================================
+Requirements: =================================================================
 
 - Mari 2.5 or above
 - MARI Function Library 1.07 or above http://mari.ideascale.com/
 
 
 
-Installation: =======================================================================
+Installation: =================================================================
 
 
 Please download and install the MARI Function Library V1.06 or higher at 
@@ -62,7 +62,7 @@ Where to find the nodes: =======================================================
 The new nodes are located under Procedurals/Custom/Pattern/
 
 
-History: ============================================================================
+History: =================================================================
 
 
 06/06/13 Release

@@ -9,7 +9,6 @@
   <CostDescription>Some calculations</CostDescription>
     <Inputs>
         <Input Name="Input"></Input>
-        <Input Name="Height"></Input>
     </Inputs>
     <Attributes>
         <Attribute Name="wh" Group="Cavity Level" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
@@ -22,7 +21,6 @@
     <Context Type="NodeGraphView">
         <Inputs>
             <Input Name="Input"><Pos>0,-50</Pos></Input>
-            <Input Name="Height" Tags="_invertable"><Default>vec4(1,1,1,1)</Default></Input>
         </Inputs>
     </Context>
     <Context Type="GLSL">

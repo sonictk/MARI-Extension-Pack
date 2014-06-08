@@ -1,15 +1,11 @@
-# ------------------------------------------------------------------------------
-# Available at: http://mari.ideascale.com/
-# ------------------------------------------------------------------------------
-# ColorRangeToMask - A powerful color selection adjustment mimicking Photoshop's Select Color Range
+#----------------------------------------------------------------# Available at: http://mari.ideascale.com/
+#----------------------------------------------------------------# ColorRangeToMask - A powerful color selection adjustment mimicking Photoshop's Select Color Range
 # Copyright (c) 2014 Jens Kafitz. All Rights Reserved.
-# ------------------------------------------------------------------------------
-# Author: Jens Kafitz | Mari Ideascale
+#----------------------------------------------------------------# Author: Jens Kafitz | Mari Ideascale
 # Web: www.campi3d.com
 # Web: www.mari.ideascale.com
 # Email: info@campi3d.com
-# ------------------------------------------------------------------------------
-# This program is free software: you can redistribute it and/or modify
+#----------------------------------------------------------------# This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
@@ -21,8 +17,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-# ------------------------------------------------------------------------------
-
+#----------------------------------------------------------------
 
 Information: ==============================================================
 
@@ -96,14 +91,12 @@ Will expand the selection of color
 
 
 
-
-
-Requirements: =======================================================================
+Requirements: =================================================================
 
 - Mari 2.5 or above (2.0 Version available as well)
 
 
-Installation: =======================================================================
+Installation: =================================================================
 
 Take scripts and put them into your user preference script directory. Or any startup
 script path that Mari has set. Once these are in place, Mari on startup will run through
@@ -123,13 +116,13 @@ Where to find the nodes: =======================================================
 The new node is located under  Adjustments /Custom/
 
 
-History: ============================================================================
+History: =================================================================
 
 # History:
 # - 04/21/14		1.0 Release for Mari 2.0,2.5,2,6
 
 
-Credits: ============================================================================
+Credits: =================================================================
 
 Based on work done for ColorToMask by the foundry.
 
