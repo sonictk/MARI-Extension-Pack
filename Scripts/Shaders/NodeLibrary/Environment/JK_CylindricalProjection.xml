@@ -161,7 +161,7 @@ float Angle = 0.0 ;
 vec2 N_1 = -vec2(cos(Angle),sin(Angle));
 N_1 = normalize(N_1);
 vec2 P_1 = N_1*0.5+vec2(0.5);
-float d_1 = -dot(N_1,P_1)+vec2(0.5);
+float d_1 = -dot(N_1,P_1)+0.5;
 float D_1 = (dot(N_1,_uvA1)+d_1)/length(P_1);
 D_1 /=0.5;
 D_1 = fract(1.0-D_1);
@@ -214,7 +214,7 @@ float boxAlpha = clamp((boundingBox.x*boundingBox.y*boundingBox.z),0.0,1.0);
 vec4 prevPos = vec4(_P,1.0);
 
 _uvC = (_uvC*ImageRot)+vec2(0.0,trans.z);
-vec4 ColorResult = texture2D( $Map,_uvC) ;
+vec4 ColorResult = texture( $Map,_uvC) ;
 
 // Debug Pattern Mix
 ColorResult = ($Debug) ? vec4(vec3(nb_superEllipse2D(_uvC/vec2(1,1), 0.9, 50)),1.0) : ColorResult;
