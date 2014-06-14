@@ -11,10 +11,10 @@
         <Input Name="Input"></Input>
     </Inputs>
     <Attributes>
-        <Attribute Name="preview" PrettyName = "Show Background" Group="Color Picking" Type="bool" Min="true" Max="false">true</Attribute>
-        <Attribute Name="wipe" Group="Color Picking" Type="float" Min="0.0" Max="1.0">0.5</Attribute>
-        <Attribute Name="inverseBuffer" PrettyName = "Reverse Wipe" Group="Color Picking" Type="bool" Min="true" Max="false">false</Attribute>
-        <Attribute Name="SelectionPreview" PrettyName="Selection Preview" Group="Color Picking" Type="stringlist">Stencil,Grayscale,Stencil,Black Matte,White Matte</Attribute>
+        <Attribute Name="preview" PrettyName = "Show Background" Group="Preview" Type="bool" Min="true" Max="false">true</Attribute>
+        <Attribute Name="wipe" Group="Preview" Type="float" Min="0.0" Max="1.0">0.5</Attribute>
+        <Attribute Name="inverseBuffer" PrettyName = "Reverse Wipe" Group="Preview" Type="bool" Min="true" Max="false">false</Attribute>
+        <Attribute Name="SelectionPreview" PrettyName="Selection Preview" Group="Preview" Type="stringlist">Stencil,Grayscale,Stencil,Black Matte,White Matte</Attribute>
         
         <Attribute Name="AdditiveSlots" PrettyName = "Additive Slots" Group="Global" Type="int" Min="0" Max="4">1</Attribute>
         <Attribute Name="SubtrSlots" PrettyName = "Subtractive Slots" Group="Global" Type="int" Min="0" Max="4">0</Attribute>
@@ -158,49 +158,56 @@
     
     float result = clamp(((resultAdd*weightPlus/2.0) - (resultSub*weightMinus/2.0)),0.0,1.0);
 
-    vec3 preview = #Input.rgb;
+    vec3 background = #Input.rgb;
     
     float _range = (clamp(result,0.0,1.0));
-    vec3 range = vec3(mix(_range,1.0-_range,float($Invert)));
+    _range = mix(_range,1.0-_range,float($Invert)); 
 
  float selectionType;
+ float preview = float($preview);
+ float rangeRes = (1.0-_range);
 
- switch($SelectionPreview)
-                {
-                    //Grayscale
-                    case 0:
-                    selectionType = 0.0;
-                    range = range;
-                    break;
+ if ($preview)
+ {
 
-                    //Stencil
-                    case 1:
-                    selectionType = (1.0-range)*(float($preview));
-                    range = range;
-                    break;
+     switch($SelectionPreview)
+                    {
+                        //Grayscale
+                        case 0:
+                        selectionType = 0.0;
+                        _range = _range;
+                        break;
 
-                    //Black Matte
-                    case 2:
-                    selectionType = clamp( (1.0-(1.0-range)),0.0,1.0)*(float($preview));
-                    range = vec3(0.0);
-                    break;
+                        //Stencil
+                        case 1:
+                        selectionType = rangeRes*(preview);
+                        _range = _range;
+                        break;
 
-                    //White Matte
-                    case 3:
-                    selectionType = clamp( (1.0-(1.0-range)),0.0,1.0)*(float($preview));
-                    range = vec3(1.0);
-                    break;
+                        //Black Matte
+                        case 2:
+                        selectionType = clamp( (1.0-rangeRes),0.0,1.0)*(preview);
+                        _range = 0.0;
+                        break;
+
+                        //White Matte
+                        case 3:
+                        selectionType = clamp( (1.0-rangeRes),0.0,1.0)*(preview);
+                        _range = 1.0;
+                        break;
+                       
+                    }
+
+}
 
 
 
-                   
-                }
+    vec3 range = vec3(_range);           
+    range = mix(range,background,selectionType);
 
+    vec3 previewSplit = mix(range,background,d);
 
-    range = mix(range,preview,selectionType);
-    vec3 previewSplit = mix(range,preview,d);
-
-    Output = vec4 (mix(range,previewSplit,float($preview)),#Input.a);
+    Output = vec4 (mix(range,previewSplit,preview),#Input.a);
 
             ]]></Body>
         </Shader>

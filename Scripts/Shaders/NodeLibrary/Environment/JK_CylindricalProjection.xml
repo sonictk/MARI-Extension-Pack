@@ -182,8 +182,8 @@ float D2 = 1-((D_1-ClipB)/((ClipB+0.00000000000000000001)-ClipB));
 
 // creating black and white clip mask from Pie Clip
 
-float mixval_1 = mix(vec4(0.0),vec4(1.0),clamp(D1,0.0,1.0));
-float mixval_2 = mix(vec4(0.0),vec4(1.0),clamp(D2,0.0,1.0));
+float mixval_1 = mix(0.0,1.0,clamp(D1,0.0,1.0));
+float mixval_2 = mix(0.0,1.0,clamp(D2,0.0,1.0));
 
 // Creating Alpha Result from PieSliceMask, Pie Slice clipping is created via Projection Limits
 
