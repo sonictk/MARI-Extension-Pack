@@ -1,3 +1,45 @@
+<!--
+================================================================================
+== DigiTecK3D Procedural Shader Library
+== Copyright (c) 2013 DigiTecK3D. All Rights Reserved.
+================================================================================
+== File: DT3D_CellularNoise.xml
+== Description: Cellular procedural noise node.
+================================================================================
+== Author: Miguel A Santiago Jr.
+== Web: www.digiteck3d.com
+== Email: miguel@digiteck3d.com
+================================================================================
+== Modified Date: June, 15 2014
+================================================================================
+== Redistribution and use in source and binary forms, with or without
+== modification, are permitted provided that the following conditions are met:
+==
+== 1. Redistributions of source code must retain the above copyright
+== notice, this list of conditions and the following disclaimer.
+==
+== 2. Redistributions in binary form must reproduce the above copyright
+== notice, this list of conditions and the following disclaimer in the
+== documentation and/or other materials provided with the distribution.
+==
+== 3. Neither the name of the copyright holder nor the names of its
+== contributors may be used to endorse or promote products derived from
+== this software without specific prior written permission.
+==
+== THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+== IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+== THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+== PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+== CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+== EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+== PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+== OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+== WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+== OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+== ADVISED OF HE POSSIBILITY OF SUCH DAMAGE.
+================================================================================
+-->
+
 <Node>
     <ID>Cellular Noise</ID>
     <DefaultName>Cellular Noise</DefaultName>
@@ -36,7 +78,6 @@
         <Attribute Name="transZ" PrettyName="TranslateZ" Group="Transform Translate" Type="float" Min="0" Max="100" Logarithmic="1">0</Attribute>
         <!--===============================================================================================================-->
     </Attributes>
-
     <Groups>
         <Group Name="Color" Expanded="true"></Group>
         <Group Name="Size" Expanded="true"></Group>
@@ -46,7 +87,6 @@
         <Group Name="Transform Rotate" Expanded="false"></Group>
         <Group Name="Transform Translate" Expanded="false"></Group>
     </Groups>
-
     <Contexts>
         <Context Type="GLSL">
             <Shader>
@@ -73,7 +113,7 @@
                 vec2 UVScale = vec2($scaleX,$scaleY);
 
                 // transform the position to translate,rotate,scale the position
-                vec2 InputScaleUV = relUVTransform(State.UV,$rotateZ,UVOffset,UVScale,0.5,0.5)/ (freq_pow);
+                vec2 InputScaleUV = relUVTransform(State.UV,$rotateZ,UVOffset,UVScale,0.5,0.5) / (freq_pow);
 
                 // blend between 2d and 3d space position
                 P = mix(P,vec3(InputScaleUV,1.0),float($uv));

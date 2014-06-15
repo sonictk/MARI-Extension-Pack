@@ -4,7 +4,7 @@
 == Copyright (c) 2013 DigiTecK3D. All Rights Reserved.
 ================================================================================
 == File: DT3D_InigoMultiNoise.xml
-== Description: Inigo multi fractal noise node.
+== Description: Inigo multi fractal procedural noise node.
 ================================================================================
 == Author: Miguel A Santiago Jr.
 == Web: www.digiteck3d.com
@@ -111,7 +111,7 @@
                 vec2 UVScale = vec2($scaleX,$scaleY);
 
                 // transform the position to translate,rotate,scale the position
-                vec2 InputScaleUV = relUVTransform(State.UV,$rotateZ,UVOffset,UVScale,0.5,0.5)/ (freq_pow);
+                vec2 InputScaleUV = relUVTransform(State.UV,$rotateZ,UVOffset,UVScale,0.5,0.5) / (freq_pow);
 
                 // blend between 2d and 3d space position
                 P = mix(P,vec3(InputScaleUV,1.0),float($uv));
