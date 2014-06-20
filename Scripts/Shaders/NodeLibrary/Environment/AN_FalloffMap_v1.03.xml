@@ -6,8 +6,7 @@
     <Attributes>
         <Attribute Name="FrontColor"	PrettyName="Front Color"			Group="Falloff Parameters" 			Type="color"	Description="Defines the color of the Normals that are facing the camera">(0.0,0.0,0.0,1)</Attribute>
         <Attribute Name="SideColor"		PrettyName="Side Color"				Group="Falloff Parameters" 			Type="color"	Description="Defines the color of the Normals that are look at 90ยบ in relation to the viewing angle">(1.0,1.0,1.0,1)</Attribute>
-        <Attribute Name="FalloffType"	PrettyName="Falloff Type"			Group="Falloff Parameters" 			Type="userenum" Description="Chooses the kind of falloff. This are based on 3DS Max Falloff Map node.">0, 0,1,2,3, Perpendicular/Parallel, Fresnel, Shadow/Light, Distance Blend</Attribute>
-		<Attribute Name="FalloffDir"	PrettyName="Falloff Direction"		Group="Falloff Parameters"			Type="userenum"	Description="Chooses the direction of falloff. This are based on 3DS Max Falloff Map node.">0, 0,1,2,3, Viewing Direction (Camera Z-Axis), Local X Axis, Local Y Axis, Local Z Axis</Attribute>
+        <Attribute Name="FalloffType"	PrettyName="Falloff Type/Direction"	Group="Falloff Parameters" 			Type="userenum" Description="Chooses the kind of falloff or direction. This are based on 3DS Max Falloff Map node.">0, 0,1,2,3,4,5,6, Perpendicular/Parallel, Fresnel, Shadow/Light, Distance Blend, Local X Axis, Local Y Axis, Local Z Axis</Attribute>
 		<Attribute Name="Falloff" 		PrettyName="Mix Curve"				Group="Mix Curve"					Type="curve"> </Attribute>
 		<Attribute Name="IOR"			PrettyName="Index of Refraction"	Group="Mode Specific Parameters"	Type="double"	Description="Sets a new Index of Refraction." Min="0.001" Max="10">1.6</Attribute>
 	</Attributes>
@@ -27,59 +26,55 @@
 				
 				#if defined MRI_SHADER_FRAGMENT || defined MRI_SHADER_TESS_EVALUATION
 				
-				// Viewing Direction (Camera Z-Axis)	
-				if ($FalloffDir == 0)
-                {
-					// Perpendicular/Parallel Mode (Facing Ratio in Maya)
-					if ($FalloffType == 0)
-					{
-						float VdotN = dot(State.ViewVectorInEyeSpaceFromProjectionCamera, State.NormalInEyeSpaceFromProjectionCamera);
-						float Fresnel = mriCurveLookup($Falloff, length(VdotN) );
-						Blend  = mix($FrontColor, $SideColor, 1-Fresnel);                    
-					}
-
-					// Fresnel Mode
-					if ($FalloffType == 1)
-					{			
-						float VdotN = dot(-State.ViewVectorInEyeSpaceFromProjectionCamera, State.NormalInEyeSpaceFromProjectionCamera);
-						float IdotN = dot(State.ViewVectorInEyeSpaceFromProjectionCamera, State.NormalInEyeSpaceFromProjectionCamera);
-						float Eta = (IdotN < 0.0) ? 1.0/$IOR : $IOR;
-						float F0 = (1.0-Eta)/(1.0+Eta);
-						F0 *= F0;
-						float Fresnel = F0 + (1.0-F0) * pow(1.0 - VdotN, 5.0);
-						Fresnel = mriCurveLookup($Falloff, length(Fresnel) );
-						Blend  = mix($FrontColor, $SideColor, Fresnel);   
-					}
-					
-					// Shadow/Light Mode
-					if ($FalloffType == 2)
-					{											
-						for(int i=0;i<4;i++)
-						{
-							if( vec3( 0) == u_MriLightSources[i].DiffuseColor.rgb && vec3( 0) == u_MriLightSources[i].SpecularColor.rgb)
-							{
-								continue;
-							}
-							
-							vec3 L = normalize(u_MriLightSources[i].Position.xyz - State.FragmentPositionInEyeSpaceFromProjectionCamera);
-							float lightVisibility = mriLightVisibility( i, State.Position);                        
-							
-							float NdotL = max(0, dot(State.NormalInEyeSpaceFromProjectionCamera, L) );
-							float Fresnel = mriCurveLookup($Falloff, length(NdotL) );
-							Blend += mix($FrontColor, $SideColor, Fresnel) * NdotL * lightVisibility;						
-						}    				
-					}
-
-					// Distance Blend Mode
-					if ($FalloffType == 3)
-					{
-						float Fresnel = mriCurveLookup($Falloff, length(gl_FragDepth) );
-						Blend = mix($FrontColor, $SideColor, 1-Fresnel );
-					}
+				// Perpendicular/Parallel Mode (Facing Ratio in Maya)
+				if ($FalloffType == 0)
+				{
+					float VdotN = dot(State.ViewVectorInEyeSpaceFromProjectionCamera, State.NormalInEyeSpaceFromProjectionCamera);
+					float Fresnel = mriCurveLookup($Falloff, length(VdotN) );
+					Blend  = mix($FrontColor, $SideColor, 1-Fresnel);                    
 				}
+
+				// Fresnel Mode
+				if ($FalloffType == 1)
+				{			
+					float VdotN = dot(-State.ViewVectorInEyeSpaceFromProjectionCamera, State.NormalInEyeSpaceFromProjectionCamera);
+					float IdotN = dot(State.ViewVectorInEyeSpaceFromProjectionCamera, State.NormalInEyeSpaceFromProjectionCamera);
+					float Eta = (IdotN < 0.0) ? 1.0/$IOR : $IOR;
+					float F0 = (1.0-Eta)/(1.0+Eta);
+					F0 *= F0;
+					float Fresnel = F0 + (1.0-F0) * pow(1.0 - VdotN, 5.0);
+					Fresnel = mriCurveLookup($Falloff, length(Fresnel) );
+					Blend  = mix($FrontColor, $SideColor, Fresnel);   
+				}
+					
+				// Shadow/Light Mode
+				if ($FalloffType == 2)
+				{											
+					for(int i=0;i<4;i++)
+					{
+						if( vec3( 0) == u_MriLightSources[i].DiffuseColor.rgb && vec3( 0) == u_MriLightSources[i].SpecularColor.rgb)
+						{
+							continue;
+						}
+						
+						vec3 L = normalize(u_MriLightSources[i].Position.xyz - State.FragmentPositionInEyeSpaceFromProjectionCamera);
+						float lightVisibility = mriLightVisibility( i, State.Position);                        
+						
+						float NdotL = max(0, dot(State.NormalInEyeSpaceFromProjectionCamera, L) );
+						float Fresnel = mriCurveLookup($Falloff, length(NdotL) );
+						Blend += mix($FrontColor, $SideColor, Fresnel) * NdotL * lightVisibility;						
+					}    				
+				}
+
+				// Distance Blend Mode
+				if ($FalloffType == 3)
+				{
+					float Fresnel = mriCurveLookup($Falloff, length(gl_FragDepth) );
+					Blend = mix($FrontColor, $SideColor, 1-Fresnel );
+				}			
 								
 				// Local X Axis
-				if ($FalloffDir == 1)
+				if ($FalloffType == 4)
                 {
 					vec3 N = vec3(0,0,State.Position.z);
 					vec3 P = N*u_MriObjectRadius+u_MriObjectCenter;
@@ -91,7 +86,7 @@
                 }
 				
 				// Local Y Axis
-				if ($FalloffDir == 2)
+				if ($FalloffType == 5)
                 {
 					vec3 N = vec3(0,State.Position.y,0);
 					vec3 P = N*u_MriObjectRadius+u_MriObjectCenter;
@@ -103,7 +98,7 @@
                 }
 				
 				// Local Z Axis
-				if ($FalloffDir == 3)
+				if ($FalloffType == 6)
                 {
 					vec3 N = vec3(State.Position.x,0,0);
 					vec3 P = N*u_MriObjectRadius+u_MriObjectCenter;
@@ -123,5 +118,3 @@
         </Context>
     </Contexts>
 </Node>
-
-
