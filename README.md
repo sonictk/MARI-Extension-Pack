@@ -1,10 +1,10 @@
-IDEASCALE SHADER/NODE MIRROR
+IDEASCALE NODE PACK
 =====================================================================================
 Copyright (c) 2013-2014 www.mari.ideascale.com. All Rights Reserved.
 
 Version:
 -----------
-Nodepack :  1.20 master //  MARI Function Library: 1.07
+Nodepack :  1.50  //  MARI Function Library: 1.10
 
 
 Info
