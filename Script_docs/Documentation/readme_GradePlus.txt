@@ -59,10 +59,6 @@ Requirements: =======================================================
 Installation: =======================================================
 
 
-Please download and install the MARI Function Library V1.06 or higher
-at mari.ideascale.com
-
-
 Take scripts and put them into your user preference script directory.
 Or any startup script path that Mari has set. Once these are in 
 place, Mari on startup will run through the scripts folder and load
