@@ -1,12 +1,12 @@
-# ------------------------------------------------------------------------------
+# -------------------------------------------------------------------
 # GradePlus - A Grade Node with added functionality
 # Copyright (c) 2013 Jens Kafitz. All Rights Reserved.
-# ------------------------------------------------------------------------------
+# -------------------------------------------------------------------
 # Author: Jens Kafitz | Mari Ideascale
 # Web: www.campi3d.com      
 # Web: www.mari.ideascale.com   
 # Email: info@campi3d.com
-# ------------------------------------------------------------------------------
+# -------------------------------------------------------------------
 # This program is free software: you can redistribute it and/or modify		
 # it under the terms of the GNU General Public License as published by		
 # the Free Software Foundation, either version 3 of the License, or		
