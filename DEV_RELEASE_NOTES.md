@@ -1,9 +1,9 @@
-Release Notes for Shader/Nodepack 1.30
+Release Notes for Shader/Nodepack 1.50
 =====================================================================================
 
 Release Date
 -----------
-TBA
+25 June 2014
 
 
 Added Features:

@@ -12,6 +12,14 @@ Requirements:
 This Shader/Node Pack requires MARI 2.5v2 or higher.
 
 
+Documentation:
+----------
+
+Detailed Node descriptions and documentations are available for selected Nodes
+in your Script_Doc/Documentation Folder
+
+
+
 FEATURE LIST
 =====================================================================================
 

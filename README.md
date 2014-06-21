@@ -23,9 +23,9 @@ GIT Workflow
 -----------------
 We have adopted the git flow branching model.
 
-A comprehensive Step-by-Step is available on the Twiki: https://github.com/campi3d/IdeascaleNodePack/wiki/Making-a-change---step-by-step-Tutorial
+A comprehensive Step-by-Step is available on the Twiki: 
+https://github.com/campi3d/IdeascaleNodePack/wiki/Making-a-change---step-by-step-Tutorial
 
-A demo video is available here: https://vimeo.com/86492303
 
 
 SUBBRANCH -> DEV -> RELEASE CANDIDATE (Optional) -> MASTER
@@ -69,7 +69,7 @@ Contributors
 Thank you
 -----------------
 
-Yasin Hasanian for MAC QA
+Yasin Hasanian & Dave Girard for MAC QA
 
 
 License
