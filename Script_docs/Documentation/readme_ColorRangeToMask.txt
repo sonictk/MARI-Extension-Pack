@@ -40,7 +40,7 @@ Reverse Wipe:
 Invert the Screenwipe
 
 Preview:
-Multiple options for the way the selection is previewed. For a solid Mask set the dropdown to "Grayscale" (same result as turning off "Show background"). The default Option "Stencil" will	screen the mask over the background. "BlackMatte" + "WhiteMatte" are conistent with Photoshops 	Preview Modes, overlaying Black or white over unselected areas.
+Multiple options for the way the selection is previewed. For a solid Mask set the dropdown to "Grayscale" (same result as turning off "Show background"). The default Option "Stencil" willscreen the mask over the background. "BlackMatte" + "WhiteMatte" are conistent with Photoshops 	Preview Modes, overlaying Black or white over unselected areas.
 				
 
 --- GLOBAL ---
@@ -120,6 +120,7 @@ History: =================================================================
 
 # History:
 # - 04/21/14		1.0 Release for Mari 2.0,2.5,2,6
+# - 06/23/14		1.05 Release. Added in different preview 					modes to be more in line with photoshop
 
 
 Credits: =================================================================

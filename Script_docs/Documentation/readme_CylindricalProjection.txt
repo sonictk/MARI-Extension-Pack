@@ -75,20 +75,28 @@ Node Reference Guide: ==========================================================
 
 -- TEXTURE MAP --
 
-Debug Pattern: A procedurally generated grid pattern to give quick feedback for UV Size and Projection Alignment
-Texture Map: The Map you want to project
-Rotate Map: Rotates the Map before projecting it
+Debug Pattern:
+A procedurally generated grid pattern to give quick feedback for UV Size and Projection Alignment
+
+Texture Map:
+The Map you want to project
+
+Rotate Map:
+Rotates the Map before projecting it
+
 Slide: 	    Slides the texture along Z (Length) of cylinder
 
 -- CYLINDER DIMENSION --
 
-Lock UV Scale: 	With LockUV Scale turned on, UV Scale will be adjusted for changes in Length and Radius to remain
-		consistent.
+Lock UV Scale: 	
+With LockUV Scale turned on, UV Scale will be adjusted for changes in Length and Radius to remain consistent.
 
-Length:		Length of the Projection Cylinder.
+Length:
+Length of the Projection Cylinder.
 
-Radius:		Radius of the Projection Cylinder. This determines mainly the end of the projection from the Cylinder Outwards.
-		Projection Clipping is currently square for performance reasons
+Radius:
+Radius of the Projection Cylinder. This determines mainly the end of the projection from the Cylinder Outwards.
+Projection Clipping is currently square for performance reasons
 
 Squash:		Will squash the cylinder around X (negative values) or y (positive values)
 
