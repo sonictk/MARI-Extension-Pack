@@ -75,6 +75,9 @@ History: ============================================================
 # - 04/21/14
     Stabilized Paint Baking for Facing Ratio and Shadow/Light Mode
 
+# - 06/18/14
+    Depth Mode has been removed due to instabilities
+
 
 
 
