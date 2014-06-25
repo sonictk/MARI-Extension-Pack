@@ -1,18 +1,57 @@
-Release Notes for Shader/Nodepack 1.30
+Release Notes for Shader/Nodepack 1.50
 =====================================================================================
 
 Release Date
 -----------
-TBA
+25 June 2014
 
 
 Added Features:
 -----------
+- Cylindrical Projection - a full Cylindrical Projection Node, optimized for easy setup in 3D Space.
+  Demo Videos: https://vimeo.com/93711136 // https://vimeo.com/94145101
+- Color Range to Mask - a powerful Adjustment Shader similar to Photoshop's Select Color Range
+  Demo Video: https://vimeo.com/92507840
+- Squid Skin Procedural - organic Noise Pattern
+- Cavity Map from Tangent Space Normal - Using a Tangent space normal map will output you a pseudo cavity map
+
+Feature Improvements:
+-----------
+- Military Camo - a more flexible Camo procedural was added allowing for 3 color steps. Layer them up by setting Color A to transparent for more elaborate effects
+- The original Camo Procedural with 2 Colors has been deprecated. You can use the new Military Camo with a Spacing of 0 for the same effect.
+- A variety of interface improvements have been made, collapsing less used node groups by default (Mari 2.6v2+ only)
+
 
 Bugfixes:
 -----------
-- Turning on Displacement in Shaders no longer causes a Shader Error
-- Baking Paint with the Falloff Map active in a Channel Mask no longer causes the baked paint to shift
+- A missing Library Name File within the FunctionLibrary Directory could cause the Nodepack to not load when mixed with
+  single node releases from mari.ideascale.com.
+- various fixes for MAC configurations that had issues with the Nodepack before
+- Turning on Displacement in Shaders no longer causes a Shader Error when the Nodepack is installed
+- UV Mode for Noises that broke in Nodepack 1.21 Maintenance release is now fixed
+- Baking Paint with the Falloff Map active in a Channel Mask no longer causes the baked paint to shift 
+- Depth Mode on the Falloff Map has been removed due to instability. Use the Depth mask in the Projection Palette instead
+- Custom Object Normal, Axis Mask, Paintable Gabor and PolysurfaceCurvature will no longer show an 
+  error when used in a displacement preview channel
+
+
+Known Issues & Workarounds:
+-----------
+- When a Nodepack Node is used in a Channel, that is plugged into the ChannelMask (Projection Palette), 
+projecting Paint from the Paintbuffer will throw an error. This is related to a MARI Bug that we will
+need the Foundry to fix.
+The current workaround is to cache any Nodepack Node in the Channel, at which point the Channel Mask will work.
+
+- the paintableGabor can crash nvidia display drivers when used in a Displacement Preview Channel. 
+  The current workaround is to cache the GaborNoise.
+
+
+Developer Notes:
+-----------
+- As of this version of the Nodepack <DefaultName> is used for Node names in the Mari Interface.
+  <ID> will no longer be called but is required by Mari to ensure Version consistency. Please refer
+  to the SDK Docs within your Script_Docs/SDK/ Folder for more information
+
 
 
 

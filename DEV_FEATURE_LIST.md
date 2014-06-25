@@ -5,12 +5,19 @@ FEATURE DESCRIPTION
 INFORMATION:
 ----------
 The Ideascale Shader/Nodepack is an open-source compilation of shaders, adjustments and procedurals for Mari.
-Core features include a vast array of custom noises and fractals as well as new shaders matching offline render packages.
 
 
 Requirements:
 ----------
 This Shader/Node Pack requires MARI 2.5v2 or higher.
+
+
+Documentation:
+----------
+
+Detailed Node descriptions and documentations are available for selected Nodes
+in your Script_Doc/Documentation Folder
+
 
 
 FEATURE LIST
@@ -41,6 +48,15 @@ A remap node that let's you enter specific values to remap to. This is similar i
 A Vibrancy Adjustment Layer. Changing the Vibrance of colors affects their saturation. However other than a regular Saturation change
 values are changes based on a curve, saturating lower saturated values first so not to clip colors.
 
+- Color Range to mask
+
+A Color selection Node with similar features as Photoshop's "Select Color Range".
+For a full feature demo watch this: https://vimeo.com/92507840
+
+- Cavity from Tangent Space Normal
+
+This adjustment node will allow you to create a pseudo Cavity Map from your Normal Maps. It works similarly to what
+XNormal is doing.
 
 
 Geometry Procedurals:
@@ -60,13 +76,20 @@ blur filter on it after to get smooth results.
 
 
 
-
 Environment Procedurals:
 -----------
+
 - Falloff Map
 
 A Node that allows you to add colors based on effects such as Facing Ratio, ZDepth and Surface Luminance. This node is not bakeable and should
 be used for visual enhancement or in conjunction with Channel Masking via the Projection Palette.
+
+- Cylindrical Projection
+
+A full Cylindrical Projection Node useful for things such as barrels, trees, gun scopes, tires etc.
+Optimized for ease of placements. Please watch this introduction video to learn how to use the "Position as Color"
+Feature to accurately place your projection: https://vimeo.com/93711136
+For a complete overview and tutorial of all Node features refer to this video instead: https://vimeo.com/94145101
 
 
 Noise/Fractal Procedurals:
@@ -99,7 +122,7 @@ An advanced voronoi noise implementation offering you many more options than the
 
 Modifications of the Nodes that ship with MARI including options such as seed, transformations, Color A/B etc.
 
-- Camo Pattern
+- Military Camo
 
 A procedural giving you a military camo pattern
 
@@ -122,6 +145,10 @@ An implementation of the "Superformula" allowing for a huge array of different g
 - Weave
 
 A procedural weave pattern
+
+- Squid Skin
+
+A procedural with a very organic feel.
 
 
 Shaders:

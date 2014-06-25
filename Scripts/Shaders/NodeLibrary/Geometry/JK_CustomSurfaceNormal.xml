@@ -1,21 +1,65 @@
+<!--
+================================================================================
+== Mari Ideascale Procedural Library
+== Copyright (c) 2013 Jens Kafitz. All Rights Reserved.
+================================================================================
+== File: JK_CustomSurfaceNormal.xml
+== Description: Modify the object surface normal with a custom normal direction.
+================================================================================
+== Author: Jens Kafitz | Mari Ideascale
+== Web: www.campi3d.com
+== Web: www.mari.ideascale.com
+== Email: info@campi3d.com
+================================================================================
+== Modified Date: June, 16 2014
+================================================================================
+== Redistribution and use in source and binary forms, with or without
+== modification, are permitted provided that the following conditions are met:
+==
+== 1. Redistributions of source code must retain the above copyright
+== notice, this list of conditions and the following disclaimer.
+==
+== 2. Redistributions in binary form must reproduce the above copyright
+== notice, this list of conditions and the following disclaimer in the
+== documentation and/or other materials provided with the distribution.
+==
+== 3. Neither the name of the copyright holder nor the names of its
+== contributors may be used to endorse or promote products derived from
+== this software without specific prior written permission.
+==
+== THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+== IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+== THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+== PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+== CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+== EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+== PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+== OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+== WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+== OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+== ADVISED OF HE POSSIBILITY OF SUCH DAMAGE.
+================================================================================
+-->
+
 <Node>
     <ID>Custom Object Normal</ID>
+    <DefaultName>Custom Object Normal</DefaultName>
     <Category>Geometry/Custom/</Category>
-    <DefaultName>Custom Normal</DefaultName>
-    <Cost>0.002</Cost>
-    <CostDescription>Trivial operation</CostDescription>
     <Inputs>
         <Input Name="Input" />
     </Inputs>
     <Attributes>
+        <!--===============================================================================================================-->
         <Attribute Name="rP" PrettyName="Rotate Precision" Group="Rotate Normal" Type="double" Min="0" Max="1">1</Attribute>
         <Attribute Name="rX" PrettyName="Rotate X" Group="Rotate Normal" Type="double" Min="0" Max="360">0</Attribute>
         <Attribute Name="rY" PrettyName="Rotate Y" Group="Rotate Normal" Type="double" Min="0" Max="360">0</Attribute>
         <Attribute Name="rZ" PrettyName="Rotate Z" Group="Rotate Normal" Type="double" Min="0" Max="360">0</Attribute>
+        <!--===============================================================================================================-->
         <Attribute Name="oP" PrettyName="Offset Precision" Group="Offset Normal" Type="double" Min="0" Max="10">1</Attribute>
         <Attribute Name="oX" PrettyName="Offset X" Group="Offset Normal" Type="double" Min="-1" Max="1">0</Attribute>
         <Attribute Name="oY" PrettyName="Offset Y" Group="Offset Normal" Type="double" Min="-1" Max="1">0</Attribute>
         <Attribute Name="oZ" PrettyName="Offset Z" Group="Offset Normal" Type="double" Min="-1" Max="1">0</Attribute>
+        <!--===============================================================================================================-->
     </Attributes>
     <Contexts>
         <Context Type="NodeGraphView">
@@ -36,6 +80,8 @@
                 </Shader>
             <Shader>
                 <Body><![CDATA[
+
+                #if defined MRI_SHADER_FRAGMENT || defined MRI_SHADER_TESS_EVALUATION
 
                 float g = $rP;
                 float h = $oP;
@@ -58,6 +104,8 @@
 
                 vec4 rotationResult = vec4(P, #Input.a);
                 Output = rotationResult;
+
+                #endif
 
                 ]]></Body>
             </Shader>

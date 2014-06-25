@@ -12,32 +12,38 @@
 // Web: www.mari.ideascale.com
 // Email: info@campi3d.com
 ////////////////////////////////////////////////////////////////////////////////
-// Date: Dec 20, 2013
+// Modified Date: June 14, 2014
 ////////////////////////////////////////////////////////////////////////////////
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are met:
 //
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
+// 1. Redistributions of source code must retain the above copyright
+// notice, this list of conditions and the following disclaimer.
 //
-// You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// 2. Redistributions in binary form must reproduce the above copyright
+// notice, this list of conditions and the following disclaimer in the
+// documentation and/or other materials provided with the distribution.
+//
+// 3. Neither the name of the copyright holder nor the names of its
+// contributors may be used to endorse or promote products derived from
+// this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+// IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+// THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+// PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+// CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+// EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+// PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+// OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+// WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+// OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+// ADVISED OF HE POSSIBILITY OF SUCH DAMAGE.
 ////////////////////////////////////////////////////////////////////////////////
 
 // include files
 //
 //! include | Surface.glslh
-
-
-// Not a good solution but this avoids the clashing Variables when Displacement is active
-// TO DO: Check how this affects Displacement Preview/Display
-
-MriFragmentState jkState;
-MriSystemFragmentState _jkState;
 
 //
 ////////////////////////////////////////////////////////////////////////////////
@@ -248,19 +254,19 @@ float smoothVfBm (vec3 P, float octaves, float lacunarity, float gain, float amp
     return sum;
 }
 
-// patchCoord
-// Returns one offset coordinate per patch/udim
-// Useful for example to set pivots per patch
+// patchcoord
+// returns one offset coordinate per patch/udim
+// useful for example to set pivots per patch
 // x and y represent offsets from the default coordinate (lower left corner of each patch)
-vec2 patchCoord(float x, float y)
+vec2 patchCoord( vec2 uv, float x, float y)
 {
-    vec2 patchCoord;
+    vec2 patchPivot;
     vec2 pivot = vec2(-x,-y);
 
-    // Generate UDIM Number per Patch
-    int _udim_id = (int(floor(jkState.UV.s)) + int(floor(jkState.UV.t)) *10 + 1001);
+    // generate udim number per patch
+    int _udim_id = (int(floor(uv.s)) + int(floor(uv.t)) *10 + 1001);
 
-    // Generate main Offset Coordinate based on UDIM
+    // generate main offset coordinate based on udim
     int uCo =  ((_udim_id-1000)%10);
 
     if (uCo == 0)
@@ -272,56 +278,57 @@ vec2 patchCoord(float x, float y)
 
     int vCo =  ((_udim_id-1000)/10);
 
-    // Generate OffsetCoordinate with user defined per patch pivot
-    patchCoord =   pivot - vec2(uCo,vCo);
+    // generate offset coordinate with user defined per patch pivot
+    patchPivot =   pivot - vec2(uCo,vCo);
 
-    return patchCoord;
+    return patchPivot;
 }
+
 
 // patchRotate
 // Rotates the UVs per Patch, feed in State.UV ( no fract() )
 // pivotU and pivotV can be used to set rotational pivot on a patch (corner, center)
 vec2 patchRotate(vec2 uvCoord, float angle, float pivotU, float pivotV)
 {
-    vec2 patchRotate;
+    vec2 patchRotation;
 
-    // Generate rotationMatrix
+    // generate rotationmatrix
     mat2 rotationMatrix = nb_uvRotation(angle);
 
-    // Generate OffsetCoordinate with user defined per patch pivot
-    vec2 offsetToCenter =   patchCoord(pivotU,pivotV);
+    // generate offsetcoordinate with user defined per patch pivot
+    vec2 offsetToCenter =   patchCoord(uvCoord,pivotU,pivotV);
 
 
-    // Perform Offset and rotation
-    patchRotate = uvCoord + offsetToCenter;
-    patchRotate = rotationMatrix * patchRotate;
+    // perform offset and rotation
+    patchRotation = uvCoord + offsetToCenter;
+    patchRotation = rotationMatrix * patchRotation;
 
-    // Reset Offset
-    patchRotate = patchRotate - offsetToCenter;
+    // reset offset
+    patchRotation = patchRotation - offsetToCenter;
 
-    return patchRotate;
+    return patchRotation;
 }
 
 // relUVTransform
-// Performs all UV Transformation based on a pivot defined per UDIM
+// performs all uv transformation based on a pivot defined per udim
 vec2 relUVTransform(vec2 uvCoord, float RotationAngle, vec2 Offset, vec2 Repeat, float pivotU, float pivotV)
 {
     vec2 relativeUVTransform;
 
-    // Generate OffsetCoordinate with user defined per patch pivot
-    vec2 offsetToCenter =   patchCoord(pivotU,pivotV);
+    // generate offset coordinate with user defined per patch pivot
+    vec2 offsetToCenter =   patchCoord(uvCoord,pivotU,pivotV);
 
-    // Generate rotationMatrix
+    // generate rotationmatrix
     mat2 rotationMatrix = nb_uvRotation(RotationAngle);
 
-    // Perform Offset and rotation
+    // perform offset and rotation
     relativeUVTransform = uvCoord + offsetToCenter;
     relativeUVTransform = rotationMatrix * relativeUVTransform;
 
-    // Perform Scale,Repeat
+    // perform scale,repeat
     relativeUVTransform *= Repeat;
 
-    // Reset Offset
+    // reset offset
     relativeUVTransform = relativeUVTransform - offsetToCenter + Offset;
 
     return relativeUVTransform;

@@ -1,0 +1,258 @@
+<!--
+================================================================================
+== Mari Ideascale Procedural Library
+== Copyright (c) 2013 Jens Kafitz. All Rights Reserved.
+================================================================================
+== File: JK_CylindricalProjection.xml
+== Description: Project an image as a cylindrical projection on the object.
+================================================================================
+== Author: Jens Kafitz | Mari Ideascale
+== Web: www.campi3d.com
+== Web: www.mari.ideascale.com
+== Email: info@campi3d.com
+================================================================================
+== Modified Date: June, 16 2014
+================================================================================
+== Redistribution and use in source and binary forms, with or without
+== modification, are permitted provided that the following conditions are met:
+==
+== 1. Redistributions of source code must retain the above copyright
+== notice, this list of conditions and the following disclaimer.
+==
+== 2. Redistributions in binary form must reproduce the above copyright
+== notice, this list of conditions and the following disclaimer in the
+== documentation and/or other materials provided with the distribution.
+==
+== 3. Neither the name of the copyright holder nor the names of its
+== contributors may be used to endorse or promote products derived from
+== this software without specific prior written permission.
+==
+== THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+== IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+== THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+== PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+== CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+== EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+== PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+== OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+== WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+== OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+== ADVISED OF HE POSSIBILITY OF SUCH DAMAGE.
+================================================================================
+-->
+
+<Node>
+    <ID>Cylindrical Projection</ID>
+    <DefaultName>Cylindrical Projection</DefaultName>
+    <Category>Environment/Custom/</Category>
+    <Inputs>
+        <Input Name="Input"/>
+    </Inputs>
+    <Attributes>
+        <!--===============================================================================================================-->
+        <Attribute Name="Debug" PrettyName="Debug Pattern" Group="Texture Map" Type="bool">false</Attribute>
+        <Attribute Name="Map" PrettyName="Texture Map" Group="Texture Map" Type="image" GenerateMipMaps="false"></Attribute>
+        <Attribute Name="ImageRot" PrettyName="Image Rotation" Group="Texture Map" Type="double" Min="0" Max="360">0</Attribute>
+        <Attribute Name="Slide" PrettyName="Slide" Group="Texture Map" Type="double" Min="-2" Max="2">0</Attribute>
+        <!--===============================================================================================================-->
+        <Attribute Name="LockUV" PrettyName="Lock UV Scale" Group="Cylinder Dimension" Type="bool">false</Attribute>
+        <Attribute Name="Length" PrettyName="Length" Group="Cylinder Dimension" Type="double" Min="0" Max="1000">50</Attribute>
+        <Attribute Name="R" PrettyName="Radius" Group="Cylinder Dimension" Type="double" Min="0.00001" Max="1000">1000</Attribute>
+        <Attribute Name="Flat" PrettyName="Squash" Group="Cylinder Dimension" Type="double" Min="-1.0" Max="1.0">0.0</Attribute>
+        <!--===============================================================================================================-->
+        <Attribute Name="RepX" PrettyName="RepeatU" Group="UV Size" Type="double" Min="0" Max="100">1</Attribute>
+        <Attribute Name="RepY" PrettyName="RepeatV" Group="UV Size" Type="double" Min="0" Max="100">20</Attribute>
+        <Attribute Name="WorldScale" PrettyName="UV Scale" Group="UV Size" Type="double" Min="0" Max="2000">5</Attribute>
+        <!--===============================================================================================================-->
+        <Attribute Name="PreviewPos" PrettyName="Display Object Position as Color Value" Group="Cylinder Pivot" Type="bool">false</Attribute>
+        <Attribute Name="XOffset" PrettyName="X Offset" Group="Cylinder Pivot" Type="double" Min="-10000" Max="10000">0</Attribute>
+        <Attribute Name="XFine" PrettyName="Offset" Group="Cylinder Pivot" Type="double" Min="-10" Max="10">0</Attribute>
+        <Attribute Name="YOffset" PrettyName="Y Offset" Group="Cylinder Pivot" Type="double" Min="-10000" Max="10000">0</Attribute>
+        <Attribute Name="YFine" PrettyName="Offset" Group="Cylinder Pivot" Type="double" Min="-10" Max="10">0</Attribute>
+        <Attribute Name="ZOffset" PrettyName="Z Offset" Group="Cylinder Pivot" Type="double" Min="-10000" Max="10000" >0</Attribute>
+        <Attribute Name="ZFine" PrettyName="Offset" Group="Cylinder Pivot" Type="double" Min="-10" Max="10">0</Attribute>
+        <!--===============================================================================================================-->
+        <Attribute Name="rX" PrettyName="Rotate X" Group="Transform Rotate (Around Pivot)" Type="double" Min="-180" Max="180">90</Attribute>
+        <Attribute Name="rXo" PrettyName="Offset" Group="Transform Rotate (Around Pivot)" Type="double" Min="-5.0" Max="5.0">0</Attribute>
+        <Attribute Name="rY" PrettyName="Rotate Y" Group="Transform Rotate (Around Pivot)" Type="double" Min="-180" Max="180">0</Attribute>
+        <Attribute Name="rYo" PrettyName="Offset" Group="Transform Rotate (Around Pivot)" Type="double" Min="-5.0" Max="5.0">0</Attribute>
+        <Attribute Name="rZ" PrettyName="Rotate Z" Group="Transform Rotate (Around Pivot)" Type="double" Min="-180" Max="180">0</Attribute>
+        <Attribute Name="rZo" PrettyName="Offset" Group="Transform Rotate (Around Pivot)" Type="double" Min="-5.0" Max="5.0">0</Attribute>
+        <Attribute Name="InvertZ" PrettyName="Flip Z" Group="Transform Rotate (Around Pivot)" Type="bool">false</Attribute>
+        <!--===============================================================================================================-->
+        <Attribute Name="ClipC" PrettyName="Plane Slice Start" Group="Pie Clip" Type="double" Min="0" Max="1">0.0</Attribute>
+        <Attribute Name="ClipCFine" PrettyName="Offset" Group="Pie Clip" Type="double" Min="-1" Max="1">0.0</Attribute>
+        <Attribute Name="ClipD" PrettyName="Plane Slice End" Group="Pie Clip" Type="double" Min="0" Max="1">1.0</Attribute>
+        <Attribute Name="ClipDFine" PrettyName="Offset" Group="Pie Clip" Type="double" Min="-1" Max="1">0.0</Attribute>
+        <Attribute Name="ClipA" PrettyName="Pie Slice Start" Group="Pie Clip" Type="double" Min="0" Max="360">0</Attribute>
+        <Attribute Name="ClipAFine" PrettyName="Offset" Group="Pie Clip" Type="double" Min="-5" Max="5">0.0</Attribute>
+        <Attribute Name="ClipB" PrettyName="Pie Slice End" Group="Pie Clip" Type="double" Min="0" Max="360">360</Attribute>
+        <Attribute Name="ClipBFine" PrettyName="Offset" Group="Pie Clip" Type="double" Min="-5" Max="5">0.0</Attribute>
+        <!--===============================================================================================================-->
+        <Attribute Name="GlobalMult" PrettyName="Global Multiplier" Group="Transform Helpers" Type="double" Min="0.001" Max="100">1.0</Attribute>
+        <Attribute Name="Le_Ra_Mult" PrettyName="Length/Radius Multiplier" Group="Transform Helpers" Type="double" Min="0.001" Max="100">1.0</Attribute>
+        <Attribute Name="trOffsetMult" PrettyName="Transform Offset Multiplier" Group="Transform Helpers" Type="double" Min="0.001" Max="100">1.0</Attribute>
+        <Attribute Name="clOffsetMult" PrettyName="Clip Offset Multiplier" Group="Transform Helpers" Type="double" Min="0.001" Max="100">1.0</Attribute>
+        <!--===============================================================================================================-->
+    </Attributes>
+    <Groups>
+        <Group Name="Transform Rotate (Around Pivot)" Expanded="false"></Group>
+        <Group Name="Pie Clip" Expanded="false"></Group>
+        <Group Name="Transform Helpers" Expanded="false"></Group>
+    </Groups>
+    <Contexts>
+        <Context Type="NodeGraphView">
+            <Inputs>
+                <Input Name="Mask"><Pos>100,0</Pos></Input>
+                <Input Name="Position"><Pos>100,-20</Pos></Input>
+                <Input Name="Normal"><Pos>100,+20</Pos></Input>
+            </Inputs>
+        </Context>
+        <Context Type="GLSL">
+            <Shader ShaderType='Fragment'>
+                <Inputs>
+                    <Input Name="Input"> <Default>vec4(1.0)</Default> </Input>
+                </Inputs>
+            </Shader>
+            <Shader ShaderType='TessEvaluation'>
+                <Inputs>
+                    <Input Name="Input"> <Default>vec4(1.0)</Default> </Input>
+                </Inputs>
+            </Shader>
+            <Shader>
+                <Body><![CDATA[
+
+                const float PI=3.1415926538979 ;
+
+                //-----------------------------------------------------------
+                // Transformation Variables
+                //-----------------------------------------------------------
+
+                float XOffset = $XOffset + ($XFine*($trOffsetMult*$GlobalMult));
+                float YOffset = $YOffset + ($YFine*($trOffsetMult*$GlobalMult));
+                float ZOffset = $ZOffset + ($ZFine*($trOffsetMult*$GlobalMult)) ;
+                float leng = $Length * ($Le_Ra_Mult*$GlobalMult);
+                float rad = $R * ($Le_Ra_Mult*$GlobalMult);
+                vec3 flatScale = vec3(1.0,(1.0-$Flat)/1.0,1.0);
+                vec3 trans = vec3(XOffset,YOffset,ZOffset);
+                vec3 transl = vec3(XOffset,YOffset,0.0);
+                vec3 rot = (vec3($rX+$rXo,$rY+$rYo,$rZ+$rZo));
+                vec3 _P = State.Position;
+
+                //-----------------------------------------------------------
+                // Transformation to Pivot
+                //-----------------------------------------------------------
+
+                // //Rotating around object centre then moving back to original position
+                vec3 _PP = translate(_P,trans);
+                mat3 rotObjx = rotation(rot.x,vec3(1.0,0.0,0.0));
+                mat3 rotObjy = rotation(rot.y,vec3(0.0,1.0,0.0));
+                mat3 rotObjz = rotation(rot.z,vec3(0.0,0.0,1.0));
+
+                _PP = _PP * (rotObjx * rotObjy * rotObjz);
+                _PP = scale(_PP,flatScale);
+
+                //-----------------------------------------------------------
+                // Image Rotation Matrix & Spin
+                //-----------------------------------------------------------
+
+                float angleRads = radians( $ImageRot);
+                float cosAngle = cos( angleRads);
+                float sinAngle = sin( angleRads);
+                mat2 ImageRot = mat2( cosAngle, -sinAngle, sinAngle, cosAngle );
+
+                //-----------------------------------------------------------
+                // Main Cylindrical UV Projection Coordinates
+                //-----------------------------------------------------------
+
+                float ss = 1-( (atan(_PP.x,_PP.y) + PI ) / (2.0*PI));
+
+                float uvscaleL = mix(leng,50.0*($Le_Ra_Mult*$GlobalMult),float($LockUV));
+                float tt = (1-_PP.z)/float(uvscaleL);
+                vec2 _uv = vec2(ss,tt+$Slide);
+
+                vec2 rep = vec2($RepX,$RepY)/vec2($WorldScale);
+                float uvscaleR = mix(float(rad),1000.0*($Le_Ra_Mult*$GlobalMult),float($LockUV));
+                vec2 _uvC = ((_uv)*rep*uvscaleR);
+
+                //-----------------------------------------------------------
+                // Alpha Clipping - Pie Style and Radius Projection Clipping
+                //-----------------------------------------------------------
+
+                // Do not delete, this is necessary for the Pie Slice Clip
+                vec2 _uvP = vec2(ss,(1.0-_PP.z));
+
+                vec2 _uvA1 = ((_uvP) )/4.0;
+
+                // Slice Clip in Angle of Cylinder
+
+                float Angle = 0.0 ;
+                vec2 N_1 = -vec2(cos(Angle),sin(Angle));
+                N_1 = normalize(N_1);
+                vec2 P_1 = N_1*0.5+vec2(0.5);
+                float d_1 = -dot(N_1,P_1)+0.5;
+                float D_1 = (dot(N_1,_uvA1)+d_1)/length(P_1);
+                D_1 /=0.5;
+                D_1 = fract(1.0-D_1);
+
+                // Clip Values for Slice and Plane Slice Clip
+
+                float ClipA = $ClipA/360 + $ClipAFine/360;
+                float ClipB = $ClipB/360 + $ClipBFine/360;
+                float ClipC = $ClipC + ( ($ClipCFine*($clOffsetMult*$GlobalMult)) /10);
+                float ClipD = $ClipD + ( ($ClipDFine*($clOffsetMult*$GlobalMult)) /10);
+
+                // Hard edged clip. Lots of decimals
+
+                float D1 = (D_1-ClipA)/((ClipA+0.000000000000000000001)-ClipA);
+                float D2 = 1-((D_1-ClipB)/((ClipB+0.00000000000000000001)-ClipB));
+
+                // creating black and white clip mask from Pie Clip
+
+                float mixval_1 = mix(0.0,1.0,clamp(D1,0.0,1.0));
+                float mixval_2 = mix(0.0,1.0,clamp(D2,0.0,1.0));
+
+                // Creating Alpha Result from PieSliceMask, Pie Slice clipping is created via Projection Limits
+
+                float AlphaResult = mixval_1*mixval_2 ;
+
+                // Radius Alpha Eval
+
+                float ppx = _PP.x + transl.x;
+                float ppy= _PP.y + transl.y;
+
+                vec3 boundingBox;
+                boundingBox.x = ( (ppx > (XOffset + rad )) || (ppx < (XOffset - rad)) ) ? 0.0 : 1.0;
+                boundingBox.y = ( (ppy > (YOffset + rad)) || (ppy < (YOffset - rad)) ) ? 0.0 : 1.0;
+
+                // Using "Length" method for evaluating Slice Clip. Comparing Value of Z + ZOffset + Length to get proper Z Size of Cylinder
+                // A small 0.02 margin is applied so the cap of the cylinder is visible
+                float offset = mix(($ZOffset-leng),($ZOffset+leng-0.5),float($InvertZ));
+                boundingBox.z = ( (_PP.z + offset + (ClipC*leng*2) > (ZOffset + (leng) )) || (_PP.z + offset - ((1.0-ClipD)*leng*2)< (ZOffset - (leng) )) ) ? 0.0 : 1.0;
+
+                float boxAlpha = clamp((boundingBox.x*boundingBox.y*boundingBox.z),0.0,1.0);
+
+                //-----------------------------------------------------------
+                // Result combining
+                //-----------------------------------------------------------
+
+                // prevPos is State.Position without changes
+                vec4 prevPos = vec4(_P,1.0);
+
+                _uvC = (_uvC*ImageRot)+vec2(0.0,trans.z);
+                vec4 ColorResult = texture( $Map,_uvC) ;
+
+                // Debug Pattern Mix
+                ColorResult = ($Debug) ? vec4(vec3(nb_superEllipse2D(_uvC/vec2(1,1), 0.9, 50)),1.0) : ColorResult;
+
+                // Alpha Combination from Length, Radius, Pie Clipping and Image Alpha
+                ColorResult.a =   (AlphaResult*ColorResult.a) * boxAlpha ;
+
+                // Position Preview Mix
+                Output = mix(ColorResult,prevPos,float($PreviewPos));
+
+                ]]></Body>
+            </Shader>
+        </Context>
+    </Contexts>
+</Node>
