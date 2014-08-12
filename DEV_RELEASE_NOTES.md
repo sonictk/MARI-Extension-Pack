@@ -3,6 +3,19 @@ Release Notes for Shader/Nodepack 1.50
 
 Release Date
 -----------
+TBA
+
+Added Features:
+-----------
+- VoronoiPopcorn (Procedurals/Custom/MultiFractal) added
+
+
+
+Release Notes for Shader/Nodepack 1.50
+=====================================================================================
+
+Release Date
+-----------
 25 June 2014
 
 

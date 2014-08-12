@@ -46,8 +46,9 @@
     <DT3D_CellularNoiseLib>DT3D Cellular Lib</DT3D_CellularNoiseLib>
     <DT3D_ProceduralLib>DT3D Procedural Lib</DT3D_ProceduralLib>
     <!-- jens kafitz procedural shader library -->
-    <ID_ProceduralLib>JK Procedural Lib</ID_ProceduralLib>
+    <ID_ProceduralLib>JK Function Lib</ID_ProceduralLib>
     <JK_ColorRangeToMask>JK Color Range To Mask Functions</JK_ColorRangeToMask>
+    <JK_VoronoiSuite>JK Voronoi Suite</JK_VoronoiSuite>
     <!-- nicholas breslow procedural shader library -->
     <NB_ProceduralLib>Nicholas Breslow Procedural Lib</NB_ProceduralLib>
     <NB_BrdfLib>Nicholas Breslow BRDF Lib</NB_BrdfLib>
