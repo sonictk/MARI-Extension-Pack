@@ -7,8 +7,14 @@ TBA
 
 Added Features:
 -----------
-- VoronoiPopcorn - a complex procedural for creating veins, crumbled paper looks etc.
-- Illegal Albedo Warning - a adjustment layer that gives a visual warning when illegal albedo values are detected
+- VoronoiPopcorn
+A complex procedural for creating veins, crumbled paper looks etc.
+
+- Illegal Albedo Warning
+Adjustment layer that gives a visual warning when illegal albedo values are detected
+
+- Posterize
+Simple Posterize adjustment implementation, specifying how many color/value steps you want
 
 
 
