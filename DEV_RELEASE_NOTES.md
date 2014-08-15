@@ -8,6 +8,7 @@ TBA
 Added Features:
 -----------
 - VoronoiPopcorn (Procedurals/Custom/MultiFractal) added
+- Illegal Albedo Warning (Adjustments/Custom) added
 
 
 
