@@ -1,4 +1,4 @@
-Release Notes for Shader/Nodepack 1.50
+Release Notes for Shader/Nodepack 1.60
 =====================================================================================
 
 Release Date
@@ -7,8 +7,8 @@ TBA
 
 Added Features:
 -----------
-- VoronoiPopcorn (Procedurals/Custom/MultiFractal) added
-- Illegal Albedo Warning (Adjustments/Custom) added
+- VoronoiPopcorn - a complex procedural for creating veins, crumbled paper looks etc.
+- Illegal Albedo Warning - a adjustment layer that gives a visual warning when illegal albedo values are detected
 
 
 
