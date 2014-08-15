@@ -57,19 +57,21 @@
         <Attribute Name="colorB" PrettyName="Color B" Group="Color" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)" Description="Color B">(0,0,0,1)</Attribute>
         <Attribute Name="invert" PrettyName="Invert" Group="Color" Type="bool" Min="false" Max="true" Description="Invert Noise before applying Colors">false</Attribute>
         <!--===============================================================================================================-->
+        <Attribute Name="vor_channel" PrettyName="Voronoi Base" Group="Voronoi Procedure" Type="stringlist">Popcorn,Popcorn,Coffee Bean,Sparse Corn, Crumpled Paper</Attribute>   
+        <Attribute Name="vScale" PrettyName="Primary Scale" Group="Voronoi Base" Type="double" Min="0.01" Max="1000" Logarithmic="1" Description="Primary Scale Factor that all noises used in this procedural run through">1</Attribute>
+       <Attribute Name="seed" PrettyName="Seed" Group="Voronoi Base" Type="double" Min="1" Max="100000" Logarithmic="1" Description="Random Offset">50</Attribute>
+        <!--===============================================================================================================-->
         <Attribute Name="Threshold" PrettyName="Threshold" Group="Threshold" Type="double" Min="0" Max="10" Description="Threshold of final result, the noise has a very low range so with high treshold ranges you can get really fine results" >0.5</Attribute>
         <Attribute Name="Clip" PrettyName="Soft Clip Result" Group="Threshold" Type="double" Min="0.001" Max="10" Description="Threshold of final result, the noise has a very low range so with high treshold ranges you can get really fine results">0.5</Attribute>
         <Attribute Name="Mid" PrettyName="Contrast" Group="Threshold" Type="double" Min="0.001" Max="1" Description="A multiplier of the end noise, resulting in more contrast between color a and color b" >0.1</Attribute>
         <Attribute Name="clamp" PrettyName="Clamp" Group="Threshold" Type="bool" Min="false" Max="true" Description="Clamping of final noise before applying color a/b">true</Attribute>
-       <!--===============================================================================================================-->
-        <Attribute Name="vScale" PrettyName="Primary Scale" Group="Voronoi Base" Type="double" Min="0.01" Max="1000" Logarithmic="1" Description="Primary Scale Factor that all noises used in this procedural run through">1</Attribute>
-        <Attribute Name="lacunarity" PrettyName="Secondary Scale" Group="Voronoi Base" Type="double" Min="0" Max="1000" Logarithmic="1" Description="Lacunarity of secondary overlay noise, set to 0 to turn it off">0</Attribute>      
-        <Attribute Name="seed" PrettyName="Seed" Group="Voronoi Base" Type="double" Min="1" Max="100000" Logarithmic="1" Description="Random Offset">50</Attribute>
         <!--===============================================================================================================-->
-        <Attribute Name="octaves" PrettyName="B Density" Group="Relationship Color A/B" Type="double" Min="1" Max="10" Logarithmic="1" Description="Octaves of primary Noise">2</Attribute>
-        <Attribute Name="octaveGain" PrettyName="B Density Gain" Group="Relationship Color A/B" Type="double" Min="0.01" Max="50" Logarithmic="1" Description="Octave Gain of primary Noise">3</Attribute>
-        <Attribute Name="width" PrettyName="A Density" Group="Relationship Color A/B" Type="double" Min="1" Max="10" Logarithmic="1" Description="Scale of secondary Noise">2</Attribute>
-        <Attribute Name="widthAdd" PrettyName="A Density Gain" Group="Relationship Color A/B" Type="double" Min="0.01" Max="50" Logarithmic="1" Description="Gain of secondary Noise">3</Attribute>
+        <Attribute Name="octaves" PrettyName="Density" Group="Relationship Color A/B" Type="double" Min="1" Max="10" Logarithmic="1" Description="Octaves of primary Noise">2</Attribute>
+        <Attribute Name="octaveGain" PrettyName="Density Gain" Group="Relationship Color A/B" Type="double" Min="0.01" Max="50" Logarithmic="1" Description="Octave Gain of primary Noise">3</Attribute>
+        <!--===============================================================================================================-->
+        <Attribute Name="lacunarity" PrettyName="Secondary Scale" Group="Seondary Noise" Type="double" Min="0" Max="1000" Logarithmic="1" Description="Lacunarity of secondary overlay noise, set to 0 to turn it off">0</Attribute>      
+        <Attribute Name="width" PrettyName="Density" Group="Seondary Noise" Type="double" Min="1" Max="10" Logarithmic="1" Description="Scale of secondary Noise">2</Attribute>
+        <Attribute Name="widthAdd" PrettyName="Density Gain" Group="Seondary Noise" Type="double" Min="0.01" Max="50" Logarithmic="1" Description="Gain of secondary Noise">3</Attribute>
         <!--===============================================================================================================-->
         <Attribute Name="lrg_shp_iteration" PrettyName="Large Detail Amount" Group="Large Edge Detail" Type="double" Min="0" Max="5" Description="Octaves of noise to offset Shapes with">2</Attribute>
         <Attribute Name="lrg_shp_amp" PrettyName="Detail Amplitute" Group="Large Edge Detail" Type="double" Min="0" Max="10" Description="Amplitute of noise to offset Shapes with">3</Attribute>
@@ -148,16 +150,63 @@
                 // Want slider to be 0-1 but need a bit more range in the contrast
                 float Mid = $Mid * 100;
 
+
+                switch ($vor_channel) // choosing the different channels (RGBA) to use from the popcorn function
+                {
+
+                    case 3:
+                    Mid = $Mid * 10;
+                    break;
+                   
+                }
+
+
+
+
+                float vor_channel;
+                float Threshold = $Threshold;
+                float softClip = $Clip;
+
+
+
+
                 // keeping large scale pattern always larger than small scale pattern
                 float lrg_shp_scale = ($lrg_shp_scale + $sml_shp_scale );
 
-                float vorPopcorn = popcorn_Frac(Pos/$vScale,$lrg_shp_iteration,$sml_shp_iteration,$octaves,$lacunarity,$octaveGain,$width,$widthAdd,lrg_shp_scale,$sml_shp_scale,$lrg_shp_amp,$sml_shp_amp,1,1)*vec3(Mid);
+                vec4 vorPopcorn = popcorn_Frac(Pos/$vScale,$lrg_shp_iteration,$sml_shp_iteration,$octaves,$lacunarity,$octaveGain,$width,$widthAdd,lrg_shp_scale,$sml_shp_scale,$lrg_shp_amp,$sml_shp_amp,1,1)*vec4(Mid);
                 
                 vec4 colorA = mix($colorA,$colorB,float($invert));
                 vec4 colorB = mix($colorB,$colorA,float($invert));
 
+
+                switch ($vor_channel) // choosing the different channels (RGBA) to use from the popcorn function
+                {
+                    case 0:
+                    default:
+                    vor_channel = vorPopcorn.r;
+                    softClip = softClip;
+
+                    break;
+                    case 1:
+                    vor_channel = vorPopcorn.g;
+                    break;
+                    case 2:
+                    vor_channel = vorPopcorn.b;
+                    Threshold *= 2.0;
+                    softClip = softClip * 2.0;
+                    break;
+                    case 3:
+                    vor_channel = vorPopcorn.a - vorPopcorn.b;
+                    Threshold *= 4.0;
+                    softClip = (softClip + 0.5) * 6.0;
+                    Mid = $Mid * 100;
+                    break;
+                   
+                }
+
+
                 // thresholding of result, clamping afterwards. This is for maximum displacement softness.
-                float blend = softThreshold($Threshold, $Clip, vorPopcorn);
+                float blend = softThreshold(Threshold,softClip,vor_channel);
                 blend = mix(blend,clamp(blend,0.0,1.0),float($clamp));
           
                 vec4 result = mix(colorA,colorB,blend);

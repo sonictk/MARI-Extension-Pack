@@ -42,7 +42,7 @@
 
 // Generates a popcorn like shape, if inverted it has similarities with veins
 
-float voronoi_popcorn(
+vec4 voronoi_popcorn(
 
 				vec3 position,
 				float lrg_Shp_Itr,
@@ -58,7 +58,7 @@ float voronoi_popcorn(
 
 // The fractal version of voronoi_popcorn for more randomness
 
-float popcorn_Frac(
+vec4 popcorn_Frac(
 
 				vec3 position,
 				float lrg_Shp_Itr,

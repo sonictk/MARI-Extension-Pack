@@ -57,7 +57,7 @@ float boxStep(float low, float high, float value);
 // ------------------------------------------------------------------------
 
 
-float voronoi_popcorn(
+vec4 voronoi_popcorn(
 
 				vec3 position,
 				float lrg_Shp_Itr,
@@ -126,19 +126,21 @@ float voronoi_popcorn(
 
 		float lines_thin_A = smoothstep(0.0,width,(f1)/2);
 		float lines_thin_B = smoothstep(0.0,width,(f2)/2);
-	    float lines_thin_C = boxStep(f2, width, f1)/4;
+	   //  float lines_thin_C = smoothstep(0.0,width,(f1));
+	   float lines_thin_C = width * f1;
+	    float lines_thin_D = width * f2;
 
-	    float result = lines_thin_A;
+	    vec4 result = vec4(lines_thin_A,lines_thin_B,lines_thin_C,lines_thin_D);
 
 	    
 
-	    return result;
+	    return result;	
 
     }
 
 
 
-float popcorn_Frac(
+vec4 popcorn_Frac(
 
 				vec3 position,
 				float lrg_Shp_Itr,
@@ -157,8 +159,8 @@ float popcorn_Frac(
 
 				)
 
-{	float sum = 0.0;
-	float amp = 1.0;
+{	vec4 sum = vec4(0.0);
+	vec4 amp = vec4(1.0);
 	float lw = lines_width;
 	float i;
 	if (lacunarity == 0.0) {lacunarity=1.0;}
@@ -168,7 +170,7 @@ float popcorn_Frac(
 	{
 		sum += amp * voronoi_popcorn(position,lrg_Shp_Itr,sml_Shp_Itr,lrg_Shp_Scale,sml_Shp_Scale,lrg_Shp_Amp,sml_Shp_Amp,lw,distSet);
 		position = position * 1.0/lacunarity;
-		amp *= octGain;
+		amp *= vec4(octGain);
 		lw += lines_widthAdd;
 
 	}

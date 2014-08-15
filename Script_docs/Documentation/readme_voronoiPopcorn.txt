@@ -50,6 +50,7 @@ Edge Detail & Small Edge Detail.)
 Both Voronoi and Edge Detail are run through a fractalization 
 (multiple octaves) for further randomness.
 
+
      -------------------- Color ------------------------
 
      Color A/B
@@ -58,6 +59,30 @@ Both Voronoi and Edge Detail are run through a fractalization
 
      Invert
      Invert the result of the Noise before Color A/B is applied
+
+     ---------------- Voronoi Procedure ------------------------ 
+     Popcorn
+     Generates Soft round cells
+
+     Coffee Bean
+     Generates cells with hard geometric shapes
+
+     Sparse Corn
+     Soft cells with a very sparse distribution
+
+     Crumpled Paper
+     Cells with an outline but a soft centre
+
+
+      ---------------- Voronoi Base ------------------------ 
+
+     Primary Scale
+     This is the main Scale Factor for all noise operations run
+     in this procedural.
+
+
+     Seed
+     A random Offset applied o the noise(s)
 
      ---------------- Threshold ------------------------  
 
@@ -82,27 +107,10 @@ Both Voronoi and Edge Detail are run through a fractalization
      the result.
 
 
-     ---------------- Voronoi Base ------------------------ 
-
-     Primary Scale
-     This is the main Scale Factor for all noise operations run
-     in this procedural.
-
-     Secondary Scale
-     The secondary Scale (also called "Lacunarity") affects the
-     fractalization that is run at the end of this procedural.
-     When it is set to 0 (or 1) it will be as if it is turned off.
-     It will affect the scale of the B Density/B Density Gain under
-     the Color A/B Relationship Group. For smoother less noisy
-     results leave this off (at 0).
-
-     Seed
-     A random Offset applied o the noise(s)
-
     ---------------- Relationship Color A/B -------------------
 
-    B Density
-    B Density will affect how much Color B you are likely to see.
+    Density
+    Density will affect how much Color B you are likely to see.
     Under the hood it is the amount of octaves run at the final
     fractalization process. Please note that this works
     off full number (1,2,3 etc.) which is why you are seeing
@@ -112,22 +120,37 @@ Both Voronoi and Edge Detail are run through a fractalization
     For each number until B Density is reached run the 
     voronoiPopcorn times the B Density Gain.
 
-    B Density Gain
-    B DensityGain will affect how much Color B you are likely to see
-    and acts as a multiplier of B Density for each octave of the
+   Density Gain
+   DensityGain will affect how much Color B you are likely to see
+    and acts as a multiplier of Density for each octave of the
     noise.
-    For each number until B Density is reached run the 
-    voronoiPopcorn times the B Density Gain.
+    For each number untilDensity is reached run the 
+    voronoiPopcorn times the Density Gain.
 
 
-    A Density
-    A Density will affect how much Color A you are likely to see.
-    It is run as part of the voronoiPopcorn process.
 
-    A Density Gain
-    A Density will affect how much Color A you are likely to see.
-    It acts as a clipping value of the popcornVoronoi (maximum
-    value) but can generally be treated as a multiplier of A Density.
+    ---------------- Secondary Noise -------------------
+
+
+     Secondary Scale
+     The secondary Scale (also called "Lacunarity") affects the
+     fractalization that is run at the end of this procedural.
+     When it is set to 0 (or 1) it will be as if it is turned off.
+     It will affect the scale of the B Density/B Density Gain under
+     the Color A/B Relationship Group. For smoother less noisy
+     results leave this off (at 0).
+
+
+     Density
+     Density will affect how much Color A you are likely tosee    .
+     It is run as part of the voronoiPopcorn process.
+   
+     Density Gain
+     Density will affect how much Color A you are likely tosee    .
+     It acts as a clipping value of the popcornVoronoi (maximum
+     value) but can generally be treated as a multiplier of A   Density.
+
+
 
      ---------------- Large Edge Detail -------------------
 
