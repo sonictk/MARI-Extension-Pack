@@ -38,11 +38,13 @@ POSSIBILITY OF SUCH DAMAGE.
 
 Info: ===============================================================
 
-In a Physcial Based Shading Model (BPR) Albedo/Difuse values that are too low (below 0.03)
-and too high (above 0.97) are generally considered non-valid and not "physically plaubsible".
-While they do not necessary represent a deal breaker it is good practise to stay in the 
-safe values. This Adjustment Layer gives a visual warning when values below a
-predefined upper and lower bound are found.
+In a Physcial Based Shading Model (BPR) Albedo/Difuse values that are
+too low (below 0.03) and too high (above 0.97) are generally 
+considered non-valid and not "physically plaubsible".
+While they do not necessary represent a deal breaker it is good 
+practise to stay in the safe values. This Adjustment Layer gives a 
+visual warning when values below a predefined upper and lower 
+bound are found.
 
 
 Requirements: =======================================================

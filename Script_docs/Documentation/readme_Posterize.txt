@@ -38,8 +38,8 @@ POSSIBILITY OF SUCH DAMAGE.
 
 Info: ===============================================================
 
-A simple Posterize Adjustment Filter, allowing to set the amount of colors/values to split
-the base into.
+A simple Posterize Adjustment Filter, allowing to set the amount of
+colors/values to split the base into.
 
 Requirements: =======================================================
 
