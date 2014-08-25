@@ -42,6 +42,9 @@ POSSIBILITY OF SUCH DAMAGE.
 
 Info: ===============================================================
 
+Sample Settings are available here: https://vimeo.com/103744817
+... or in your Script_docs/samples folder.
+
 A voronoi based Fractal useful for veins, soft gravel like 
 displacements etc.
 

@@ -287,13 +287,24 @@ vec4 CellNoise( vec3 gridcell );
  
 
 
-  //   / FunctionLibrary/DT3D_FunctionLibrary/DT3D_CellularNoiseLib.glslc         
+ //   /FunctionLibrary/DT3D_FunctionLibrary/DT3D_CellularNoiseLib.glslc         
  // voronoi cellular pattern generator
  void voronoi(vec3 position, float jitterD, int distype, out float f1, out float f2, out vec3 pos1, 
  		     out vec3 pos2, out vec3 f1cell, out vec3 f2cell);
 
 
 
+//  /FunctionLibrary/DT3D_FunctionLibrary/JK_VoronoiSuite.glslc   
+// Generates a popcorn like shape, if inverted it has similarities with veins
+// You might have to do forward declarations of voronoi() in your function file
+//
+vec4 voronoi_popcorn(vec3 position,float lrg_Shp_Itr,float sml_Shp_Itr,float lrg_Shp_Scale,float sml_Shp_Scale,float lrg_Shp_Amp,float sml_Shp_Amp,	float width,int distSet);
+
+
+//  /FunctionLibrary/DT3D_FunctionLibrary/JK_VoronoiSuite.glslc  
+// The fractal version of voronoi_popcorn for more randomness
+//
+vec4 popcorn_Frac(vec3 position,float lrg_Shp_Itr,float sml_Shp_Itr,float octaves,float lacunarity,	float octGain,float lines_width,float lines_widthAdd,float lrg_Shp_Scale,float sml_Shp_Scale,float lrg_Shp_Amp, float sml_Shp_Amp,int distSet,int outSet);
 
 
 
