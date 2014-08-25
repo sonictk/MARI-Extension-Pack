@@ -1,0 +1,54 @@
+
+
+<Node>
+    <ID>Texture Bomb B</ID>
+    <DefaultName>Texture Bomb Expensive</DefaultName>
+    <Category>Environment/Custom/</Category>
+    <Cost>0.99</Cost>
+    <CostDescription>Heavy calculations and texture reads do not keep live</CostDescription>
+    <Inputs>
+        <Input Name="UV"></Input>
+         <Input Name="Position"></Input>
+    </Inputs>
+    <Attributes>
+        <!--===============================================================================================================-->
+        <Attribute Name="MapMain" PrettyName="MainMap" Group="Texture Map" Type="image" GenerateMipMaps="false"></Attribute>
+        <Attribute Name="MapAlpha" PrettyName="Bomb Map" Group="Texture Map" Type="image" GenerateMipMaps="false"></Attribute>
+        <Attribute Name="Layers" PrettyName="Layers" Group="" Type="double" Min="0" Max="5">5</Attribute>
+        <Attribute Name="Scale" PrettyName="Scale" Group="" Type="double" Min="0" Max="1000">2</Attribute>
+        <Attribute Name="Frequency" PrettyName="Frequency" Group="" Type="double" Min="1" Max="2">2</Attribute>
+        <Attribute Name="NoiseScale" PrettyName="NoiseScale" Group="" Type="double" Min="0" Max="1000">2</Attribute>
+        <Attribute Name="rot_min" PrettyName="Min Rotation" Group="" Type="double" Min="0" Max="360">0</Attribute>
+        <Attribute Name="rot_max" PrettyName="Max Rotation" Group="" Type="double" Min="0" Max="360">180</Attribute>
+      <Attribute Name="uvScale" PrettyName="uvScale" Group="" Type="double" Min="0" Max="1000">1</Attribute>
+     
+        <!--===============================================================================================================-->
+    </Attributes>
+  <Contexts>
+        <Context Type="NodeGraphView">
+            <Inputs>
+                <Input Name="UV"><Pos>0,-50</Pos></Input>
+            </Inputs>
+        </Context>
+        <Context Type="GLSL">
+            <Shader>
+                <Inputs>
+                    <Input Name="UV"><Default>State.UV</Default></Input>
+                    <Input Name="Position"><Default>State.Position</Default></Input>
+                </Inputs>
+                <Body><![CDATA[
+
+                vec2 UV = #UV;
+                vec3 Pos = #Position;
+
+                Output = bomb_testB(UV,Pos,$Scale,$Frequency,$Layers,$NoiseScale,$rot_min,$rot_max,$MapMain,$MapAlpha);
+                // Output = texture($MapMain,tmpuv.xy);
+
+                ]]></Body>
+            </Shader>
+        </Context>
+    </Contexts>
+</Node>
+
+
+

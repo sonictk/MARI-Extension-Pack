@@ -1,0 +1,13 @@
+
+vec4 bomb_testB( 
+					vec2 UV,
+					vec3 POS,
+					float scale,
+					float frequency,
+					float layers,
+					float noise_scale,
+					float rot_min,
+					float rot_max,
+					sampler2D textureA,
+					sampler2D alphaA
+				);

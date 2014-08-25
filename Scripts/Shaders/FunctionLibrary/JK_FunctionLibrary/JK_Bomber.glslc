@@ -1,0 +1,267 @@
+#version 330
+
+// ------------------------------------------------------------------------
+// INCLUDES
+// ------------------------------------------------------------------------
+
+//! include | Noise.glslh
+
+// ------------------------------------------------------------------------
+// Forward declaration from other files
+// ------------------------------------------------------------------------
+
+vec4 Comp_Default(vec4 Base, vec3 Blend, float Amount);
+vec4 Comp_Default(vec4 base, vec4 blend, float Opacity);
+vec4 Comp_Add(vec4 Base, vec3 Blend, float Amount);
+vec4 Comp_Add(vec4 Base, vec4 Blend, float Amount);
+
+
+
+// ------------------------------------------------------------------------
+// MACROS
+// ------------------------------------------------------------------------
+//         
+//uniform distributed noise, tiling, rotation and blending 
+
+// TO DO:
+// create 1d noise function for udn macro
+
+#define udn(x,lo,hi) (smoothstep(.25, .75, (x)) * ((hi) - (lo)) + (lo))
+#define whichtile(x,freq) (floor((x) * (freq)))
+#define rotate2d(x,y,rad,ox,oy,rx,ry) \
+				{\	rx = ((x) - (ox)) * cos(rad) - ((y) - (oy)) * sin(rad) + (ox);\
+				 ry = ((x) - (ox)) * sin(rad) + ((y) - (oy)) * cos(rad) + (oy);\
+				}
+        								
+
+#define blend(a,b,x) ((a) * (1 - (x)) + (b) * (x))
+
+
+
+// ------------------------------------------------------------------------
+// FUNCTIONS
+// ------------------------------------------------------------------------
+
+
+
+
+
+vec4 bomb_testB( 
+					vec2 UV,
+					vec3 POS,
+					float scale,
+					float frequency,
+					float layers,
+					float noise_scale,
+					float rot_min,
+					float rot_max,
+					sampler2D textureA,
+					sampler2D alphaA
+				)
+
+
+
+{
+
+	// unassigned variables
+
+	vec4 layer_color,surface_color;
+	vec4 layer_opac,surface_opac;
+	float surface_opac_a;
+	float ss, tt,tmps,tmpt;
+	float home_row,home_col;
+	float layer_idx,col_idx,row_idx;
+	float cell_size;
+	float half_cell;
+	float col, row;
+    float noi;
+    float swidth, twidth;
+    vec3 Nf, V;
+    float ds,dsu,dsv,dt,dtu,dtv;
+    float rel_s, rel_t;
+    float jitter_s, jitter_t;
+    float center_s, center_t;
+    float sMin, sMax, tMin, tMax;
+    float inBounds;
+    float max_jitter;
+
+
+    surface_color = vec4(0.0,0.0,0.0,1.0);
+    surface_opac = vec4(0.0,0.0,0.0,1.0);
+
+// ------------- POTENTIALLY BUG -------------
+
+	float s = UV.x;
+	float t = UV.y;
+
+
+
+
+    home_col = whichtile(s,scale);
+    home_row = whichtile(t,scale);
+
+    cell_size = 1.0 / scale;
+	half_cell = cell_size / 2.0;
+
+       	for (layer_idx = 0.0; layer_idx < layers; layer_idx += 1.0)
+       	{
+       		// /* scan current cell and neighbors, 9 cells total */
+       		for (col_idx = -1.0; col_idx <= 1.0; col_idx += 1.0)
+       		{
+       			for (row_idx = -1.0; row_idx <= 1.0; row_idx += 1.0)
+       			{
+       				/* determine row and column index, wraparound */
+       				rel_s = s;
+       				rel_t = t;
+					
+					col = home_col + col_idx;
+       				
+       					if (col < 0.0) 
+       					{
+       						rel_s = s + 1.0;
+       						col = scale - 1.0;
+       					}
+       					
+       					if (col >= scale) 
+       					{
+       						rel_s = s - 1.0;
+       						col = 0.0;
+       					}
+       				
+       					row = home_row + row_idx;
+
+       					if (row < 0.0) 
+       					{
+       						rel_t = t + 1.0;
+       						row = scale - 1.0;
+       					}
+
+       					if (row >= scale) 
+
+       					{
+       						rel_t = t - 1.0;
+       						row = 0.0;
+       					}
+
+
+
+              		/* base seed to udn on current layer, row and column of tile */	
+		       		noi = mriSimplexNoise(vec3 (col * noise_scale + 0.5, row * noise_scale + 0.5, 
+       						layer_idx * noise_scale + 0.5));
+
+					// noi = mriSimplexNoise(POS*vec3(noise_scale));
+
+					// noi = 1.0;
+       	
+
+		       		//generate tile based on noise < frequency
+       					if (udn(noi * 313, 0.0, 1.0) < frequency) 
+       					{			
+       						// calculate jitter
+       						max_jitter = cell_size * 0.8;
+       						jitter_s = udn(noi * 1183, -max_jitter, max_jitter);
+       						jitter_t = udn(noi * 999, -max_jitter, max_jitter);
+       		
+       						
+       						// calculate center of texture on surface
+       						center_s = (col * cell_size) + half_cell + jitter_s;
+       						center_t = (row * cell_size) + half_cell + jitter_t;
+
+       	
+
+
+
+
+
+
+
+
+       	//  ------------------------------------- Macro problems, so doing it manually below --------------------------------
+       						// rotate around center of texture
+       						// rotate2d(rel_s, rel_t, 
+       						// 		radians(udn(noi * 777, rot_min, rot_max)), 
+       						// 		center_s, center_t, 
+       						// 		tmps, tmpt);
+
+
+     							float x = rel_s;
+     							float y = rel_t;
+     							float rad = radians(udn(noi * 777, rot_min, rot_max));
+     							// float ox = center_s;
+     							// float oy = center_t;
+     							float ox = (col * cell_size) + half_cell;
+								float oy = (row * cell_size) + half_cell;
+
+
+     							tmps = ((x) - (ox)) * cos(rad) - ((y) - (oy)) * sin(rad) + (ox);
+     							tmpt = ((x) - (ox)) * sin(rad) + ((y) - (oy)) * cos(rad) + (oy);
+
+
+     	//  ------------------------------------- Macro problems, so doing it manually below --------------------------------
+
+
+
+
+
+
+
+
+       		
+       						// calculate boundaries for texture in this layer
+       						sMin = center_s - half_cell;
+       						sMax = center_s + half_cell;
+       						tMin = center_t - half_cell;
+       						tMax = center_t + half_cell;
+       					
+       						// determine if the current point on the surface is in the texture area
+       						inBounds = 1.0;
+       						// if (tmps <= sMin) inBounds = 0;
+       						// if (tmps >= sMax) inBounds = 0;
+       						// if (tmpt <= tMin) inBounds = 0;
+       						// if (tmpt >= tMax) inBounds = 0;
+       			
+       							if (inBounds == 1.0)
+       							{
+       			
+       							// calculate texture coordinates
+       								ss = (tmps - sMin) * scale;
+       								// ss = (rel_s - sMin) * scale;
+
+       								tt = (tmpt - tMin) * scale;
+       								// tt = (rel_t - tMin) * scale;
+
+       								vec2 n_uv = vec2(ss,tt);
+
+       				
+       								/* get color from texture map*/
+       								layer_color = texture(textureA,n_uv);
+       								/* get opacity from texture map*/
+       								layer_opac = vec4(layer_color.a);
+
+       								// surface_opac = Comp_Add(surface_opac,layer_opac,1.0);
+       								surface_opac = Comp_Default(surface_opac,layer_opac,layer_color.a);
+
+       								surface_opac_a = clamp(surface_opac.r,1.0,0.0);
+
+
+       								surface_color = Comp_Default(surface_color,layer_color,layer_color.a);
+
+
+
+       							}		
+       				}		
+       			}
+       		}
+       	}
+
+
+       						vec4 output = vec4(surface_color);
+							// vec4 output = vec4(n_uv,n_uv);
+							// vec4 output = vec4(n_uv.r,n_uv.g,0.0,1.0);
+       						
+       						return output;
+
+
+}
+
+
