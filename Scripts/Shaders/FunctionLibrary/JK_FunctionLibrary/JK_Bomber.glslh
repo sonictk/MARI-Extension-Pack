@@ -6,8 +6,10 @@ vec4 bomb_testB(
 					float frequency,
 					float layers,
 					float noise_scale,
+					float jitter_scale,
 					float rot_min,
 					float rot_max,
+					float tmp,
 					sampler2D textureA,
 					sampler2D alphaA
 				);
