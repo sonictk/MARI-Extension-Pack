@@ -67,8 +67,8 @@ cellular patterns. Along with these new additions the library
 also introduces a port of the Gabor noise function into the library,
 This is a special type of noise with anisotropic noise properties.
 
-Best of all the library will fall into the open source domain under
-the GNU General Public License and will include all of the source 
+Best of all the library will fall into the open source domain
+and will include all of the source 
 code for you to modify, learn, or just continue to improve and add
 to it yourself. So you are free to do with it what you will.
 
