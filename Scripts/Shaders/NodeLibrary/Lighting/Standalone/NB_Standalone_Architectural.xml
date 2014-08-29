@@ -122,8 +122,7 @@
                 // The code was found on GitHub here and modified for use inside Mari.
                 // Original credit goes to Master Zap and Nvidia Mental Images for the mia_material_x
                 // Mari 2.5v2 Implementation by Nicholas Breslow (http://nbreslow.com)
-                // This program is free software: GNU General Public License v3.
-                // See license distributed with file for more information.
+
 
                 float PI = 3.14159265;
                 vec3 V = normalize(-State.ViewVectorInEyeSpaceFromViewCamera);
