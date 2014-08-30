@@ -1,5 +1,5 @@
 
-vec4 bomb_testB( 
+vec4 JK_texScatter( 
 					vec2 UV,
 					vec3 POS,
 					float scale,
@@ -11,6 +11,15 @@ vec4 bomb_testB(
 					float rot_max,
 					int textureCount,
 					sampler2D textureA,
+					float HueSeed,
+					float A_minH,
+					float A_maxH,
+					float SatSeed,
+					float A_minS,
+					float A_maxS,
+					float ValSeed,
+					float A_minV,
+					float A_maxV,
 					sampler2D textureB,
           			float textureB_weight,
           			sampler2D textureC,

@@ -1,8 +1,8 @@
 
 
 <Node>
-    <ID>Texture Bomb B</ID>
-    <DefaultName>Texture Bomb Expensive</DefaultName>
+    <ID>Texture Scatter UV</ID>
+    <DefaultName>Texture Scatter 2D</DefaultName>
     <Category>Environment/Custom/</Category>
     <Cost>0.99</Cost>
     <CostDescription>Heavy calculations and texture reads do not keep live</CostDescription>
@@ -14,23 +14,36 @@
         <!--===============================================================================================================-->
         <Attribute Name="Layers" PrettyName="Layers" Group="Density" Type="double" Min="1" Max="15">2</Attribute>
         <Attribute Name="Frequency" PrettyName="Density" Group="Density" Type="double" Min="0" Max="1000">500</Attribute>
+         <!--===============================================================================================================-->   
         <Attribute Name="scene" PrettyName="Scene Size" Group="Scale" Type="int">1</Attribute>
         <Attribute Name="Scale" PrettyName="Scale" Group="Scale" Type="double" Min="0.001" Max="100">40</Attribute>
         <Attribute Name="NoiseScale" PrettyName="NoiseScale" Group="Scale" Type="double" Min="0.001" Max="1000">200</Attribute>
         <Attribute Name="jitterScale" PrettyName="JitterScale" Group="Scale" Type="double" Min="0" Max="1000">200</Attribute>
+        <!--===============================================================================================================-->
         <Attribute Name="rot_min" PrettyName="Min Rotation" Group="Rotation" Type="double" Min="-360" Max="360">-300</Attribute>
         <Attribute Name="rot_max" PrettyName="Max Rotation" Group="Rotation" Type="double" Min="-360" Max="360">300</Attribute>
-        <Attribute Name="TextureCount" PrettyName="Texture Slots" Group="Textures" Type="int" Min="1" Max="4">1</Attribute>
+        <!--===============================================================================================================-->
+        <Attribute Name="TextureCount" PrettyName="Texture Slots" Group="Texture Count" Type="int" Min="1" Max="4">1</Attribute>
+        <!--===============================================================================================================-->
+        <Attribute Name="A_minH" PrettyName="Min Hue" Group="Texture HSV" Type="double" Min="-180" Max="180">0</Attribute>
+        <Attribute Name="A_maxH" PrettyName="Max Hue" Group="Texture HSV" Type="double" Min="-180" Max="180">0</Attribute>
+        <Attribute Name="A_minS" PrettyName="Min Sat" Group="Texture HSV" Type="double" Min="0" Max="1">1</Attribute>
+        <Attribute Name="A_maxS" PrettyName="Max Sat" Group="Texture HSV" Type="double" Min="0" Max="1">1</Attribute>
+        <Attribute Name="A_minV" PrettyName="Min Val" Group="Texture HSV" Type="double" Min="0" Max="1">1</Attribute>
+        <Attribute Name="A_maxV" PrettyName="Max Val" Group="Texture HSV" Type="double" Min="0" Max="1">1</Attribute>  
+        <!--===============================================================================================================--> 
+        <Attribute Name="HueSeed" PrettyName="Hue Seed" Group="Color Seeding" Type="double" Min="1" Max="1000">1</Attribute>
+        <Attribute Name="SatSeed" PrettyName="Sat Seed" Group="Color Seeding" Type="double" Min="1" Max="1000">1</Attribute>
+        <Attribute Name="ValSeed" PrettyName="Val Seed" Group="Color Seeding" Type="double" Min="1" Max="1000">1</Attribute>
+        <!--===============================================================================================================--> 
         <Attribute Name="MapA" PrettyName="MapA" Group="Texture Map A" Type="image" GenerateMipMaps="true"></Attribute>
+        <!--===============================================================================================================-->
         <Attribute Name="MapB_weight" PrettyName="Importance" Group="Texture Map B" Type="double" Min="0" Max="1">0.25</Attribute>
         <Attribute Name="MapB" PrettyName="MapB" Group="Texture Map B" Type="image" GenerateMipMaps="false"></Attribute>
         <Attribute Name="MapC_weight" PrettyName="Importance" Group="Texture Map C" Type="double" Min="0" Max="1">0.25</Attribute>
         <Attribute Name="MapC" PrettyName="MapC" Group="Texture Map C" Type="image" GenerateMipMaps="false"></Attribute>
         <Attribute Name="MapD_weight" PrettyName="Importance" Group="Texture Map D" Type="double" Min="0" Max="1">0.25</Attribute>
         <Attribute Name="MapD" PrettyName="MapD" Group="Texture Map D" Type="image" GenerateMipMaps="false"></Attribute>
-   
-
-     
         <!--===============================================================================================================-->
     </Attributes>
   <Contexts>
@@ -52,7 +65,7 @@
                 float scene = float($scene) + 1.0;
                 float scale = ( (100.0 ) - $Scale*2.0) / scene;
 
-                Output = bomb_testB(UV,Pos,scale,$Frequency,$Layers,$NoiseScale,$jitterScale,$rot_min,$rot_max,$TextureCount,$MapA,$MapB,$MapB_weight,$MapC,$MapC_weight,$MapD,$MapD_weight);
+                Output = JK_texScatter(UV,Pos,scale,$Frequency,$Layers,$NoiseScale,$jitterScale,$rot_min,$rot_max,$TextureCount,$MapA,$HueSeed,$A_minH,$A_maxH,$SatSeed,$A_minS,$A_maxS,$ValSeed,$A_minV,$A_maxV,$MapB,$MapB_weight,$MapC,$MapC_weight,$MapD,$MapD_weight);
                 // Output = texture($MapMain,tmpuv.xy);
 
 
