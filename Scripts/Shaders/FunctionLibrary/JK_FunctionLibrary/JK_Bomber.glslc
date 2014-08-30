@@ -19,54 +19,106 @@ void voronoi(vec3 position, float jitterD, int distype, out float f1, out float 
          out vec3 pos2, out vec3 f1cell, out vec3 f2cell);
 vec4 CellNoise( vec3 gridcell );
 
+// for use in voronoi_simple
+float rnd_1d(vec2 x);
+float dist_Squared(float x, float y, float z);
+float softThreshold(float threshold, float bound, float value);
+
+// ------------------------------------------------------------------------
+// TO DO
+// ------------------------------------------------------------------------
+//   
+
+
+// TO DO:
+// - create bettern 1d noise function for udn macro
+// - create simpler, faster to run Voronoi
+// - add multiple texture support
+// - add varying cell size
+// - add 3d projection of cells
+// - add HSV/A Min/Max. Per texture ? 
+// - investigate faint grid lines in texture ? Fract/floor'ing ? 
+// - add per texture importance
+//
+//   AS ADJUSTMENT LAYER/USING INCOMING DATA: 
+// - add painted distribution of cells. Sampling from incoming texture layers, then only using
+//   transparency from bomber
+// - potentially add distribution per texture via RGB Values of incoming vec4 data
+// - potentially add switch to paint frequency/denisity per texture via RGB (similar to above)
+
+
+
 
 // ------------------------------------------------------------------------
 // MACROS
 // ------------------------------------------------------------------------
-//         
-//uniform distributed noise, tiling, rotation and blending 
-
-// TO DO:
-// create bettern 1d noise function for udn macro
 
 
 #define whichtile(x,freq) (floor((x) * (freq)))
-#define rotate2d(x,y,rad,ox,oy,rx,ry) \
-				{\	rx = ((x) - (ox)) * cos(rad) - ((y) - (oy)) * sin(rad) + (ox);\
-				 ry = ((x) - (ox)) * sin(rad) + ((y) - (oy)) * cos(rad) + (oy);\
-				}
-        								
+
+
 
 // ------------------------------------------------------------------------
 // FUNCTIONS
 // ------------------------------------------------------------------------
 
+
+// voronoi cellular pattern generator from DT3D_CellularNoise.glslc but simplified for better performance
+void voronoi_simple(vec3 position, float jitterD,out vec3 f1cell,float threshold,float threshold_bound)
+{
+    vec3 thiscell = floor(position)+0.5f;
+    float i, j, k, dist;
+
+    vec3 c;
+    for(i = -1; i <= 1; i += 1)
+    {
+        for(j = -1; j <= 1; j += 1)
+        {
+            for(k = -1; k <= 1; k += 1)
+            {
+                vec3 testcell = thiscell  + vec3(i,j,k);
+                vec3 randomUVW = testcell * vec3(0.037f, 0.119f, .093f);
+                float cellnoise = (rnd_1d(randomUVW.xy+randomUVW.z+0.2),rnd_1d(randomUVW.xy+randomUVW.z+0.5),rnd_1d(randomUVW.xy+randomUVW.z+0.3));
+                vec3 pos = testcell + jitterD*(cellnoise-0.5);
+                vec3 offset = pos - position;
+                dist = dist_Squared(offset.x,offset.y,offset.z);
+   
+                f1cell = vec3( softThreshold(threshold,threshold_bound,cellnoise) );      
+
+            
+            }
+        }
+    }
+}
+
+
+
 float udn(float x,float scale,float lo,float hi)
 { 
 
   vec3 x_3 = vec3(x*scale);
-  // vec4 valnoi_x4 = CellNoise( x_3 );
   float valnoi = Value3D(x_3);
-  // float valnoi = valnoi_x4.r;
   float output = (smoothstep(.25, .75, (valnoi)) * ((hi) - (lo)) + (lo));
   return output;
 
 }
 
-float udnVor(float x,float scale,float lo,float hi)
+
+
+float udnVor(float x,float scale,float lo,float hi, float threshold, float threshold_bound)
 { 
 
   vec3 x_3 = vec3(x*scale);
   float outf1,outf2;
   vec3 pos1,pos2,f1cell,f2cell;
 
-  //initalize voronoi
-  voronoi(x_3,1.0,1, outf1, outf2,pos1,pos2, f1cell, f2cell);
+  voronoi_simple(x_3,1.0,f1cell,threshold,threshold_bound);
 
   float remap = f1cell.r;
 
   float output = (smoothstep(.25, .75, (remap)) * ((hi) - (lo)) + (lo));
   return output;
+
 
 }
 
@@ -82,9 +134,14 @@ vec4 bomb_testB(
           float jitter_scale,
 					float rot_min,
 					float rot_max,
-          float tmp,
+          int textureCount,
 					sampler2D textureA,
-					sampler2D alphaA
+					sampler2D textureB,
+          float textureB_weight,
+          sampler2D textureC,
+          float textureC_weight,
+          sampler2D textureD,
+          float textureD_weight
 				)
 
 
@@ -93,8 +150,9 @@ vec4 bomb_testB(
 
 	// unassigned variables
 
-	vec4 layer_color,layer_color_B,surface_color;
-  vec4 layer_color_comb;
+	vec4 layer_color,layer_color_B,layer_color_C,layer_color_D;
+  vec4 surface_color;
+  vec4 layer_color_comb,layer_color_comb_B,layer_color_comb_C;
 	vec4 layer_opac,surface_opac;
   float rnd;
   float layer_alpha;
@@ -117,6 +175,7 @@ vec4 bomb_testB(
   float max_jitter;
   float offset;
 
+
   cell_size = 1.0 / scale;
   half_cell = cell_size / 2.0;
 
@@ -126,8 +185,9 @@ vec4 bomb_testB(
 
   surface_color = vec4(0.0,0.0,0.0,0.0);
   surface_opac = vec4(0.0,0.0,0.0,1.0);
+  float texCount = float(textureCount);
 
-  // rnd = Value3D (POS);
+ 
 
 	float s = UV.x;
 	float t = UV.y;
@@ -183,38 +243,6 @@ vec4 bomb_testB(
 
 
 
-/////// -------------original
-
-//                    if (col < 0.0) 
-//                 {
-//                   rel_s = s + 1.0;
-//                   col = scale - 1.0;
-//                 }
-                
-//                 if (col >= scale) 
-//                 {
-//                   rel_s = s - 1.0;
-//                   col = 0.0;
-//                 }
-              
-//                 row = home_row + row_idx;
-
-//                 if (row < 0.0) 
-//                 {
-//                   rel_t = t + 1.0;
-//                   row = scale - 1.0;
-//                 }
-
-//                 if (row >= scale) 
-
-//                 {
-//                   rel_t = t - 1.0;
-//                   row = 0.0;
-//                 }
-
-
-/////// -------------original
-
                  // ADD A VALUE HERE TO SEED
 
               		/* base seed to udn on current layer, row and column of tile */	
@@ -230,8 +258,8 @@ vec4 bomb_testB(
        					{			
        						//jitter --- 0.25
        						max_jitter = cell_size*0.5;
-       						jitter_s = udnVor(noi * 1183,jitter_scale, -max_jitter, max_jitter);
-       						jitter_t = udnVor(noi * 999,jitter_scale, -max_jitter, max_jitter) ;
+       						jitter_s = udnVor(noi * 1183,jitter_scale, -max_jitter, max_jitter,0.5,1.0);
+       						jitter_t = udnVor(noi * 999,jitter_scale, -max_jitter, max_jitter,0.5,1.0) ;
        		
        						
        						//center of texture on surface
@@ -244,7 +272,7 @@ vec4 bomb_testB(
                   // Rotation
      							float x = udn(rel_s,1.0,rel_s,0.0);
      							float y = udn(rel_t,1.0,rel_t,0.0);
-     							float rad = radians(udnVor(noi * 777,noise_scale/2.0, rot_min, rot_max));
+     							float rad = radians(udnVor(noi * 777,noise_scale/2.0, rot_min, rot_max,0.5,1.0));
      							float ox = (col * cell_size) + half_cell;
 							   	float oy = (row * cell_size) + half_cell;
      							tmps = ((x) - (ox)) * cos(rad) - ((y) - (oy)) * sin(rad) + (ox);
@@ -280,33 +308,47 @@ vec4 bomb_testB(
                       vec2 n_uv_B = vec2(ss_b,tt_b);
 
 
-                       // get color from texture map
+                       // get color from texture maps and weigh them per importance
+                       // importance is determined via thresholding function
                       layer_color = texture(textureA,n_uv);
-                      layer_color_B = texture(alphaA,n_uv);
 
-                      // float _udn = udn(noi * 1234,1.0,0.0,0.4);
-                      // layer_color_comb = Comp_Default(layer_color,layer_color_B,layer_color_B.a);
-                      // layer_color_comb = mix(layer_color,layer_color_B,rnd);
+                      layer_color_comb_C = layer_color;
+        
+                              if (textureCount > 1.0)
+                              { layer_color_B = texture(textureB,n_uv);
+                                layer_color_comb = mix(layer_color_B,layer_color,udnVor(noi * 1234,6.0,0.0,1.0,textureB_weight,0.0));
+                                layer_color_comb_C = layer_color_comb;
+                              }
+        
+                              if (textureCount > 2.0)
+                              { layer_color_C = texture(textureC,n_uv); 
+                                layer_color_comb_B = mix(layer_color_C,layer_color_comb,udnVor(noi * 2345,6.0,0.0,1.0,textureC_weight,0.0));
+                                layer_color_comb_C = layer_color_comb_B;
+                              }
+        
+                              if (textureCount > 3.0)
+                              { layer_color_D = texture(textureD,n_uv);
+                                layer_color_comb_C = mix(layer_color_D,layer_color_comb_B,udnVor(noi * 3456,6.0,0.0,1.0,textureD_weight,0.0));
+                              }
+                      
+
+                      // layer_color = vec4(
+                      //                        layer_color.r - udnVor(noi * 1234,6.0,0.0,0.4,0.5,1.0),
+                      //                        layer_color.g - udnVor(noi * 2345,6.0,0.0,0.4,0.5,1.0),
+                      //                        layer_color.b - udnVor(noi * 3456,6.0,0.0,0.4,0.5,1.0),
+                      //                        layer_color.a
+
+                    // )  ;      
+
+ 
 
 
-                      layer_color = vec4(
-                                             layer_color.r - udnVor(noi * 1234,6.0,0.0,0.4),
-                                             layer_color.g - udnVor(noi * 2345,6.0,0.0,0.4),
-                                             layer_color.b - udnVor(noi * 3456,6.0,0.0,0.4),
-                                             layer_color.a
-
-                        )  ;      
-
-
-
-                      // layer_color.a = (1.0-(mixval_1 * mixval_2)) * layer_color.a;
-
-
+                 
 
 // ----------------- CHECK IF THE SURFACE OPACITY IS NEEDED OR JUST A WASTE OF SPACE !!!!!!!!!!!
 
        								/* get opacity from texture map*/
-                      layer_alpha = layer_color.a;
+                      layer_alpha = layer_color_comb_C.a;
        								layer_opac = vec4(layer_alpha);
 
        								// surface_opac = Comp_Add(surface_opac,layer_opac,1.0);
@@ -315,7 +357,7 @@ vec4 bomb_testB(
        								// surface_opac_a = clamp(surface_opac.r,1.0,0.0);
 
 
-       								surface_color = Comp_Default(surface_color,layer_color,layer_alpha);
+       								surface_color = Comp_Default(surface_color,layer_color_comb_C,layer_alpha);
 
 
 
@@ -327,8 +369,8 @@ vec4 bomb_testB(
 
 
        						vec4 output = vec4(surface_color);
-                  // output = vec4(rnd);
-                  // vec4 output = layer_color_comb;
+                  // vec4 output = vec4(udn(1234,scale,0.0,0.5));
+                  // output.a = 1.0;
 							// vec4 output = vec4(n_uv,n_uv);
 							// vec4 output = vec4(n_uv.r,n_uv.g,0.0,1.0);
        						

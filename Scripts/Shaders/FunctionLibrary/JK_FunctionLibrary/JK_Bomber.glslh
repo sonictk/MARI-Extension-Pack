@@ -9,7 +9,12 @@ vec4 bomb_testB(
 					float jitter_scale,
 					float rot_min,
 					float rot_max,
-					float tmp,
+					int textureCount,
 					sampler2D textureA,
-					sampler2D alphaA
+					sampler2D textureB,
+          			float textureB_weight,
+          			sampler2D textureC,
+          			float textureC_weight,
+          			sampler2D textureD,
+          			float textureD_weight
 				);

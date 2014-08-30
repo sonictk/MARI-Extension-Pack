@@ -17,16 +17,17 @@
         <Attribute Name="Scale" PrettyName="Scale" Group="Scale" Type="double" Min="0.001" Max="1000">2</Attribute>
         <Attribute Name="NoiseScale" PrettyName="NoiseScale" Group="Scale" Type="double" Min="0.001" Max="1000">2</Attribute>
         <Attribute Name="jitterScale" PrettyName="JitterScale" Group="Scale" Type="double" Min="0" Max="1000">0</Attribute>
-           <Attribute Name="rot_min" PrettyName="Min Rotation" Group="Rotation" Type="double" Min="-360" Max="360">0</Attribute>
-   <Attribute Name="rot_max" PrettyName="Max Rotation" Group="Rotation" Type="double" Min="-360" Max="360">180</Attribute>
-
-        <Attribute Name="MapMain" PrettyName="MainMap" Group="Texture Map" Type="image" GenerateMipMaps="true"></Attribute>
-        <Attribute Name="MapAlpha" PrettyName="Bomb Map" Group="Texture Map" Type="image" GenerateMipMaps="false"></Attribute>
+        <Attribute Name="rot_min" PrettyName="Min Rotation" Group="Rotation" Type="double" Min="-360" Max="360">0</Attribute>
+        <Attribute Name="rot_max" PrettyName="Max Rotation" Group="Rotation" Type="double" Min="-360" Max="360">180</Attribute>
+        <Attribute Name="TextureCount" PrettyName="Texture Slots" Group="Textures" Type="int" Min="1" Max="4">1</Attribute>
+        <Attribute Name="MapA" PrettyName="MapA" Group="Texture Map A" Type="image" GenerateMipMaps="true"></Attribute>
+        <Attribute Name="MapB_weight" PrettyName="Importance" Group="Texture Map B" Type="double" Min="0" Max="1">1</Attribute>
+        <Attribute Name="MapB" PrettyName="MapB" Group="Texture Map B" Type="image" GenerateMipMaps="false"></Attribute>
+        <Attribute Name="MapC_weight" PrettyName="Importance" Group="Texture Map C" Type="double" Min="0" Max="1">1</Attribute>
+        <Attribute Name="MapC" PrettyName="MapC" Group="Texture Map C" Type="image" GenerateMipMaps="false"></Attribute>
+        <Attribute Name="MapD_weight" PrettyName="Importance" Group="Texture Map D" Type="double" Min="0" Max="1">1</Attribute>
+        <Attribute Name="MapD" PrettyName="MapD" Group="Texture Map D" Type="image" GenerateMipMaps="false"></Attribute>
    
-   
-     
-     
-        <Attribute Name="tmp" PrettyName="tmp" Group="" Type="double" Min="0" Max="1">0</Attribute>
 
      
         <!--===============================================================================================================-->
@@ -48,7 +49,7 @@
                 vec2 UV = fract(#UV);
                 vec3 Pos = #Position;
 
-                Output = bomb_testB(UV,Pos,$Scale,$Frequency,$Layers,$NoiseScale,$jitterScale,$rot_min,$rot_max,$tmp,$MapMain,$MapAlpha);
+                Output = bomb_testB(UV,Pos,$Scale,$Frequency,$Layers,$NoiseScale,$jitterScale,$rot_min,$rot_max,$TextureCount,$MapA,$MapB,$MapB_weight,$MapC,$MapC_weight,$MapD,$MapD_weight);
                 // Output = texture($MapMain,tmpuv.xy);
 
 
