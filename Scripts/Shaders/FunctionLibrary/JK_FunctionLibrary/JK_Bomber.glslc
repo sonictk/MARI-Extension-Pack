@@ -142,15 +142,14 @@ vec4 JK_texScatter(
           int textureCount,
           int BlendMode,
           sampler2D textureA,
-          float HueSeed,
+          float HSVSeed,
           float A_minH,
           float A_maxH,
-          float SatSeed,
           float A_minS,
           float A_maxS,
-          float ValSeed,
           float A_minV,
           float A_maxV,
+          float clampValues,
           sampler2D textureB,
           float textureB_weight,
           sampler2D textureC,
@@ -338,10 +337,12 @@ vec4 JK_texScatter(
 
                              // per cell hsv shift
                              // R = H, G = S, B = V, A = A
-                             layer_color_comb_C.r += udnVor(noi * 1234,HueSeed,A_minH,A_maxH,0.5,1.0);                                       
-                             layer_color_comb_C.g *= udnVor(noi * 2345,SatSeed,A_minS,A_maxS,0.5,1.0);
-                             layer_color_comb_C.b *= udnVor(noi * 3456,ValSeed,A_minV,A_maxV,0.5,1.0);                                
+                             layer_color_comb_C.r += udnVor(noi * 1234,HSVSeed+(HSVSeed/2.0),A_minH,A_maxH,0.5,1.0);                                       
+                             layer_color_comb_C.g *= udnVor(noi * 2345,HSVSeed,A_minS,A_maxS,0.5,1.0);
+                             layer_color_comb_C.b *= udnVor(noi * 3456,HSVSeed-(HSVSeed/4.0),A_minV,A_maxV,0.5,1.0);                               
                              layer_color_comb_C = mriHsv2Rgb(layer_color_comb_C);
+
+                             
 
 
 // ----------------- CHECK IF THE SURFACE OPACITY IS NEEDED OR JUST A WASTE OF SPACE !!!!!!!!!!!
@@ -358,7 +359,6 @@ vec4 JK_texScatter(
                               // Combine according to Blend Mode:
                               switch (BlendMode)
                                {
-
 
                                    case 0:
                                    // OVER
@@ -377,9 +377,22 @@ vec4 JK_texScatter(
                                    surface_color = Comp_Multiply(surface_color,layer_color_comb_C,layer_alpha);
                                    break;
                                    case 4:
+                                   // SOFT LIGHT
+                                    surface_color = Comp_SoftLight(surface_color,layer_color_comb_C,layer_alpha);
+                                   break;
+                                   case 5:
+                                   // HARD LIGHT
+                                    surface_color = Comp_HardLight(surface_color,layer_color_comb_C,layer_alpha);
+                                   break;
+                                   case 6:
+                                   // HARD MIX
+                                    surface_color = Comp_HardMix(surface_color,layer_color_comb_C,layer_alpha);
+                                   break;
+                                   case 7:
                                    // OVERLAY
                                     surface_color = Comp_Overlay(surface_color,layer_color_comb_C,layer_alpha);
                                    break;
+
 
 
                                }
@@ -394,7 +407,7 @@ vec4 JK_texScatter(
        	}
 
 
-       						vec4 output = vec4(surface_color);
+       						vec4 output = mix(surface_color,clamp(surface_color,vec4(0.0),vec4(1.0)),clampValues);
                   // vec4 output = vec4(udn(1234,scale,0.0,0.5));
                   // output.a = 1.0;
 							   // vec4 output = vec4(n_uv,n_uv);
