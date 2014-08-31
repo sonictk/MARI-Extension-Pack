@@ -10,6 +10,7 @@ vec4 JK_texScatter(
 					float rot_min,
 					float rot_max,
 					int textureCount,
+					int BlendMode,
 					sampler2D textureA,
 					float HueSeed,
 					float A_minH,
