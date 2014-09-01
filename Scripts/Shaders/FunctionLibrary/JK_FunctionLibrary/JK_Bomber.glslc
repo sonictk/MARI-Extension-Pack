@@ -214,17 +214,17 @@ vec4 JK_texScatter(
 // ------------------------------------------------------------------------------------------------------                      
                        
 
-	vec4 layer_color,layer_color_B,layer_color_C,layer_color_D;
+  vec4 layer_color,layer_color_B,layer_color_C,layer_color_D;
   vec4 surface_color;
   vec4 layer_color_comb,layer_color_comb_B,layer_color_comb_C;
-	vec4 layer_opac,surface_opac;
+  vec4 layer_opac,surface_opac;
   float layer_alpha;
-	float ss, tt,tmps,tmpt;
-	float home_row,home_col;
-	float layer_idx,col_idx,row_idx;
-	float cell_size;
-	float half_cell;
-	float col, row;
+  float ss, tt,tmps,tmpt;
+  float home_row,home_col;
+  float layer_idx,col_idx,row_idx;
+  float cell_size;
+  float half_cell;
+  float col, row;
   float noi;
   float rel_s, rel_t;
   float jitter_s, jitter_t;
@@ -258,13 +258,13 @@ vec4 JK_texScatter(
         
 
 
-      // small offset on layer idx to compensate for precision
-       	for (layer_idx = 0.999; layer_idx < layers; layer_idx += 1.0)
+  // small offset on layer idx to compensate for precision
+  for (layer_idx = 0.999; layer_idx < layers; layer_idx += 1.0)
+    {
+      // scan current cell and neighbors, 9 cells total
+      for (col_idx = -1.0; col_idx <= 1.0; col_idx += 1.0)
        	{
-       		// scan current cell and neighbors, 9 cells total
-       		for (col_idx = -1.0; col_idx <= 1.0; col_idx += 1.0)
-       		{
-       			for (row_idx = -1.0; row_idx <= 1.0; row_idx += 1.0)
+       		for (row_idx = -1.0; row_idx <= 1.0; row_idx += 1.0)
        			{
        				// determine row and column index, wraparound
        				rel_s = s;
@@ -272,27 +272,27 @@ vec4 JK_texScatter(
 					
 					    col = home_col + col_idx;
        				
-       					if (col < 0.0) 
+       				if (col < 0.0) 
        					{
        						rel_s = s + 1.0;
        						col = scale - 1.0;
        					}
        					
-       					if (col >= scale) 
+       				if (col >= scale) 
        					{
        						rel_s = s - 1.0;
        						col = 0.0;
        					}
        				
-       					row = home_row + row_idx;
+       				row = home_row + row_idx;
 
-       					if (row < 0.0) 
+       				if (row < 0.0) 
        					{
        						rel_t = t + 1.0;
        						row = scale - 1.0;
        					}
 
-       					if (row >= scale) 
+       				if (row >= scale) 
 
        					{
        						rel_t = t - 1.0;
@@ -306,12 +306,12 @@ vec4 JK_texScatter(
 // ------------------------------------------------------------------------------------------------------                      
                        
 
-              		// base seed on current layer, row and column of tile	
-		       		    noi = (Value3D ( vec3(col * noise_scale + 0.5, 
+              // base seed on current layer, row and column of tile	
+		       		noi = (Value3D ( vec3(col * noise_scale + 0.5, 
                                        row * noise_scale + 0.5,
                                        layer_idx * noise_scale + 222.0)
-                                 ) + 1.0
-                        ) ;
+                              ) + 1.0
+                    ) ;
 
 
 // ------------------------------------------------------------------------------------------------------
@@ -319,41 +319,34 @@ vec4 JK_texScatter(
 // ------------------------------------------------------------------------------------------------------                      
                        
 
-                     // IF Based on noi being Value3d
-       				       if ((noi * 626) < frequency) 
-
-       				       {			
-       				       	//jitter
-       				       	max_jitter = cell_size*0.5;
-       				       	// jitter_s = steppedFBM(noi * (1183*col),jitter_scale+layer_idx, -max_jitter, max_jitter,0.5,1.0);
-       				       	// jitter_t = steppedFBM(noi * (999*row),jitter_scale+layer_idx, -max_jitter, max_jitter,0.5,1.0) ;
-       		            jitter_s = udnVor(noi * (1183),jitter_scale+layer_idx, -max_jitter, max_jitter,0.5,1.0);
-                      jitter_t = udnVor(noi * (999),jitter_scale+layer_idx, -max_jitter, max_jitter,0.5,1.0) ;
-          
-                      
+              // IF Based on noi being Value3d
+       				if ((noi * 626) < frequency)
+       			    {			
+       	          max_jitter = cell_size*0.5;
+                  // jitter_s = steppedFBM(noi * (1183*col),jitter_scale+layer_idx, -max_jitter, max_jitter,0.5,1.0);
+                  // jitter_t = steppedFBM(noi * (999*row),jitter_scale+layer_idx, -max_jitter, max_jitter,0.5,1.0) ;
+                  jitter_s = udnVor(noi * (1183),jitter_scale+layer_idx, -max_jitter, max_jitter,0.5,1.0);
+                  jitter_t = udnVor(noi * (999),jitter_scale+layer_idx, -max_jitter, max_jitter,0.5,1.0) ;
+                 
 // ------------------------------------------------------------------------------------------------------
 //                      Cell Centre
 // ------------------------------------------------------------------------------------------------------                      
-                       
-       				       	
-       				       	//center of texture on surface
-       				       	center_s = ((col * cell_size) + half_cell + jitter_s);
-       				       	center_t = ((row * cell_size) + half_cell + jitter_t);
-
-       	
-
+                            				       	
+                  //center of texture on surface
+                  center_s = ((col * cell_size) + half_cell + jitter_s);
+                  center_t = ((row * cell_size) + half_cell + jitter_t);
 
 // ------------------------------------------------------------------------------------------------------
 //                      Rotation of each cell
 // ------------------------------------------------------------------------------------------------------                      
                        
-     					        	float x = udn(rel_s,1.0,rel_s,0.0);
-     					        	float y = udn(rel_t,1.0,rel_t,0.0);
-     					        	float rad = radians(udnVor(noi * 777,noise_scale/2.0, rot_min, rot_max,0.5,1.0));
-     					        	float ox = (col * cell_size) + half_cell;
-							        	float oy = (row * cell_size) + half_cell;
-     					        	tmps = ((x) - (ox)) * cos(rad) - ((y) - (oy)) * sin(rad) + (ox);
-     					        	tmpt = ((x) - (ox)) * sin(rad) + ((y) - (oy)) * cos(rad) + (oy);
+     					    float x = udn(rel_s,1.0,rel_s,0.0);
+     					    float y = udn(rel_t,1.0,rel_t,0.0);
+     					    float rad = radians(udnVor(noi * 777,noise_scale/2.0, rot_min, rot_max,0.5,1.0));
+     					    float ox = (col * cell_size) + half_cell;
+                  float oy = (row * cell_size) + half_cell;
+     					    tmps = ((x) - (ox)) * cos(rad) - ((y) - (oy)) * sin(rad) + (ox);
+     					    tmpt = ((x) - (ox)) * sin(rad) + ((y) - (oy)) * cos(rad) + (oy);
 
 
 // ------------------------------------------------------------------------------------------------------
@@ -361,28 +354,26 @@ vec4 JK_texScatter(
 // ------------------------------------------------------------------------------------------------------                      
                        
 
-       					      	//bounds for texture in this layer
-       					      	sMin = center_s - half_cell;
-       					      	sMax = center_s + half_cell;
-       					      	tMin = center_t - half_cell;
-       					      	tMax = center_t + half_cell;
+       					  //bounds for texture in this layer
+       					  sMin = center_s - half_cell;
+       					  sMax = center_s + half_cell;
+       					  tMin = center_t - half_cell;
+       					  tMax = center_t + half_cell;
        					      
-       					      	// check if the current point on the surface is in the texture area
-       					      	inBounds = 1.0;
-       					      	if (tmps <= sMin) inBounds = 0;
-       					      	if (tmps >= sMax) inBounds = 0;
-       					      	if (tmpt <= tMin) inBounds = 0;
-       					      	if (tmpt >= tMax) inBounds = 0;
+       					  // check if the current point on the surface is in the texture area
+       					  inBounds = 1.0;
+       					  if (tmps <= sMin) inBounds = 0;
+       					  if (tmps >= sMax) inBounds = 0;
+       					  if (tmpt <= tMin) inBounds = 0;
+       					  if (tmpt >= tMax) inBounds = 0;
        			      
-       						     	if (inBounds == 1.0)
-       						     	{
-       			      
-       						     	// calculate texture coordinates
-       						     		ss = (tmps - sMax) * scale;
-       						     		tt = (tmpt - tMax) * scale;
-                          
-       						     	// UVs for each cell
-                          vec2 n_uv = vec2(ss,tt);
+       						if (inBounds == 1.0)
+                    {
+                      // calculate texture coordinates
+                      ss = (tmps - sMax) * scale;
+                      tt = (tmpt - tMax) * scale;
+                      // UVs for each cell
+                      vec2 n_uv = vec2(ss,tt);
 
 
 // ------------------------------------------------------------------------------------------------------
@@ -391,166 +382,149 @@ vec4 JK_texScatter(
                           
 
 
-                          // get color from texture maps and weigh them per importance
-                          // importance is determined via thresholding function on a FBM Noise
-                          // Depending on Mode set, Alphas are evaluated differently via Switches
-                          // However Alphas are always multiplied by the radial fade in the end.
+                      // get color from texture maps and weigh them per importance
+                      // importance is determined via thresholding function on a FBM Noise
+                      // Depending on Mode set, Alphas are evaluated differently via Switches
+                      // However Alphas are always multiplied by the radial fade in the en
 
-
-
-
-                           layer_color = texture(textureA,n_uv);
-                           layer_color.rgb = mix(layer_color.rgb,vec3(1.0)-layer_color.rgb,invert_textureA);
+                      layer_color = texture(textureA,n_uv);
+                      layer_color.rgb = mix(layer_color.rgb,vec3(1.0)-layer_color.rgb,invert_textureA);
 
                            
-                                    // Determine what Alpha is being used. 1) From loaded image 2) Luminance 3)Inv Luminance
-                                    // Please note the texture invert is being evaluated before !
-                                    switch (textureA_AlphaMode)
-                                        {
-                                           case 0:
-                                           //From Map
-                                           break;
-                                           case 1:
-                                           //Alpha is Luminance
-                                           layer_color.a = dot(vec3(0.2126, 0.7152, 0.0722), layer_color.rgb);
-                                           break;
-                                           case 2:
-                                           //Alpha is Inverted Luminance
-                                           layer_color.a = dot(vec3(0.2126, 0.7152, 0.0722), vec3(1.0) - layer_color.rgb);
-                                           break;
+                      // Determine what Alpha is being used. 1) From loaded image 2) Luminance 3)Inv Luminance
+                      // Please note the texture invert is being evaluated before !
+                      switch (textureA_AlphaMode)
+                        {
+                          case 0:
+                          //From Map
+                          break;
+                          case 1:
+                          //Alpha is Luminance
+                          layer_color.a = dot(vec3(0.2126, 0.7152, 0.0722), layer_color.rgb);
+                          break;
+                          case 2:
+                          //Alpha is Inverted Luminance
+                          layer_color.a = dot(vec3(0.2126, 0.7152, 0.0722), vec3(1.0) - layer_color.rgb);
+                          break;
+                        }
 
-                                         }
 
-
-                                        // ------------------------------- //
-                                        //     Radial Fade Texture A       //
-                                        // --------------------------------//                    
+                      // ------------------------------- //
+                      //     Radial Fade Texture A       //
+                      // --------------------------------//                    
                          
+                      // Radial Fade
+                      float radialFade = length(n_uv+vec2(0.5));
+                      radialFade = remap(radialFade,0.0,radialContrastA,1.0,0.0,radialFadeA);
+                      layer_color.a *= radialFade;
+                      layer_color.a = clamp(layer_color.a,0.0,1.0);
 
-                                          // Radial Fade
-                                          float radialFade = length(n_uv+vec2(0.5));
-                                          radialFade = remap(radialFade,0.0,radialContrastA,1.0,0.0,radialFadeA);
-                                          layer_color.a *= radialFade;
-                                          layer_color.a = clamp(layer_color.a,0.0,1.0);
-
-
-
-
-                              // layer_color_Comb_C is what is being accessed int the end
-                              // I always write into _C in the end no matter how many textures are used
-                              layer_color_comb_C = layer_color;
-
+                      // layer_color_Comb_C is what is being accessed int the end
+                      // I always write into _C in the end no matter how many textures are used
+                      layer_color_comb_C = layer_color;
 
         
-                              // --------------------------------------------------------- //
-                              //                      2 Texture slots in Use               //
-                              // ----------------------------------------------------------//                     
+                      // --------------------------------------------------------- //
+                      //                      2 Texture slots in Use               //
+                      // ----------------------------------------------------------//                     
+                  
+                      if (textureCount > 1.0)
+                        {
+                          layer_color_B = texture(textureB,n_uv);
+
+                          // Determine what Alpha is being used. 1) From loaded image 2) Luminance 3)Inv Luminance
+                          // Please note the texture invert is being evaluated before !
+                          switch (textureB_AlphaMode)
+                            {
+                              case 0:
+                              //From Map
+                              break;
+                              case 1:
+                              //Alpha is Luminance
+                              layer_color_B.a = dot(vec4(0.2126, 0.7152, 0.0722, 0.0), layer_color_B);
+                              break;
+                              case 2:
+                              //Alpha is Inverted Luminance
+                              layer_color_B.a = dot(vec4(0.2126, 0.7152, 0.0722, 0.0), vec4(1.0) - layer_color_B);
+                              break;
+                            }
+
+                          layer_color_comb = mix(layer_color_B,layer_color,steppedFBM(noi * 1234,6.0,0.0,1.0,textureB_weight,0.0));
+                          layer_color_comb_C = layer_color_comb;
+                                 
+                        }
+
+
+                      // --------------------------------------------------------- //
+                      //                      3 Texture slots in Use               //
+                      // ----------------------------------------------------------//                       
                           
+                      if (textureCount > 2.0)
+                        {
+                          layer_color_C = texture(textureC,n_uv); 
 
-                                 if (textureCount > 1.0)
-                                 { layer_color_B = texture(textureB,n_uv);
+                          // Determine what Alpha is being used. 1) From loaded image 2) Luminance 3)Inv Luminance
+                          // Please note the texture invert is being evaluated before !
+                          switch (textureC_AlphaMode)
+                            {
+                              case 0:
+                              //From Map
+                              break;
+                              case 1:
+                              //Alpha is Luminance
+                              layer_color_C.a = dot(vec4(0.2126, 0.7152, 0.0722, 0.0), layer_color_C);
+                              break;
+                              case 2:
+                              //Alpha is Inverted Luminance
+                              layer_color_C.a = dot(vec4(0.2126, 0.7152, 0.0722, 0.0), vec4(1.0) - layer_color_C);
+                              break;
+                            }
+
+                          layer_color_comb_B = mix(layer_color_C,layer_color_comb,steppedFBM(noi * 2345,6.0,0.0,1.0,textureC_weight,0.0));
+                          layer_color_comb_C = layer_color_comb_B;
+                        }
 
 
-                                    // Determine what Alpha is being used. 1) From loaded image 2) Luminance 3)Inv Luminance
-                                    // Please note the texture invert is being evaluated before !
-                                    switch (textureB_AlphaMode)
-                                  {
-                                     case 0:
-                                     //From Map
-                                     break;
-                                     case 1:
-                                     //Alpha is Luminance
-                                     layer_color_B.a = dot(vec4(0.2126, 0.7152, 0.0722, 0.0), layer_color_B);
-                                     break;
-                                     case 2:
-                                     //Alpha is Inverted Luminance
-                                     layer_color_B.a = dot(vec4(0.2126, 0.7152, 0.0722, 0.0), vec4(1.0) - layer_color_B);
-                                     break;
-                                   }
-
-                                   layer_color_comb = mix(layer_color_B,layer_color,steppedFBM(noi * 1234,6.0,0.0,1.0,textureB_weight,0.0));
-                                   layer_color_comb_C = layer_color_comb;
-                                 }
-
-
-                              // --------------------------------------------------------- //
-                              //                      3 Texture slots in Use               //
-                              // ----------------------------------------------------------//                       
+                      // --------------------------------------------------------- //
+                      //                      4 Texture slots in Use               //
+                      // ----------------------------------------------------------//                      
                           
+                      if (textureCount > 3.0)
+                        {
+                          layer_color_D = texture(textureD,n_uv);
 
+                          // Determine what Alpha is being used. 1) From loaded image 2) Luminance 3)Inv Luminance
+                          // Please note the texture invert is being evaluated before !
+                          switch (textureD_AlphaMode)
+                            {
+                              case 0:
+                              //From Map
+                              break;
+                              case 1:
+                              //Alpha is Luminance
+                              layer_color_D.a = dot(vec4(0.2126, 0.7152, 0.0722, 0.0), layer_color_C);
+                              break;
+                              case 2:
+                              //Alpha is Inverted Luminance
+                              layer_color_D.a = dot(vec4(0.2126, 0.7152, 0.0722, 0.0), vec4(1.0) - layer_color_D);
+                              break;
+                            }
 
-                                 if (textureCount > 2.0)
-                                 { layer_color_C = texture(textureC,n_uv); 
-
-                                    // Determine what Alpha is being used. 1) From loaded image 2) Luminance 3)Inv Luminance
-                                    // Please note the texture invert is being evaluated before !
-                                      switch (textureC_AlphaMode)
-                                    {
-                                       case 0:
-                                       //From Map
-                                       break;
-                                       case 1:
-                                       //Alpha is Luminance
-                                       layer_color_C.a = dot(vec4(0.2126, 0.7152, 0.0722, 0.0), layer_color_C);
-                                       break;
-                                       case 2:
-                                       //Alpha is Inverted Luminance
-                                       layer_color_C.a = dot(vec4(0.2126, 0.7152, 0.0722, 0.0), vec4(1.0) - layer_color_C);
-                                       break;
-                                     }
-
-
-                                   layer_color_comb_B = mix(layer_color_C,layer_color_comb,steppedFBM(noi * 2345,6.0,0.0,1.0,textureC_weight,0.0));
-                                   layer_color_comb_C = layer_color_comb_B;
-                                 }
-
-
-                              // --------------------------------------------------------- //
-                              //                      4 Texture slots in Use               //
-                              // ----------------------------------------------------------//                      
-                          
-
-            
-                                 if (textureCount > 3.0)
-                                 { layer_color_D = texture(textureD,n_uv);
-
-
-                                    // Determine what Alpha is being used. 1) From loaded image 2) Luminance 3)Inv Luminance
-                                    // Please note the texture invert is being evaluated before !
-                                      switch (textureD_AlphaMode)
-                                    {
-                                       case 0:
-                                       //From Map
-                                       break;
-                                       case 1:
-                                       //Alpha is Luminance
-                                       layer_color_D.a = dot(vec4(0.2126, 0.7152, 0.0722, 0.0), layer_color_C);
-                                       break;
-                                       case 2:
-                                       //Alpha is Inverted Luminance
-                                       layer_color_D.a = dot(vec4(0.2126, 0.7152, 0.0722, 0.0), vec4(1.0) - layer_color_D);
-                                       break;
-                                     }
-
-                                   layer_color_comb_C = mix(layer_color_D,layer_color_comb_B,steppedFBM(noi * 3456,6.0,0.0,1.0,textureD_weight,0.0));
-                                 }
+                          layer_color_comb_C = mix(layer_color_D,layer_color_comb_B,steppedFBM(noi * 3456,6.0,0.0,1.0,textureD_weight,0.0));
+                        }
                       
                            
-
-
-
 // ------------------------------------------------------------------------------------------------------
 //                     random  HSV Shift
 // ------------------------------------------------------------------------------------------------------                      
                         
-                             layer_color_comb_C = mriRgb2Hsv(layer_color_comb_C);
-
-                             // per cell hsv shift
-                             // R = H, G = S, B = V, A = A
-                             layer_color_comb_C.r += steppedFBM(noi * 1234,HSVSeed+(HSVSeed/2.0),A_minH,A_maxH,0.5,1.0);                                       
-                             layer_color_comb_C.g *= steppedFBM(noi * 2345,HSVSeed,A_minS,A_maxS,0.5,1.0);
-                             layer_color_comb_C.b *= steppedFBM(noi * 3456,HSVSeed-(HSVSeed/4.0),A_minV,A_maxV,0.5,1.0);                               
-                             layer_color_comb_C = mriHsv2Rgb(layer_color_comb_C);
+                        layer_color_comb_C = mriRgb2Hsv(layer_color_comb_C);
+                        // per cell hsv shift
+                        // R = H, G = S, B = V, A = A
+                        layer_color_comb_C.r += steppedFBM(noi * 1234,HSVSeed+(HSVSeed/2.0),A_minH,A_maxH,0.5,1.0);                                       
+                        layer_color_comb_C.g *= steppedFBM(noi * 2345,HSVSeed,A_minS,A_maxS,0.5,1.0);
+                        layer_color_comb_C.b *= steppedFBM(noi * 3456,HSVSeed-(HSVSeed/4.0),A_minV,A_maxV,0.5,1.0);                               
+                        layer_color_comb_C = mriHsv2Rgb(layer_color_comb_C);
 
 
 // ------------------------------------------------------------------------------------------------------
@@ -558,16 +532,16 @@ vec4 JK_texScatter(
 // ------------------------------------------------------------------------------------------------------                      
                         
 
-       								       // get opacity from combined result of current layer
-                             layer_alpha = layer_color_comb_C.a;
-                             //writing this into vec4 because Comp_Default needs it
-       								       layer_opac = vec4(layer_alpha);
-          
-                             // !! ISSUE !!
-       								       // Creating Alpha based on surface (alpha=0)
-                             // There are some pre-mult issues here when blending layer_opac
-                             // (the vec4 version of layer_alpha) with layer_alpha
-       								        surface_opac = Comp_Default(surface_opac,layer_opac,layer_alpha);
+       							    // get opacity from combined result of current layer
+                        layer_alpha = layer_color_comb_C.a;
+                        //writing this into vec4 because Comp_Default needs it
+                        layer_opac = vec4(layer_alpha);
+            
+                        // !! ISSUE !!
+       					        // Creating Alpha based on surface (alpha=0)
+                        // There are some pre-mult issues here when blending layer_opac
+                        // (the vec4 version of layer_alpha) with layer_alpha
+                        surface_opac = Comp_Default(surface_opac,layer_opac,layer_alpha);
           
           
 
@@ -575,56 +549,51 @@ vec4 JK_texScatter(
 //                      Blend Modes for each Cell
 // ------------------------------------------------------------------------------------------------------                      
                         
-
-                              // Combine according to Blend Mode:
-                              switch (BlendMode)
-                               {
-
-                                   case 0:
-                                   // OVER
-                                   surface_color = Comp_Default(surface_color,layer_color_comb_C,layer_alpha);
-                                   break;
-                                   case 1:
-                                   //ADD
-                                   surface_color = Comp_Add(surface_color,layer_color_comb_C,layer_alpha);
-                                   break;
-                                   case 2:
-                                   // SCREEN
-                                   surface_color = Comp_Screen(surface_color,layer_color_comb_C,layer_alpha);
-                                   break;
-                                   case 3:
-                                   // MULTIPLY
-                                   surface_color = Comp_Multiply(surface_color,layer_color_comb_C,layer_alpha);
-                                   break;
-                                   case 4:
-                                   // SOFT LIGHT
-                                    surface_color = Comp_SoftLight(surface_color,layer_color_comb_C,layer_alpha);
-                                   break;
-                                   case 5:
-                                   // HARD LIGHT
-                                    surface_color = Comp_HardLight(surface_color,layer_color_comb_C,layer_alpha);
-                                   break;
-                                   case 6:
-                                   // HARD MIX
-                                    surface_color = Comp_HardMix(surface_color,layer_color_comb_C,layer_alpha);
-                                   break;
-                                   case 7:
-                                   // OVERLAY
-                                    surface_color = Comp_Overlay(surface_color,layer_color_comb_C,layer_alpha);
-                                   break;
-
-
-
-                               }
+                        // Combine according to Blend Mode:
+                        switch (BlendMode)
+                          {
+                            case 0:
+                            // OVER
+                            surface_color = Comp_Default(surface_color,layer_color_comb_C,layer_alpha);
+                            break;
+                            case 1:
+                            //ADD
+                            surface_color = Comp_Add(surface_color,layer_color_comb_C,layer_alpha);
+                            break;
+                            case 2:
+                            // SCREEN
+                            surface_color = Comp_Screen(surface_color,layer_color_comb_C,layer_alpha);
+                            break;
+                            case 3:
+                            // MULTIPLY
+                            surface_color = Comp_Multiply(surface_color,layer_color_comb_C,layer_alpha);
+                            break;
+                            case 4:
+                            // SOFT LIGHT
+                             surface_color = Comp_SoftLight(surface_color,layer_color_comb_C,layer_alpha);
+                            break;
+                            case 5:
+                            // HARD LIGHT
+                             surface_color = Comp_HardLight(surface_color,layer_color_comb_C,layer_alpha);
+                            break;
+                            case 6:
+                            // HARD MIX
+                             surface_color = Comp_HardMix(surface_color,layer_color_comb_C,layer_alpha);
+                            break;
+                            case 7:
+                            // OVERLAY
+                             surface_color = Comp_Overlay(surface_color,layer_color_comb_C,layer_alpha);
+                            break;
+                          }
 
 
 
-       					    }
+                    }
                 				
-       				}		
-       			}
-       		}
-       	}
+       	    }		
+        }
+      }
+  }
 
 
 // ------------------------------------------------------------------------------------------------------
@@ -632,11 +601,10 @@ vec4 JK_texScatter(
 // ------------------------------------------------------------------------------------------------------                      
                         
 
-       						vec4 output = mix(surface_color,clamp(surface_color,vec4(0.0),vec4(1.0)),clampValues);
-       						// float test = steppedFBM(rel_s,1.0,0.0,1.0,0.0,1.0);
-                  // output = vec4(noi,noi,noi,1.0);
-       						return output;
-
+        vec4 output = mix(surface_color,clamp(surface_color,vec4(0.0),vec4(1.0)),clampValues);
+        // float test = steppedFBM(rel_s,1.0,0.0,1.0,0.0,1.0);
+        // output = vec4(noi,noi,noi,1.0);
+        return output;
 
 }
 
