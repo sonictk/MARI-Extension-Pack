@@ -36,13 +36,23 @@
         <Attribute Name="HSVSeed" PrettyName="HSV Seed" Group="Texture HSV" Type="double" Min="1" Max="1000">500</Attribute>
         <!--===============================================================================================================--> 
         <Attribute Name="MapA" PrettyName="MapA" Group="Texture Map A" Type="image" GenerateMipMaps="true"></Attribute>
+        <Attribute Name="Invert_A" PrettyName="Invert Map" Group="Texture Map A" Type="bool" Min="false" Max="true">false</Attribute>
+        <Attribute Name="MapA_Alpha" PrettyName="Alpha" Group="Texture Map A" Type="stringlist">From Map,From Map,Alpha is Luminance,Alpha is Inverse Luminance</Attribute>
         <!--===============================================================================================================-->
         <Attribute Name="MapB_weight" PrettyName="Importance" Group="Texture Map B" Type="double" Min="0" Max="1">0.25</Attribute>
         <Attribute Name="MapB" PrettyName="MapB" Group="Texture Map B" Type="image" GenerateMipMaps="true"></Attribute>
+        <Attribute Name="Invert_B" PrettyName="Invert Map" Group="Texture Map B" Type="bool" Min="false" Max="true">false</Attribute>
+        <Attribute Name="MapB_Alpha" PrettyName="Alpha" Group="Texture Map B" Type="stringlist">From Map,From Map,Alpha is Luminance,Alpha is Inverse Luminance</Attribute>
+        <!--===============================================================================================================-->
         <Attribute Name="MapC_weight" PrettyName="Importance" Group="Texture Map C" Type="double" Min="0" Max="1">0.25</Attribute>
         <Attribute Name="MapC" PrettyName="MapC" Group="Texture Map C" Type="image" GenerateMipMaps="true"></Attribute>
+        <Attribute Name="Invert_C" PrettyName="Invert Map" Group="Texture Map C" Type="bool" Min="false" Max="true">false</Attribute>
+        <Attribute Name="MapC_Alpha" PrettyName="Alpha" Group="Texture Map C" Type="stringlist">From Map,From Map,Alpha is Luminance,Alpha is Inverse Luminance</Attribute>
+        <!--===============================================================================================================-->
         <Attribute Name="MapD_weight" PrettyName="Importance" Group="Texture Map D" Type="double" Min="0" Max="1">0.25</Attribute>
         <Attribute Name="MapD" PrettyName="MapD" Group="Texture Map D" Type="image" GenerateMipMaps="true"></Attribute>
+        <Attribute Name="Invert_D" PrettyName="Invert Map" Group="Texture Map D" Type="bool" Min="false" Max="true">false</Attribute>
+        <Attribute Name="MapD_Alpha" PrettyName="Alpha" Group="Texture Map D" Type="stringlist">From Map,From Map,Alpha is Luminance,Alpha is Inverse Luminance</Attribute>
         <!--===============================================================================================================-->
     </Attributes>
   <Contexts>
@@ -63,9 +73,16 @@
                 vec3 Pos = #Position;
                 float scene = float($scene) + 1.0;
                 float scale = ( (100.0 ) - $Scale*2.0) / scene;
-                float clamp = float($Clamp);
 
-                Output = JK_texScatter(UV,Pos,scale,$Frequency,$Layers,$NoiseScale,$jitterScale,$rot_min,$rot_max,$TextureCount,$BlendMode,$MapA,$HSVSeed,$A_minH,$A_maxH,$A_minS,$A_maxS,$A_minV,$A_maxV,clamp,$MapB,$MapB_weight,$MapC,$MapC_weight,$MapD,$MapD_weight);
+                // passing booleans through as float !
+                float clamp = float($Clamp);
+                float invertA = float($Invert_A);
+                float invertB = float($Invert_B);
+                float invertC = float($Invert_C);
+                float invertD = float($Invert_D);
+                
+
+                Output = JK_texScatter(UV,Pos,scale,$Frequency,$Layers,$NoiseScale,$jitterScale,$rot_min,$rot_max,$TextureCount,$BlendMode,$HSVSeed,$A_minH,$A_maxH,$A_minS,$A_maxS,$A_minV,$A_maxV,clamp,$MapA,invertA,$MapA_Alpha,$MapB,$MapB_weight,invertB,$MapB_Alpha,$MapC,$MapC_weight,invertC,$MapC_Alpha,$MapD,$MapD_weight,invertD,$MapD_Alpha);
                 // Output = texture($MapMain,tmpuv.xy);
 
 

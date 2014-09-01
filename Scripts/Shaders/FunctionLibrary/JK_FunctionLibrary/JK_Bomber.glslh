@@ -11,7 +11,6 @@ vec4 JK_texScatter(
 					float rot_max,
 					int textureCount,
 					int BlendMode,
-					sampler2D textureA,
 					float HSVSeed,
 					float A_minH,
 					float A_maxH,
@@ -20,10 +19,19 @@ vec4 JK_texScatter(
 					float A_minV,
 					float A_maxV,
 					float clampValues,
+					sampler2D textureA,
+					float invert_textureA,
+					int textureA_AlphaMode,
 					sampler2D textureB,
           			float textureB_weight,
+          			float invert_textureB,
+          			int textureB_AlphaMode,
           			sampler2D textureC,
           			float textureC_weight,
+          			float invert_textureC,
+          			int textureC_AlphaMode,
           			sampler2D textureD,
-          			float textureD_weight
+          			float textureD_weight,
+          			float invert_textureD,
+          			int textureD_AlphaMode
 				);

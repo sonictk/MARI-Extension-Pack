@@ -130,32 +130,41 @@ float udnVor(float x,float scale,float lo,float hi, float threshold, float thres
 
 
 vec4 JK_texScatter( 
-				  vec2 UV,
-          vec3 POS,
-          float scale,
-          float frequency,
-          float layers,
-          float noise_scale,
-          float jitter_scale,
-          float rot_min,
-          float rot_max,
-          int textureCount,
-          int BlendMode,
-          sampler2D textureA,
-          float HSVSeed,
-          float A_minH,
-          float A_maxH,
-          float A_minS,
-          float A_maxS,
-          float A_minV,
-          float A_maxV,
-          float clampValues,
-          sampler2D textureB,
-          float textureB_weight,
-          sampler2D textureC,
-          float textureC_weight,
-          sampler2D textureD,
-          float textureD_weight
+
+                vec2 UV,
+                vec3 POS,
+                float scale,
+                float frequency,
+                float layers,
+                float noise_scale,
+                float jitter_scale,
+                float rot_min,
+                float rot_max,
+                int textureCount,
+                int BlendMode,
+                float HSVSeed,
+                float A_minH,
+                float A_maxH,
+                float A_minS,
+                float A_maxS,
+                float A_minV,
+                float A_maxV,
+                float clampValues,
+                sampler2D textureA,
+                float invert_textureA,
+                int textureA_AlphaMode,
+                sampler2D textureB,
+                float textureB_weight,
+                float invert_textureB,
+                int textureB_AlphaMode,
+                sampler2D textureC,
+                float textureC_weight,
+                float invert_textureC,
+                int textureC_AlphaMode,
+                sampler2D textureD,
+                float textureD_weight,
+                float invert_textureD,
+                int textureD_AlphaMode
 				)
 
 
@@ -311,24 +320,92 @@ vec4 JK_texScatter(
     
                           // get color from texture maps and weigh them per importance
                           // importance is determined via thresholding function
+                          // Depending on Mode set, Alphas are evaluated differently via Switches
                            layer_color = texture(textureA,n_uv);
+                           layer_color.rgb = mix(layer_color.rgb,vec3(1.0)-layer_color.rgb,invert_textureA);
+
+                                    switch (textureA_AlphaMode)
+                                        {
+                                           case 0:
+                                           //From Map
+                                           break;
+                                           case 1:
+                                           //Alpha is Luminance
+                                           layer_color.a = dot(vec3(0.2126, 0.7152, 0.0722), layer_color.rgb);
+                                           break;
+                                           case 2:
+                                           //Alpha is Inverted Luminance
+                                           layer_color.a = dot(vec3(0.2126, 0.7152, 0.0722), vec3(1.0) - layer_color.rgb);
+                                           break;
+
+                                         }
+
 
                            layer_color_comb_C = layer_color;
         
                                  if (textureCount > 1.0)
                                  { layer_color_B = texture(textureB,n_uv);
+
+                                          switch (textureB_AlphaMode)
+                                        {
+                                           case 0:
+                                           //From Map
+                                           break;
+                                           case 1:
+                                           //Alpha is Luminance
+                                           layer_color_B.a = dot(vec4(0.2126, 0.7152, 0.0722, 0.0), layer_color_B);
+                                           break;
+                                           case 2:
+                                           //Alpha is Inverted Luminance
+                                           layer_color_B.a = dot(vec4(0.2126, 0.7152, 0.0722, 0.0), vec4(1.0) - layer_color_B);
+                                           break;
+                                         }
+
                                    layer_color_comb = mix(layer_color_B,layer_color,udnVor(noi * 1234,6.0,0.0,1.0,textureB_weight,0.0));
                                    layer_color_comb_C = layer_color_comb;
                                  }
             
                                  if (textureCount > 2.0)
                                  { layer_color_C = texture(textureC,n_uv); 
+
+                                          switch (textureC_AlphaMode)
+                                        {
+                                           case 0:
+                                           //From Map
+                                           break;
+                                           case 1:
+                                           //Alpha is Luminance
+                                           layer_color_C.a = dot(vec4(0.2126, 0.7152, 0.0722, 0.0), layer_color_C);
+                                           break;
+                                           case 2:
+                                           //Alpha is Inverted Luminance
+                                           layer_color_C.a = dot(vec4(0.2126, 0.7152, 0.0722, 0.0), vec4(1.0) - layer_color_C);
+                                           break;
+                                         }
+
+
                                    layer_color_comb_B = mix(layer_color_C,layer_color_comb,udnVor(noi * 2345,6.0,0.0,1.0,textureC_weight,0.0));
                                    layer_color_comb_C = layer_color_comb_B;
                                  }
             
                                  if (textureCount > 3.0)
                                  { layer_color_D = texture(textureD,n_uv);
+
+                                          switch (textureD_AlphaMode)
+                                        {
+                                           case 0:
+                                           //From Map
+                                           break;
+                                           case 1:
+                                           //Alpha is Luminance
+                                           layer_color_D.a = dot(vec4(0.2126, 0.7152, 0.0722, 0.0), layer_color_C);
+                                           break;
+                                           case 2:
+                                           //Alpha is Inverted Luminance
+                                           layer_color_D.a = dot(vec4(0.2126, 0.7152, 0.0722, 0.0), vec4(1.0) - layer_color_D);
+                                           break;
+                                         }
+
                                    layer_color_comb_C = mix(layer_color_D,layer_color_comb_B,udnVor(noi * 3456,6.0,0.0,1.0,textureD_weight,0.0));
                                  }
                       
