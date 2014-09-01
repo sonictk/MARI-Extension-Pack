@@ -12,16 +12,34 @@
 // ------------------------------------------------------------------------
 
 
+// TO DO: CLEAN UP UNUSED !
+
 float Value3D( vec3 P );
 void voronoi(vec3 position, float jitterD, int distype, out float f1, out float f2, out vec3 pos1,
          out vec3 pos2, out vec3 f1cell, out vec3 f2cell);
 vec4 CellNoise( vec3 gridcell );
 float SimplexPerlin3D(vec3 P);
+float rmfBm (vec3 P, float octaves, float lacunarity, float gain, float amp, float freqOffset);
+vec4 voronoi_popcorn(
+        vec3 position,
+        float lrg_Shp_Itr,
+        float sml_Shp_Itr,
+        float lrg_Shp_Scale,
+        float sml_Shp_Scale,
+        float lrg_Shp_Amp,
+        float sml_Shp_Amp,
+        float width,
+        int distSet
+        );
+
 
 // for use in voronoi_simple
 float rnd_1d(vec2 x);
 float dist_Squared(float x, float y, float z);
 float softThreshold(float threshold, float bound, float value);
+
+// for radial fade
+float remap(float value, float oldMin, float oldMax, float newMin, float newMax, float multiplier);
 
 // ------------------------------------------------------------------------
 // TO DO
@@ -31,19 +49,22 @@ float softThreshold(float threshold, float bound, float value);
 
 // TO DO:
 //
-// TEST CONVERT TO PAINTABLE !!!!
-// -- Add Inverse Multiply
-// -- Add Stencil/Alpha is Luminance etc.
+// -- TEST CONVERT TO PAINTABLE CRASH !!!!
+// -- clean up unused functions in header
+// -- clean up unsed variables
+// -- clean up code visually
+// ++ Add Invert
+// ++ Add Stencil/Alpha is Luminance etc.
 // ++ create bettern 1d noise function for udn macro
 // ++ create simpler, faster to run Voronoi
 // ++ add multiple texture support
 // - add varying cell size
 // - add 3d projection of cells
 // ++ add HSV/A Min/Max. Color seeding looks useless.
-// - add optional clamping at the end due to HSV Adding
+// ++ add optional clamping at the end due to HSV Adding
 // - investigate faint grid lines in texture ? Fract/floor'ing ? 
 // ++ add per texture importance
-// - add blend modes
+// ++ add blend modes
 //
 //   AS ADJUSTMENT LAYER/USING INCOMING DATA: 
 // - add painted distribution of cells. Sampling from incoming texture layers, then only using
@@ -98,6 +119,7 @@ void voronoi_simple(vec3 position, float jitterD,out vec3 f1cell,float threshold
 
 
 
+// CRAPPY
 float udn(float x,float scale,float lo,float hi)
 { 
 
@@ -109,7 +131,8 @@ float udn(float x,float scale,float lo,float hi)
 }
 
 
-
+// A very expensive, voronoi based noise for seeding. While the results are nice, it is only
+// used for rotation since it slows things down a lot
 float udnVor(float x,float scale,float lo,float hi, float threshold, float threshold_bound)
 { 
 
@@ -126,6 +149,29 @@ float udnVor(float x,float scale,float lo,float hi, float threshold, float thres
 
 
 }
+
+
+
+float steppedFBM(float x,float scale,float lo,float hi, float threshold, float threshold_bound)
+{ 
+
+// rmfBm (vec3 P, float octaves, float lacunarity, float gain, float amp, float freqOffset)
+
+  vec3 x_3 = vec3(x*scale);
+
+
+  float remap = rmfBm(x_3,5.0,1.0,1.0,1.0,0.5);
+
+  float output = (smoothstep(0.0, 1.0, (remap)) * ((hi) - (lo)) + (lo));
+  return output;
+
+
+}
+
+
+
+
+// ---------------------------MAIN TEXTURE SCATTER:-----------------------
 
 
 
@@ -152,6 +198,8 @@ vec4 JK_texScatter(
                 float clampValues,
                 sampler2D textureA,
                 float invert_textureA,
+                float radialFadeA,
+                float radialContrastA,
                 int textureA_AlphaMode,
                 sampler2D textureB,
                 float textureB_weight,
@@ -177,19 +225,14 @@ vec4 JK_texScatter(
   vec4 surface_color;
   vec4 layer_color_comb,layer_color_comb_B,layer_color_comb_C;
 	vec4 layer_opac,surface_opac;
-  float rnd;
   float layer_alpha;
-	float surface_opac_a;
-	float ss, tt, ss_b,tt_b,tmps,tmpt;
+	float ss, tt,tmps,tmpt;
 	float home_row,home_col;
 	float layer_idx,col_idx,row_idx;
 	float cell_size;
 	float half_cell;
 	float col, row;
   float noi;
-  float swidth, twidth;
-  vec3 Nf, V;
-  float ds,dsu,dsv,dt,dtu,dtv;
   float rel_s, rel_t;
   float jitter_s, jitter_t;
   float center_s, center_t;
@@ -197,16 +240,13 @@ vec4 JK_texScatter(
   float inBounds;
   float max_jitter;
   float offset;
-  float base_freq;
-
-
-  cell_size = 1.0 / scale;
-  half_cell = cell_size / 2.0;
 
 
 
   // assigned variables
 
+  cell_size = 1.0 / scale;
+  half_cell = cell_size / 2.0;
   surface_color = vec4(0.0,0.0,0.0,0.0);
   surface_opac = vec4(0.0,0.0,0.0,1.0);
   float texCount = float(textureCount);
@@ -258,24 +298,29 @@ vec4 JK_texScatter(
        						row = 0.0;
        					}
 
-
+ 
               		// base seed on current layer, row and column of tile	
 		       		    noi = (Value3D ( vec3(col * noise_scale + 0.5, 
                                        row * noise_scale + 0.5,
-                                       layer_idx * noise_scale + 0.5)
+                                       layer_idx * noise_scale + 222.0)
                                  ) + 1.0
                         ) ;
-       	
 
-		       		  //generate tile
 
+		       		       //generate tile
+
+                     // IF Based on noi being Value3d
        				       if ((noi * 626) < frequency) 
+
        				       {			
        				       	//jitter
        				       	max_jitter = cell_size*0.5;
-       				       	jitter_s = udnVor(noi * 1183,jitter_scale, -max_jitter, max_jitter,0.5,1.0);
-       				       	jitter_t = udnVor(noi * 999,jitter_scale, -max_jitter, max_jitter,0.5,1.0) ;
-       		
+       				       	// jitter_s = steppedFBM(noi * (1183*col),jitter_scale+layer_idx, -max_jitter, max_jitter,0.5,1.0);
+       				       	// jitter_t = steppedFBM(noi * (999*row),jitter_scale+layer_idx, -max_jitter, max_jitter,0.5,1.0) ;
+       		            jitter_s = udnVor(noi * (1183),jitter_scale+layer_idx, -max_jitter, max_jitter,0.5,1.0);
+                      jitter_t = udnVor(noi * (999),jitter_scale+layer_idx, -max_jitter, max_jitter,0.5,1.0) ;
+          
+                      
        				       	
        				       	//center of texture on surface
        				       	center_s = ((col * cell_size) + half_cell + jitter_s);
@@ -315,14 +360,14 @@ vec4 JK_texScatter(
        						     		tt = (tmpt - tMax) * scale;
                           
        						     		vec2 n_uv = vec2(ss,tt);
-                          vec2 n_uv_B = vec2(ss_b,tt_b);
-      
-    
+                      
                           // get color from texture maps and weigh them per importance
                           // importance is determined via thresholding function
                           // Depending on Mode set, Alphas are evaluated differently via Switches
                            layer_color = texture(textureA,n_uv);
                            layer_color.rgb = mix(layer_color.rgb,vec3(1.0)-layer_color.rgb,invert_textureA);
+
+                           
 
                                     switch (textureA_AlphaMode)
                                         {
@@ -339,9 +384,16 @@ vec4 JK_texScatter(
                                            break;
 
                                          }
+// float remap(float value, float oldMin, float oldMax, float newMin, float newMax, float multiplier);
+                                          // Radial Fade
+                                          float radialFade = length(n_uv+vec2(0.5));
+                                          radialFade = remap(radialFade,0.0,radialContrastA,1.0,0.0,radialFadeA);
+                                          layer_color.a *= radialFade;
+                                          layer_color.a = clamp(layer_color.a,0.0,1.0);
 
 
-                           layer_color_comb_C = layer_color;
+
+                              layer_color_comb_C = layer_color;
         
                                  if (textureCount > 1.0)
                                  { layer_color_B = texture(textureB,n_uv);
@@ -361,7 +413,7 @@ vec4 JK_texScatter(
                                            break;
                                          }
 
-                                   layer_color_comb = mix(layer_color_B,layer_color,udnVor(noi * 1234,6.0,0.0,1.0,textureB_weight,0.0));
+                                   layer_color_comb = mix(layer_color_B,layer_color,steppedFBM(noi * 1234,6.0,0.0,1.0,textureB_weight,0.0));
                                    layer_color_comb_C = layer_color_comb;
                                  }
             
@@ -384,7 +436,7 @@ vec4 JK_texScatter(
                                          }
 
 
-                                   layer_color_comb_B = mix(layer_color_C,layer_color_comb,udnVor(noi * 2345,6.0,0.0,1.0,textureC_weight,0.0));
+                                   layer_color_comb_B = mix(layer_color_C,layer_color_comb,steppedFBM(noi * 2345,6.0,0.0,1.0,textureC_weight,0.0));
                                    layer_color_comb_C = layer_color_comb_B;
                                  }
             
@@ -406,7 +458,7 @@ vec4 JK_texScatter(
                                            break;
                                          }
 
-                                   layer_color_comb_C = mix(layer_color_D,layer_color_comb_B,udnVor(noi * 3456,6.0,0.0,1.0,textureD_weight,0.0));
+                                   layer_color_comb_C = mix(layer_color_D,layer_color_comb_B,steppedFBM(noi * 3456,6.0,0.0,1.0,textureD_weight,0.0));
                                  }
                       
                            layer_color_comb_C = mriRgb2Hsv(layer_color_comb_C);
@@ -414,24 +466,19 @@ vec4 JK_texScatter(
 
                              // per cell hsv shift
                              // R = H, G = S, B = V, A = A
-                             layer_color_comb_C.r += udnVor(noi * 1234,HSVSeed+(HSVSeed/2.0),A_minH,A_maxH,0.5,1.0);                                       
-                             layer_color_comb_C.g *= udnVor(noi * 2345,HSVSeed,A_minS,A_maxS,0.5,1.0);
-                             layer_color_comb_C.b *= udnVor(noi * 3456,HSVSeed-(HSVSeed/4.0),A_minV,A_maxV,0.5,1.0);                               
+                             layer_color_comb_C.r += steppedFBM(noi * 1234,HSVSeed+(HSVSeed/2.0),A_minH,A_maxH,0.5,1.0);                                       
+                             layer_color_comb_C.g *= steppedFBM(noi * 2345,HSVSeed,A_minS,A_maxS,0.5,1.0);
+                             layer_color_comb_C.b *= steppedFBM(noi * 3456,HSVSeed-(HSVSeed/4.0),A_minV,A_maxV,0.5,1.0);                               
                              layer_color_comb_C = mriHsv2Rgb(layer_color_comb_C);
 
-                             
-
-
-// ----------------- CHECK IF THE SURFACE OPACITY IS NEEDED OR JUST A WASTE OF SPACE !!!!!!!!!!!
-
-       								         /* get opacity from texture map*/
-                                layer_alpha = layer_color_comb_C.a;
+       								          // get opacity from combined map 
+                               layer_alpha = layer_color_comb_C.a;
        								         layer_opac = vec4(layer_alpha);
           
-       								         // surface_opac = Comp_Add(surface_opac,layer_opac,1.0);
+                               // TO DO : Replace Comp_Default with Alpha Blend Mode
+       								         // Creating Alpha - check if there is a comp method for alphas (there is..)
        								         surface_opac = Comp_Default(surface_opac,layer_opac,layer_alpha);
           
-       								         // surface_opac_a = clamp(surface_opac.r,1.0,0.0);
           
                               // Combine according to Blend Mode:
                               switch (BlendMode)
@@ -485,12 +532,8 @@ vec4 JK_texScatter(
 
 
        						vec4 output = mix(surface_color,clamp(surface_color,vec4(0.0),vec4(1.0)),clampValues);
-                  // vec4 output = vec4(udn(1234,scale,0.0,0.5));
-                  // output.a = 1.0;
-							   // vec4 output = vec4(n_uv,n_uv);
-							   // vec4 output = vec4(n_uv.r,n_uv.g,0.0,1.0);
-       						// float test = udn(rel_s,POS,1.0,rel_s,0.0);
-                  // output = vec4(test,test,test,1.0);
+       						// float test = steppedFBM(rel_s,1.0,0.0,1.0,0.0,1.0);
+                  // output = vec4(noi,noi,noi,1.0);
        						return output;
 
 

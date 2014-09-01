@@ -21,6 +21,8 @@ vec4 JK_texScatter(
 					float clampValues,
 					sampler2D textureA,
 					float invert_textureA,
+					float radialFadeA,
+					float radialContrastA,
 					int textureA_AlphaMode,
 					sampler2D textureB,
           			float textureB_weight,

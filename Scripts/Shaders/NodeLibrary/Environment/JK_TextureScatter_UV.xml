@@ -37,6 +37,8 @@
         <!--===============================================================================================================--> 
         <Attribute Name="MapA" PrettyName="MapA" Group="Texture Map A" Type="image" GenerateMipMaps="true"></Attribute>
         <Attribute Name="Invert_A" PrettyName="Invert Map" Group="Texture Map A" Type="bool" Min="false" Max="true">false</Attribute>
+        <Attribute Name="radialFadeA" PrettyName="radialFade" Group="Texture Map A" Type="double" Min="0" Max="1">1</Attribute>  
+        <Attribute Name="radialContrastA" PrettyName="radialFadeContrast" Group="Texture Map A" Type="double" Min="0" Max="2">1</Attribute>  
         <Attribute Name="MapA_Alpha" PrettyName="Alpha" Group="Texture Map A" Type="stringlist">From Map,From Map,Alpha is Luminance,Alpha is Inverse Luminance</Attribute>
         <!--===============================================================================================================-->
         <Attribute Name="MapB_weight" PrettyName="Importance" Group="Texture Map B" Type="double" Min="0" Max="1">0.25</Attribute>
@@ -82,7 +84,7 @@
                 float invertD = float($Invert_D);
                 
 
-                Output = JK_texScatter(UV,Pos,scale,$Frequency,$Layers,$NoiseScale,$jitterScale,$rot_min,$rot_max,$TextureCount,$BlendMode,$HSVSeed,$A_minH,$A_maxH,$A_minS,$A_maxS,$A_minV,$A_maxV,clamp,$MapA,invertA,$MapA_Alpha,$MapB,$MapB_weight,invertB,$MapB_Alpha,$MapC,$MapC_weight,invertC,$MapC_Alpha,$MapD,$MapD_weight,invertD,$MapD_Alpha);
+                Output = JK_texScatter(UV,Pos,scale,$Frequency,$Layers,$NoiseScale,$jitterScale,$rot_min,$rot_max,$TextureCount,$BlendMode,$HSVSeed,$A_minH,$A_maxH,$A_minS,$A_maxS,$A_minV,$A_maxV,clamp,$MapA,invertA,$radialFadeA,$radialContrastA,$MapA_Alpha,$MapB,$MapB_weight,invertB,$MapB_Alpha,$MapC,$MapC_weight,invertC,$MapC_Alpha,$MapD,$MapD_weight,invertD,$MapD_Alpha);
                 // Output = texture($MapMain,tmpuv.xy);
 
 
