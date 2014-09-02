@@ -1,11 +1,14 @@
 // TO DO:
 //
+// ++ check if invert is working again on all textures
+// -- texture importance is broken after switch to steppedFBM from udnVor. Revisit or switch back (slow !)
 // -- TEST CONVERT TO PAINTABLE CRASH !!!!
 // -- clean up unused functions in header
 // -- clean up unsed variables
 // -- clean up code visually
 // -- per layer value attenuation
 // -- improve noi seeding
+// ++ add radialFade
 // ++ Add Invert
 // ++ Add Stencil/Alpha is Luminance etc.
 // ++ create bettern 1d noise function for udn macro
@@ -150,7 +153,9 @@ float steppedFBM(float x,float scale,float lo,float hi, float threshold, float t
 { 
   vec3 x_3 = vec3(x*scale);
   float remap = rmfBm(x_3,5.0,1.0,1.0,1.0,0.5);
-  float output = (smoothstep(0.0, 1.0, (remap)) * ((hi) - (lo)) + (lo));
+  remap = softThreshold(threshold,threshold_bound,remap);
+  float output = (smoothstep(0.25, 0.75, (remap)) * ((hi) - (lo)) + (lo));
+  // float output = (remap * ((hi) - (lo)) + (lo));
   return output;
 }
 
@@ -167,43 +172,49 @@ float steppedFBM(float x,float scale,float lo,float hi, float threshold, float t
 
 vec4 JK_texScatter( 
 
-                vec2 UV,
-                vec3 POS,
-                float scale,
-                float frequency,
-                float layers,
-                float noise_scale,
-                float jitter_scale,
-                float rot_min,
-                float rot_max,
-                int textureCount,
-                int BlendMode,
-                float HSVSeed,
-                float A_minH,
-                float A_maxH,
-                float A_minS,
-                float A_maxS,
-                float A_minV,
-                float A_maxV,
-                float clampValues,
-                sampler2D textureA,
-                float invert_textureA,
-                float radialFadeA,
-                float radialContrastA,
-                int textureA_AlphaMode,
-                sampler2D textureB,
-                float textureB_weight,
-                float invert_textureB,
-                int textureB_AlphaMode,
-                sampler2D textureC,
-                float textureC_weight,
-                float invert_textureC,
-                int textureC_AlphaMode,
-                sampler2D textureD,
-                float textureD_weight,
-                float invert_textureD,
-                int textureD_AlphaMode
-				)
+          vec2 UV,
+          vec3 POS,
+          float scale,
+          float frequency,
+          float layers,
+          float noise_scale,
+          float jitter_scale,
+          float rot_min,
+          float rot_max,
+          int textureCount,
+          int BlendMode,
+          float HSVSeed,
+          float A_minH,
+          float A_maxH,
+          float A_minS,
+          float A_maxS,
+          float A_minV,
+          float A_maxV,
+          float clampValues,
+          sampler2D textureA,
+          float invert_textureA,
+          float radialFadeA,
+          float radialFade_SoftnessA,
+          int textureA_AlphaMode,
+          sampler2D textureB,
+          float textureB_weight,
+          float invert_textureB,
+          float radialFadeB,
+          float radialFade_SoftnessB,
+          int textureB_AlphaMode,
+          sampler2D textureC,
+          float textureC_weight,
+          float invert_textureC,
+          float radialFadeC,
+          float radialFade_SoftnessC,
+          int textureC_AlphaMode,
+          sampler2D textureD,
+          float textureD_weight,
+          float invert_textureD,
+          float radialFadeD,
+          float radialFade_SoftnessD,
+          int textureD_AlphaMode
+				            )
 
 
 
@@ -385,12 +396,14 @@ vec4 JK_texScatter(
                       // get color from texture maps and weigh them per importance
                       // importance is determined via thresholding function on a FBM Noise
                       // Depending on Mode set, Alphas are evaluated differently via Switches
-                      // However Alphas are always multiplied by the radial fade in the en
+                      // However Alphas are always multiplied by the radial fade in the end
 
                       layer_color = texture(textureA,n_uv);
                       layer_color.rgb = mix(layer_color.rgb,vec3(1.0)-layer_color.rgb,invert_textureA);
 
-                           
+                      // for use in all radial Fades for all textures
+                      float radialFade = length(n_uv+vec2(0.5));
+
                       // Determine what Alpha is being used. 1) From loaded image 2) Luminance 3)Inv Luminance
                       // Please note the texture invert is being evaluated before !
                       switch (textureA_AlphaMode)
@@ -413,10 +426,9 @@ vec4 JK_texScatter(
                       //     Radial Fade Texture A       //
                       // --------------------------------//                    
                          
-                      // Radial Fade
-                      float radialFade = length(n_uv+vec2(0.5));
-                      radialFade = remap(radialFade,0.0,radialContrastA,1.0,0.0,radialFadeA);
-                      layer_color.a *= radialFade;
+                      // Radial Fade Texture A
+                      float radialFaderA = remap(radialFade,0.0,radialFadeA,1.0,0.0,radialFade_SoftnessA);
+                      layer_color.a *= radialFaderA;
                       layer_color.a = clamp(layer_color.a,0.0,1.0);
 
                       // layer_color_Comb_C is what is being accessed int the end
@@ -425,12 +437,14 @@ vec4 JK_texScatter(
 
         
                       // --------------------------------------------------------- //
-                      //                      2 Texture slots in Use               //
+                      //                     Texture B slot in Use                 //
                       // ----------------------------------------------------------//                     
                   
                       if (textureCount > 1.0)
                         {
                           layer_color_B = texture(textureB,n_uv);
+                          layer_color_B.rgb = mix(layer_color_B.rgb,vec3(1.0)-layer_color_B.rgb,invert_textureB);
+
 
                           // Determine what Alpha is being used. 1) From loaded image 2) Luminance 3)Inv Luminance
                           // Please note the texture invert is being evaluated before !
@@ -449,6 +463,16 @@ vec4 JK_texScatter(
                               break;
                             }
 
+                          // ------------------------------- //
+                          //     Radial Fade Texture B       //
+                          // --------------------------------//                    
+                             
+                          // Radial Fade Texture B
+                          float radialFaderB = remap(radialFade,0.0,radialFadeB,1.0,0.0,radialFade_SoftnessB);
+                          layer_color_B.a *= radialFaderB;
+                          layer_color_B.a = clamp(layer_color_B.a,0.0,1.0);
+
+
                           layer_color_comb = mix(layer_color_B,layer_color,steppedFBM(noi * 1234,6.0,0.0,1.0,textureB_weight,0.0));
                           layer_color_comb_C = layer_color_comb;
                                  
@@ -456,12 +480,13 @@ vec4 JK_texScatter(
 
 
                       // --------------------------------------------------------- //
-                      //                      3 Texture slots in Use               //
+                      //                      Texture C slot  in Use               //
                       // ----------------------------------------------------------//                       
                           
                       if (textureCount > 2.0)
                         {
-                          layer_color_C = texture(textureC,n_uv); 
+                          layer_color_C = texture(textureC,n_uv);
+                          layer_color_C.rgb = mix(layer_color_C.rgb,vec3(1.0)-layer_color_C.rgb,invert_textureC);
 
                           // Determine what Alpha is being used. 1) From loaded image 2) Luminance 3)Inv Luminance
                           // Please note the texture invert is being evaluated before !
@@ -480,18 +505,28 @@ vec4 JK_texScatter(
                               break;
                             }
 
+                          // ------------------------------- //
+                          //     Radial Fade Texture C       //
+                          // --------------------------------//                    
+                             
+                          // Radial Fade Texture C
+                          float radialFaderC = remap(radialFade,0.0,radialFadeC,1.0,0.0,radialFade_SoftnessC);
+                          layer_color_C.a *= radialFaderC;
+                          layer_color_C.a = clamp(layer_color_C.a,0.0,1.0);
+
                           layer_color_comb_B = mix(layer_color_C,layer_color_comb,steppedFBM(noi * 2345,6.0,0.0,1.0,textureC_weight,0.0));
                           layer_color_comb_C = layer_color_comb_B;
                         }
 
 
                       // --------------------------------------------------------- //
-                      //                      4 Texture slots in Use               //
+                      //                      Texture D slot in Use                //
                       // ----------------------------------------------------------//                      
                           
                       if (textureCount > 3.0)
                         {
                           layer_color_D = texture(textureD,n_uv);
+                          layer_color_D.rgb = mix(layer_color_D.rgb,vec3(1.0)-layer_color_D.rgb,invert_textureD);
 
                           // Determine what Alpha is being used. 1) From loaded image 2) Luminance 3)Inv Luminance
                           // Please note the texture invert is being evaluated before !
@@ -509,6 +544,15 @@ vec4 JK_texScatter(
                               layer_color_D.a = dot(vec4(0.2126, 0.7152, 0.0722, 0.0), vec4(1.0) - layer_color_D);
                               break;
                             }
+
+                          // ------------------------------- //
+                          //     Radial Fade Texture D       //
+                          // --------------------------------//                    
+                             
+                          // Radial Fade Texture D
+                          float radialFaderD = remap(radialFade,0.0,radialFadeD,1.0,0.0,radialFade_SoftnessD);
+                          layer_color_D.a *= radialFaderD;
+                          layer_color_D.a = clamp(layer_color_D.a,0.0,1.0);
 
                           layer_color_comb_C = mix(layer_color_D,layer_color_comb_B,steppedFBM(noi * 3456,6.0,0.0,1.0,textureD_weight,0.0));
                         }
