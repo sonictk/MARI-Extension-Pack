@@ -12,6 +12,7 @@ vec4 JK_texScatter(
 					int textureCount,
 					int BlendMode,
 					float HSVSeed,
+					float LayerAttenuation,
 					float A_minH,
 					float A_maxH,
 					float A_minS,

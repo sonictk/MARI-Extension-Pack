@@ -6,7 +6,7 @@
 // -- clean up unused functions in header
 // -- clean up unsed variables
 // -- clean up code visually
-// -- per layer value attenuation
+// ++ per layer value attenuation
 // -- improve noi seeding
 // ++ add radialFade
 // ++ Add Invert
@@ -184,6 +184,7 @@ vec4 JK_texScatter(
           int textureCount,
           int BlendMode,
           float HSVSeed,
+          float LayerAttenuation,
           float A_minH,
           float A_maxH,
           float A_minS,
@@ -567,7 +568,7 @@ vec4 JK_texScatter(
                         // R = H, G = S, B = V, A = A
                         layer_color_comb_C.r += steppedFBM(noi * 1234,HSVSeed+(HSVSeed/2.0),A_minH,A_maxH,0.5,1.0);                                       
                         layer_color_comb_C.g *= steppedFBM(noi * 2345,HSVSeed,A_minS,A_maxS,0.5,1.0);
-                        layer_color_comb_C.b *= steppedFBM(noi * 3456,HSVSeed-(HSVSeed/4.0),A_minV,A_maxV,0.5,1.0);                               
+                        layer_color_comb_C.b *= (steppedFBM(noi * 3456,HSVSeed-(HSVSeed/4.0),A_minV,A_maxV,0.5,1.0)) + ((LayerAttenuation*layer_idx)/layers);                               
                         layer_color_comb_C = mriHsv2Rgb(layer_color_comb_C);
 
 
