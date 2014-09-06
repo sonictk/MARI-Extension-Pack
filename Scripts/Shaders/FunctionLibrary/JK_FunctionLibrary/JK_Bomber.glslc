@@ -237,7 +237,7 @@ vec4 JK_texScatter(
   float cell_size;
   float half_cell;
   float col, row;
-  float noi;
+  float noi,noi_minor;
   float rel_s, rel_t;
   float jitter_s, jitter_t;
   float center_s, center_t;
@@ -254,7 +254,7 @@ vec4 JK_texScatter(
                        
   float s = UV.x;
   float t = UV.y;
-  cell_size = 1.0 / scale;
+  cell_size = 1.0 / (scale);
   half_cell = cell_size / 2.0;
   surface_color = vec4(0.0,0.0,0.0,0.0);
   surface_opac = vec4(0.0,0.0,0.0,1.0);
@@ -272,12 +272,15 @@ vec4 JK_texScatter(
 
   // small offset on layer idx to compensate for precision
   for (layer_idx = 0.999; layer_idx < layers; layer_idx += 1.0)
+
     {
       // scan current cell and neighbors, 9 cells total
       for (col_idx = -1.0; col_idx <= 1.0; col_idx += 1.0)
        	{
        		for (row_idx = -1.0; row_idx <= 1.0; row_idx += 1.0)
        			{
+
+
        				// determine row and column index, wraparound
        				rel_s = s;
        				rel_t = t;
@@ -319,26 +322,38 @@ vec4 JK_texScatter(
                        
 
               // base seed on current layer, row and column of tile	
-		       		noi = (Value3D ( vec3(col * noise_scale + 0.5, 
-                                       row * noise_scale + 0.5,
-                                       layer_idx * noise_scale + 222.0)
-                              ) + 1.0
-                    ) ;
+		       		// noi = (Value3D ( vec3(col * noise_scale + 0.5, 
+           //                             row * noise_scale + 0.5,
+           //                             layer_idx * noise_scale + 222.0)
+           //                    ) + 1.0
+           //          ) ;
 
 
+              noi_minor = (SimplexPerlin3D ( vec3(col * noise_scale + 0.5, 
+                        row * noise_scale + 0.5,
+                        layer_idx * noise_scale + 222.0)
+                              ) * noise_scale
+                  ) ;
+
+              noi = (Value3D ( vec3(col * noise_scale + 123.0, 
+                        row * noise_scale - 345.0,
+                        layer_idx * noise_scale + 222.0)
+                              ) + noi_minor
+                  ) ;
 // ------------------------------------------------------------------------------------------------------
 //                      Jitter
 // ------------------------------------------------------------------------------------------------------                      
                        
 
-              // IF Based on noi being Value3d
-       				if ((noi * 626) < frequency)
+              // IF Based on noi being Value3d( 626)
+       				if ((noi * noi_minor) < frequency*10.0)
        			    {			
        	          max_jitter = cell_size*0.5;
+
                   // jitter_s = steppedFBM(noi * (1183*col),jitter_scale+layer_idx, -max_jitter, max_jitter,0.5,1.0);
                   // jitter_t = steppedFBM(noi * (999*row),jitter_scale+layer_idx, -max_jitter, max_jitter,0.5,1.0) ;
-                  jitter_s = udnVor(noi * (1183),jitter_scale+layer_idx, -max_jitter, max_jitter,0.5,1.0);
-                  jitter_t = udnVor(noi * (999),jitter_scale+layer_idx, -max_jitter, max_jitter,0.5,1.0) ;
+                  jitter_s = udnVor(noi * (1183*layer_idx),(jitter_scale+layer_idx)*layer_idx, -max_jitter, max_jitter,0.5,1.0);
+                  jitter_t = udnVor(noi * (999*layer_idx),(jitter_scale+layer_idx)*(layer_idx+1.0), -max_jitter, max_jitter,0.5,1.0) ;
                  
 // ------------------------------------------------------------------------------------------------------
 //                      Cell Centre
@@ -354,7 +369,9 @@ vec4 JK_texScatter(
                        
      					    float x = udn(rel_s,1.0,rel_s,0.0);
      					    float y = udn(rel_t,1.0,rel_t,0.0);
-     					    float rad = radians(udnVor(noi * 777,noise_scale/2.0, rot_min, rot_max,0.5,1.0));
+     					    float rad = radians(udnVor( (noi * 777) * layer_idx,noise_scale*layer_idx, rot_min, rot_max,0.5,8.0));
+                 // float remap(float value, float oldMin, float oldMax, float newMin, float newMax, float multiplier);
+                  rad = remap(rad,0.0,1.0,-1.0,1.0,1.0);
      					    float ox = (col * cell_size) + half_cell;
                   float oy = (row * cell_size) + half_cell;
      					    tmps = ((x) - (ox)) * cos(rad) - ((y) - (oy)) * sin(rad) + (ox);
@@ -382,8 +399,8 @@ vec4 JK_texScatter(
        						if (inBounds == 1.0)
                     {
                       // calculate texture coordinates
-                      ss = (tmps - sMax) * scale;
-                      tt = (tmpt - tMax) * scale;
+                      ss = ( (tmps - sMax) * scale ) ;
+                      tt = ( (tmpt - tMax) * scale ) ;
                       // UVs for each cell
                       vec2 n_uv = vec2(ss,tt);
 
@@ -474,7 +491,7 @@ vec4 JK_texScatter(
                           layer_color_B.a = clamp(layer_color_B.a,0.0,1.0);
 
 
-                          layer_color_comb = mix(layer_color_B,layer_color,steppedFBM(noi * 1234,6.0,0.0,1.0,textureB_weight,0.0));
+                          layer_color_comb = mix(layer_color_B,layer_color,udnVor(noi * 1234,6.0,0.0,1.0,textureB_weight,0.0));
                           layer_color_comb_C = layer_color_comb;
                                  
                         }
@@ -515,7 +532,7 @@ vec4 JK_texScatter(
                           layer_color_C.a *= radialFaderC;
                           layer_color_C.a = clamp(layer_color_C.a,0.0,1.0);
 
-                          layer_color_comb_B = mix(layer_color_C,layer_color_comb,steppedFBM(noi * 2345,6.0,0.0,1.0,textureC_weight,0.0));
+                          layer_color_comb_B = mix(layer_color_C,layer_color_comb,udnVor(noi * 2345,6.0,0.0,1.0,textureC_weight,0.0));
                           layer_color_comb_C = layer_color_comb_B;
                         }
 
@@ -555,7 +572,7 @@ vec4 JK_texScatter(
                           layer_color_D.a *= radialFaderD;
                           layer_color_D.a = clamp(layer_color_D.a,0.0,1.0);
 
-                          layer_color_comb_C = mix(layer_color_D,layer_color_comb_B,steppedFBM(noi * 3456,6.0,0.0,1.0,textureD_weight,0.0));
+                          layer_color_comb_C = mix(layer_color_D,layer_color_comb_B,udnVor(noi * 3456,6.0,0.0,1.0,textureD_weight,0.0));
                         }
                       
                            
@@ -566,9 +583,9 @@ vec4 JK_texScatter(
                         layer_color_comb_C = mriRgb2Hsv(layer_color_comb_C);
                         // per cell hsv shift
                         // R = H, G = S, B = V, A = A
-                        layer_color_comb_C.r += steppedFBM(noi * 1234,HSVSeed+(HSVSeed/2.0),A_minH,A_maxH,0.5,1.0);                                       
-                        layer_color_comb_C.g *= steppedFBM(noi * 2345,HSVSeed,A_minS,A_maxS,0.5,1.0);
-                        layer_color_comb_C.b *= (steppedFBM(noi * 3456,HSVSeed-(HSVSeed/4.0),A_minV,A_maxV,0.5,1.0)) + ((LayerAttenuation*layer_idx)/layers);                               
+                        layer_color_comb_C.r += udnVor(noi * 1234,HSVSeed+(HSVSeed+2.0),A_minH,A_maxH,0.5,1.0);                                       
+                        layer_color_comb_C.g *= udnVor(noi * 2345,HSVSeed,A_minS,A_maxS,0.5,1.0);
+                        layer_color_comb_C.b *= (udnVor(noi * 3456,HSVSeed-(HSVSeed/4.0),A_minV,A_maxV,0.5,1.0)) + ((LayerAttenuation*layer_idx)/layers);                               
                         layer_color_comb_C = mriHsv2Rgb(layer_color_comb_C);
 
 
@@ -586,7 +603,7 @@ vec4 JK_texScatter(
        					        // Creating Alpha based on surface (alpha=0)
                         // There are some pre-mult issues here when blending layer_opac
                         // (the vec4 version of layer_alpha) with layer_alpha
-                        surface_opac = Comp_Default(surface_opac,layer_opac,layer_alpha);
+                        surface_opac = Comp_Screen(surface_opac,layer_opac,1.0);
           
           
 

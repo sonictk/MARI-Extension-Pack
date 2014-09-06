@@ -2,7 +2,7 @@
 
 <Node>
     <ID>Texture Scatter UV</ID>
-    <DefaultName>Texture Scatter 2D</DefaultName>
+    <DefaultName>Texture Scatter 2D BETA</DefaultName>
     <Category>Environment/Custom/</Category>
     <Cost>0.99</Cost>
     <CostDescription>Heavy calculations and texture reads do not keep live</CostDescription>
@@ -14,14 +14,15 @@
         <!--===============================================================================================================-->
         <Attribute Name="Layers" PrettyName="Layers" Group="Density" Type="double" Min="1" Max="15">2</Attribute>
         <Attribute Name="Frequency" PrettyName="Density" Group="Density" Type="double" Min="0" Max="1000">500</Attribute>
-         <!--===============================================================================================================-->   
+        <Attribute Name="FrequencyMult" PrettyName="Density Mult" Group="Density" Type="double" Min="0.01" Max="10">1</Attribute>
+        <!--===============================================================================================================-->   
         <Attribute Name="scene" PrettyName="Scene Size" Group="Scale" Type="int">1</Attribute>
         <Attribute Name="Scale" PrettyName="Scale" Group="Scale" Type="double" Min="0.001" Max="100">40</Attribute>
-        <Attribute Name="NoiseScale" PrettyName="NoiseScale" Group="Scale" Type="double" Min="0.001" Max="1000">200</Attribute>
+        <Attribute Name="NoiseScale" PrettyName="NoiseScale" Group="Scale" Type="double" Min="1.0" Max="1000">200</Attribute>
         <Attribute Name="jitterScale" PrettyName="JitterScale" Group="Scale" Type="double" Min="0" Max="1000">200</Attribute>
         <!--===============================================================================================================-->
-        <Attribute Name="rot_min" PrettyName="Min Rotation" Group="Rotation" Type="double" Min="-360" Max="360">-300</Attribute>
-        <Attribute Name="rot_max" PrettyName="Max Rotation" Group="Rotation" Type="double" Min="-360" Max="360">300</Attribute>
+        <Attribute Name="rot_min" PrettyName="Min Rotation" Group="Rotation" Type="double" Min="-360" Max="360">-360</Attribute>
+        <Attribute Name="rot_max" PrettyName="Max Rotation" Group="Rotation" Type="double" Min="-360" Max="360">180</Attribute>
         <!--===============================================================================================================-->
         <Attribute Name="TextureCount" PrettyName="Texture Slots" Group="Texture Count" Type="int" Min="1" Max="4">1</Attribute>
         <Attribute Name="BlendMode" PrettyName="Texture Blend Mode" Group="Texture Count" Type="stringlist">Over,Over,Add,Screen,Multiply,Soft Light, Hard Light, Hard Mix,Overlay</Attribute>
@@ -40,7 +41,7 @@
         <Attribute Name="MapA" PrettyName="MapA" Group="Texture Map A" Type="image" GenerateMipMaps="true"></Attribute>
         <Attribute Name="Invert_A" PrettyName="Invert Map" Group="Texture Map A" Type="bool" Min="false" Max="true">false</Attribute>
         <Attribute Name="radialFadeA" PrettyName="Radial Fade" Group="Texture Map A" Type="double" Min="0" Max="1">0</Attribute>  
-        <Attribute Name="softnessA" PrettyName="Softness" Group="Texture Map A" Type="double" Min="0" Max="1">0</Attribute>  
+        <Attribute Name="softnessA" PrettyName="Softness" Group="Texture Map A" Type="double" Min="0" Max="5">0</Attribute>  
         <!--===============================================================================================================-->
         <Attribute Name="MapB_weight" PrettyName="Importance" Group="Texture Map B" Type="double" Min="0" Max="1">0.25</Attribute>
         <Attribute Name="MapB_Alpha" PrettyName="Alpha" Group="Texture Map B" Type="stringlist">From Map,From Map,Alpha is Luminance,Alpha is Inverse Luminance</Attribute>
@@ -54,14 +55,14 @@
         <Attribute Name="MapC" PrettyName="MapC" Group="Texture Map C" Type="image" GenerateMipMaps="true"></Attribute>
         <Attribute Name="Invert_C" PrettyName="Invert Map" Group="Texture Map C" Type="bool" Min="false" Max="true">false</Attribute>
         <Attribute Name="radialFadeC" PrettyName="Radial Fade" Group="Texture Map C" Type="double" Min="0" Max="1">0</Attribute>  
-        <Attribute Name="softnessC" PrettyName="Softness" Group="Texture Map C" Type="double" Min="0" Max="1">0</Attribute>  
+        <Attribute Name="softnessC" PrettyName="Softness" Group="Texture Map C" Type="double" Min="0" Max="5">0</Attribute>  
         <!--===============================================================================================================-->
         <Attribute Name="MapD_weight" PrettyName="Importance" Group="Texture Map D" Type="double" Min="0" Max="1">0.25</Attribute>
         <Attribute Name="MapD_Alpha" PrettyName="Alpha" Group="Texture Map D" Type="stringlist">From Map,From Map,Alpha is Luminance,Alpha is Inverse Luminance</Attribute>
         <Attribute Name="MapD" PrettyName="MapD" Group="Texture Map D" Type="image" GenerateMipMaps="true"></Attribute>
         <Attribute Name="Invert_D" PrettyName="Invert Map" Group="Texture Map D" Type="bool" Min="false" Max="true">false</Attribute>
         <Attribute Name="radialFadeD" PrettyName="Radial Fade" Group="Texture Map D" Type="double" Min="0" Max="1">0</Attribute>  
-        <Attribute Name="softnessD" PrettyName="Softness" Group="Texture Map D" Type="double" Min="0" Max="1">0</Attribute>  
+        <Attribute Name="softnessD" PrettyName="Softness" Group="Texture Map D" Type="double" Min="0" Max="5">0</Attribute>  
         <!--===============================================================================================================-->
     </Attributes>
   <Contexts>
@@ -107,13 +108,15 @@
                 // Default Slider goes from 0.0 (soft centre, transparent edges) to 1.0.0 (solid).
                 // 0.0 to 1.0 Values are not enough of a multiplier so I am adding +1.0
                 // Slider Values are inverted so that it goes correctly from 0 to 1.
-                float softnessA = ( (1.0-$softnessA) + 1.0);
-                float softnessB = ( (1.0-$softnessB) + 1.0);
-                float softnessC = ( (1.0-$softnessC) + 1.0);
-                float softnessD = ( (1.0-$softnessD) + 1.0);
+                float softnessA = ( (1.0-$softnessA) + 5.0);
+                float softnessB = ( (1.0-$softnessB) + 5.0);
+                float softnessC = ( (1.0-$softnessC) + 5.0);
+                float softnessD = ( (1.0-$softnessD) + 5.0);
+
+                float Frequency = ($Frequency*$FrequencyMult) * ($NoiseScale/1000);
                 
 
-                Output = JK_texScatter(UV,Pos,scale,$Frequency,$Layers,$NoiseScale,$jitterScale,$rot_min,$rot_max,$TextureCount,$BlendMode,$HSVSeed,$LayerAtten,$A_minH,$A_maxH,$A_minS,$A_maxS,$A_minV,$A_maxV,clamp,$MapA,invertA,radialFadeA,softnessA,$MapA_Alpha,$MapB,$MapB_weight,invertB,radialFadeB,softnessB,$MapB_Alpha,$MapC,$MapC_weight,invertC,radialFadeC,softnessC,$MapC_Alpha,$MapD,$MapD_weight,invertD,radialFadeD,softnessD,$MapD_Alpha);
+                Output = JK_texScatter(UV,Pos,scale,Frequency,$Layers,$NoiseScale,$jitterScale,$rot_min,$rot_max,$TextureCount,$BlendMode,$HSVSeed,$LayerAtten,$A_minH,$A_maxH,$A_minS,$A_maxS,$A_minV,$A_maxV,clamp,$MapA,invertA,radialFadeA,softnessA,$MapA_Alpha,$MapB,$MapB_weight,invertB,radialFadeB,softnessB,$MapB_Alpha,$MapC,$MapC_weight,invertC,radialFadeC,softnessC,$MapC_Alpha,$MapD,$MapD_weight,invertD,radialFadeD,softnessD,$MapD_Alpha);
 
 
                 ]]></Body>
