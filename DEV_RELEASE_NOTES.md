@@ -16,7 +16,9 @@ Adjustment layer that gives a visual warning when illegal albedo values are dete
 - Posterize
 Simple Posterize adjustment implementation, specifying how many color/value steps you want
 
-
+Bugfixes:
+-----------
+- Legacy Cloud was not behaving like Mari Cloud
 
 Release Notes for Shader/Nodepack 1.50
 =====================================================================================
