@@ -98,9 +98,9 @@
             </Shader>
             <Shader>
                 <Body><![CDATA[
-
+                float size = $Size;
                 // compensate for scene size by applying eponential growth
-                float size_pow = (pow(10000.0,$Size*$Size)-1.0) + 0.0001;
+                float size_pow = (pow(10000.0,size*size)-1.0) + 0.0001;
 
                 // 3d space surface position
                 // build the needed vector attributes for position transform, offset max growths exponentially
@@ -123,13 +123,13 @@
                 P = mix(P,vec3(InputScaleUV,1.0),float($uv));
 
                 // noise variables
-                float noise_val = 0.4;
-                float sharpness = log2(2.0 + 99.0 * $Roughness) / log2(100.0);
+                float noise_val = 0.0;
+                float sharpness = log2(1.0+99.0*$Roughness)/log2(100.0);
 
                 // noise multi loop
                 for(int i=0;i<10;i++)
                 {
-                   vec3 scaled_seed = pow(1.0,float(i)) * P / size_pow;
+                   vec3 scaled_seed = pow(2.0,float(i)) * P / size_pow;
                    noise_val += noise(scaled_seed) / pow(5.0 - 4.0 * sharpness,float(i));
                 }
 
