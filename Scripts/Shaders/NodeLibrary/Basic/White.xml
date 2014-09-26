@@ -1,0 +1,21 @@
+<Node>
+  <ID>constant_white</ID>
+  <DefaultName>White Constant</DefaultName>
+  <Category>Basic/</Category>
+  <Cost>0.001</Cost>
+  <CostDescription>Trivial operation</CostDescription>
+  <Attributes>
+  </Attributes>
+  <Contexts>
+      <Context Type="GLSL">
+        <Shader>
+           <Body><![CDATA[
+                Output = vec4(1.0,1.0,1.0,1.0);
+           ]]>
+           </Body>
+        </Shader>
+      </Context>
+  </Contexts>
+</Node>
+
+    

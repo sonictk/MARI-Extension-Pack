@@ -16,6 +16,11 @@ Adjustment layer that gives a visual warning when illegal albedo values are dete
 - Posterize
 Simple Posterize adjustment implementation, specifying how many color/value steps you want
 
+- Constant Black/White/Grey
+Ever realized how many times you set a constant to black, white or grey ? 
+If the answer is : "A lot" then this simple addition of the 3 preconfigured constants will come in handy.
+
+
 Bugfixes:
 -----------
 - Legacy Cloud was not behaving like Mari Cloud
