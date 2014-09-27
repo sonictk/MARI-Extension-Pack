@@ -34,32 +34,37 @@
         <Attribute Name="A_minV" PrettyName="Min Val" Group="Texture HSV" Type="double" Min="0" Max="2">1</Attribute>
         <Attribute Name="A_maxV" PrettyName="Max Val" Group="Texture HSV" Type="double" Min="0" Max="2">1</Attribute>  
         <Attribute Name="Clamp" PrettyName="Clamp" Group="Texture HSV" Type="bool" Min="false" Max="true">true</Attribute>
+        <Attribute Name="ValOffset" PrettyName="Value Offset" Group="Texture HSV" Type="double" Min="-1" Max="1">0</Attribute>
         <Attribute Name="LayerAtten" PrettyName="Layer Attenuation" Group="Texture HSV" Type="double" Min="-1" Max="1">0</Attribute>
         <Attribute Name="HSVSeed" PrettyName="HSV Seed" Group="Texture HSV" Type="double" Min="1" Max="1000">500</Attribute>
         <!--===============================================================================================================--> 
+        <Attribute Name="HSVMixA" PrettyName="HSV Shift Mix" Group="Texture Map A" Type="double" Min="0" Max="1">1</Attribute>      
         <Attribute Name="MapA_Alpha" PrettyName="Alpha" Group="Texture Map A" Type="stringlist">From Map,From Map,Alpha is Luminance,Alpha is Inverse Luminance</Attribute>
-        <Attribute Name="MapA" PrettyName="MapA" Group="Texture Map A" Type="image" GenerateMipMaps="true"></Attribute>
+        <Attribute Name="MapA" PrettyName="MapA" Group="Texture Map A" Type="image" GenerateMipMaps="false"></Attribute>
         <Attribute Name="Invert_A" PrettyName="Invert Map" Group="Texture Map A" Type="bool" Min="false" Max="true">false</Attribute>
         <Attribute Name="radialFadeA" PrettyName="Radial Fade" Group="Texture Map A" Type="double" Min="0" Max="1">0</Attribute>  
         <Attribute Name="softnessA" PrettyName="Softness" Group="Texture Map A" Type="double" Min="0" Max="5">0</Attribute>  
         <!--===============================================================================================================-->
         <Attribute Name="MapB_weight" PrettyName="Importance" Group="Texture Map B" Type="double" Min="0" Max="1">0.25</Attribute>
+        <Attribute Name="HSVMixB" PrettyName="HSV Shift Mix" Group="Texture Map B" Type="double" Min="0" Max="1">1</Attribute>      
         <Attribute Name="MapB_Alpha" PrettyName="Alpha" Group="Texture Map B" Type="stringlist">From Map,From Map,Alpha is Luminance,Alpha is Inverse Luminance</Attribute>
-        <Attribute Name="MapB" PrettyName="MapB" Group="Texture Map B" Type="image" GenerateMipMaps="true"></Attribute>
+        <Attribute Name="MapB" PrettyName="MapB" Group="Texture Map B" Type="image" GenerateMipMaps="false"></Attribute>
         <Attribute Name="Invert_B" PrettyName="Invert Map" Group="Texture Map B" Type="bool" Min="false" Max="true">false</Attribute>
         <Attribute Name="radialFadeB" PrettyName="Radial Fade" Group="Texture Map B" Type="double" Min="0" Max="1">0</Attribute>  
         <Attribute Name="softnessB" PrettyName="Softness" Group="Texture Map B" Type="double" Min="0" Max="1">0</Attribute>  
         <!--===============================================================================================================-->
         <Attribute Name="MapC_weight" PrettyName="Importance" Group="Texture Map C" Type="double" Min="0" Max="1">0.25</Attribute>
+        <Attribute Name="HSVMixC" PrettyName="HSV Shift Mix" Group="Texture Map C" Type="double" Min="0" Max="1">1</Attribute>      
         <Attribute Name="MapC_Alpha" PrettyName="Alpha" Group="Texture Map C" Type="stringlist">From Map,From Map,Alpha is Luminance,Alpha is Inverse Luminance</Attribute>
-        <Attribute Name="MapC" PrettyName="MapC" Group="Texture Map C" Type="image" GenerateMipMaps="true"></Attribute>
+        <Attribute Name="MapC" PrettyName="MapC" Group="Texture Map C" Type="image" GenerateMipMaps="false"></Attribute>
         <Attribute Name="Invert_C" PrettyName="Invert Map" Group="Texture Map C" Type="bool" Min="false" Max="true">false</Attribute>
         <Attribute Name="radialFadeC" PrettyName="Radial Fade" Group="Texture Map C" Type="double" Min="0" Max="1">0</Attribute>  
         <Attribute Name="softnessC" PrettyName="Softness" Group="Texture Map C" Type="double" Min="0" Max="5">0</Attribute>  
         <!--===============================================================================================================-->
         <Attribute Name="MapD_weight" PrettyName="Importance" Group="Texture Map D" Type="double" Min="0" Max="1">0.25</Attribute>
+        <Attribute Name="HSVMixD" PrettyName="HSV Shift Mix" Group="Texture Map D" Type="double" Min="0" Max="1">1</Attribute>      
         <Attribute Name="MapD_Alpha" PrettyName="Alpha" Group="Texture Map D" Type="stringlist">From Map,From Map,Alpha is Luminance,Alpha is Inverse Luminance</Attribute>
-        <Attribute Name="MapD" PrettyName="MapD" Group="Texture Map D" Type="image" GenerateMipMaps="true"></Attribute>
+        <Attribute Name="MapD" PrettyName="MapD" Group="Texture Map D" Type="image" GenerateMipMaps="false"></Attribute>
         <Attribute Name="Invert_D" PrettyName="Invert Map" Group="Texture Map D" Type="bool" Min="false" Max="true">false</Attribute>
         <Attribute Name="radialFadeD" PrettyName="Radial Fade" Group="Texture Map D" Type="double" Min="0" Max="1">0</Attribute>  
         <Attribute Name="softnessD" PrettyName="Softness" Group="Texture Map D" Type="double" Min="0" Max="5">0</Attribute>  
@@ -116,7 +121,7 @@
                 float Frequency = ($Frequency*$FrequencyMult) * ($NoiseScale/1000);
                 
 
-                Output = JK_texScatter(UV,Pos,scale,Frequency,$Layers,$NoiseScale,$jitterScale,$rot_min,$rot_max,$TextureCount,$BlendMode,$HSVSeed,$LayerAtten,$A_minH,$A_maxH,$A_minS,$A_maxS,$A_minV,$A_maxV,clamp,$MapA,invertA,radialFadeA,softnessA,$MapA_Alpha,$MapB,$MapB_weight,invertB,radialFadeB,softnessB,$MapB_Alpha,$MapC,$MapC_weight,invertC,radialFadeC,softnessC,$MapC_Alpha,$MapD,$MapD_weight,invertD,radialFadeD,softnessD,$MapD_Alpha);
+                Output = JK_texScatter(UV,Pos,scale,Frequency,$Layers,$NoiseScale,$jitterScale,$rot_min,$rot_max,$TextureCount,$BlendMode,$HSVSeed,$ValOffset,$LayerAtten,$A_minH,$A_maxH,$A_minS,$A_maxS,$A_minV,$A_maxV,$HSVMixA,$HSVMixB,$HSVMixC,$HSVMixD,clamp,$MapA,invertA,radialFadeA,softnessA,$MapA_Alpha,$MapB,$MapB_weight,invertB,radialFadeB,softnessB,$MapB_Alpha,$MapC,$MapC_weight,invertC,radialFadeC,softnessC,$MapC_Alpha,$MapD,$MapD_weight,invertD,radialFadeD,softnessD,$MapD_Alpha);
 
 
                 ]]></Body>
