@@ -177,6 +177,7 @@ vec4 JK_texScatter(
           float scale,
           float frequency,
           float layers,
+          float forceTile,
           float noise_scale,
           float jitter_scale,
           float rot_min,
@@ -256,9 +257,12 @@ vec4 JK_texScatter(
 
 
 
+
 // ------------------------------------------------------------------------------------------------------
 //                      Assigned Variables
 // ------------------------------------------------------------------------------------------------------                      
+  int tmpscale = int(scale);
+  scale = mix(scale,float(tmpscale),forceTile); 
                        
   float s = UV.x;
   float t = UV.y;
@@ -592,7 +596,7 @@ vec4 JK_texScatter(
 
                           _tmpmix = udnVor(noi * 3456,6.0,0.0,1.0,textureD_weight,0.0);
 
-                          
+
                           // the following is used to determine the HSV Shift Amount to be mixed into TextureC
                           HSSVFinalMix = mix(HSVMixD,HSSVFinalMix,_tmpmix);
 

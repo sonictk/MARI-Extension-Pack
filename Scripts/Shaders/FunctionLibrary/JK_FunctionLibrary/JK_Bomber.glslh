@@ -5,6 +5,7 @@ vec4 JK_texScatter(
 					float scale,
 					float frequency,
 					float layers,
+					float forceTile,
 					float noise_scale,
 					float jitter_scale,
 					float rot_min,
