@@ -1,7 +1,7 @@
 <Node>
   <ID>constant_black</ID>
   <DefaultName>Black Constant</DefaultName>
-  <Category>Color/</Category>
+  <Category>Basic/</Category>
   <Cost>0.001</Cost>
   <CostDescription>Trivial operation</CostDescription>
   <Attributes>
