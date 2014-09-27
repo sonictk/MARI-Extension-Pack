@@ -8,22 +8,30 @@ TBA
 Added Features:
 -----------
 - VoronoiPopcorn
-A complex procedural for creating veins, crumbled paper looks etc.
+A complex procedural for creating veins, cracks, crumbled paper looks etc.
 
 - Illegal Albedo Warning
-Adjustment layer that gives a visual warning when illegal albedo values are detected
+Adjustment layer that gives a visual warning when illegal albedo values are detected.
 
 - Posterize
 Simple Posterize adjustment implementation, specifying how many color/value steps you want
 
-- Constant Black/White/Grey
-Ever realized how many times you set a constant to black, white or grey ? 
+- Black/White/Grey Constants
+Ever realized how many times you create a constant, then set it to black, white or grey ? 
 If the answer is : "A lot" then this simple addition of the 3 preconfigured constants will come in handy.
+Press TAB and type !
 
 
 Bugfixes:
 -----------
-- Legacy Cloud was not behaving like Mari Cloud
+- Legacy Cloud was broken and not behaving like Mari Cloud
+
+
+Known issues:
+-----------
+- Voronoi Popcorn is a rather expensive procedural. We recommend converting it to paintable.
+
+
 
 Release Notes for Shader/Nodepack 1.50
 =====================================================================================
