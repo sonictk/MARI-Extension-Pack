@@ -25,6 +25,7 @@ Press TAB and type !
 Bugfixes:
 -----------
 - Legacy Cloud was broken and not behaving like Mari Cloud
+- svn or git files in the directories could cause the nodepack to not load properly
 
 
 Known issues:

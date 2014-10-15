@@ -114,7 +114,8 @@ def loadLibraries():
     libDict = {}
     for path, subdirs, files in os.walk(default_lib_path):
         for name in files:
-            libDict[name] = path
+            if not name.startswith("."):
+                libDict[name] = path
 
     # find the library paths for the libraries
     for lib in libDict:
