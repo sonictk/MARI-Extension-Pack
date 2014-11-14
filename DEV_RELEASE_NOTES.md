@@ -10,6 +10,11 @@ Added Features:
 - VoronoiPopcorn
 A complex procedural for creating veins, cracks, crumbled paper looks etc.
 
+- Axis Projection
+Axis Projection is similar to a Triplanar Projection but with a lot more control over
+rotation of projection in space (for objects that are not perfectly aligned in XYZ)
+and isolation of each +/- axis
+
 - Illegal Albedo Warning
 Adjustment layer that gives a visual warning when illegal albedo values are detected.
 
