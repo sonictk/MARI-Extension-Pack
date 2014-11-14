@@ -15,8 +15,11 @@ Axis Projection is similar to a Triplanar Projection but with a lot more control
 rotation of projection in space (for objects that are not perfectly aligned in XYZ)
 and isolation of each +/- axis
 
+- Backface Mask
+An easy way to isolate interior faces of objects for example cloth lining.
+
 - Illegal Albedo Warning
-Adjustment layer that gives a visual warning when illegal albedo values are detected.
+Adjustment layer that gives a visual warning when values outisde a custom range are detected.
 
 - Posterize
 Simple Posterize adjustment implementation, specifying how many color/value steps you want
