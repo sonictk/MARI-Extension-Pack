@@ -29,6 +29,10 @@ Ever realized how many times you create a constant, then set it to black, white 
 If the answer is : "A lot" then this simple addition of the 3 preconfigured constants will come in handy.
 Press TAB and type !
 
+Feature Improvements:
+-----------
+- "Enhance Selection" Mode in Color Range to Mask was improved
+- Photoshop Style Selection Preview in Color Range to Mask was added
 
 Bugfixes:
 -----------

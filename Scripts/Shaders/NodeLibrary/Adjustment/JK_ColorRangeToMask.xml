@@ -54,7 +54,7 @@
     <Attributes>
         <!--===============================================================================================================-->
         <Attribute Name="preview" PrettyName="Show Background" Group="Preview" Type="bool" Min="true" Max="false">true</Attribute>
-        <Attribute Name="wipe" Group="Preview" Type="float" Min="0.0" Max="1.0">0.5</Attribute>
+        <Attribute Name="wipe" Group="Preview" Type="float" Min="0.0" Max="1.0">1.0</Attribute>
         <Attribute Name="inverseBuffer" PrettyName="Reverse Wipe" Group="Preview" Type="bool" Min="true" Max="false">false</Attribute>
         <Attribute Name="SelectionPreview" PrettyName="Selection Preview" Group="Preview" Type="stringlist">Stencil,Grayscale,Stencil,Black Matte,White Matte</Attribute>
         <!--===============================================================================================================-->
