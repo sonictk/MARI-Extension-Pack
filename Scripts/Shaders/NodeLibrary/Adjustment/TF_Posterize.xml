@@ -7,7 +7,7 @@
 == Description: A simple posterize filter
 ================================================================================
 == Author: TheFoundry
-== Taken from \Mari2.6v1\Bundle\Media\Examples\Nodes\
+== Taken & modified from \Mari2.6v1\Bundle\Media\Examples\Nodes\
 == Web: www.thefoundry.co.uk
 ================================================================================
 == Nodepack Implememtation: Jens Kafitz | Mari Ideascale
@@ -58,7 +58,9 @@
         <Input Name="Input"></Input>
     </Inputs>
     <Attributes>
-        <Attribute Name="Colors" Group="" Type="double" Min="0.0" Max="256">16</Attribute>
+        <Attribute Name="Colors" PrettyName="Color Bands" Group="" Type="double" Min="0.0" Max="256">16</Attribute>
+        <Attribute Name="Desat" PrettyName="Desaturate Base" Group="" Type="bool" Min="true" Max="false">false</Attribute>
+
     </Attributes>
   <Contexts>
     <Context Type="GLSL">
@@ -67,7 +69,24 @@
                 <Input Name="Input"><Default>vec4(1,1,1,1)</Default></Input>
             </Inputs>
             <Body><![CDATA[
-            Output.rgb = round($Colors * #Input.rgb) / $Colors;
+               float a, b, c, d, e, f, g, h, i;
+    vec3 wt = vec3(0.2126, 0.7152, 0.0722);
+    a = wt.r;
+    b = wt.r;
+    c = wt.r;
+    d = wt.g;
+    e = wt.g;
+    f = wt.g;
+    g = wt.b;
+    h = wt.b;
+    i = wt.b;
+    vec4 Input = mat4(a,   b,   c,   0.0,
+                  d,   e,   f,   0.0,
+                  g,   h,   i,   0.0,
+                  0.0, 0.0, 0.0, 1.0) * #Input;
+    Input = mix(#Input,Input,float($Desat));
+
+            Output.rgb = round($Colors * Input.rgb) / $Colors;
             Output.a = #Input.a;
             ]]></Body>
         </Shader>
