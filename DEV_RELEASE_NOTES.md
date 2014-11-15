@@ -31,7 +31,8 @@ Press TAB and type !
 
 Feature Improvements:
 -----------
-- "Color Range to Mask" now has a basic Grade Module for selected colors
+- "Color Range to Mask" now has a basic Grade Module for selected colors. Due to the size + expense 
+  of the node baking or caching is recommended in bigger layer stacks.
 - "Enhance Selection" Mode in Color Range to Mask was improved
 - Photoshop Style Selection Preview in Color Range to Mask was added
 
