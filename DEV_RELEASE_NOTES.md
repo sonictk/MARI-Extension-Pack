@@ -31,6 +31,7 @@ Press TAB and type !
 
 Feature Improvements:
 -----------
+- "Color Range to Mask" now has a basic Grade Module for selected colors
 - "Enhance Selection" Mode in Color Range to Mask was improved
 - Photoshop Style Selection Preview in Color Range to Mask was added
 
