@@ -44,6 +44,7 @@
         <Attribute Name="LayerAtten" PrettyName="Layer Attenuation" Group="Texture HSV" Type="double" Min="-1" Max="1">0</Attribute>
         <Attribute Name="HSVSeed" PrettyName="HSV Seed" Group="Texture HSV" Type="double" Min="1" Max="1000">500</Attribute>
         <!--===============================================================================================================--> 
+        <Attribute Name="TexSizeA" PrettyName="Scale" Group="Texture Map A" Type="double" Min="1" Max="10">10</Attribute>
         <Attribute Name="HSVMixA" PrettyName="HSV Shift Mix" Group="Texture Map A" Type="double" Min="0" Max="1">1</Attribute>      
         <Attribute Name="MapA_Alpha" PrettyName="Alpha" Group="Texture Map A" Type="stringlist">From Map,From Map,Alpha is Luminance,Alpha is Inverse Luminance</Attribute>
         <Attribute Name="MapA" PrettyName="MapA" Group="Texture Map A" Type="image" GenerateMipMaps="false"></Attribute>
@@ -52,6 +53,7 @@
         <Attribute Name="softnessA" PrettyName="Softness" Group="Texture Map A" Type="double" Min="0" Max="5">0</Attribute>  
         <!--===============================================================================================================-->
         <Attribute Name="MapB_weight" PrettyName="Importance" Group="Texture Map B" Type="double" Min="0" Max="1">0.25</Attribute>
+        <Attribute Name="TexSizeB" PrettyName="Scale" Group="Texture Map B" Type="double" Min="1" Max="10">10</Attribute>
         <Attribute Name="HSVMixB" PrettyName="HSV Shift Mix" Group="Texture Map B" Type="double" Min="0" Max="1">1</Attribute>      
         <Attribute Name="MapB_Alpha" PrettyName="Alpha" Group="Texture Map B" Type="stringlist">From Map,From Map,Alpha is Luminance,Alpha is Inverse Luminance</Attribute>
         <Attribute Name="MapB" PrettyName="MapB" Group="Texture Map B" Type="image" GenerateMipMaps="false"></Attribute>
@@ -60,6 +62,7 @@
         <Attribute Name="softnessB" PrettyName="Softness" Group="Texture Map B" Type="double" Min="0" Max="1">0</Attribute>  
         <!--===============================================================================================================-->
         <Attribute Name="MapC_weight" PrettyName="Importance" Group="Texture Map C" Type="double" Min="0" Max="1">0.25</Attribute>
+        <Attribute Name="TexSizeC" PrettyName="Scale" Group="Texture Map C" Type="double" Min="1" Max="10">10</Attribute>
         <Attribute Name="HSVMixC" PrettyName="HSV Shift Mix" Group="Texture Map C" Type="double" Min="0" Max="1">1</Attribute>      
         <Attribute Name="MapC_Alpha" PrettyName="Alpha" Group="Texture Map C" Type="stringlist">From Map,From Map,Alpha is Luminance,Alpha is Inverse Luminance</Attribute>
         <Attribute Name="MapC" PrettyName="MapC" Group="Texture Map C" Type="image" GenerateMipMaps="false"></Attribute>
@@ -68,6 +71,7 @@
         <Attribute Name="softnessC" PrettyName="Softness" Group="Texture Map C" Type="double" Min="0" Max="5">0</Attribute>  
         <!--===============================================================================================================-->
         <Attribute Name="MapD_weight" PrettyName="Importance" Group="Texture Map D" Type="double" Min="0" Max="1">0.25</Attribute>
+        <Attribute Name="TexSizeD" PrettyName="Scale" Group="Texture Map D" Type="double" Min="1" Max="10">10</Attribute>
         <Attribute Name="HSVMixD" PrettyName="HSV Shift Mix" Group="Texture Map D" Type="double" Min="0" Max="1">1</Attribute>      
         <Attribute Name="MapD_Alpha" PrettyName="Alpha" Group="Texture Map D" Type="stringlist">From Map,From Map,Alpha is Luminance,Alpha is Inverse Luminance</Attribute>
         <Attribute Name="MapD" PrettyName="MapD" Group="Texture Map D" Type="image" GenerateMipMaps="false"></Attribute>
@@ -132,6 +136,14 @@
                 float NoiseScaleC = $NoiseScaleC/scene ;
                 float NoiseScaleD = $NoiseScaleD/scene ;
 
+                // Inverting Scaling. Please note if user has the clever idea to put values outside the
+                // slider range in there this will clip the edges of the maps
+
+                float TexSizeA = 11 - $TexSizeA;
+                float TexSizeB = 11 - $TexSizeB;
+                float TexSizeC = 11 - $TexSizeC;
+                float TexSizeD = 11 - $TexSizeD;
+
                 float ScaleRnd = 1.0 - $ScaleRnd/4.0;
                 float ScaleRndWeight = ($ScaleRndWeight) + 1.0;
 
@@ -155,6 +167,10 @@
                                         $rot_max,
                                         $TextureCount,
                                         $BlendMode,
+                                        TexSizeA,
+                                        TexSizeB,
+                                        TexSizeC,
+                                        TexSizeD,
                                         $HSVSeed,
                                         $ValOffset,
                                         $LayerAtten,

@@ -1,9 +1,12 @@
 // TO DO:
 //
-// 
+// BUG: radialFader is only called once but without the Mapprescaling !
+//
+// -- NEW NOISE Controls broke Density !
 // -- clean up unused functions in header
 // -- clean up unsed variables
 // -- clean up code visually
+// -- do proper includes in glsh
 // -- add varying cell size (might not be possible ...)
 // - add 3d projection of cells
 // -- investigate excluding Value from HSV Mix
@@ -174,6 +177,10 @@ vec4 JK_texScatter(
                     float rot_max,
                     int textureCount,
                     int BlendMode,
+                    float MapASize,
+                    float MapBSize,
+                    float MapCSize,
+                    float MapDSize,
                     float HSVSeed,
                     float ValueOffset,
                     float LayerAttenuation,
@@ -241,10 +248,13 @@ vec4 JK_texScatter(
   float inBounds;
   float max_jitter;
   float offset;
-  // vec2 n_uv;
-
+  vec2 d;
+  float MixVal;
   float _tmpmix;
 
+
+
+// DELETE:
   float _floatPreview;
   vec3 _vec3Preview;
 
@@ -436,7 +446,7 @@ vec4 JK_texScatter(
                       // Depending on Mode set, Alphas are evaluated differently via Switches
                       // However Alphas are always multiplied by the radial fade in the end
 
-                      layer_color = texture(textureA,n_uv);
+                      layer_color = texture(textureA,n_uv*MapASize);
                       layer_color.rgb = mix(layer_color.rgb,vec3(1.0)-layer_color.rgb,invert_textureA);
 
                       // for use in all radial Fades for all textures
@@ -467,6 +477,18 @@ vec4 JK_texScatter(
                       // Radial Fade Texture A
                       float radialFaderA = remap(radialFade,0.0,radialFadeA,1.0,0.0,radialFade_SoftnessA);
                       layer_color.a *= radialFaderA;
+
+                      // Square Alpha Generation to cut off repeating elements due to per Map Scale Offset
+                       d = abs(((n_uv*MapASize)));
+                       d = pow(d,vec2(2000));
+                       MixVal = (d.x+d.y);
+                       MixVal = 1.0-MixVal;
+                       MixVal = float(MixVal>0.5)+MixVal*2.0;
+                       MixVal = clamp(MixVal,0.0,1.0);
+
+
+                      layer_color.a *= MixVal;
+
                       layer_color.a  = clamp(layer_color.a,0.0,1.0);
                       
 
@@ -481,7 +503,7 @@ vec4 JK_texScatter(
                   
                       if (textureCount > 1.0)
                         {
-                          layer_color_B = texture(textureB,n_uv);
+                          layer_color_B = texture(textureB,n_uv*MapBSize);
                           layer_color_B.rgb = mix(layer_color_B.rgb,vec3(1.0)-layer_color_B.rgb,invert_textureB);
 
 
@@ -509,6 +531,18 @@ vec4 JK_texScatter(
                           // Radial Fade Texture B
                           float radialFaderB = remap(radialFade,0.0,radialFadeB,1.0,0.0,radialFade_SoftnessB);
                           layer_color_B.a *= radialFaderB;
+                        
+
+                          // Square Alpha Generation to cut off repeating elements due to per Map Scale Offset
+                           d = abs(((n_uv*MapBSize)));
+                           d = pow(d,vec2(2000));
+                           MixVal = (d.x+d.y);
+                           MixVal = 1.0-MixVal;
+                           MixVal = float(MixVal>0.5)+MixVal*2.0;
+                           MixVal = clamp(MixVal,0.0,1.0);
+
+                          layer_color_B.a *= MixVal;
+
                           layer_color_B.a = clamp(layer_color_B.a,0.0,1.0);
 
                           _tmpmix = udnVor(noi * 1234,6.0,0.0,1.0,textureB_weight,0.0);
@@ -528,7 +562,7 @@ vec4 JK_texScatter(
                           
                       if (textureCount > 2.0)
                         {
-                          layer_color_C = texture(textureC,n_uv);
+                          layer_color_C = texture(textureC,n_uv*MapCSize);
                           layer_color_C.rgb = mix(layer_color_C.rgb,vec3(1.0)-layer_color_C.rgb,invert_textureC);
 
                           // Determine what Alpha is being used. 1) From loaded image 2) Luminance 3)Inv Luminance
@@ -555,6 +589,19 @@ vec4 JK_texScatter(
                           // Radial Fade Texture C
                           float radialFaderC = remap(radialFade,0.0,radialFadeC,1.0,0.0,radialFade_SoftnessC);
                           layer_color_C.a *= radialFaderC;
+
+
+                          // Square Alpha Generation to cut off repeating elements due to per Map Scale Offset
+                           d = abs(((n_uv*MapCSize)));
+                           d = pow(d,vec2(2000));
+                           MixVal = (d.x+d.y);
+                           MixVal = 1.0-MixVal;
+                           MixVal = float(MixVal>0.5)+MixVal*2.0;
+                           MixVal = clamp(MixVal,0.0,1.0);
+
+
+                          layer_color_C.a *= MixVal;
+
                           layer_color_C.a = clamp(layer_color_C.a,0.0,1.0);
 
                           _tmpmix = udnVor(noi * 2345,6.0,0.0,1.0,textureC_weight,0.0);
@@ -573,7 +620,7 @@ vec4 JK_texScatter(
                           
                       if (textureCount > 3.0)
                         {
-                          layer_color_D = texture(textureD,n_uv);
+                          layer_color_D = texture(textureD,n_uv*MapDSize);
                           layer_color_D.rgb = mix(layer_color_D.rgb,vec3(1.0)-layer_color_D.rgb,invert_textureD);
 
                           // Determine what Alpha is being used. 1) From loaded image 2) Luminance 3)Inv Luminance
@@ -600,6 +647,17 @@ vec4 JK_texScatter(
                           // Radial Fade Texture D
                           float radialFaderD = remap(radialFade,0.0,radialFadeD,1.0,0.0,radialFade_SoftnessD);
                           layer_color_D.a *= radialFaderD;
+
+                          // Square Alpha Generation to cut off repeating elements due to per Map Scale Offset
+                           d = abs(((n_uv*MapDSize)));
+                           d = pow(d,vec2(2000));
+                           MixVal = (d.x+d.y);
+                           MixVal = 1.0-MixVal;
+                           MixVal = float(MixVal>0.5)+MixVal*2.0;
+                           MixVal = clamp(MixVal,0.0,1.0);
+
+
+                          layer_color_D.a *= MixVal;
                           layer_color_D.a = clamp(layer_color_D.a,0.0,1.0);
 
                           _tmpmix = udnVor(noi * 3456,6.0,0.0,1.0,textureD_weight,0.0);
@@ -633,9 +691,9 @@ vec4 JK_texScatter(
                         
   
                         // Square Alpha Generation to cut off repeating elements due to Scale Randomization
-                        vec2 d = abs(((n_uv)*1.0));
-                        d = pow(d,vec2(2.0/0.001));
-                        float MixVal = (d.x+d.y);
+                        d = abs(((n_uv)));
+                        d = pow(d,vec2(2000));
+                        MixVal = (d.x+d.y);
                         MixVal = 1.0-MixVal;
                         MixVal = float(MixVal>0.5)+MixVal*2.0;
                         MixVal = clamp(MixVal,0.0,1.0);
