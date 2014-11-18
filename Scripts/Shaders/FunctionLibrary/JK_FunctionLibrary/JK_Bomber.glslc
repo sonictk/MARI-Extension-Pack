@@ -1,16 +1,19 @@
 // TO DO:
 //
-// BUG: radialFader is only called once but without the Mapprescaling !
+// BUG: radialFader is only called once but without the Mapprescaling, need to duplicate it!
 //
-// -- NEW NOISE Controls broke Density !
+// -- New Noise Controls broke Density + DensityGain. Seems to be the old problem with the value seeding
+// -- -> Check against previous commits if something else has changed with the Density
+// -- Some of the Noise_Scale Attributes aren't used
 // -- clean up unused functions in header
 // -- clean up unsed variables
-// -- clean up code visually
 // -- do proper includes in glsh
-// -- add varying cell size (might not be possible ...)
-// - add 3d projection of cells
 // -- investigate excluding Value from HSV Mix
-// -- solve RndScale Alpha
+// -- investigate excluding/Mixing RndScale (probably not, is overkill but if it's easy enough)
+
+
+// -- STUFF FOR SEPARATE 3D NODE --
+// - add 3d projection of cells
 //
 //   AS ADJUSTMENT LAYER/USING INCOMING DATA: 
 // - add painted distribution of cells. Sampling from incoming texture layers, then only using
