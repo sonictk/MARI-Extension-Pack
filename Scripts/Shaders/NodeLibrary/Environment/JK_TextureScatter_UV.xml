@@ -1,8 +1,7 @@
 
-
 <Node>
     <ID>Texture Scatter UV</ID>
-    <DefaultName>Texture Scatter 2D BETA</DefaultName>
+    <DefaultName>Texture Scatter 2D (TILE)</DefaultName>
     <Category>Environment/Custom/</Category>
     <Cost>0.99</Cost>
     <CostDescription>Heavy calculations and texture reads do not keep live</CostDescription>
@@ -20,18 +19,12 @@
         <Attribute Name="scene" PrettyName="Scene Size" Group="Scale" Type="int">100</Attribute>
         <Attribute Name="Scale" PrettyName="Scale" Group="Scale" Type="double" Min="0.001" Max="100">40</Attribute>
         <Attribute Name="ScaleRnd" PrettyName="ScaleRnd" Group="Scale" Type="double" Min="0.00" Max="1">0.1</Attribute>
-        <Attribute Name="ScaleRndWeight" PrettyName="% Original Scale" Group="Scale" Type="double" Min="0.00" Max="1">0.1</Attribute>      
+        <Attribute Name="ScaleRndWeight" PrettyName="% Original" Group="Scale" Type="double" Min="0.00" Max="1">0.1</Attribute>      
         <!--===============================================================================================================-->   
         <Attribute Name="NoiseScaleA" PrettyName="NoiseScaleA" Group="Randomization" Type="double" Min="0.0001" Max="1">0.0001</Attribute>
-        <Attribute Name="NoiseScaleB" PrettyName="NoiseScaleB" Group="Randomization" Type="double" Min="0.0001" Max="1">1</Attribute>
-        <Attribute Name="NoiseScaleC" PrettyName="NoiseScaleC" Group="Randomization" Type="double" Min="0.0001" Max="1">1</Attribute>
-        <Attribute Name="NoiseScaleD" PrettyName="NoiseScaleD" Group="Randomization" Type="double" Min="0.0001" Max="1">1</Attribute>
         <!--===============================================================================================================-->
         <Attribute Name="rot_min" PrettyName="Min Rotation" Group="Rotation" Type="double" Min="-360" Max="360">-360</Attribute>
         <Attribute Name="rot_max" PrettyName="Max Rotation" Group="Rotation" Type="double" Min="-360" Max="360">180</Attribute>
-        <!--===============================================================================================================-->
-        <Attribute Name="TextureCount" PrettyName="Texture Slots" Group="Texture Count" Type="int" Min="1" Max="4">1</Attribute>
-        <Attribute Name="BlendMode" PrettyName="Texture Blend Mode" Group="Texture Count" Type="stringlist">Over,Over,Add,Screen,Multiply,Soft Light, Hard Light, Hard Mix,Overlay</Attribute>
         <!--===============================================================================================================-->
         <Attribute Name="A_minH" PrettyName="Min Hue" Group="Texture HSV" Type="double" Min="-180" Max="180">0</Attribute>
         <Attribute Name="A_maxH" PrettyName="Max Hue" Group="Texture HSV" Type="double" Min="-180" Max="180">0</Attribute>
@@ -43,7 +36,9 @@
         <Attribute Name="ValOffset" PrettyName="Value Offset" Group="Texture HSV" Type="double" Min="-1" Max="1">0</Attribute>
         <Attribute Name="LayerAtten" PrettyName="Layer Attenuation" Group="Texture HSV" Type="double" Min="-1" Max="1">0</Attribute>
         <Attribute Name="HSVSeed" PrettyName="HSV Seed" Group="Texture HSV" Type="double" Min="1" Max="1000">500</Attribute>
+        <Attribute Name="BlendMode" PrettyName="Texture Blend Mode" Group="Texture HSV" Type="stringlist">Over,Over,Add,Screen,Multiply,Soft Light, Hard Light, Hard Mix,Overlay</Attribute>
         <!--===============================================================================================================--> 
+        <Attribute Name="MapA_weight" PrettyName="Importance" Group="Texture Map A" Type="double" Min="0" Max="1">1.0</Attribute>
         <Attribute Name="TexSizeA" PrettyName="Scale" Group="Texture Map A" Type="double" Min="1" Max="10">10</Attribute>
         <Attribute Name="HSVMixA" PrettyName="HSV Shift Mix" Group="Texture Map A" Type="double" Min="0" Max="1">1</Attribute>      
         <Attribute Name="MapA_Alpha" PrettyName="Alpha" Group="Texture Map A" Type="stringlist">From Map,From Map,Alpha is Luminance,Alpha is Inverse Luminance</Attribute>
@@ -52,6 +47,7 @@
         <Attribute Name="radialFadeA" PrettyName="Radial Fade" Group="Texture Map A" Type="double" Min="0" Max="1">0</Attribute>  
         <Attribute Name="softnessA" PrettyName="Softness" Group="Texture Map A" Type="double" Min="0" Max="5">0</Attribute>  
         <!--===============================================================================================================-->
+        <Attribute Name="UseMapB" PrettyName="Active" Group="Texture Map B" Type="bool" Min="false" Max="true">false</Attribute>
         <Attribute Name="MapB_weight" PrettyName="Importance" Group="Texture Map B" Type="double" Min="0" Max="1">0.25</Attribute>
         <Attribute Name="TexSizeB" PrettyName="Scale" Group="Texture Map B" Type="double" Min="1" Max="10">10</Attribute>
         <Attribute Name="HSVMixB" PrettyName="HSV Shift Mix" Group="Texture Map B" Type="double" Min="0" Max="1">1</Attribute>      
@@ -61,6 +57,7 @@
         <Attribute Name="radialFadeB" PrettyName="Radial Fade" Group="Texture Map B" Type="double" Min="0" Max="1">0</Attribute>  
         <Attribute Name="softnessB" PrettyName="Softness" Group="Texture Map B" Type="double" Min="0" Max="1">0</Attribute>  
         <!--===============================================================================================================-->
+        <Attribute Name="UseMapC" PrettyName="Active" Group="Texture Map C" Type="bool" Min="false" Max="true">false</Attribute>
         <Attribute Name="MapC_weight" PrettyName="Importance" Group="Texture Map C" Type="double" Min="0" Max="1">0.25</Attribute>
         <Attribute Name="TexSizeC" PrettyName="Scale" Group="Texture Map C" Type="double" Min="1" Max="10">10</Attribute>
         <Attribute Name="HSVMixC" PrettyName="HSV Shift Mix" Group="Texture Map C" Type="double" Min="0" Max="1">1</Attribute>      
@@ -70,6 +67,7 @@
         <Attribute Name="radialFadeC" PrettyName="Radial Fade" Group="Texture Map C" Type="double" Min="0" Max="1">0</Attribute>  
         <Attribute Name="softnessC" PrettyName="Softness" Group="Texture Map C" Type="double" Min="0" Max="5">0</Attribute>  
         <!--===============================================================================================================-->
+        <Attribute Name="UseMapD" PrettyName="Active" Group="Texture Map D" Type="bool" Min="false" Max="true">false</Attribute>
         <Attribute Name="MapD_weight" PrettyName="Importance" Group="Texture Map D" Type="double" Min="0" Max="1">0.25</Attribute>
         <Attribute Name="TexSizeD" PrettyName="Scale" Group="Texture Map D" Type="double" Min="1" Max="10">10</Attribute>
         <Attribute Name="HSVMixD" PrettyName="HSV Shift Mix" Group="Texture Map D" Type="double" Min="0" Max="1">1</Attribute>      
@@ -80,6 +78,14 @@
         <Attribute Name="softnessD" PrettyName="Softness" Group="Texture Map D" Type="double" Min="0" Max="5">0</Attribute>  
         <!--===============================================================================================================-->
     </Attributes>
+    <Groups>
+        <Group Name="Rotation" Expanded="false"></Group>
+        <Group Name="Texture HSV" Expanded="false"></Group>
+        <Group Name="Texture Map A" Expanded="false"></Group>
+        <Group Name="Texture Map B" Expanded="false"></Group>
+        <Group Name="Texture Map C" Expanded="false"></Group>
+        <Group Name="Texture Map D" Expanded="false"></Group>
+    </Groups>
   <Contexts>
         <Context Type="NodeGraphView">
             <Inputs>
@@ -130,11 +136,14 @@
                 float softnessD = ( (1.0-$softnessD) + 5.0);
 
                 float jitterScale = 5123.456;
+                // float jitterScale = 0.0;
 
                 float NoiseScaleA = $NoiseScaleA/scene ;
-                float NoiseScaleB = $NoiseScaleB/scene ;
-                float NoiseScaleC = $NoiseScaleC/scene ;
-                float NoiseScaleD = $NoiseScaleD/scene ;
+                // float NoiseScaleB = $NoiseScaleB/scene ;
+                // float NoiseScaleC = $NoiseScaleC/scene ;
+                // float NoiseScaleD = $NoiseScaleD/scene ;
+                //temp !
+                float NoiseScaleB,NoiseScaleC,NoiseScaleD;
 
                 // Inverting Scaling. Please note if user has the clever idea to put values outside the
                 // slider range in there this will clip the edges of the maps
@@ -148,6 +157,8 @@
                 float ScaleRndWeight = ($ScaleRndWeight) + 1.0;
 
                 float Frequency = ($Frequency*$FrequencyMult) * ($NoiseScaleA/1000);
+
+
                 
 
                 Output = JK_texScatter( UV,
@@ -165,7 +176,6 @@
                                         jitterScale,
                                         $rot_min,
                                         $rot_max,
-                                        $TextureCount,
                                         $BlendMode,
                                         TexSizeA,
                                         TexSizeB,
@@ -186,22 +196,26 @@
                                         $HSVMixD,
                                         clamp,
                                         $MapA,
+                                        $MapA_weight,
                                         invertA,
                                         radialFadeA,
                                         softnessA,
                                         $MapA_Alpha,
+                                        $UseMapB,
                                         $MapB,
                                         $MapB_weight,
                                         invertB,
                                         radialFadeB,
                                         softnessB,
                                         $MapB_Alpha,
+                                        $UseMapC,
                                         $MapC,
                                         $MapC_weight,
                                         invertC,
                                         radialFadeC,
                                         softnessC,
                                         $MapC_Alpha,
+                                        $UseMapD,
                                         $MapD,
                                         $MapD_weight,
                                         invertD,
