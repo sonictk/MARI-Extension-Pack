@@ -1,7 +1,6 @@
 
 vec4 JK_texScatter( 
 					vec2 UV,
-					vec3 POS,
 					float scale,
 					float ScaleRnd,
                     float ScaleRndWeight,
@@ -9,9 +8,6 @@ vec4 JK_texScatter(
 					float layers,
 					float forceTile,
 					float noise_scale_A,
-                    float noise_scale_B,
-                    float noise_scale_C,
-                    float noise_scale_D,
 					float jitter_scale,
 					float rot_min,
 					float rot_max,

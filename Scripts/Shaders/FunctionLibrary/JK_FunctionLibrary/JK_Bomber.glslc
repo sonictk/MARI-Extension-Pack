@@ -1,16 +1,11 @@
 // TO DO:
 //
-// BUG: radialFader is only called once but without the Mapprescaling, need to duplicate it!
-//
-// -- New Noise Controls broke Density + DensityGain. Seems to be the old problem with the value seeding
-// -- -> Check against previous commits if something else has changed with the Density
-// -- Some of the Noise_Scale Attributes aren't used
-// -- Add in MapA Importance for consistency (and to allow culling of cells)
+
+// Possibly replace radial Fade with Square falloff
 // -- clean up unused functions in header
 // -- clean up unsed variables
 // -- do proper includes in glsh
 // -- investigate excluding Value from HSV Mix
-// -- investigate excluding/Mixing RndScale (probably not, is overkill but if it's easy enough)
 
 
 // -- STUFF FOR SEPARATE 3D NODE --
@@ -147,7 +142,6 @@ float steppedFBM(float x,float scale,float lo,float hi, float threshold, float t
   float remap = rmfBm(x_3,5.0,1.0,1.0,1.0,0.5);
   remap = softThreshold(threshold,threshold_bound,remap);
   float output = (smoothstep(0.25, 0.75, (remap)) * ((hi) - (lo)) + (lo));
-  // float output = (remap * ((hi) - (lo)) + (lo));
   return output;
 }
 
@@ -165,7 +159,6 @@ float steppedFBM(float x,float scale,float lo,float hi, float threshold, float t
 vec4 JK_texScatter( 
 
                     vec2 UV,
-                    vec3 POS,
                     float scale,
                     float ScaleRnd,
                     float ScaleRndWeight,
@@ -173,9 +166,6 @@ vec4 JK_texScatter(
                     float layers,
                     float forceTile,
                     float noise_scale_A,
-                    float noise_scale_B,
-                    float noise_scale_C,
-                    float noise_scale_D,
                     float jitter_scale,
                     float rot_min,
                     float rot_max,
@@ -261,15 +251,6 @@ vec4 JK_texScatter(
   float _tmpmix;
 
 
-
-// DELETE:
-  float _floatPreview;
-  vec3 _vec3Preview;
-
-
-
-
-
 // ------------------------------------------------------------------------------------------------------
 //                      Assigned Variables
 // ------------------------------------------------------------------------------------------------------                      
@@ -298,7 +279,9 @@ vec4 JK_texScatter(
   for (layer_idx = 0.999; layer_idx < layers; layer_idx += 1.0)
 
     {
-      noise_scale_A = noise_scale_A + (10.0 * layer_idx);
+
+
+      noise_scale_A = noise_scale_A + ( layer_idx*(scale/10.125));
       jitter_scale = jitter_scale + (layer_idx/5.0);
 
 
@@ -350,7 +333,7 @@ vec4 JK_texScatter(
               noi_major = (Value3D ( vec3(col * noise_scale_A + 123.0, 
                         row * noise_scale_A - 345.0,
                         layer_idx * noise_scale_A + 222.0)
-                              )
+                              ) + 1.0
                   ) ;
            
 
@@ -374,7 +357,7 @@ vec4 JK_texScatter(
 // ------------------------------------------------------------------------------------------------------                      
                        
 
-       				if ((noi_major * noi_minor) < frequency*10.0)
+       				if ((noi_major + noi_minor) < frequency*10.0)
        			    {			
        	          max_jitter = cell_size*0.5;
 
@@ -797,8 +780,6 @@ vec4 JK_texScatter(
                         
 
         vec4 output = mix(surface_color,clamp(surface_color,vec4(0.0),vec4(1.0)),clampValues);
-        // float test = steppedFBM(rel_s,1.0,0.0,1.0,0.0,1.0);
-         // output = vec4(_floatPreview*2.0,_floatPreview,_floatPreview,1.0);
         return output;
 
 }

@@ -7,25 +7,23 @@
     <CostDescription>Heavy calculations and texture reads do not keep live</CostDescription>
     <Inputs>
         <Input Name="UV"></Input>
-         <Input Name="Position"></Input>
     </Inputs>
     <Attributes>
         <!--===============================================================================================================-->
         <Attribute Name="Layers" PrettyName="Layers" Group="Density" Type="double" Min="1" Max="15">2</Attribute>
-        <Attribute Name="Frequency" PrettyName="Density" Group="Density" Type="double" Min="0" Max="1000">500</Attribute>
-        <Attribute Name="FrequencyMult" PrettyName="Density Mult" Group="Density" Type="double" Min="0.01" Max="1000">1</Attribute>
+        <Attribute Name="Frequency" PrettyName="Density" Group="Density" Type="double" Min="0" Max="500" Logarithmic="true" >10</Attribute>
+        <Attribute Name="NoiseScaleA" PrettyName="NoiseScale" Group="Density" Type="double" Min="0.0001" Max="100" Logarithmic="true">1</Attribute>
         <Attribute Name="ForceTile" PrettyName="Create Tile" Group="Density" Type="bool" Min="false" Max="true">true</Attribute>
         <!--===============================================================================================================-->   
         <Attribute Name="scene" PrettyName="Scene Size" Group="Scale" Type="int">100</Attribute>
         <Attribute Name="Scale" PrettyName="Scale" Group="Scale" Type="double" Min="0.001" Max="100">40</Attribute>
         <Attribute Name="ScaleRnd" PrettyName="ScaleRnd" Group="Scale" Type="double" Min="0.00" Max="1">0.1</Attribute>
         <Attribute Name="ScaleRndWeight" PrettyName="% Original" Group="Scale" Type="double" Min="0.00" Max="1">0.1</Attribute>      
-        <!--===============================================================================================================-->   
-        <Attribute Name="NoiseScaleA" PrettyName="NoiseScaleA" Group="Randomization" Type="double" Min="0.0001" Max="1">0.0001</Attribute>
         <!--===============================================================================================================-->
         <Attribute Name="rot_min" PrettyName="Min Rotation" Group="Rotation" Type="double" Min="-360" Max="360">-360</Attribute>
         <Attribute Name="rot_max" PrettyName="Max Rotation" Group="Rotation" Type="double" Min="-360" Max="360">180</Attribute>
         <!--===============================================================================================================-->
+        <Attribute Name="BlendMode" PrettyName="Texture Blend Mode" Group="Texture HSV" Type="stringlist">Over,Over,Add,Screen,Multiply,Soft Light, Hard Light, Hard Mix,Overlay</Attribute>
         <Attribute Name="A_minH" PrettyName="Min Hue" Group="Texture HSV" Type="double" Min="-180" Max="180">0</Attribute>
         <Attribute Name="A_maxH" PrettyName="Max Hue" Group="Texture HSV" Type="double" Min="-180" Max="180">0</Attribute>
         <Attribute Name="A_minS" PrettyName="Min Sat" Group="Texture HSV" Type="double" Min="0" Max="2">1</Attribute>
@@ -36,44 +34,43 @@
         <Attribute Name="ValOffset" PrettyName="Value Offset" Group="Texture HSV" Type="double" Min="-1" Max="1">0</Attribute>
         <Attribute Name="LayerAtten" PrettyName="Layer Attenuation" Group="Texture HSV" Type="double" Min="-1" Max="1">0</Attribute>
         <Attribute Name="HSVSeed" PrettyName="HSV Seed" Group="Texture HSV" Type="double" Min="1" Max="1000">500</Attribute>
-        <Attribute Name="BlendMode" PrettyName="Texture Blend Mode" Group="Texture HSV" Type="stringlist">Over,Over,Add,Screen,Multiply,Soft Light, Hard Light, Hard Mix,Overlay</Attribute>
-        <!--===============================================================================================================--> 
+         <!--===============================================================================================================--> 
         <Attribute Name="MapA_weight" PrettyName="Importance" Group="Texture Map A" Type="double" Min="0" Max="1">1.0</Attribute>
-        <Attribute Name="TexSizeA" PrettyName="Scale" Group="Texture Map A" Type="double" Min="1" Max="10">10</Attribute>
-        <Attribute Name="HSVMixA" PrettyName="HSV Shift Mix" Group="Texture Map A" Type="double" Min="0" Max="1">1</Attribute>      
-        <Attribute Name="MapA_Alpha" PrettyName="Alpha" Group="Texture Map A" Type="stringlist">From Map,From Map,Alpha is Luminance,Alpha is Inverse Luminance</Attribute>
         <Attribute Name="MapA" PrettyName="MapA" Group="Texture Map A" Type="image" GenerateMipMaps="false"></Attribute>
         <Attribute Name="Invert_A" PrettyName="Invert Map" Group="Texture Map A" Type="bool" Min="false" Max="true">false</Attribute>
+        <Attribute Name="MapA_Alpha" PrettyName="Alpha" Group="Texture Map A" Type="stringlist">From Map,From Map,Alpha is Luminance,Alpha is Inverse Luminance</Attribute>
+        <Attribute Name="TexSizeA" PrettyName="Scale" Group="Texture Map A" Type="double" Min="1" Max="10">10</Attribute>
+        <Attribute Name="HSVMixA" PrettyName="HSV Shift Mix" Group="Texture Map A" Type="double" Min="0" Max="1">1</Attribute>      
         <Attribute Name="radialFadeA" PrettyName="Radial Fade" Group="Texture Map A" Type="double" Min="0" Max="1">0</Attribute>  
         <Attribute Name="softnessA" PrettyName="Softness" Group="Texture Map A" Type="double" Min="0" Max="5">0</Attribute>  
         <!--===============================================================================================================-->
-        <Attribute Name="UseMapB" PrettyName="Active" Group="Texture Map B" Type="bool" Min="false" Max="true">false</Attribute>
+        <Attribute Name="UseMapB" PrettyName="Activate Texture B" Group="Texture Map B" Type="bool" Min="false" Max="true">false</Attribute>
         <Attribute Name="MapB_weight" PrettyName="Importance" Group="Texture Map B" Type="double" Min="0" Max="1">0.25</Attribute>
-        <Attribute Name="TexSizeB" PrettyName="Scale" Group="Texture Map B" Type="double" Min="1" Max="10">10</Attribute>
-        <Attribute Name="HSVMixB" PrettyName="HSV Shift Mix" Group="Texture Map B" Type="double" Min="0" Max="1">1</Attribute>      
-        <Attribute Name="MapB_Alpha" PrettyName="Alpha" Group="Texture Map B" Type="stringlist">From Map,From Map,Alpha is Luminance,Alpha is Inverse Luminance</Attribute>
         <Attribute Name="MapB" PrettyName="MapB" Group="Texture Map B" Type="image" GenerateMipMaps="false"></Attribute>
         <Attribute Name="Invert_B" PrettyName="Invert Map" Group="Texture Map B" Type="bool" Min="false" Max="true">false</Attribute>
+        <Attribute Name="MapB_Alpha" PrettyName="Alpha" Group="Texture Map B" Type="stringlist">From Map,From Map,Alpha is Luminance,Alpha is Inverse Luminance</Attribute>
+        <Attribute Name="TexSizeB" PrettyName="Scale" Group="Texture Map B" Type="double" Min="1" Max="10">10</Attribute>
+        <Attribute Name="HSVMixB" PrettyName="HSV Shift Mix" Group="Texture Map B" Type="double" Min="0" Max="1">1</Attribute>      
         <Attribute Name="radialFadeB" PrettyName="Radial Fade" Group="Texture Map B" Type="double" Min="0" Max="1">0</Attribute>  
         <Attribute Name="softnessB" PrettyName="Softness" Group="Texture Map B" Type="double" Min="0" Max="1">0</Attribute>  
         <!--===============================================================================================================-->
-        <Attribute Name="UseMapC" PrettyName="Active" Group="Texture Map C" Type="bool" Min="false" Max="true">false</Attribute>
+        <Attribute Name="UseMapC" PrettyName="Activate Texture C" Group="Texture Map C" Type="bool" Min="false" Max="true">false</Attribute>
         <Attribute Name="MapC_weight" PrettyName="Importance" Group="Texture Map C" Type="double" Min="0" Max="1">0.25</Attribute>
-        <Attribute Name="TexSizeC" PrettyName="Scale" Group="Texture Map C" Type="double" Min="1" Max="10">10</Attribute>
-        <Attribute Name="HSVMixC" PrettyName="HSV Shift Mix" Group="Texture Map C" Type="double" Min="0" Max="1">1</Attribute>      
-        <Attribute Name="MapC_Alpha" PrettyName="Alpha" Group="Texture Map C" Type="stringlist">From Map,From Map,Alpha is Luminance,Alpha is Inverse Luminance</Attribute>
         <Attribute Name="MapC" PrettyName="MapC" Group="Texture Map C" Type="image" GenerateMipMaps="false"></Attribute>
         <Attribute Name="Invert_C" PrettyName="Invert Map" Group="Texture Map C" Type="bool" Min="false" Max="true">false</Attribute>
+        <Attribute Name="MapC_Alpha" PrettyName="Alpha" Group="Texture Map C" Type="stringlist">From Map,From Map,Alpha is Luminance,Alpha is Inverse Luminance</Attribute>
+        <Attribute Name="TexSizeC" PrettyName="Scale" Group="Texture Map C" Type="double" Min="1" Max="10">10</Attribute>
+        <Attribute Name="HSVMixC" PrettyName="HSV Shift Mix" Group="Texture Map C" Type="double" Min="0" Max="1">1</Attribute>      
         <Attribute Name="radialFadeC" PrettyName="Radial Fade" Group="Texture Map C" Type="double" Min="0" Max="1">0</Attribute>  
         <Attribute Name="softnessC" PrettyName="Softness" Group="Texture Map C" Type="double" Min="0" Max="5">0</Attribute>  
         <!--===============================================================================================================-->
-        <Attribute Name="UseMapD" PrettyName="Active" Group="Texture Map D" Type="bool" Min="false" Max="true">false</Attribute>
+        <Attribute Name="UseMapD" PrettyName="Activate Texture D" Group="Texture Map D" Type="bool" Min="false" Max="true">false</Attribute>
         <Attribute Name="MapD_weight" PrettyName="Importance" Group="Texture Map D" Type="double" Min="0" Max="1">0.25</Attribute>
-        <Attribute Name="TexSizeD" PrettyName="Scale" Group="Texture Map D" Type="double" Min="1" Max="10">10</Attribute>
-        <Attribute Name="HSVMixD" PrettyName="HSV Shift Mix" Group="Texture Map D" Type="double" Min="0" Max="1">1</Attribute>      
-        <Attribute Name="MapD_Alpha" PrettyName="Alpha" Group="Texture Map D" Type="stringlist">From Map,From Map,Alpha is Luminance,Alpha is Inverse Luminance</Attribute>
         <Attribute Name="MapD" PrettyName="MapD" Group="Texture Map D" Type="image" GenerateMipMaps="false"></Attribute>
         <Attribute Name="Invert_D" PrettyName="Invert Map" Group="Texture Map D" Type="bool" Min="false" Max="true">false</Attribute>
+        <Attribute Name="MapD_Alpha" PrettyName="Alpha" Group="Texture Map D" Type="stringlist">From Map,From Map,Alpha is Luminance,Alpha is Inverse Luminance</Attribute>
+        <Attribute Name="TexSizeD" PrettyName="Scale" Group="Texture Map D" Type="double" Min="1" Max="10">10</Attribute>
+        <Attribute Name="HSVMixD" PrettyName="HSV Shift Mix" Group="Texture Map D" Type="double" Min="0" Max="1">1</Attribute>      
         <Attribute Name="radialFadeD" PrettyName="Radial Fade" Group="Texture Map D" Type="double" Min="0" Max="1">0</Attribute>  
         <Attribute Name="softnessD" PrettyName="Softness" Group="Texture Map D" Type="double" Min="0" Max="5">0</Attribute>  
         <!--===============================================================================================================-->
@@ -96,21 +93,17 @@
             <Shader>
                 <Inputs>
                     <Input Name="UV"><Default>State.UV</Default></Input>
-                    <Input Name="Position"><Default>State.Position</Default></Input>
                 </Inputs>
                 <Body><![CDATA[
 
                 vec2 UV = fract(#UV);
-
-                // currently not in use inside function
-                vec3 Pos = #Position;
 
                 // Base Scene Size. This is to give more range on the scale slider
                 float scene = float($scene) / 100.0;
                 float scale = ( (100.0 ) - $Scale*2.0) / scene;
 
                 // passing booleans to function as floats for use in mixers
-                float clamp = float($Clamp);
+                float _clamp = float($Clamp);
                 float invertA = float($Invert_A);
                 float invertB = float($Invert_B);
                 float invertC = float($Invert_C);
@@ -139,11 +132,6 @@
                 // float jitterScale = 0.0;
 
                 float NoiseScaleA = $NoiseScaleA/scene ;
-                // float NoiseScaleB = $NoiseScaleB/scene ;
-                // float NoiseScaleC = $NoiseScaleC/scene ;
-                // float NoiseScaleD = $NoiseScaleD/scene ;
-                //temp !
-                float NoiseScaleB,NoiseScaleC,NoiseScaleD;
 
                 // Inverting Scaling. Please note if user has the clever idea to put values outside the
                 // slider range in there this will clip the edges of the maps
@@ -156,13 +144,18 @@
                 float ScaleRnd = 1.0 - $ScaleRnd/4.0;
                 float ScaleRndWeight = ($ScaleRndWeight) + 1.0;
 
-                float Frequency = ($Frequency*$FrequencyMult) * ($NoiseScaleA/1000);
+                float Frequency = ($Frequency) /1000;
+                float Frequency_M = clamp($Frequency,0.0,1.0);
+
+                float MapA_weight = $MapA_weight * Frequency_M;
+                float MapB_weight = $MapB_weight * Frequency_M;
+                float MapC_weight = $MapC_weight * Frequency_M;
+                float MapD_weight = $MapD_weight * Frequency_M;
 
 
                 
 
                 Output = JK_texScatter( UV,
-                                        Pos,
                                         scale,
                                         ScaleRnd,
                                         ScaleRndWeight,
@@ -170,9 +163,6 @@
                                         $Layers,
                                         forceTile,
                                         NoiseScaleA,
-                                        NoiseScaleB,
-                                        NoiseScaleC,
-                                        NoiseScaleD,
                                         jitterScale,
                                         $rot_min,
                                         $rot_max,
@@ -194,30 +184,30 @@
                                         $HSVMixB,
                                         $HSVMixC,
                                         $HSVMixD,
-                                        clamp,
+                                        _clamp,
                                         $MapA,
-                                        $MapA_weight,
+                                        MapA_weight,
                                         invertA,
                                         radialFadeA,
                                         softnessA,
                                         $MapA_Alpha,
                                         $UseMapB,
                                         $MapB,
-                                        $MapB_weight,
+                                        MapB_weight,
                                         invertB,
                                         radialFadeB,
                                         softnessB,
                                         $MapB_Alpha,
                                         $UseMapC,
                                         $MapC,
-                                        $MapC_weight,
+                                        MapC_weight,
                                         invertC,
                                         radialFadeC,
                                         softnessC,
                                         $MapC_Alpha,
                                         $UseMapD,
                                         $MapD,
-                                        $MapD_weight,
+                                        MapD_weight,
                                         invertD,
                                         radialFadeD,
                                         softnessD,
