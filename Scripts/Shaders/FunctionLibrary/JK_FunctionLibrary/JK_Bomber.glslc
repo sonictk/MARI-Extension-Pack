@@ -191,29 +191,29 @@ vec4 JK_texScatter(
                     sampler2D textureA,
                     float textureA_weight,
                     float invert_textureA,
-                    float radialFadeA,
-                    float radialFade_SoftnessA,
+                    float FadeA,
+                    float roundnessA,
                     int textureA_AlphaMode,
                     bool UseMapB,
                     sampler2D textureB,
                     float textureB_weight,
                     float invert_textureB,
-                    float radialFadeB,
-                    float radialFade_SoftnessB,
+                    float FadeB,
+                    float roundnessB,
                     int textureB_AlphaMode,
                     bool UseMapC,
                     sampler2D textureC,
                     float textureC_weight,
                     float invert_textureC,
-                    float radialFadeC,
-                    float radialFade_SoftnessC,
+                    float FadeC,
+                    float roundnessC,
                     int textureC_AlphaMode,
                     bool UseMapD,
                     sampler2D textureD,
                     float textureD_weight,
                     float invert_textureD,
-                    float radialFadeD,
-                    float radialFade_SoftnessD,
+                    float FadeD,
+                    float roundnessD,
                     int textureD_AlphaMode
                 )
 
@@ -248,7 +248,10 @@ vec4 JK_texScatter(
   float offset;
   vec2 d;
   float MixVal;
+  float Falloff;
   float _tmpmix;
+
+  float _preview;
 
 
 // ------------------------------------------------------------------------------------------------------
@@ -329,7 +332,8 @@ vec4 JK_texScatter(
 // ------------------------------------------------------------------------------------------------------
 //                     Seeding Value. Used all over the place for rotation, jitter,texture mix etc.
 //                     Improving this to be less repetitve would go a long way
-// ------------------------------------------------------------------------------------------------------                      
+// ------------------------------------------------------------------------------------------------------    
+
               noi_major = (Value3D ( vec3(col * noise_scale_A + 123.0, 
                         row * noise_scale_A - 345.0,
                         layer_idx * noise_scale_A + 222.0)
@@ -468,15 +472,26 @@ vec4 JK_texScatter(
 
 
                       // ------------------------------- //
-                      //     Radial Fade Texture A       //
-                      // --------------------------------//    
+                      //     Alpha Fade Texture A       //
+                      // --------------------------------//  
 
+                      // -- OLD RADIAL FADE SYSTEM
                       // need to apply map prescaling to uvs:
-                      float radialFader_A = length((n_uv_a)+vec2(0.5));                
-                         
+                      // float radialFader_A = length((n_uv_a)+vec2(0.5)); 
                       // Radial Fade Texture A
-                      radialFader_A = remap(radialFader_A,0.0,radialFadeA,1.0,0.0,radialFade_SoftnessA);
-                      layer_color.a *= radialFader_A;
+                      // radialFader_A = remap(radialFader_A,0.0,FadeA,1.0,0.0,roundnessA);
+                      // layer_color.a *= MixVal;
+
+                      //Square Alpha Fadeoff
+                      Falloff = FadeA+roundnessA*2.0;
+                      d = abs(((n_uv_a))+vec2(0.5));
+                      d = max(d/(1+roundnessA),0.0);
+                      d = pow(d,vec2(2.0/roundnessA));
+                      MixVal = pow(d.x+d.y,roundnessA/1.5)*(Falloff*2.0);
+                      MixVal = 1.0-MixVal;
+                      MixVal = float(MixVal)+pow(MixVal*2.0,1.0/Falloff);
+                      MixVal = clamp(MixVal,0.0,1.0);
+                      layer_color.a *= MixVal;
 
                       // Square Alpha Generation to cut off repeating elements due to per Map Scale Offset
                        d = abs(((n_uv_a)));
@@ -527,16 +542,27 @@ vec4 JK_texScatter(
                             }
 
                           // ------------------------------- //
-                          //     Radial Fade Texture B       //
+                          //     Alpha Fade Texture B       //
                           // --------------------------------//    
 
+                          // -- OLD RADIAL FADE SYSTEM
                           // need to apply map prescaling to uvs:
-                          float radialFader_B = length((n_uv_b)+vec2(0.5));                   
-                             
+                          // float radialFader_B = length((n_uv_b)+vec2(0.5));                                         
                           // Radial Fade Texture B
-                          radialFader_B = remap(radialFader_B,0.0,radialFadeB,1.0,0.0,radialFade_SoftnessB);
-                          layer_color_B.a *= radialFader_B;
+                          // radialFader_B = remap(radialFader_B,0.0,radialFadeB,1.0,0.0,radialFade_SoftnessB);
+                          // layer_color_B.a *= radialFader_B;
                         
+                          //Square Alpha Fadeoff
+                          Falloff = FadeB+roundnessB*2.0;
+                          d = abs(((n_uv_b))+vec2(0.5));
+                          d = max(d/(1+roundnessB),0.0);
+                          d = pow(d,vec2(2.0/roundnessB));
+                          MixVal = pow(d.x+d.y,roundnessB/1.5)*(Falloff*2.0);
+                          MixVal = 1.0-MixVal;
+                          MixVal = float(MixVal)+pow(MixVal*2.0,1.0/Falloff);
+                          MixVal = clamp(MixVal,0.0,1.0);
+                          layer_color_B.a *= MixVal;
+
 
                           // Square Alpha Generation to cut off repeating elements due to per Map Scale Offset
                            d = abs(((n_uv_b)));
@@ -588,15 +614,27 @@ vec4 JK_texScatter(
                             }
 
                           // ------------------------------- //
-                          //     Radial Fade Texture C       //
+                          //     Alpha Fade Texture C       //
                           // --------------------------------// 
 
+                          // -- OLD RADIAL FADE SYSTEM
                           // need to apply map prescaling to uvs:
-                          float radialFader_C = length((n_uv_c)+vec2(0.5));                     
-                             
+                          // float radialFader_C = length((n_uv_c)+vec2(0.5));                                 
                           // Radial Fade Texture C
-                          radialFader_C = remap(radialFader_C,0.0,radialFadeC,1.0,0.0,radialFade_SoftnessC);
-                          layer_color_C.a *= radialFader_C;
+                          // radialFader_C = remap(radialFader_C,0.0,radialFadeC,1.0,0.0,radialFade_SoftnessC);
+                          // layer_color_C.a *= radialFader_C;
+
+
+                          //Square Alpha Fadeoff
+                          Falloff = FadeC+roundnessC*2.0;
+                          d = abs(((n_uv_c))+vec2(0.5));
+                          d = max(d/(1+roundnessC),0.0);
+                          d = pow(d,vec2(2.0/roundnessC));
+                          MixVal = pow(d.x+d.y,roundnessC/1.5)*(Falloff*2.0);
+                          MixVal = 1.0-MixVal;
+                          MixVal = float(MixVal)+pow(MixVal*2.0,1.0/Falloff);
+                          MixVal = clamp(MixVal,0.0,1.0);
+                          layer_color_C.a *= MixVal;
 
 
                           // Square Alpha Generation to cut off repeating elements due to per Map Scale Offset
@@ -649,16 +687,29 @@ vec4 JK_texScatter(
                             }
 
                           // ------------------------------- //
-                          //     Radial Fade Texture D       //
+                          //     Alpha Fade Texture D       //
                           // --------------------------------//                    
-                            
+                          
+                          // -- OLD RADIAL FADE SYSTEM  
                           // need to apply map prescaling to uvs:
-                          float radialFader_D = length((n_uv_d)+vec2(0.5));  
-
-
+                          // float radialFader_D = length((n_uv_d)+vec2(0.5));  
                           // Radial Fade Texture D
-                          radialFader_D = remap(radialFader_D,0.0,radialFadeD,1.0,0.0,radialFade_SoftnessD);
-                          layer_color_D.a *= radialFader_D;
+                          // radialFader_D = remap(radialFader_D,0.0,radialFadeD,1.0,0.0,radialFade_SoftnessD);
+                          // layer_color_D.a *= radialFader_D;
+
+                          
+                          //Square Alpha Fadeoff
+                          Falloff = FadeD+roundnessD*2.0;
+                          d = abs(((n_uv_d))+vec2(0.5));
+                          d = max(d/(1+roundnessD),0.0);
+                          d = pow(d,vec2(2.0/roundnessD));
+                          MixVal = pow(d.x+d.y,roundnessD/1.5)*(Falloff*2.0);
+                          MixVal = 1.0-MixVal;
+                          MixVal = float(MixVal)+pow(MixVal*2.0,1.0/Falloff);
+                          MixVal = clamp(MixVal,0.0,1.0);
+                          layer_color_D.a *= MixVal;
+
+
 
                           // Square Alpha Generation to cut off repeating elements due to per Map Scale Offset
                            d = abs(((n_uv_d)));
@@ -780,6 +831,7 @@ vec4 JK_texScatter(
                         
 
         vec4 output = mix(surface_color,clamp(surface_color,vec4(0.0),vec4(1.0)),clampValues);
+        // output = vec4(_preview,_preview,_preview,1.0);
         return output;
 
 }
