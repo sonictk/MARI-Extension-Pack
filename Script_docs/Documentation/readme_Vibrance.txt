@@ -4,7 +4,7 @@ Copyright (c) 2013 Jens Kafitz. All Rights Reserved.
                       	
 Author: Jens Kafitz      	
 Web: www.campi3d.com			
-Email: jens@campi3d.com
+Email: MariIdeas@campi3d.com
 #----------------------------------------------------------------
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions
