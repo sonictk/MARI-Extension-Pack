@@ -1,0 +1,128 @@
+
+
+<Node>
+    <ID>Texture Bomb A</ID>
+    <DefaultName>Texture Bomb Simple</DefaultName>
+    <Category>Environment/Custom/</Category>
+    <Cost>0.02</Cost>
+    <CostDescription>Some calculations and a texture read</CostDescription>
+    <Inputs>
+        <Input Name="UV"></Input>
+         <Input Name="Position"></Input>
+    </Inputs>
+    <Attributes>
+        <!--===============================================================================================================-->
+        <Attribute Name="MapMain" PrettyName="MainMap" Group="Texture Map" Type="image" GenerateMipMaps="false"></Attribute>
+        <Attribute Name="MapBomb" PrettyName="Bomb Map" Group="Texture Map" Type="image" GenerateMipMaps="false"></Attribute>
+        <Attribute Name="MapRnd" PrettyName="Random Map" Group="Texture Map" Type="image" GenerateMipMaps="false"></Attribute>
+         <Attribute Name="Scale" PrettyName="Scale" Group="" Type="double" Min="0" Max="1000">50</Attribute>
+    
+        <!--===============================================================================================================-->
+    </Attributes>
+  <Contexts>
+        <Context Type="NodeGraphView">
+            <Inputs>
+                <Input Name="UV"><Pos>0,-50</Pos></Input>
+            </Inputs>
+        </Context>
+        <Context Type="GLSL">
+            <Shader>
+                <Inputs>
+                    <Input Name="UV"><Default>State.UV</Default></Input>
+                    <Input Name="Position"><Default>State.Position</Default></Input>
+                </Inputs>
+                <Body><![CDATA[
+
+                float myscale = $Scale / 6000;
+                vec2 UV = #UV;
+                vec3 position = scale(#Position,vec3(myscale));
+                vec4 decalColor = texture($MapMain,UV);
+                vec2 ScaledUV = UV * vec2($Scale);
+                vec2 cell = ScaledUV;
+                // vec2 offset = ScaledUV - cell;
+                vec2 offset = vec2(0.7);
+                vec4 rnd;
+                vec4 decCol;
+
+                vec2 curCell;
+                vec2 curoffset;
+                vec2 randomUV;
+
+
+                vec3 pos1 = voronoi_test(position);
+                cell = vec2(floor(pos1.z),pos1.z);
+
+
+
+                //loop4
+                curCell = cell;
+                curoffset = offset;
+                randomUV = curCell * vec2(0.037, 0.119);
+
+                //sample1
+                rnd = texture($MapRnd,randomUV);
+                // rnd = texture($MapRnd,normalize(randomUV));
+                decCol = texture($MapBomb, curoffset - randomUV);
+                // decCol = texture($MapBomb, cell);
+
+
+                // decalColor = Comp_Default(decalColor,decCol,1.0);
+                // decalColor = Comp_Default(decalColor,rnd,pos1.y);
+
+
+                Output = decalColor;
+
+
+                // // //loop 1
+                // // curCell = cell + vec2(-1.0);
+                // // curoffset = offset - vec2(-1.0);
+                // // randomUV = curCell * vec2(0.037, 0.119);
+
+
+                // // //sample1
+                // // rnd = texture($MapRnd,randomUV);
+                // // decCol = texture($MapBomb, (curoffset - randomUV));
+
+
+                // // decalColor = Comp_Default(decalColor,decCol,1.0);
+                // // decalColor = Comp_Default(decalColor,rnd,1.0);
+
+                // // //loop2
+                // // curCell = cell + vec2(-1.0,0.0);
+                // // curoffset = offset - vec2(-1.0,0.0);
+                // // randomUV = curCell * vec2(0.037, 0.119);
+
+
+                // //sample1
+                // rnd = texture($MapRnd,randomUV);
+                // decCol = texture($MapBomb, curoffset - randomUV);
+
+                // decalColor = Comp_Default(decalColor,decCol,1.0);
+                // decalColor = Comp_Default(decalColor,rnd,1.0);
+
+
+                // //loop3
+                // curCell = cell + vec2(0.0,-1.0);
+                // curoffset = offset - vec2(0.0,-1.0);
+                // randomUV = curCell + vec2(0.037, 0.119);
+
+                //  //sample1
+                // rnd = texture($MapRnd,randomUV);
+                // decCol = texture($MapBomb, curoffset - randomUV);
+
+                // decalColor = Comp_Default(decalColor,decCol,1.0);
+                // decalColor = Comp_Default(decalColor,rnd,1.0);
+
+
+
+
+
+
+                ]]></Body>
+            </Shader>
+        </Context>
+    </Contexts>
+</Node>
+
+
+
