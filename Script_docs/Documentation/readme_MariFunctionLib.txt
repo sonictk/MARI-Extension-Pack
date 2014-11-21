@@ -1,4 +1,4 @@
-MARI Function Library 1.06
+MARI Function Library 1.09
 Copyright (c) 2014 MARI.IDEASCALE.COM All Rights Reserved.
 ===================================================================== 
                       	
@@ -10,7 +10,7 @@ Email: miguel@digiteck3d.com
 
 Author: Jens Kafitz
 Web: www.campi3d.com				
-Email: info@campi3d.com
+Email: MariIdeas@campi3d.com
 
 Author: Nicholas Breslow
 Web: http://nbreslow.com/			
@@ -51,15 +51,15 @@ Info: ===============================================================
 
 This is a Mari procedural library that adds new procedural functions
 like Cellular, Gabor, Perlin, Value, Simplex, Brownian, Turbulence,
-Inigo Multi-Fractal, Ridged Fractal noise and  more planned for the
-future. This isn't simply just a shader library that adds new nodes 
+Inigo Multi-Fractal, Ridged Fractal noise and  more.
+
+This isn't simply just a shader library that adds new nodes 
 to Mari, but overall adds new functionality to the shader API that 
 other shader writers can access and modify to create there own 
 shaders from the various new noise functions added in code to the 
-Mari shader API. Currently the library adds a totally new GPU 
-noise library from the great work of Brian Sharpe, which is far more
-efficient and accurate than the standard noise library. This is the
-core of the library that allows to implement various other standard
+Mari shader API. 
+
+This is the core of the library that allows to implement various other standard
 noise functions that are normally found in basic procedural 
 libraries. The library also finally adds back in the full featured 
 cellular noise function with various feature sets to mimic organic
@@ -67,7 +67,7 @@ cellular patterns. Along with these new additions the library
 also introduces a port of the Gabor noise function into the library,
 This is a special type of noise with anisotropic noise properties.
 
-Best of all the library will fall into the open source domain under
+Best of all the library falls into the open source domain under
 the 3-Clause BSD License and will include all of the source 
 code for you to modify, learn, or just continue to improve and add
 to it yourself. So you are free to do with it what you will.

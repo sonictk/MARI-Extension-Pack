@@ -1,21 +1,14 @@
 <!--
 ================================================================================
-== Posterize
-== Copyright (c) 2014 TheFoundry. All Rights Reserved.
+== Simple Constants
+== Copyright (c) 2014 Jens Kafitz & TheFoundry. All Rights Reserved.
 ================================================================================
-== File: TF_Posterize.xml
-== Description: A simple posterize filter
+== Based on original code from theFoundry located in
+== \Mari2.6v1\Bundle\Media\Nodes\Simple\Basic\
 ================================================================================
-== Author: TheFoundry
-== Taken & modified from \Mari2.6v1\Bundle\Media\Examples\Nodes\
-== Web: www.thefoundry.co.uk
+== Modification by: Jens Kafitz | Mari Ideascale
 ================================================================================
-== Nodepack Implememtation: Jens Kafitz | Mari Ideascale
-== Web: www.campi3d.com
-== Web: www.mari.ideascale.com
-== Email: MariIdeas@campi3d.com
-================================================================================
-== Modified Date: August, 15 2014
+== Modified Date: Spetember, 27 2014
 ================================================================================
 == Redistribution and use in source and binary forms, with or without
 == modification, are permitted provided that the following conditions are met:
@@ -43,53 +36,57 @@
 == OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 == ADVISED OF HE POSSIBILITY OF SUCH DAMAGE.
 ================================================================================
--->
 
 
 
-<Node>
-  <ID>Posterize</ID>
-    <DefaultName>Posterize</DefaultName>
-    <Category>/Custom/</Category>
-  <Tags>
-    <Tag>_adjustment</Tag>
-  </Tags>
-    <Inputs>
-        <Input Name="Input"></Input>
-    </Inputs>
-    <Attributes>
-        <Attribute Name="Colors" PrettyName="Color Bands" Group="" Type="double" Min="0.0" Max="256">16</Attribute>
-        <Attribute Name="Desat" PrettyName="Desaturate Base" Group="" Type="bool" Min="true" Max="false">false</Attribute>
 
-    </Attributes>
-  <Contexts>
-    <Context Type="GLSL">
-        <Shader>
-            <Inputs>
-                <Input Name="Input"><Default>vec4(1,1,1,1)</Default></Input>
-            </Inputs>
-            <Body><![CDATA[
-               float a, b, c, d, e, f, g, h, i;
-    vec3 wt = vec3(0.2126, 0.7152, 0.0722);
-    a = wt.r;
-    b = wt.r;
-    c = wt.r;
-    d = wt.g;
-    e = wt.g;
-    f = wt.g;
-    g = wt.b;
-    h = wt.b;
-    i = wt.b;
-    vec4 Input = mat4(a,   b,   c,   0.0,
-                  d,   e,   f,   0.0,
-                  g,   h,   i,   0.0,
-                  0.0, 0.0, 0.0, 1.0) * #Input;
-    Input = mix(#Input,Input,float($Desat));
+Info: ===============================================================
 
-            Output.rgb = round($Colors * Input.rgb) / $Colors;
-            Output.a = #Input.a;
-            ]]></Body>
-        </Shader>
-    </Context>
-  </Contexts>
-</Node>
+How many times a day do you create a constant to set it to Black or Grey ?
+Here are 3 very simple preconfigured Constants Black,White and Grey.
+Simply press TAB and start typing. 
+
+Requirements: =======================================================
+
+- Mari 2.5 or above
+
+
+
+Installation: =======================================================
+
+
+Take scripts and put them into your user preference script directory.
+Or any startup script path that Mari has set. Once these are in 
+place, Mari on startup will run through the scripts folder and load
+the procedural library. Going to the Python tab and showing the 
+console will allow you to see the modules loading up. This is where
+if in any case the loading fails it will let you know. 
+
+
+Example:
+	• On Linux+Mac: ~/Mari/Scripts/
+	• On Windows: Documents/Mari/Scripts/	
+
+
+Where to find the nodes: ============================================
+
+The new node is located under the Procedural/Basic Menu, same as
+the default Constant
+
+
+History: ============================================================
+
+
+# - 08/18/14
+    released for Mari 2.5v2 and higher
+
+
+
+Credits: ============================================================
+
+
+
+
+
+ 
+        

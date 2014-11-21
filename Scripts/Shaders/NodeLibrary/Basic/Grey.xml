@@ -1,21 +1,17 @@
 <!--
 ================================================================================
-== Posterize
-== Copyright (c) 2014 TheFoundry. All Rights Reserved.
+== Simple Constant Grey
+== Copyright (c) 2014 Jens Kafitz & TheFoundry. All Rights Reserved.
 ================================================================================
-== File: TF_Posterize.xml
-== Description: A simple posterize filter
+== File: Black.xml
+== Description: A simple Grey (0.498) Constant for convenience
 ================================================================================
-== Author: TheFoundry
-== Taken & modified from \Mari2.6v1\Bundle\Media\Examples\Nodes\
-== Web: www.thefoundry.co.uk
+== Based on original code from theFoundry located in
+== \Mari2.6v1\Bundle\Media\Nodes\Simple\Basic\
 ================================================================================
-== Nodepack Implememtation: Jens Kafitz | Mari Ideascale
-== Web: www.campi3d.com
-== Web: www.mari.ideascale.com
-== Email: MariIdeas@campi3d.com
+== Modification by: Jens Kafitz | Mari Ideascale
 ================================================================================
-== Modified Date: August, 15 2014
+== Modified Date: Spetember, 27 2014
 ================================================================================
 == Redistribution and use in source and binary forms, with or without
 == modification, are permitted provided that the following conditions are met:
@@ -44,52 +40,24 @@
 == ADVISED OF HE POSSIBILITY OF SUCH DAMAGE.
 ================================================================================
 -->
-
-
-
 <Node>
-  <ID>Posterize</ID>
-    <DefaultName>Posterize</DefaultName>
-    <Category>/Custom/</Category>
-  <Tags>
-    <Tag>_adjustment</Tag>
-  </Tags>
-    <Inputs>
-        <Input Name="Input"></Input>
-    </Inputs>
-    <Attributes>
-        <Attribute Name="Colors" PrettyName="Color Bands" Group="" Type="double" Min="0.0" Max="256">16</Attribute>
-        <Attribute Name="Desat" PrettyName="Desaturate Base" Group="" Type="bool" Min="true" Max="false">false</Attribute>
-
-    </Attributes>
+  <ID>constant_grey</ID>
+  <DefaultName>Grey Constant</DefaultName>
+  <Category>Basic/</Category>
+  <Cost>0.001</Cost>
+  <CostDescription>Trivial operation</CostDescription>
+  <Attributes>
+  </Attributes>
   <Contexts>
-    <Context Type="GLSL">
+      <Context Type="GLSL">
         <Shader>
-            <Inputs>
-                <Input Name="Input"><Default>vec4(1,1,1,1)</Default></Input>
-            </Inputs>
-            <Body><![CDATA[
-               float a, b, c, d, e, f, g, h, i;
-    vec3 wt = vec3(0.2126, 0.7152, 0.0722);
-    a = wt.r;
-    b = wt.r;
-    c = wt.r;
-    d = wt.g;
-    e = wt.g;
-    f = wt.g;
-    g = wt.b;
-    h = wt.b;
-    i = wt.b;
-    vec4 Input = mat4(a,   b,   c,   0.0,
-                  d,   e,   f,   0.0,
-                  g,   h,   i,   0.0,
-                  0.0, 0.0, 0.0, 1.0) * #Input;
-    Input = mix(#Input,Input,float($Desat));
-
-            Output.rgb = round($Colors * Input.rgb) / $Colors;
-            Output.a = #Input.a;
-            ]]></Body>
+           <Body><![CDATA[
+                Output = vec4(0.498,0.498,0.498,1.0);
+           ]]>
+           </Body>
         </Shader>
-    </Context>
+      </Context>
   </Contexts>
 </Node>
+
+    

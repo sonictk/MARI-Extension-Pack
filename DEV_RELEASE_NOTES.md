@@ -7,14 +7,66 @@ TBA
 
 Added Features:
 -----------
+
+- Texture Scatter UV
+A UV based Texture Bombing Node capable of creating tileable textures on a standard 
+Maya Plane
+
 - VoronoiPopcorn
-A complex procedural for creating veins, crumbled paper looks etc.
+A complex procedural for creating veins, cracks, crumbled paper looks etc.
+
+- Axis Projection
+Axis Projection is similar to a Triplanar Projection but with a lot more control over
+rotation of projection in space (for objects that are not perfectly aligned in XYZ)
+and isolation of each +/- axis
+
+- Backface Mask
+An easy way to isolate interior faces of objects for example cloth lining.
 
 - Illegal Albedo Warning
-Adjustment layer that gives a visual warning when illegal albedo values are detected
+Adjustment layer that gives a visual warning when values outisde a custom range are detected.
 
 - Posterize
 Simple Posterize adjustment implementation, specifying how many color/value steps you want
+
+- Black/White/Grey Constants
+Ever realized how many times you create a constant, then set it to black, white or grey ? 
+If the answer is : "A lot" then this simple addition of the 3 preconfigured constants will come in handy.
+Press TAB and type !
+
+Feature Improvements:
+-----------
+- "Color Range to Mask" now has a basic Grade Module for selected colors. Due to the size + expense 
+  of the node baking or caching is recommended in bigger layer stacks.
+
+- "Enhance Selection" Mode in Color Range to Mask was improved
+
+- Photoshop Style Selection Preview in Color Range to Mask was added
+
+Bugfixes:
+-----------
+- Legacy Cloud was broken and not behaving like Mari Cloud
+
+- svn or git files in the directories could cause the nodepack to not load properly
+
+
+
+Known issues & Workarounds:
+-----------
+- (WINDOWS USERS ONLY): Texture Scatter UV will crash your display driver
+  due to an automated windows feature that lets your driver time out after
+  a few seconds of inactivity. To work around this you need to set
+
+  - EDIT/PREFERENCES/GPU TAB
+  - MAX RENDER SIZE FOR BAKING: 256 (default is 1024)
+
+  to allow Mari to split the processing into smaller chunks
+
+- Voronoi Popcorn is a rather expensive procedural. We recommend converting it to paintable.
+
+- Color Range to Mask is a rather expensive adjustment. We recommend baking it down/merging
+  applied grading.
+
 
 
 

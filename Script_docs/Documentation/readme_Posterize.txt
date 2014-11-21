@@ -4,7 +4,7 @@
 # -------------------------------------------------------------------
 # Node Impementation: Jens Kafitz | Based on work done at TheFoundry
 # Web: www.campi3d.com | www.thefoundry.co.uk   
-# Email: info@campi3d.com
+# Email: MariIdeas@campi3d.com
 # -------------------------------------------------------------------
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions
