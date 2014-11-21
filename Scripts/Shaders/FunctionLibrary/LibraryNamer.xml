@@ -48,7 +48,7 @@
     <!-- jens kafitz procedural shader library -->
     <ID_ProceduralLib>JK GEN Function Lib</ID_ProceduralLib>
     <JK_ColorRangeToMask>JK Color Range To Mask</JK_ColorRangeToMask>
-    <JK_TexScatterUV>JK Texture Scattering UV Based</JK_ColorRangeToMask>
+    <JK_TexScatterUV>JK Texture Scattering UV Based</JK_TexScatterUV>
     <JK_VoronoiSuite>JK Voronoi Suite</JK_VoronoiSuite>
     <!-- nicholas breslow procedural shader library -->
     <NB_ProceduralLib>Nicholas Breslow Procedural Lib</NB_ProceduralLib>
