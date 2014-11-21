@@ -44,7 +44,13 @@ Masks. Simply add the Adjustment layer, select the color ranges then
 bake it down or use in a channel mask.
 
 
-Node Description: ===================================================
+Options: ===========================================================
+
+Disclaimer: 
+Please note due to the size and complexity of the node we recommend
+merging/flattening changes - even the ones made with the new Grade
+Mode. It is not recommended to keep this node live.
+
 
 --- COLOR PICKING ---
 
@@ -120,6 +126,22 @@ Expand A,B,C,D
 Will expand the selection of color
 
 
+--- GRADE MODE ---
+
+Grade Mode
+Will turn on the option to directly color correct the selected colors.
+This will override any Preview Settings from the "Preview" Group
+
+Hue/Saturation/Value Shift
+Will apply an HSV Shift to the selected colors.
+This behaves identical to the HSV Adjustment Layer inside of MARI
+
+Gamma/Contrast/Contrast Pivot
+Will apply an Gamma/Contrast/Contrast Pivot Shift to the selected
+colors. This behaves identical to the respectively named adjustments
+Gamme & Contract inside of Mari
+
+
 
 
 Requirements: =======================================================
@@ -162,6 +184,11 @@ History: ============================================================
 # - 06/23/14
     1.05 Release. Added in different preview modes to be more in 
     line with photoshop
+
+# - 11/23/14
+    A simple Grade Module was added to allow users to Grade selected
+    colors directly
+
 
 
 Credits: ============================================================
