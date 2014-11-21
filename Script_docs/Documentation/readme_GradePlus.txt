@@ -5,7 +5,7 @@
 # Author: Jens Kafitz | Mari Ideascale
 # Web: www.campi3d.com      
 # Web: www.mari.ideascale.com   
-# Email: info@campi3d.com
+# Email: MariIdeas@campi3d.com
 #----------------------------------------------------------------
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions

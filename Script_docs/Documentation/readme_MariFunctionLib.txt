@@ -10,7 +10,7 @@ Email: miguel@digiteck3d.com
 
 Author: Jens Kafitz
 Web: www.campi3d.com				
-Email: info@campi3d.com
+Email: MariIdeas@campi3d.com
 
 Author: Nicholas Breslow
 Web: http://nbreslow.com/			

@@ -55,7 +55,7 @@ Contributors
 
 - Nicholas Breslow www.nbreslow.com // nick@nbreslow.com
 
-- Jens Kafitz www.campi3d.com // info@campi3d.com
+- Jens Kafitz www.campi3d.com // MariIdeas@campi3d.com
 
 - Ben Neall www.bneall.blogspot.co.nz //  bneall@gmail.com
 
