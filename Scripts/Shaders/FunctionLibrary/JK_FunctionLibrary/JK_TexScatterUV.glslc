@@ -435,9 +435,10 @@ vec4 JK_texScatterUV(
 
 
                       // get color from texture maps and weigh them per importance
-                      // importance is determined via thresholding function on a FBM Noise
+                      // importance is determined via thresholding function on a vor Noise
                       // Depending on Mode set, Alphas are evaluated differently via Switches
-                      // However Alphas are always multiplied by the radial fade in the end
+                      // However Alphas are always multiplied by the alpha fade off & Alpha Cutout 
+                      // in the end
 
                       layer_color = texture(textureA,n_uv_a);
                       layer_color.rgb = mix(layer_color.rgb,vec3(1.0)-layer_color.rgb,invert_textureA);
