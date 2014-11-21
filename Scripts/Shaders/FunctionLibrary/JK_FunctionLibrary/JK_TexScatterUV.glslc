@@ -1,21 +1,48 @@
+////////////////////////////////////////////////////////////////////////////////
+// Texture Scatter UV
+// Copyright (c) 2014 Jens Kafitz. All Rights Reserved.
+////////////////////////////////////////////////////////////////////////////////
+// File: JK_TexScatterUV.glslc
+// Description: UV Based Texture Bombing Function(s) for use in JK_TextureScatter_UV.
+////////////////////////////////////////////////////////////////////////////////
+// Author: Jens Kafitz | Mari Ideascale
+// Web: www.campi3d.com
+// Web: www.mari.ideascale.com
+// Email: MariIdeas@campi3d.com
+////////////////////////////////////////////////////////////////////////////////
+// Modified Date: November 25, 2014
+////////////////////////////////////////////////////////////////////////////////
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are met:
+//
+// 1. Redistributions of source code must retain the above copyright
+// notice, this list of conditions and the following disclaimer.
+//
+// 2. Redistributions in binary form must reproduce the above copyright
+// notice, this list of conditions and the following disclaimer in the
+// documentation and/or other materials provided with the distribution.
+//
+// 3. Neither the name of the copyright holder nor the names of its
+// contributors may be used to endorse or promote products derived from
+// this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+// IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+// THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+// PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+// CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+// EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+// PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+// OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+// WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+// OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+// ADVISED OF HE POSSIBILITY OF SUCH DAMAGE.
+////////////////////////////////////////////////////////////////////////////////
+
+
+
 // TO DO:
-//
-
-// Possibly replace radial Fade with Square falloff
-// -- clean up unused functions in header
-// -- clean up unsed variables
 // -- do proper includes in glsh
-// -- investigate excluding Value from HSV Mix
-
-
-// -- STUFF FOR SEPARATE 3D NODE --
-// - add 3d projection of cells
-//
-//   AS ADJUSTMENT LAYER/USING INCOMING DATA: 
-// - add painted distribution of cells. Sampling from incoming texture layers, then only using
-//   transparency from bomber
-// - potentially add distribution per texture via RGB Values of incoming vec4 data
-// - potentially add switch to paint frequency/denisity per texture via RGB (similar to above)
 
 
 // ------------------------------------------------------------------------
@@ -24,39 +51,32 @@
 
 #version 330
 
-// ------------------------------------------------------------------------
-// INCLUDES
-// ------------------------------------------------------------------------
-
-// DO I NEED NOISE.GLSLH ?
-
-//! include | Noise.glslh
-//! include | Comp.glslh
 
 // ------------------------------------------------------------------------
 // Forward declaration from other files
 // ------------------------------------------------------------------------
 
 
-// TO DO: CLEAN UP UNUSED !
-
 float Value3D( vec3 P );
 void voronoi(vec3 position, float jitterD, int distype, out float f1, out float f2, out vec3 pos1,
          out vec3 pos2, out vec3 f1cell, out vec3 f2cell);
-vec4 CellNoise( vec3 gridcell );
 float SimplexPerlin3D(vec3 P);
-float rmfBm (vec3 P, float octaves, float lacunarity, float gain, float amp, float freqOffset);
-
 
 // for use in voronoi_simple
 float rnd_1d(vec2 x);
 float dist_Squared(float x, float y, float z);
 float softThreshold(float threshold, float bound, float value);
-
-// for radial fade
 float remap(float value, float oldMin, float oldMax, float newMin, float newMax, float multiplier);
 
-float boxStep(float low, float high, float value);
+
+
+// ------------------------------------------------------------------------
+// INCLUDES
+// ------------------------------------------------------------------------
+
+//! include | Noise.glslh
+//! include | Comp.glslh
+
 
 // ------------------------------------------------------------------------
 // MACROS
@@ -65,9 +85,8 @@ float boxStep(float low, float high, float value);
 #define whichtile(x,freq) (floor((x) * (freq)))
 
 
-
 // ------------------------------------------------------------------------
-// FUNCTIONS
+// CUSTOM FUNCTIONS
 // ------------------------------------------------------------------------
 
 
@@ -102,7 +121,7 @@ void voronoi_simple(vec3 position, float jitterD,out vec3 f1cell,float threshold
 
 
 
-// CRAPPY, currently used once.
+// simple Noise based cells
 float udn(float x,float scale,float lo,float hi)
 { 
   vec3 x_3 = vec3(x*scale);
@@ -125,27 +144,6 @@ float udnVor(float x,float scale,float lo,float hi, float threshold, float thres
   return output;
 }
 
-// A very expensive, voronoi based noise for seeding. Currently in use
-// for rotation and jitter. Potentially switch jitter to a less expensive one !
-float udnVor2(float x,float scale)
-{ 
-  vec3 x_3 = vec3(x+scale*scale);
-  float remap = cellular(x_3, 3)[2];
-  float output = remap;
-  return output;
-}
-
-
-float steppedFBM(float x,float scale,float lo,float hi, float threshold, float threshold_bound)
-{ 
-  vec3 x_3 = vec3(x*scale);
-  float remap = rmfBm(x_3,5.0,1.0,1.0,1.0,0.5);
-  remap = softThreshold(threshold,threshold_bound,remap);
-  float output = (smoothstep(0.25, 0.75, (remap)) * ((hi) - (lo)) + (lo));
-  return output;
-}
-
-
 
 
 
@@ -156,7 +154,7 @@ float steppedFBM(float x,float scale,float lo,float hi, float threshold, float t
 
 
 
-vec4 JK_texScatter( 
+vec4 JK_texScatterUV( 
 
                     vec2 UV,
                     float scale,
@@ -164,7 +162,6 @@ vec4 JK_texScatter(
                     float ScaleRndWeight,
                     float frequency,
                     float layers,
-                    float forceTile,
                     float noise_scale_A,
                     float jitter_scale,
                     float rot_min,
@@ -192,6 +189,7 @@ vec4 JK_texScatter(
                     float textureA_weight,
                     float invert_textureA,
                     float FadeA,
+                    float HardnessA,
                     float roundnessA,
                     int textureA_AlphaMode,
                     bool UseMapB,
@@ -199,6 +197,7 @@ vec4 JK_texScatter(
                     float textureB_weight,
                     float invert_textureB,
                     float FadeB,
+                    float HardnessB,
                     float roundnessB,
                     int textureB_AlphaMode,
                     bool UseMapC,
@@ -206,6 +205,7 @@ vec4 JK_texScatter(
                     float textureC_weight,
                     float invert_textureC,
                     float FadeC,
+                    float HardnessC,
                     float roundnessC,
                     int textureC_AlphaMode,
                     bool UseMapD,
@@ -213,6 +213,7 @@ vec4 JK_texScatter(
                     float textureD_weight,
                     float invert_textureD,
                     float FadeD,
+                    float HardnessD,
                     float roundnessD,
                     int textureD_AlphaMode
                 )
@@ -228,37 +229,32 @@ vec4 JK_texScatter(
                        
 
   vec4 layer_color,layer_color_B,layer_color_C,layer_color_D;
-  vec4 surface_color;
   vec4 layer_color_comb,layer_color_comb_B,layer_color_comb_C;
-  vec4 layer_opac,surface_opac;
+  vec4 layer_opac,surface_opac,surface_color;
   float layer_alpha;
   float ss, tt,tmps,tmpt;
   float home_row,home_col;
   float layer_idx,col_idx,row_idx;
-  float cell_size;
-  float half_cell;
+  float cell_size,half_cell;
   float col, row;
   float noi,noi_minor,noi_major,noi_scalrRnd;
   float rel_s, rel_t;
-  float jitter_s, jitter_t;
+  float jitter_s, jitter_t,max_jitter;
   float center_s, center_t;
   float sMin, sMax, tMin, tMax;
   float inBounds;
-  float max_jitter;
   float offset;
-  vec2 d;
-  float MixVal;
-  float Falloff;
+  vec2 square_d;
+  float Falloff,MixVal;
   float _tmpmix;
-
-  float _preview;
 
 
 // ------------------------------------------------------------------------------------------------------
 //                      Assigned Variables
 // ------------------------------------------------------------------------------------------------------                      
+  // quick hack to make it tileable
   int tmpscale = int(scale);
-  scale = mix(scale,float(tmpscale),forceTile); 
+  scale = float(tmpscale);
 
   float s = UV.x;
   float t = UV.y;
@@ -268,8 +264,6 @@ vec4 JK_texScatter(
   surface_opac = vec4(0.0,0.0,0.0,1.0);
   home_col = whichtile(s,scale);
   home_row = whichtile(t,scale);
-
-  // The following are used to generate a mix map for the HSV Shift based on HSV Mix Sliders
   float HSSVFinalMix = HSVMixA;
 
 // ------------------------------------------------------------------------------------------------------
@@ -365,11 +359,10 @@ vec4 JK_texScatter(
        			    {			
        	          max_jitter = cell_size*0.5;
 
-                   // jitter_s = udnVor(noi * (1183*layer_idx),(jitter_scale+layer_idx)*layer_idx, -max_jitter, max_jitter,0.5,1.0);
-                  // jitter_t = udnVor(noi * (999*layer_idx),(jitter_scale+layer_idx)*(layer_idx+1.0), -max_jitter, max_jitter,0.5,1.0) ;
                   jitter_s = udnVor(noi_major * (1183.127*layer_idx),(jitter_scale+layer_idx)*layer_idx, -max_jitter, max_jitter,0.5,1.0);
                   jitter_t = udnVor(noi_major * (9999.123*layer_idx),(jitter_scale+layer_idx)*(layer_idx+1.0), -max_jitter, max_jitter,0.5,1.0) ;
-                 
+         
+
 // ------------------------------------------------------------------------------------------------------
 //                      Cell Centre and Scale Randomization
 // ------------------------------------------------------------------------------------------------------                      
@@ -434,9 +427,7 @@ vec4 JK_texScatter(
 
 
 
-                      
-
-
+                    
 // ------------------------------------------------------------------------------------------------------
 //                      Start of Texture A,B,C,D
 // ------------------------------------------------------------------------------------------------------                      
@@ -475,31 +466,24 @@ vec4 JK_texScatter(
                       //     Alpha Fade Texture A       //
                       // --------------------------------//  
 
-                      // -- OLD RADIAL FADE SYSTEM
-                      // need to apply map prescaling to uvs:
-                      // float radialFader_A = length((n_uv_a)+vec2(0.5)); 
-                      // Radial Fade Texture A
-                      // radialFader_A = remap(radialFader_A,0.0,FadeA,1.0,0.0,roundnessA);
-                      // layer_color.a *= MixVal;
-
                       //Square Alpha Fadeoff
                       Falloff = FadeA+roundnessA*2.0;
-                      d = abs(((n_uv_a))+vec2(0.5));
-                      d = max(d/(1+roundnessA),0.0);
-                      d = pow(d,vec2(2.0/roundnessA));
-                      MixVal = pow(d.x+d.y,roundnessA/1.5)*(Falloff*2.0);
+                      square_d = abs(((n_uv_a))+vec2(0.5));
+                      square_d = max(square_d/(1+roundnessA),0.0);
+                      square_d = pow(square_d,vec2(2.0/roundnessA));
+                      MixVal = pow(square_d.x+square_d.y,roundnessA/1.5)*(Falloff*2.0);
                       MixVal = 1.0-MixVal;
-                      MixVal = float(MixVal)+pow(MixVal*2.0,1.0/Falloff);
+                      MixVal = float(MixVal)+pow(MixVal*HardnessA,1.0/Falloff);
                       MixVal = clamp(MixVal,0.0,1.0);
                       layer_color.a *= MixVal;
 
                       // Square Alpha Generation to cut off repeating elements due to per Map Scale Offset
-                       d = abs(((n_uv_a)));
-                       d = pow(d,vec2(2000));
-                       MixVal = (d.x+d.y);
-                       MixVal = 1.0-MixVal;
-                       MixVal = float(MixVal>0.5)+MixVal*2.0;
-                       MixVal = clamp(MixVal,0.0,1.0);
+                      square_d = abs(((n_uv_a)));
+                      square_d = pow(square_d,vec2(2000));
+                      MixVal = (square_d.x+square_d.y);
+                      MixVal = 1.0-MixVal;
+                      MixVal = float(MixVal>0.5)+MixVal*2.0;
+                      MixVal = clamp(MixVal,0.0,1.0);
 
 
                       layer_color.a *= MixVal;
@@ -544,33 +528,26 @@ vec4 JK_texScatter(
                           // ------------------------------- //
                           //     Alpha Fade Texture B       //
                           // --------------------------------//    
-
-                          // -- OLD RADIAL FADE SYSTEM
-                          // need to apply map prescaling to uvs:
-                          // float radialFader_B = length((n_uv_b)+vec2(0.5));                                         
-                          // Radial Fade Texture B
-                          // radialFader_B = remap(radialFader_B,0.0,radialFadeB,1.0,0.0,radialFade_SoftnessB);
-                          // layer_color_B.a *= radialFader_B;
-                        
+                                    
                           //Square Alpha Fadeoff
                           Falloff = FadeB+roundnessB*2.0;
-                          d = abs(((n_uv_b))+vec2(0.5));
-                          d = max(d/(1+roundnessB),0.0);
-                          d = pow(d,vec2(2.0/roundnessB));
-                          MixVal = pow(d.x+d.y,roundnessB/1.5)*(Falloff*2.0);
+                          square_d = abs(((n_uv_b))+vec2(0.5));
+                          square_d = max(square_d/(1+roundnessB),0.0);
+                          square_d = pow(square_d,vec2(2.0/roundnessB));
+                          MixVal = pow(square_d.x+square_d.y,roundnessB/1.5)*(Falloff*2.0);
                           MixVal = 1.0-MixVal;
-                          MixVal = float(MixVal)+pow(MixVal*2.0,1.0/Falloff);
+                          MixVal = float(MixVal)+pow(MixVal*HardnessB,1.0/Falloff);
                           MixVal = clamp(MixVal,0.0,1.0);
                           layer_color_B.a *= MixVal;
 
 
                           // Square Alpha Generation to cut off repeating elements due to per Map Scale Offset
-                           d = abs(((n_uv_b)));
-                           d = pow(d,vec2(2000));
-                           MixVal = (d.x+d.y);
-                           MixVal = 1.0-MixVal;
-                           MixVal = float(MixVal>0.5)+MixVal*2.0;
-                           MixVal = clamp(MixVal,0.0,1.0);
+                          square_d = abs(((n_uv_b)));
+                          square_d = pow(square_d,vec2(2000));
+                          MixVal = (square_d.x+square_d.y);
+                          MixVal = 1.0-MixVal;
+                          MixVal = float(MixVal>0.5)+MixVal*2.0;
+                          MixVal = clamp(MixVal,0.0,1.0);
 
                           layer_color_B.a *= MixVal;
 
@@ -617,33 +594,25 @@ vec4 JK_texScatter(
                           //     Alpha Fade Texture C       //
                           // --------------------------------// 
 
-                          // -- OLD RADIAL FADE SYSTEM
-                          // need to apply map prescaling to uvs:
-                          // float radialFader_C = length((n_uv_c)+vec2(0.5));                                 
-                          // Radial Fade Texture C
-                          // radialFader_C = remap(radialFader_C,0.0,radialFadeC,1.0,0.0,radialFade_SoftnessC);
-                          // layer_color_C.a *= radialFader_C;
-
-
                           //Square Alpha Fadeoff
                           Falloff = FadeC+roundnessC*2.0;
-                          d = abs(((n_uv_c))+vec2(0.5));
-                          d = max(d/(1+roundnessC),0.0);
-                          d = pow(d,vec2(2.0/roundnessC));
-                          MixVal = pow(d.x+d.y,roundnessC/1.5)*(Falloff*2.0);
+                          square_d = abs(((n_uv_c))+vec2(0.5));
+                          square_d = max(square_d/(1+roundnessC),0.0);
+                          square_d = pow(square_d,vec2(2.0/roundnessC));
+                          MixVal = pow(square_d.x+square_d.y,roundnessC/1.5)*(Falloff*2.0);
                           MixVal = 1.0-MixVal;
-                          MixVal = float(MixVal)+pow(MixVal*2.0,1.0/Falloff);
+                          MixVal = float(MixVal)+pow(MixVal*HardnessC,1.0/Falloff);
                           MixVal = clamp(MixVal,0.0,1.0);
                           layer_color_C.a *= MixVal;
 
 
                           // Square Alpha Generation to cut off repeating elements due to per Map Scale Offset
-                           d = abs(((n_uv_c)));
-                           d = pow(d,vec2(2000));
-                           MixVal = (d.x+d.y);
-                           MixVal = 1.0-MixVal;
-                           MixVal = float(MixVal>0.5)+MixVal*2.0;
-                           MixVal = clamp(MixVal,0.0,1.0);
+                          square_d = abs(((n_uv_c)));
+                          square_d = pow(square_d,vec2(2000));
+                          MixVal = (square_d.x+square_d.y);
+                          MixVal = 1.0-MixVal;
+                          MixVal = float(MixVal>0.5)+MixVal*2.0;
+                          MixVal = clamp(MixVal,0.0,1.0);
 
 
                           layer_color_C.a *= MixVal;
@@ -690,34 +659,27 @@ vec4 JK_texScatter(
                           //     Alpha Fade Texture D       //
                           // --------------------------------//                    
                           
-                          // -- OLD RADIAL FADE SYSTEM  
-                          // need to apply map prescaling to uvs:
-                          // float radialFader_D = length((n_uv_d)+vec2(0.5));  
-                          // Radial Fade Texture D
-                          // radialFader_D = remap(radialFader_D,0.0,radialFadeD,1.0,0.0,radialFade_SoftnessD);
-                          // layer_color_D.a *= radialFader_D;
-
-                          
+                        
                           //Square Alpha Fadeoff
                           Falloff = FadeD+roundnessD*2.0;
-                          d = abs(((n_uv_d))+vec2(0.5));
-                          d = max(d/(1+roundnessD),0.0);
-                          d = pow(d,vec2(2.0/roundnessD));
-                          MixVal = pow(d.x+d.y,roundnessD/1.5)*(Falloff*2.0);
+                          square_d = abs(((n_uv_d))+vec2(0.5));
+                          square_d = max(square_d/(1+roundnessD),0.0);
+                          square_d = pow(square_d,vec2(2.0/roundnessD));
+                          MixVal = pow(square_d.x+square_d.y,roundnessD/1.5)*(Falloff*2.0);
                           MixVal = 1.0-MixVal;
-                          MixVal = float(MixVal)+pow(MixVal*2.0,1.0/Falloff);
+                          MixVal = float(MixVal)+pow(MixVal*HardnessD,1.0/Falloff);
                           MixVal = clamp(MixVal,0.0,1.0);
                           layer_color_D.a *= MixVal;
 
 
 
                           // Square Alpha Generation to cut off repeating elements due to per Map Scale Offset
-                           d = abs(((n_uv_d)));
-                           d = pow(d,vec2(2000));
-                           MixVal = (d.x+d.y);
-                           MixVal = 1.0-MixVal;
-                           MixVal = float(MixVal>0.5)+MixVal*2.0;
-                           MixVal = clamp(MixVal,0.0,1.0);
+                          square_d = abs(((n_uv_d)));
+                          square_d = pow(square_d,vec2(2000));
+                          MixVal = (square_d.x+square_d.y);
+                          MixVal = 1.0-MixVal;
+                          MixVal = float(MixVal>0.5)+MixVal*2.0;
+                          MixVal = clamp(MixVal,0.0,1.0);
 
 
                           layer_color_D.a *= MixVal;
@@ -754,9 +716,9 @@ vec4 JK_texScatter(
                         
   
                         // Square Alpha Generation to cut off repeating elements due to Scale Randomization
-                        d = abs(((n_uv)));
-                        d = pow(d,vec2(2000));
-                        MixVal = (d.x+d.y);
+                        square_d = abs(((n_uv)));
+                        square_d = pow(square_d,vec2(2000));
+                        MixVal = (square_d.x+square_d.y);
                         MixVal = 1.0-MixVal;
                         MixVal = float(MixVal>0.5)+MixVal*2.0;
                         MixVal = clamp(MixVal,0.0,1.0);
@@ -831,7 +793,6 @@ vec4 JK_texScatter(
                         
 
         vec4 output = mix(surface_color,clamp(surface_color,vec4(0.0),vec4(1.0)),clampValues);
-        // output = vec4(_preview,_preview,_preview,1.0);
         return output;
 
 }
