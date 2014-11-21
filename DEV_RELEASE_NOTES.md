@@ -7,6 +7,11 @@ TBA
 
 Added Features:
 -----------
+
+- Texture Scatter UV
+A UV based Texture Bombing Node capable of creating tileable textures on a standard 
+Maya Plane
+
 - VoronoiPopcorn
 A complex procedural for creating veins, cracks, crumbled paper looks etc.
 
@@ -33,18 +38,35 @@ Feature Improvements:
 -----------
 - "Color Range to Mask" now has a basic Grade Module for selected colors. Due to the size + expense 
   of the node baking or caching is recommended in bigger layer stacks.
+
 - "Enhance Selection" Mode in Color Range to Mask was improved
+
 - Photoshop Style Selection Preview in Color Range to Mask was added
 
 Bugfixes:
 -----------
 - Legacy Cloud was broken and not behaving like Mari Cloud
+
 - svn or git files in the directories could cause the nodepack to not load properly
 
 
-Known issues:
+
+Known issues & Workarounds:
 -----------
+- (WINDOWS USERS ONLY): Texture Scatter UV will crash your display driver
+  due to an automated windows feature that lets your driver time out after
+  a few seconds of inactivity. To work around this you need to set
+
+  - EDIT/PREFERENCES/GPU TAB
+  - MAX RENDER SIZE FOR BAKING: 256 (default is 1024)
+
+  to allow Mari to split the processing into smaller chunks
+
 - Voronoi Popcorn is a rather expensive procedural. We recommend converting it to paintable.
+
+- Color Range to Mask is a rather expensive adjustment. We recommend baking it down/merging
+  applied grading.
+
 
 
 
