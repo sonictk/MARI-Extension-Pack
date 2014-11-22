@@ -53,6 +53,7 @@
         <!--===============================================================================================================-->
         <Attribute Name="Layers" PrettyName="Layers" Group="Density" Type="double" Min="1" Max="15">2</Attribute>
         <Attribute Name="Frequency" PrettyName="Density" Group="Density" Type="double" Min="0" Max="500" Logarithmic="true" >10</Attribute>
+        <Attribute Name="Clumping" PrettyName="Clumping" Group="Density" Type="double" Min="0.0" Max="1" Logarithmic="true">0</Attribute>
         <Attribute Name="NoiseScaleA" PrettyName="NoiseScale" Group="Density" Type="double" Min="0.0001" Max="100" Logarithmic="true">1</Attribute>
         <!--===============================================================================================================-->   
         <Attribute Name="scene" PrettyName="Scene Size" Group="Scale" Type="int">100</Attribute>
@@ -76,6 +77,7 @@
         <Attribute Name="HSVSeed" PrettyName="HSV Seed" Group="HSV Shift" Type="double" Min="1" Max="1000">500</Attribute>
          <!--===============================================================================================================--> 
         <Attribute Name="MapA_weight" PrettyName="Importance" Group="Texture Map A" Type="double" Min="0" Max="1">1.0</Attribute>
+        <Attribute Name="ClumpingA" PrettyName="Clumping" Group="Texture Map A" Type="double" Min="0.0" Max="1" Logarithmic="true">0</Attribute>
         <Attribute Name="MapA" PrettyName="MapA" Group="Texture Map A" Type="image" GenerateMipMaps="false"></Attribute>
         <Attribute Name="Invert_A" PrettyName="Invert Map" Group="Texture Map A" Type="bool" Min="false" Max="true">false</Attribute>
         <Attribute Name="MapA_Alpha" PrettyName="Alpha" Group="Texture Map A" Type="stringlist">From Map,From Map,Alpha is Luminance,Alpha is Inverse Luminance</Attribute>
@@ -87,6 +89,7 @@
         <!--===============================================================================================================-->
         <Attribute Name="UseMapB" PrettyName="Activate Texture B" Group="Texture Map B" Type="bool" Min="false" Max="true">false</Attribute>
         <Attribute Name="MapB_weight" PrettyName="Importance" Group="Texture Map B" Type="double" Min="0" Max="1">0.25</Attribute>
+        <Attribute Name="ClumpingB" PrettyName="Clumping" Group="Texture Map B" Type="double" Min="0.0" Max="1" Logarithmic="true">0</Attribute>
         <Attribute Name="MapB" PrettyName="MapB" Group="Texture Map B" Type="image" GenerateMipMaps="false"></Attribute>
         <Attribute Name="Invert_B" PrettyName="Invert Map" Group="Texture Map B" Type="bool" Min="false" Max="true">false</Attribute>
         <Attribute Name="MapB_Alpha" PrettyName="Alpha" Group="Texture Map B" Type="stringlist">From Map,From Map,Alpha is Luminance,Alpha is Inverse Luminance</Attribute>
@@ -98,6 +101,7 @@
         <!--===============================================================================================================-->
         <Attribute Name="UseMapC" PrettyName="Activate Texture C" Group="Texture Map C" Type="bool" Min="false" Max="true">false</Attribute>
         <Attribute Name="MapC_weight" PrettyName="Importance" Group="Texture Map C" Type="double" Min="0" Max="1">0.25</Attribute>
+        <Attribute Name="ClumpingC" PrettyName="Clumping" Group="Texture Map C" Type="double" Min="0.0" Max="1" Logarithmic="true">0</Attribute>
         <Attribute Name="MapC" PrettyName="MapC" Group="Texture Map C" Type="image" GenerateMipMaps="false"></Attribute>
         <Attribute Name="Invert_C" PrettyName="Invert Map" Group="Texture Map C" Type="bool" Min="false" Max="true">false</Attribute>
         <Attribute Name="MapC_Alpha" PrettyName="Alpha" Group="Texture Map C" Type="stringlist">From Map,From Map,Alpha is Luminance,Alpha is Inverse Luminance</Attribute>
@@ -109,6 +113,7 @@
         <!--===============================================================================================================-->
         <Attribute Name="UseMapD" PrettyName="Activate Texture D" Group="Texture Map D" Type="bool" Min="false" Max="true">false</Attribute>
         <Attribute Name="MapD_weight" PrettyName="Importance" Group="Texture Map D" Type="double" Min="0" Max="1">0.25</Attribute>
+        <Attribute Name="ClumpingD" PrettyName="Clumping" Group="Texture Map D" Type="double" Min="0.0" Max="1" Logarithmic="true">0</Attribute>
         <Attribute Name="MapD" PrettyName="MapD" Group="Texture Map D" Type="image" GenerateMipMaps="false"></Attribute>
         <Attribute Name="Invert_D" PrettyName="Invert Map" Group="Texture Map D" Type="bool" Min="false" Max="true">false</Attribute>
         <Attribute Name="MapD_Alpha" PrettyName="Alpha" Group="Texture Map D" Type="stringlist">From Map,From Map,Alpha is Luminance,Alpha is Inverse Luminance</Attribute>
@@ -178,6 +183,11 @@
                 float TexSizeC = 11 - $TexSizeC;
                 float TexSizeD = 11 - $TexSizeD;
 
+                float ClumpingA = clamp( ($Clumping-0.01) + ( ($ClumpingA-0.01)*(1.0-$Clumping)),0.0,1.0);
+                float ClumpingB = clamp( ($Clumping-0.01) + ( ($ClumpingB-0.01)*(1.0-$Clumping)),0.0,1.0);
+                float ClumpingC = clamp( ($Clumping-0.01) + ( ($ClumpingC-0.01)*(1.0-$Clumping)),0.0,1.0);
+                float ClumpingD = clamp( ($Clumping-0.01) + ( ($ClumpingD-0.01)*(1.0-$Clumping)),0.0,1.0);
+
                 float ScaleRnd = 1.0 - $ScaleRnd/4.0;
                 float ScaleRndWeight = ($ScaleRndWeight) + 1.0;
 
@@ -221,6 +231,7 @@
                                         _clamp,
                                         $MapA,
                                         MapA_weight,
+                                        ClumpingA,
                                         invertA,
                                         FadeA,
                                         HardnessA,
@@ -229,6 +240,7 @@
                                         $UseMapB,
                                         $MapB,
                                         MapB_weight,
+                                        ClumpingB,
                                         invertB,
                                         FadeB,
                                         HardnessB,
@@ -237,6 +249,7 @@
                                         $UseMapC,
                                         $MapC,
                                         MapC_weight,
+                                        ClumpingC,
                                         invertC,
                                         FadeC,
                                         HardnessC,
@@ -245,6 +258,7 @@
                                         $UseMapD,
                                         $MapD,
                                         MapD_weight,
+                                        ClumpingD,
                                         invertD,
                                         FadeD,
                                         HardnessD,

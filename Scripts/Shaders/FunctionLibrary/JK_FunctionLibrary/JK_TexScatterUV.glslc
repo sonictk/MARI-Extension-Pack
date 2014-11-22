@@ -89,6 +89,8 @@ float remap(float value, float oldMin, float oldMax, float newMin, float newMax,
 // CUSTOM FUNCTIONS
 // ------------------------------------------------------------------------
 
+//1D Random Function
+float rnd_1d(vec2 x);
 
 // voronoi cellular pattern generator from DT3D_CellularNoise.glslc 
 // but a little simplified for better performance and with a threshold.
@@ -187,6 +189,7 @@ vec4 JK_texScatterUV(
                     float clampValues,
                     sampler2D textureA,
                     float textureA_weight,
+                    float Clumping_MapA,
                     float invert_textureA,
                     float FadeA,
                     float HardnessA,
@@ -195,6 +198,7 @@ vec4 JK_texScatterUV(
                     bool UseMapB,
                     sampler2D textureB,
                     float textureB_weight,
+                    float Clumping_MapB,
                     float invert_textureB,
                     float FadeB,
                     float HardnessB,
@@ -203,6 +207,7 @@ vec4 JK_texScatterUV(
                     bool UseMapC,
                     sampler2D textureC,
                     float textureC_weight,
+                    float Clumping_MapC,
                     float invert_textureC,
                     float FadeC,
                     float HardnessC,
@@ -211,6 +216,7 @@ vec4 JK_texScatterUV(
                     bool UseMapD,
                     sampler2D textureD,
                     float textureD_weight,
+                    float Clumping_MapD,
                     float invert_textureD,
                     float FadeD,
                     float HardnessD,
@@ -247,6 +253,8 @@ vec4 JK_texScatterUV(
   vec2 square_d;
   float Falloff,MixVal;
   float _tmpmix;
+  float _clumps;
+  float seed = noise_scale_A*100;
 
 
 // ------------------------------------------------------------------------------------------------------
@@ -432,7 +440,8 @@ vec4 JK_texScatterUV(
 //                      Start of Texture A,B,C,D
 // ------------------------------------------------------------------------------------------------------                      
                           
-
+                      // generic clumping
+                      _clumps = rnd_1d(vec2(col+seed,row+seed));
 
                       // get color from texture maps and weigh them per importance
                       // importance is determined via thresholding function on a vor Noise
@@ -490,6 +499,9 @@ vec4 JK_texScatterUV(
                       layer_color.a *= MixVal;
 
                       layer_color.a  = clamp(layer_color.a,0.0,1.0);
+
+                      // Applying Clumping for Map
+                      layer_color.a *= softThreshold(Clumping_MapA,0.0,_clumps);
 
                       _tmpmix = udnVor(noi * 7438,6.0,0.0,1.0,textureA_weight,0.0);
                       
@@ -553,6 +565,9 @@ vec4 JK_texScatterUV(
                           layer_color_B.a *= MixVal;
 
                           layer_color_B.a = clamp(layer_color_B.a,0.0,1.0);
+
+                          // Applying Clumping for Map
+                          layer_color_B.a *= softThreshold(Clumping_MapB,0.0,_clumps);
 
                           _tmpmix = udnVor(noi * 1234,6.0,0.0,1.0,textureB_weight,0.0);
 
@@ -620,6 +635,9 @@ vec4 JK_texScatterUV(
 
                           layer_color_C.a = clamp(layer_color_C.a,0.0,1.0);
 
+                          // Applying Clumping for Map
+                          layer_color_C.a *= softThreshold(Clumping_MapC,0.0,_clumps);
+
                           _tmpmix = udnVor(noi * 2345,6.0,0.0,1.0,textureC_weight,0.0);
 
                           // the following is used to determine the HSV Shift Amount to be mixed into TextureC
@@ -684,7 +702,11 @@ vec4 JK_texScatterUV(
 
 
                           layer_color_D.a *= MixVal;
+
                           layer_color_D.a = clamp(layer_color_D.a,0.0,1.0);
+
+                          // Applying Clumping for Map
+                          layer_color_D.a *= softThreshold(Clumping_MapD,0.0,_clumps);
 
                           _tmpmix = udnVor(noi * 3456,6.0,0.0,1.0,textureD_weight,0.0);
 

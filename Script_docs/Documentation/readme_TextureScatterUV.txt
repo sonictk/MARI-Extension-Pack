@@ -107,6 +107,12 @@ Options: =============================================================
      The Density of Features on each Layer. Increasing this
      Value does not affect performance
 
+     Clumping
+     Higher Values here will selectively cull any textures to create
+     pcokets of features. Use the NoiseScale to Randomize the pocket
+     distribution.
+
+
      NoiseScale
      The Scale of the Noise used to create all randomization
      of the Node (Distribution, HSV Shift etc.)
