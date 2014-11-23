@@ -21,10 +21,10 @@ rotation of projection in space (for objects that are not perfectly aligned in X
 and isolation of each +/- axis
 
 - Backface Mask
-An easy way to isolate interior faces of objects for example cloth lining.
+An way to isolate interior faces of objects for example cloth lining. Work off your objects normals
 
 - Illegal Albedo Warning
-Adjustment layer that gives a visual warning when values outisde a custom range are detected.
+Adjustment layer that gives a visual warning when values outisde a custom value range are detected.
 
 - Posterize
 Simple Posterize adjustment implementation, specifying how many color/value steps you want
@@ -41,7 +41,10 @@ Feature Improvements:
 
 - "Enhance Selection" Mode in Color Range to Mask was improved
 
-- Photoshop Style Selection Preview in Color Range to Mask was added
+- Polysurface Curvature now has a "Hard Edged" Mode that will clip grey values
+
+- Polysurface Curvature now has a "Attentuate by Ambient Occlusion" Mode
+
 
 Bugfixes:
 -----------
