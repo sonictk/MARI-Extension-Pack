@@ -43,6 +43,7 @@
 
 // TO DO:
 // -- do proper includes in glsh
+// -- Reintroduce "Make Tileable" to use better home_col/home_row per layer offset
 
 
 // ------------------------------------------------------------------------
@@ -315,14 +316,16 @@ vec4 JK_texScatterUV(
               // doesn't show up as pronounced so when clumping
               // is used I am slowly reverting back to a less random
               // distribution (original way):
-              // CAREFULL BREAKS TILING !!!!
+
+              // CAREFULL BREAKS TILING !!!! Reintroduce "Make Tileable" to use
+
               // float _clumping = ( ((Clumping_MapA+Clumping_MapB+Clumping_MapC+Clumping_MapD))/4.0);
               // float tmp_layer_idx = (layer_idx/30)*clamp(_clumping,0.0,1.0);
 					    // float tmp_layer_idx = _clumping;
               // col = home_col + col_idx + tmp_layer_idx ;
 
 
-					    col = home_col + col_idx;
+					    col = home_col + col_idx ;
        				
        				if (col < 0.0 ) 
        					{
