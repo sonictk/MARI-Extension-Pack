@@ -322,7 +322,7 @@ vec4 JK_texScatterUV(
               // col = home_col + col_idx + tmp_layer_idx ;
 
 
-					    col = home_col + col_idx + tmp_layer_idx ;
+					    col = home_col + col_idx;
        				
        				if (col < 0.0 ) 
        					{
