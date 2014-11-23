@@ -89,8 +89,17 @@ float remap(float value, float oldMin, float oldMax, float newMin, float newMax,
 // CUSTOM FUNCTIONS
 // ------------------------------------------------------------------------
 
-//1D Random Function
-float rnd_1d(vec2 x);
+//1D Random Function with Thresholding
+float rnd1d_threshold(float x,float lo,float hi,float threshold,float threshold_bound)
+{
+    uint n = floatBitsToUint(x * 214013.0);
+    n = n * (n * n * 15731u + 789221u);
+    n = (n >> 9u) | 0x3F800000u;
+
+    float result =  2.0 - uintBitsToFloat(n);
+    result = softThreshold(threshold,threshold_bound,result);
+    return (smoothstep(.25, .75, (result)) * ((hi) - (lo)) + (lo));
+}
 
 // voronoi cellular pattern generator from DT3D_CellularNoise.glslc 
 // but a little simplified for better performance and with a threshold.
@@ -263,7 +272,7 @@ vec4 JK_texScatterUV(
   // quick hack to make it tileable
   int tmpscale = int(scale);
   scale = float(tmpscale);
-
+       
   float s = UV.x;
   float t = UV.y;
   cell_size = (1.0 / (scale)) ;
@@ -300,10 +309,22 @@ vec4 JK_texScatterUV(
        				// determine row and column index, wraparound
        				rel_s = s;
        				rel_t = t;
-					
-					    col = home_col + col_idx;
+
+              // Creating a temporary layer idx for use as offset on
+              // col & row. However with the offset the clumping
+              // doesn't show up as pronounced so when clumping
+              // is used I am slowly reverting back to a less random
+              // distribution (original way):
+              // CAREFULL BREAKS TILING !!!!
+              // float _clumping = ( ((Clumping_MapA+Clumping_MapB+Clumping_MapC+Clumping_MapD))/4.0);
+              // float tmp_layer_idx = (layer_idx/30)*clamp(_clumping,0.0,1.0);
+					    // float tmp_layer_idx = _clumping;
+              // col = home_col + col_idx + tmp_layer_idx ;
+
+
+					    col = home_col + col_idx + tmp_layer_idx ;
        				
-       				if (col < 0.0) 
+       				if (col < 0.0 ) 
        					{
        						rel_s = s + 1.0;
        						col = scale - 1.0;
@@ -315,9 +336,9 @@ vec4 JK_texScatterUV(
        						col = 0.0;
        					}
        				
-       				row = home_row + row_idx;
+       				row = home_row + row_idx ;
 
-       				if (row < 0.0) 
+       				if (row < 0.0 ) 
        					{
        						rel_t = t + 1.0;
        						row = scale - 1.0;
@@ -358,6 +379,9 @@ vec4 JK_texScatterUV(
         
               noi_scalrRnd = (udnVor( (noi * 12358) * layer_idx,noise_scale_A*layer_idx, 0.0, ScaleRndWeight+0.3,0.01,8.0));
 
+
+              // generic clumping
+              _clumps = rnd_1d(vec2(col+seed,row+seed));
 // ------------------------------------------------------------------------------------------------------
 //                      Jitter
 // ------------------------------------------------------------------------------------------------------                      
@@ -389,7 +413,11 @@ vec4 JK_texScatterUV(
                        
      					    float x = udn(rel_s,1.0,rel_s,0.0);
      					    float y = udn(rel_t,1.0,rel_t,0.0);
-     					    float rad = radians(udnVor( (noi_minor * 777) * layer_idx,noise_scale_A*layer_idx, rot_min, rot_max,0.5,8.0));
+     					    // float rad = radians(udnVor( (noi_minor * 777) * layer_idx,noise_scale_A*layer_idx, rot_min, rot_max,0.5,8.0));
+                  
+                  //testing
+                  float rad = radians(rnd1d_threshold( (noi_minor * 777) * layer_idx,rot_min, rot_max,0.5,8.0));
+            
                   rad = remap(rad,0.0,1.0,-1.0,1.0,1.0);
      					    float ox = (col * cell_size) + half_cell;
                   float oy = (row * cell_size) + half_cell;
@@ -440,8 +468,7 @@ vec4 JK_texScatterUV(
 //                      Start of Texture A,B,C,D
 // ------------------------------------------------------------------------------------------------------                      
                           
-                      // generic clumping
-                      _clumps = rnd_1d(vec2(col+seed,row+seed));
+
 
                       // get color from texture maps and weigh them per importance
                       // importance is determined via thresholding function on a vor Noise
@@ -503,8 +530,10 @@ vec4 JK_texScatterUV(
                       // Applying Clumping for Map
                       layer_color.a *= softThreshold(Clumping_MapA,0.0,_clumps);
 
-                      _tmpmix = udnVor(noi * 7438,6.0,0.0,1.0,textureA_weight,0.0);
-                      
+                      // _tmpmix = udnVor(noi * 7438,6.0,0.0,1.0,textureA_weight,0.0);
+                     
+                     //testing
+                     _tmpmix = rnd1d_threshold(noi * 7438,0.0,1.0,textureA_weight,0.0);
 
                       // layer_color_Comb_C is what is being accessed int the end
                       // I always write into _C in the end no matter how many textures are used
@@ -569,7 +598,10 @@ vec4 JK_texScatterUV(
                           // Applying Clumping for Map
                           layer_color_B.a *= softThreshold(Clumping_MapB,0.0,_clumps);
 
-                          _tmpmix = udnVor(noi * 1234,6.0,0.0,1.0,textureB_weight,0.0);
+                          // _tmpmix = udnVor(noi * 1234,6.0,0.0,1.0,textureB_weight,0.0);
+
+                          //testing
+                          _tmpmix = rnd1d_threshold(noi * 1234,0.0,1.0,textureB_weight,0.0);
 
                           // the following is used to determine the HSV Shift Amount to be mixed into TextureB
                           HSSVFinalMix = mix(HSVMixB,HSVMixA,_tmpmix);
@@ -638,7 +670,10 @@ vec4 JK_texScatterUV(
                           // Applying Clumping for Map
                           layer_color_C.a *= softThreshold(Clumping_MapC,0.0,_clumps);
 
-                          _tmpmix = udnVor(noi * 2345,6.0,0.0,1.0,textureC_weight,0.0);
+                          // _tmpmix = udnVor(noi * 2345,6.0,0.0,1.0,textureC_weight,0.0);
+
+                          //testing
+                          _tmpmix = rnd1d_threshold(noi * 2345,0.0,1.0,textureC_weight,0.0);
 
                           // the following is used to determine the HSV Shift Amount to be mixed into TextureC
                           HSSVFinalMix = mix(HSVMixC,HSSVFinalMix,_tmpmix);
@@ -708,7 +743,10 @@ vec4 JK_texScatterUV(
                           // Applying Clumping for Map
                           layer_color_D.a *= softThreshold(Clumping_MapD,0.0,_clumps);
 
-                          _tmpmix = udnVor(noi * 3456,6.0,0.0,1.0,textureD_weight,0.0);
+                          // _tmpmix = udnVor(noi * 3456,6.0,0.0,1.0,textureD_weight,0.0);
+
+                          //testing
+                          _tmpmix = rnd1d_threshold(noi * 3456,0.0,1.0,textureD_weight,0.0);
 
 
                           // the following is used to determine the HSV Shift Amount to be mixed into TextureC
@@ -729,6 +767,13 @@ vec4 JK_texScatterUV(
                         layer_color_comb_C.r += udnVor(noi * 1234,HSVSeed+(HSVSeed+2.0),A_minH,A_maxH,0.5,1.0);                                       
                         layer_color_comb_C.g *= udnVor(noi * 2345,HSVSeed,A_minS,A_maxS,0.5,1.0);
                         layer_color_comb_C.b *= (udnVor(noi * 3456,HSVSeed-(HSVSeed/4.0),A_minV+ValueOffset,A_maxV+ValueOffset,0.5,1.0)) + ((LayerAttenuation*layer_idx)/layers);                               
+                        
+                        //testing
+                        // layer_color_comb_C.r += rnd1d_threshold(noi * 1234,A_minH,A_maxH,0.5,1.0);
+                        // layer_color_comb_C.g *= rnd1d_threshold(noi * 2345,A_minS,A_maxS,0.5,1.0);
+                        // layer_color_comb_C.b *= rnd1d_threshold(noi * 3456,A_minV+ValueOffset,A_maxV+ValueOffset,0.5,1.0) + ((LayerAttenuation*layer_idx)/layers);
+
+
                         layer_color_comb_C = mriHsv2Rgb(layer_color_comb_C);
                         layer_color_comb_C = mix(orig_color_comb_C,layer_color_comb_C,HSSVFinalMix);
 
