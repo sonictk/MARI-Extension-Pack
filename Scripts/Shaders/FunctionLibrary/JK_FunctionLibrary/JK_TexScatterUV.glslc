@@ -43,7 +43,6 @@
 
 // TO DO:
 // -- do proper includes in glsh
-// -- Reintroduce "Make Tileable" to use better home_col/home_row per layer offset
 
 
 // ------------------------------------------------------------------------
@@ -175,6 +174,7 @@ vec4 JK_texScatterUV(
                     float frequency,
                     float layers,
                     float noise_scale_A,
+                    bool forceTile,
                     float jitter_scale,
                     float rot_min,
                     float rot_max,
@@ -264,7 +264,12 @@ vec4 JK_texScatterUV(
   float Falloff,MixVal;
   float _tmpmix;
   float _clumps;
-  float seed = noise_scale_A*100;
+
+
+  // Used for creating the more random distribution when forceTile is turned off
+  // since it gets added to col + row variables it is set to 0 by default and only
+  // gets changed when forceTile is turned off
+  float tmp_layer_idx;
 
 
 // ------------------------------------------------------------------------------------------------------
@@ -283,6 +288,8 @@ vec4 JK_texScatterUV(
   home_col = whichtile(s,scale);
   home_row = whichtile(t,scale);
   float HSSVFinalMix = HSVMixA;
+  float seed = noise_scale_A*100;
+
 
 // ------------------------------------------------------------------------------------------------------
 //                      ROW/COL/LAYER INDEXING
@@ -311,21 +318,29 @@ vec4 JK_texScatterUV(
        				rel_s = s;
        				rel_t = t;
 
-              // Creating a temporary layer idx for use as offset on
-              // col & row. However with the offset the clumping
-              // doesn't show up as pronounced so when clumping
-              // is used I am slowly reverting back to a less random
-              // distribution (original way):
+              // Always setting tmp_layer idx to 0 for each loop
+              tmp_layer_idx = 0.0;
 
-              // CAREFULL BREAKS TILING !!!! Reintroduce "Make Tileable" to use
+              if (forceTile == false)
 
-              // float _clumping = ( ((Clumping_MapA+Clumping_MapB+Clumping_MapC+Clumping_MapD))/4.0);
-              // float tmp_layer_idx = (layer_idx/30)*clamp(_clumping,0.0,1.0);
-					    // float tmp_layer_idx = _clumping;
-              // col = home_col + col_idx + tmp_layer_idx ;
+                {
+                  // Creating a temporary layer idx for use as offset on
+                  // col & row. However with the offset the clumping
+                  // doesn't show up as pronounced so when clumping
+                  // is used I am slowly reverting back to a less random
+                  // distribution (original way):
+                  // This breaks the tiling but generally gives better 
+                  // random distribution. It is being used when ForceTile
+                  // is turned off:
+
+                  tmp_layer_idx = ( ((Clumping_MapA+Clumping_MapB+Clumping_MapC+Clumping_MapD))/4.0);
+                  tmp_layer_idx = ( tmp_layer_idx == 0.0) ? 1.0 : tmp_layer_idx;
+                  tmp_layer_idx = (layer_idx/30)*clamp(tmp_layer_idx,0.0,1.0);
+
+                }
 
 
-					    col = home_col + col_idx ;
+					    col = home_col + col_idx + tmp_layer_idx;
        				
        				if (col < 0.0 ) 
        					{
@@ -339,7 +354,7 @@ vec4 JK_texScatterUV(
        						col = 0.0;
        					}
        				
-       				row = home_row + row_idx ;
+       				row = home_row + row_idx + tmp_layer_idx;
 
        				if (row < 0.0 ) 
        					{

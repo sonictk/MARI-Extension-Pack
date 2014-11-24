@@ -55,6 +55,7 @@
         <Attribute Name="Frequency" PrettyName="Density" Group="Density" Type="double" Min="0" Max="500" Logarithmic="true" >10</Attribute>
         <Attribute Name="Clumping" PrettyName="Clumping" Group="Density" Type="double" Min="0.0" Max="1" Logarithmic="true">0</Attribute>
         <Attribute Name="NoiseScaleA" PrettyName="NoiseScale" Group="Density" Type="double" Min="0.0001" Max="100" Logarithmic="true">1</Attribute>
+        <Attribute Name="ForceTile" PrettyName="Force to Tileable" Group="Density" Type="bool" Min="false" Max="true">true</Attribute>
         <!--===============================================================================================================-->   
         <Attribute Name="scene" PrettyName="Scene Size" Group="Scale" Type="int">100</Attribute>
         <Attribute Name="Scale" PrettyName="Scale" Group="Scale" Type="double" Min="0.001" Max="100">40</Attribute>
@@ -207,6 +208,7 @@
                                         Frequency,
                                         $Layers,
                                         NoiseScaleA,
+                                        $ForceTile,
                                         jitterScale,
                                         $rot_min,
                                         $rot_max,

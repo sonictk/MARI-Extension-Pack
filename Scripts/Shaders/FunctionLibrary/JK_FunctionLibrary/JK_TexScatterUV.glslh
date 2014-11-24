@@ -53,6 +53,7 @@ vec4 JK_texScatterUV(
 					float frequency,
 					float layers,
 					float noise_scale_A,
+					bool forceTile,
 					float jitter_scale,
 					float rot_min,
 					float rot_max,

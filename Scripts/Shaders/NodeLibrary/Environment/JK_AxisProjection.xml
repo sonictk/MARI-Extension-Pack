@@ -129,11 +129,10 @@
 
     // fbm function for jitter effect.
     float J = vlnoise(_P/vec3(pow_J),$jitter);
-    // float J = smoothfBm(_P/vec3(pow_J),6.0,1.0,1.0,1.0,0.5)-1.0;
 
     // mix between jittered and unjittered result. mix is never 100percent jittered since values are too high
     vec3 P = mix(_P,_P + vec3(J),$jitter/4);
-    // coord = mix(coord,coord + vec3(J),$jitter/4);
+
 
     // separating positive and negative ps to determine direction
     float X = clamp(P.x,0.000000000,1000000000000000.0);
