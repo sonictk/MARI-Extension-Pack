@@ -192,10 +192,14 @@ vec4 JK_texScatterUV(
                     float A_maxS,
                     float A_minV,
                     float A_maxV,
-                    float HSVMixA,
-                    float HSVMixB,
-                    float HSVMixC,
-                    float HSVMixD,
+                    float HSMixA,
+                    float HSMixB,
+                    float HSMixC,
+                    float HSMixD,
+                    float ValMixA,
+                    float ValMixB,
+                    float ValMixC,
+                    float ValMixD,
                     float clampValues,
                     sampler2D textureA,
                     float textureA_weight,
@@ -287,8 +291,12 @@ vec4 JK_texScatterUV(
   surface_opac = vec4(0.0,0.0,0.0,1.0);
   home_col = whichtile(s,scale);
   home_row = whichtile(t,scale);
-  float HSSVFinalMix = HSVMixA;
   float seed = noise_scale_A*100;
+
+  // Variable for Hue Saturation Shift Mix of each texture slot
+  float HSFinalMix = HSMixA;
+  // Variable for Value Shift Mix of each texture slot
+  float ValFinalMix = ValMixA;
 
 
 // ------------------------------------------------------------------------------------------------------
@@ -431,9 +439,9 @@ vec4 JK_texScatterUV(
                        
      					    float x = udn(rel_s,1.0,rel_s,0.0);
      					    float y = udn(rel_t,1.0,rel_t,0.0);
-     					    // float rad = radians(udnVor( (noi_minor * 777) * layer_idx,noise_scale_A*layer_idx, rot_min, rot_max,0.5,8.0));
-                  
-                  //testing
+     					    
+                  // float rad = radians(udnVor( (noi_minor * 777) * layer_idx,noise_scale_A*layer_idx, rot_min, rot_max,0.5,8.0));
+                  // testing - slightly quicker way to do this:
                   float rad = radians(rnd1d_threshold( (noi_minor * 777) * layer_idx,rot_min, rot_max,0.5,8.0));
             
                   rad = remap(rad,0.0,1.0,-1.0,1.0,1.0);
@@ -548,9 +556,8 @@ vec4 JK_texScatterUV(
                       // Applying Clumping for Map
                       layer_color.a *= softThreshold(Clumping_MapA,0.0,_clumps);
 
-                      // _tmpmix = udnVor(noi * 7438,6.0,0.0,1.0,textureA_weight,0.0);
-                     
-                     //testing
+                      // _tmpmix = udnVor(noi * 7438,6.0,0.0,1.0,textureA_weight,0.0);         
+                      //testing - a slightly faster way to do this:
                      _tmpmix = rnd1d_threshold(noi * 7438,0.0,1.0,textureA_weight,0.0);
 
                       // layer_color_Comb_C is what is being accessed int the end
@@ -617,12 +624,12 @@ vec4 JK_texScatterUV(
                           layer_color_B.a *= softThreshold(Clumping_MapB,0.0,_clumps);
 
                           // _tmpmix = udnVor(noi * 1234,6.0,0.0,1.0,textureB_weight,0.0);
-
-                          //testing
+                          //testing - a slightly faster way to do this:
                           _tmpmix = rnd1d_threshold(noi * 1234,0.0,1.0,textureB_weight,0.0);
 
                           // the following is used to determine the HSV Shift Amount to be mixed into TextureB
-                          HSSVFinalMix = mix(HSVMixB,HSVMixA,_tmpmix);
+                          HSFinalMix = mix(HSMixB,HSMixA,_tmpmix);
+                          ValFinalMix = mix(ValMixB,ValMixA,_tmpmix);
 
                           layer_color_comb = mix(layer_color_B,layer_color_comb_C,_tmpmix);
                           layer_color_comb_C = layer_color_comb;
@@ -689,12 +696,12 @@ vec4 JK_texScatterUV(
                           layer_color_C.a *= softThreshold(Clumping_MapC,0.0,_clumps);
 
                           // _tmpmix = udnVor(noi * 2345,6.0,0.0,1.0,textureC_weight,0.0);
-
-                          //testing
+                          //testing - a slightly faster way to do this:
                           _tmpmix = rnd1d_threshold(noi * 2345,0.0,1.0,textureC_weight,0.0);
 
                           // the following is used to determine the HSV Shift Amount to be mixed into TextureC
-                          HSSVFinalMix = mix(HSVMixC,HSSVFinalMix,_tmpmix);
+                          HSFinalMix = mix(HSMixC,HSFinalMix,_tmpmix);
+                          ValFinalMix = mix(ValMixC,ValFinalMix,_tmpmix);
 
                           layer_color_comb_B = mix(layer_color_C,layer_color_comb_C,_tmpmix);
                           layer_color_comb_C = layer_color_comb_B;
@@ -762,13 +769,13 @@ vec4 JK_texScatterUV(
                           layer_color_D.a *= softThreshold(Clumping_MapD,0.0,_clumps);
 
                           // _tmpmix = udnVor(noi * 3456,6.0,0.0,1.0,textureD_weight,0.0);
-
-                          //testing
+                          //testing - a slightly faster way to do this:
                           _tmpmix = rnd1d_threshold(noi * 3456,0.0,1.0,textureD_weight,0.0);
 
 
                           // the following is used to determine the HSV Shift Amount to be mixed into TextureC
-                          HSSVFinalMix = mix(HSVMixD,HSSVFinalMix,_tmpmix);
+                          HSFinalMix = mix(HSMixD,HSFinalMix,_tmpmix);
+                          ValFinalMix = mix(ValMixD,ValFinalMix,_tmpmix);
 
 
                           layer_color_comb_C = mix(layer_color_D,layer_color_comb_C,_tmpmix);
@@ -780,20 +787,32 @@ vec4 JK_texScatterUV(
 // ------------------------------------------------------------------------------------------------------                      
                         
                         
-                        vec4 orig_color_comb_C =layer_color_comb_C;
+
                         layer_color_comb_C = mriRgb2Hsv(layer_color_comb_C);
+                        vec4 orig_color_comb_C =layer_color_comb_C;
+
+                        // Generating Hue/Sat Shift
                         layer_color_comb_C.r += udnVor(noi * 1234,HSVSeed+(HSVSeed+2.0),A_minH,A_maxH,0.5,1.0);                                       
                         layer_color_comb_C.g *= udnVor(noi * 2345,HSVSeed,A_minS,A_maxS,0.5,1.0);
+
+                        // mixing Hue Saturation Mix Contribution from each Tex Slot
+                        layer_color_comb_C = mix(orig_color_comb_C,layer_color_comb_C,HSFinalMix); 
+                        
+                        // Generating Val Shift                  
                         layer_color_comb_C.b *= (udnVor(noi * 3456,HSVSeed-(HSVSeed/4.0),A_minV+ValueOffset,A_maxV+ValueOffset,0.5,1.0)) + ((LayerAttenuation*layer_idx)/layers);                               
                         
-                        //testing
+                        // mixing Value Mix Contribution from each Tex Slot
+                        layer_color_comb_C.b = mix(orig_color_comb_C.b,layer_color_comb_C.b,ValFinalMix); 
+
+                        //testing - a slightly faster way to do this:
                         // layer_color_comb_C.r += rnd1d_threshold(noi * 1234,A_minH,A_maxH,0.5,1.0);
                         // layer_color_comb_C.g *= rnd1d_threshold(noi * 2345,A_minS,A_maxS,0.5,1.0);
                         // layer_color_comb_C.b *= rnd1d_threshold(noi * 3456,A_minV+ValueOffset,A_maxV+ValueOffset,0.5,1.0) + ((LayerAttenuation*layer_idx)/layers);
 
 
                         layer_color_comb_C = mriHsv2Rgb(layer_color_comb_C);
-                        layer_color_comb_C = mix(orig_color_comb_C,layer_color_comb_C,HSSVFinalMix);
+                
+                        // layer_color_comb_C = mix(orig_color_comb_C,layer_color_comb_C,HSFinalMix);
 
 
 // ------------------------------------------------------------------------------------------------------

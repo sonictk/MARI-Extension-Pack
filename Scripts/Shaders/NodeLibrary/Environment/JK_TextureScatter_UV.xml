@@ -51,19 +51,19 @@
     </Inputs>
     <Attributes>
         <!--===============================================================================================================-->
-        <Attribute Name="Layers" PrettyName="Layers" Group="Density" Type="double" Min="1" Max="15">2</Attribute>
-        <Attribute Name="Frequency" PrettyName="Density" Group="Density" Type="double" Min="0" Max="500" Logarithmic="true" >10</Attribute>
-        <Attribute Name="Clumping" PrettyName="Clumping" Group="Density" Type="double" Min="0.0" Max="1" Logarithmic="true">0</Attribute>
-        <Attribute Name="NoiseScaleA" PrettyName="NoiseScale" Group="Density" Type="double" Min="0.0001" Max="100" Logarithmic="true">1</Attribute>
-        <Attribute Name="ForceTile" PrettyName="Force to Tileable" Group="Density" Type="bool" Min="false" Max="true">true</Attribute>
+        <Attribute Name="Frequency" PrettyName="Density" Group="Density" Type="double" Min="0" Max="500" Logarithmic="true" Description="Cell Density of each Layer. Higher Values do not affect performance">10</Attribute>
+        <Attribute Name="Layers" PrettyName="Layers" Group="Density" Type="double" Min="1" Max="15" Description="How many iteration are being run. Performance will slow down linearly with higer numbers">2</Attribute>
+        <Attribute Name="Clumping" PrettyName="Clumping" Group="Density" Type="double" Min="0.0" Max="1" Logarithmic="true" Description="Removes cells so distribution is sparser">0</Attribute>
+        <Attribute Name="NoiseScaleA" PrettyName="Noise" Group="Density" Type="double" Min="0.0001" Max="100" Logarithmic="true" Description="Noise Scales. Very low values will usually give a slightly higher density but overall works like a Seed">1</Attribute>
+        <Attribute Name="ForceTile" PrettyName="Force to Tileable" Group="Density" Type="bool" Min="false" Max="true" Description="Switches between a more random distribution and a seamless one">true</Attribute>
         <!--===============================================================================================================-->   
-        <Attribute Name="scene" PrettyName="Scene Size" Group="Scale" Type="int">100</Attribute>
-        <Attribute Name="Scale" PrettyName="Scale" Group="Scale" Type="double" Min="0.001" Max="100">40</Attribute>
-        <Attribute Name="ScaleRnd" PrettyName="ScaleRnd" Group="Scale" Type="double" Min="0.00" Max="1">0.1</Attribute>
-        <Attribute Name="ScaleRndWeight" PrettyName="% Original" Group="Scale" Type="double" Min="0.00" Max="1">0.1</Attribute>      
+        <Attribute Name="scene" PrettyName="Scene Size" Group="Scale" Type="int" Description="A global modifier for scene size to change slider ranges">100</Attribute>
+        <Attribute Name="Scale" PrettyName="Scale" Group="Scale" Type="double" Min="0.001" Max="100" Description="Overall UV Scale">40</Attribute>
+        <Attribute Name="ScaleRnd" PrettyName="ScaleRnd" Group="Scale" Type="double" Min="0.00" Max="1" Description="Introduces a random scale offset to each cell">0.1</Attribute>
+        <Attribute Name="ScaleRndWeight" PrettyName="% Original" Group="Scale" Type="double" Min="0.00" Max="1" Description="Determines what percentage of cells to keep at original full scale">0.1</Attribute>      
         <!--===============================================================================================================-->
-        <Attribute Name="rot_min" PrettyName="Min Rotation" Group="Rotation" Type="double" Min="-360" Max="360">-360</Attribute>
-        <Attribute Name="rot_max" PrettyName="Max Rotation" Group="Rotation" Type="double" Min="-360" Max="360">180</Attribute>
+        <Attribute Name="rot_min" PrettyName="Min Rotation" Group="Rotation" Type="double" Min="-360" Max="360" Description="The min-max rotation of each cell">-360</Attribute>
+        <Attribute Name="rot_max" PrettyName="Max Rotation" Group="Rotation" Type="double" Min="-360" Max="360" Description="The min-max rotation of each cell">180</Attribute>
         <!--===============================================================================================================-->
         <Attribute Name="BlendMode" PrettyName="Cell Blend Mode" Group="HSV Shift" Type="stringlist">Over,Over,Add,Screen,Multiply,Soft Light,Hard Light,Hard Mix,Overlay</Attribute>
         <Attribute Name="A_minH" PrettyName="Min Hue" Group="HSV Shift" Type="double" Min="-180" Max="180">0</Attribute>
@@ -83,7 +83,8 @@
         <Attribute Name="Invert_A" PrettyName="Invert Map" Group="Texture Map A" Type="bool" Min="false" Max="true">false</Attribute>
         <Attribute Name="MapA_Alpha" PrettyName="Alpha" Group="Texture Map A" Type="stringlist">From Map,From Map,Alpha is Luminance,Alpha is Inverse Luminance</Attribute>
         <Attribute Name="TexSizeA" PrettyName="Scale" Group="Texture Map A" Type="double" Min="1" Max="10">10</Attribute>
-        <Attribute Name="HSVMixA" PrettyName="HSV Shift Mix" Group="Texture Map A" Type="double" Min="0" Max="1">1</Attribute>      
+        <Attribute Name="HSMixA" PrettyName="Hue/Sat Shift Mix" Group="Texture Map A" Type="double" Min="0" Max="1">1</Attribute>      
+        <Attribute Name="ValMixA" PrettyName="Value Shift Mix" Group="Texture Map A" Type="double" Min="0" Max="1">1</Attribute>      
         <Attribute Name="FadeA" PrettyName="Edge Falloff" Group="Texture Map A" Type="double" Min="0" Max="1">0</Attribute>  
         <Attribute Name="HardnessA" PrettyName="Edge Softness" Group="Texture Map A" Type="double" Min="0.0" Max="1.0">0.0</Attribute>  
         <Attribute Name="roundnessA" PrettyName="Edge Roundness" Group="Texture Map A" Type="double" Min="0" Max="1">0</Attribute>  
@@ -95,7 +96,8 @@
         <Attribute Name="Invert_B" PrettyName="Invert Map" Group="Texture Map B" Type="bool" Min="false" Max="true">false</Attribute>
         <Attribute Name="MapB_Alpha" PrettyName="Alpha" Group="Texture Map B" Type="stringlist">From Map,From Map,Alpha is Luminance,Alpha is Inverse Luminance</Attribute>
         <Attribute Name="TexSizeB" PrettyName="Scale" Group="Texture Map B" Type="double" Min="1" Max="10">10</Attribute>
-        <Attribute Name="HSVMixB" PrettyName="HSV Shift Mix" Group="Texture Map B" Type="double" Min="0" Max="1">1</Attribute>      
+        <Attribute Name="HSMixB" PrettyName="Hue/Sat Shift Mix" Group="Texture Map B" Type="double" Min="0" Max="1">1</Attribute>      
+        <Attribute Name="ValMixB" PrettyName="Value Shift Mix" Group="Texture Map B" Type="double" Min="0" Max="1">1</Attribute>      
         <Attribute Name="FadeB" PrettyName="Edge Falloff" Group="Texture Map B" Type="double" Min="0" Max="1">0</Attribute>  
         <Attribute Name="HardnessB" PrettyName="Edge Softness" Group="Texture Map B" Type="double" Min="0.0" Max="1.0">0.0</Attribute>  
         <Attribute Name="roundnessB" PrettyName="Edge Roundness" Group="Texture Map B" Type="double" Min="0" Max="1">0</Attribute>  
@@ -107,7 +109,8 @@
         <Attribute Name="Invert_C" PrettyName="Invert Map" Group="Texture Map C" Type="bool" Min="false" Max="true">false</Attribute>
         <Attribute Name="MapC_Alpha" PrettyName="Alpha" Group="Texture Map C" Type="stringlist">From Map,From Map,Alpha is Luminance,Alpha is Inverse Luminance</Attribute>
         <Attribute Name="TexSizeC" PrettyName="Scale" Group="Texture Map C" Type="double" Min="1" Max="10">10</Attribute>
-        <Attribute Name="HSVMixC" PrettyName="HSV Shift Mix" Group="Texture Map C" Type="double" Min="0" Max="1">1</Attribute>      
+        <Attribute Name="HSMixC" PrettyName="Hue/Sat Shift Mix" Group="Texture Map C" Type="double" Min="0" Max="1">1</Attribute>      
+        <Attribute Name="ValMixC" PrettyName="Value Shift Mix" Group="Texture Map C" Type="double" Min="0" Max="1">1</Attribute>      
         <Attribute Name="FadeC" PrettyName="Edge Falloff" Group="Texture Map C" Type="double" Min="0" Max="1">0</Attribute>  
         <Attribute Name="HardnessC" PrettyName="Edge Softness" Group="Texture Map C" Type="double" Min="0.0" Max="1.0">0.0</Attribute>  
         <Attribute Name="roundnessC" PrettyName="Edge Roundness" Group="Texture Map C" Type="double" Min="0" Max="1">0</Attribute>  
@@ -119,7 +122,8 @@
         <Attribute Name="Invert_D" PrettyName="Invert Map" Group="Texture Map D" Type="bool" Min="false" Max="true">false</Attribute>
         <Attribute Name="MapD_Alpha" PrettyName="Alpha" Group="Texture Map D" Type="stringlist">From Map,From Map,Alpha is Luminance,Alpha is Inverse Luminance</Attribute>
         <Attribute Name="TexSizeD" PrettyName="Scale" Group="Texture Map D" Type="double" Min="1" Max="10">10</Attribute>
-        <Attribute Name="HSVMixD" PrettyName="HSV Shift Mix" Group="Texture Map D" Type="double" Min="0" Max="1">1</Attribute>      
+        <Attribute Name="HSMixD" PrettyName="Hue/Sat Shift Mix" Group="Texture Map D" Type="double" Min="0" Max="1">1</Attribute>      
+        <Attribute Name="ValMixD" PrettyName="Value Shift Mix" Group="Texture Map D" Type="double" Min="0" Max="1">1</Attribute>      
         <Attribute Name="FadeD" PrettyName="Edge Falloff" Group="Texture Map D" Type="double" Min="0" Max="1">0</Attribute>  
         <Attribute Name="HardnessD" PrettyName="Edge Softness" Group="Texture Map D" Type="double" Min="0.0" Max="1.0">0.0</Attribute>  
         <Attribute Name="roundnessD" PrettyName="Edge Roundness" Group="Texture Map D" Type="double" Min="0" Max="1">0</Attribute>  
@@ -226,10 +230,14 @@
                                         $A_maxS,
                                         $A_minV,
                                         $A_maxV,
-                                        $HSVMixA,
-                                        $HSVMixB,
-                                        $HSVMixC,
-                                        $HSVMixD,
+                                        $HSMixA,
+                                        $HSMixB,
+                                        $HSMixC,
+                                        $HSMixD,
+                                        $ValMixA,
+                                        $ValMixB,
+                                        $ValMixC,
+                                        $ValMixD,
                                         _clamp,
                                         $MapA,
                                         MapA_weight,
