@@ -57,15 +57,19 @@
         <Attribute Name="NoiseScaleA" PrettyName="Noise" Group="Density" Type="double" Min="0.0001" Max="100" Logarithmic="true" Description="Noise Scales. Very low values will usually give a slightly higher density but overall works like a Seed">1</Attribute>
         <Attribute Name="ForceTile" PrettyName="Force to Tileable" Group="Density" Type="bool" Min="false" Max="true" Description="Switches between a more random distribution and a seamless one">true</Attribute>
         <!--===============================================================================================================-->   
-        <Attribute Name="scene" PrettyName="Scene Size" Group="Scale" Type="int" Description="A global modifier for scene size to change slider ranges">100</Attribute>
-        <Attribute Name="Scale" PrettyName="Scale" Group="Scale" Type="double" Min="0.001" Max="100" Description="Overall UV Scale">40</Attribute>
-        <Attribute Name="ScaleRnd" PrettyName="ScaleRnd" Group="Scale" Type="double" Min="0.00" Max="1" Description="Introduces a random scale offset to each cell">0.1</Attribute>
-        <Attribute Name="ScaleRndWeight" PrettyName="% Original" Group="Scale" Type="double" Min="0.00" Max="1" Description="Determines what percentage of cells to keep at original full scale">0.1</Attribute>      
+        <Attribute Name="scene" PrettyName="Scene Size" Group="Global Scale" Type="int" Description="A global modifier for scene size to change slider ranges">100</Attribute>
+        <Attribute Name="Scale" PrettyName="Scale" Group="Global Scale" Type="double" Min="0.001" Max="100" Description="Overall UV Scale">40</Attribute>
+        <Attribute Name="TexSizeA" PrettyName="Scale Map A" Group="Global Scale" Type="double" Min="1" Max="10">10</Attribute>
+        <Attribute Name="TexSizeB" PrettyName="Scale Map B" Group="Global Scale" Type="double" Min="1" Max="10">10</Attribute>
+        <Attribute Name="TexSizeC" PrettyName="Scale Map C" Group="Global Scale" Type="double" Min="1" Max="10">10</Attribute>
+        <Attribute Name="TexSizeD" PrettyName="Scale Map D" Group="Global Scale" Type="double" Min="1" Max="10">10</Attribute> 
         <!--===============================================================================================================-->
-        <Attribute Name="TexSizeA" PrettyName="Scale Map A" Group="Per Map Scale" Type="double" Min="1" Max="10">10</Attribute>
-        <Attribute Name="TexSizeB" PrettyName="Scale Map B" Group="Per Map Scale" Type="double" Min="1" Max="10">10</Attribute>
-        <Attribute Name="TexSizeC" PrettyName="Scale Map C" Group="Per Map Scale" Type="double" Min="1" Max="10">10</Attribute>
-        <Attribute Name="TexSizeD" PrettyName="Scale Map D" Group="Per Map Scale" Type="double" Min="1" Max="10">10</Attribute> 
+        <Attribute Name="ScaleRnd" PrettyName="ScaleRnd" Group="Scale Randomization" Type="double" Min="0.00" Max="1" Description="Introduces a random scale offset to each cell">0.1</Attribute>
+        <Attribute Name="ScaleRndWeight" PrettyName="% Original" Group="Scale Randomization" Type="double" Min="0.00" Max="1" Description="Determines what percentage of cells to keep at original full scale">0.1</Attribute>      
+        <Attribute Name="RndSizeA" PrettyName="Map A Mix" Group="Scale Randomization" Type="double" Min="0" Max="1">1</Attribute>
+        <Attribute Name="RndSizeB" PrettyName="Map B Mix" Group="Scale Randomization" Type="double" Min="0" Max="1">1</Attribute>
+        <Attribute Name="RndSizeC" PrettyName="Map C Mix" Group="Scale Randomization" Type="double" Min="0" Max="1">1</Attribute>
+        <Attribute Name="RndSizeD" PrettyName="Map D Mix" Group="Scale Randomization" Type="double" Min="0" Max="1">1</Attribute>
         <!--===============================================================================================================-->
         <Attribute Name="rot_min" PrettyName="Min Rotation" Group="Rotation" Type="double" Min="-360" Max="360" Description="The min-max rotation of each cell">-360</Attribute>
         <Attribute Name="rot_max" PrettyName="Max Rotation" Group="Rotation" Type="double" Min="-360" Max="360" Description="The min-max rotation of each cell">180</Attribute>
@@ -133,7 +137,7 @@
     <Groups>
         <Group Name="Rotation" Expanded="false"></Group>
         <Group Name="HSV Shift" Expanded="false"></Group>
-        <Group Name="Per Map Scale" Expanded="false"></Group>
+        <Group Name="Scale Randomization" Expanded="false"></Group>
         <Group Name="Texture Map A" Expanded="false"></Group>
         <Group Name="Texture Map B" Expanded="false"></Group>
         <Group Name="Texture Map C" Expanded="false"></Group>
@@ -223,6 +227,10 @@
                                         TexSizeB,
                                         TexSizeC,
                                         TexSizeD,
+                                        $RndSizeA,
+                                        $RndSizeB,
+                                        $RndSizeC,
+                                        $RndSizeD,
                                         $HSVSeed,
                                         $ValOffset,
                                         $LayerAtten,

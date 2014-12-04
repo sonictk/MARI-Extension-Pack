@@ -43,6 +43,8 @@
 
 // TO DO:
 // -- do proper includes in glsh
+// -- it could be possible to introduce perMap rndScale at the ScaleRandomizer point
+//    This will require mixing of rndScale Values though with additional if statements.
 
 
 // ------------------------------------------------------------------------
@@ -183,6 +185,10 @@ vec4 JK_texScatterUV(
                     float MapBSize,
                     float MapCSize,
                     float MapDSize,
+                    float RndSizeA,
+                    float RndSizeB,
+                    float RndSizeC,
+                    float RndSizeD,
                     float HSVSeed,
                     float ValueOffset,
                     float LayerAttenuation,
@@ -266,9 +272,11 @@ vec4 JK_texScatterUV(
   float offset;
   vec2 square_d;
   float Falloff,MixVal;
-  float _tmpmix;
   float _clumps;
 
+  // Mixes for different Texture Slots
+  float TexMixA,TexMixB,TexMixC,TexMixD;
+  
 
   // Used for creating the more random distribution when forceTile is turned off
   // since it gets added to col + row variables it is set to 0 by default and only
@@ -292,6 +300,8 @@ vec4 JK_texScatterUV(
   home_col = whichtile(s,scale);
   home_row = whichtile(t,scale);
   float seed = noise_scale_A*100;
+  float ScaleRnd_Orig = ScaleRnd;
+
 
   // Variable for Hue Saturation Shift Mix of each texture slot
   float HSFinalMix = HSMixA;
@@ -408,6 +418,7 @@ vec4 JK_texScatterUV(
 
               // generic clumping
               _clumps = rnd_1d(vec2(col+seed,row+seed));
+
 // ------------------------------------------------------------------------------------------------------
 //                      Jitter
 // ------------------------------------------------------------------------------------------------------                      
@@ -422,12 +433,29 @@ vec4 JK_texScatterUV(
          
 
 // ------------------------------------------------------------------------------------------------------
+//                      Texture Weights/Mixes
+// ------------------------------------------------------------------------------------------------------                      
+
+                  TexMixA = rnd1d_threshold(noi * 7438,0.0,1.0,textureA_weight,0.0);
+    
+                  if (UseMapB) {TexMixB = rnd1d_threshold(noi * 1234,0.0,1.0,textureB_weight,0.0);}
+                  if (UseMapC) {TexMixC = rnd1d_threshold(noi * 2345,0.0,1.0,textureC_weight,0.0);}
+                  if (UseMapD) {TexMixD = rnd1d_threshold(noi * 3456,0.0,1.0,textureD_weight,0.0);}
+
+// ------------------------------------------------------------------------------------------------------
 //                      Cell Centre and Scale Randomization
 // ------------------------------------------------------------------------------------------------------                      
                      
 
-                  // Scale Randomizer
+                  // Scale Randomizer. Generating Mix Values for ScaleRnd based from GlobalScale ScaleRnd
+                  // then mixing the effect based on the ScaleRndMix Values of each Texture Slot.
+                  ScaleRnd = mix( mix(1.0,ScaleRnd_Orig,RndSizeA),ScaleRnd,TexMixA);
+                  if (UseMapB) {ScaleRnd = mix( mix(1.0,ScaleRnd_Orig,RndSizeB),ScaleRnd,TexMixB);}
+                  if (UseMapC) {ScaleRnd = mix( mix(1.0,ScaleRnd_Orig,RndSizeC),ScaleRnd,TexMixC);}
+                  if (UseMapD) {ScaleRnd = mix( mix(1.0,ScaleRnd_Orig,RndSizeD),ScaleRnd,TexMixD);}
                   float noi_f = smoothstep(noi_scalrRnd,1.0,(ScaleRnd));
+
+
 
                   //center of texture on surface
                   center_s = ((col * cell_size) + half_cell + jitter_s);
@@ -548,7 +576,6 @@ vec4 JK_texScatterUV(
                       MixVal = float(MixVal>0.5)+MixVal*2.0;
                       MixVal = clamp(MixVal,0.0,1.0);
 
-
                       layer_color.a *= MixVal;
 
                       layer_color.a  = clamp(layer_color.a,0.0,1.0);
@@ -556,13 +583,9 @@ vec4 JK_texScatterUV(
                       // Applying Clumping for Map
                       layer_color.a *= softThreshold(Clumping_MapA,0.0,_clumps);
 
-                      // _tmpmix = udnVor(noi * 7438,6.0,0.0,1.0,textureA_weight,0.0);         
-                      //testing - a slightly faster way to do this:
-                     _tmpmix = rnd1d_threshold(noi * 7438,0.0,1.0,textureA_weight,0.0);
-
                       // layer_color_Comb_C is what is being accessed int the end
                       // I always write into _C in the end no matter how many textures are used
-                      layer_color_comb_C = mix(layer_color,vec4(0.0),_tmpmix);
+                      layer_color_comb_C = mix(layer_color,vec4(0.0),TexMixA);
 
         
                       // --------------------------------------------------------- //
@@ -622,16 +645,13 @@ vec4 JK_texScatterUV(
 
                           // Applying Clumping for Map
                           layer_color_B.a *= softThreshold(Clumping_MapB,0.0,_clumps);
-
-                          // _tmpmix = udnVor(noi * 1234,6.0,0.0,1.0,textureB_weight,0.0);
-                          //testing - a slightly faster way to do this:
-                          _tmpmix = rnd1d_threshold(noi * 1234,0.0,1.0,textureB_weight,0.0);
+                       
 
                           // the following is used to determine the HSV Shift Amount to be mixed into TextureB
-                          HSFinalMix = mix(HSMixB,HSMixA,_tmpmix);
-                          ValFinalMix = mix(ValMixB,ValMixA,_tmpmix);
+                          HSFinalMix = mix(HSMixB,HSMixA,TexMixB);
+                          ValFinalMix = mix(ValMixB,ValMixA,TexMixB);
 
-                          layer_color_comb = mix(layer_color_B,layer_color_comb_C,_tmpmix);
+                          layer_color_comb = mix(layer_color_B,layer_color_comb_C,TexMixB);
                           layer_color_comb_C = layer_color_comb;
                                  
                         }
@@ -695,15 +715,12 @@ vec4 JK_texScatterUV(
                           // Applying Clumping for Map
                           layer_color_C.a *= softThreshold(Clumping_MapC,0.0,_clumps);
 
-                          // _tmpmix = udnVor(noi * 2345,6.0,0.0,1.0,textureC_weight,0.0);
-                          //testing - a slightly faster way to do this:
-                          _tmpmix = rnd1d_threshold(noi * 2345,0.0,1.0,textureC_weight,0.0);
 
                           // the following is used to determine the HSV Shift Amount to be mixed into TextureC
-                          HSFinalMix = mix(HSMixC,HSFinalMix,_tmpmix);
-                          ValFinalMix = mix(ValMixC,ValFinalMix,_tmpmix);
+                          HSFinalMix = mix(HSMixC,HSFinalMix,TexMixC);
+                          ValFinalMix = mix(ValMixC,ValFinalMix,TexMixC);
 
-                          layer_color_comb_B = mix(layer_color_C,layer_color_comb_C,_tmpmix);
+                          layer_color_comb_B = mix(layer_color_C,layer_color_comb_C,TexMixC);
                           layer_color_comb_C = layer_color_comb_B;
                         }
 
@@ -768,17 +785,12 @@ vec4 JK_texScatterUV(
                           // Applying Clumping for Map
                           layer_color_D.a *= softThreshold(Clumping_MapD,0.0,_clumps);
 
-                          // _tmpmix = udnVor(noi * 3456,6.0,0.0,1.0,textureD_weight,0.0);
-                          //testing - a slightly faster way to do this:
-                          _tmpmix = rnd1d_threshold(noi * 3456,0.0,1.0,textureD_weight,0.0);
-
-
                           // the following is used to determine the HSV Shift Amount to be mixed into TextureC
-                          HSFinalMix = mix(HSMixD,HSFinalMix,_tmpmix);
-                          ValFinalMix = mix(ValMixD,ValFinalMix,_tmpmix);
+                          HSFinalMix = mix(HSMixD,HSFinalMix,TexMixD);
+                          ValFinalMix = mix(ValMixD,ValFinalMix,TexMixD);
 
 
-                          layer_color_comb_C = mix(layer_color_D,layer_color_comb_C,_tmpmix);
+                          layer_color_comb_C = mix(layer_color_D,layer_color_comb_C,TexMixD);
                         }
                   
 
