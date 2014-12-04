@@ -62,6 +62,11 @@
         <Attribute Name="ScaleRnd" PrettyName="ScaleRnd" Group="Scale" Type="double" Min="0.00" Max="1" Description="Introduces a random scale offset to each cell">0.1</Attribute>
         <Attribute Name="ScaleRndWeight" PrettyName="% Original" Group="Scale" Type="double" Min="0.00" Max="1" Description="Determines what percentage of cells to keep at original full scale">0.1</Attribute>      
         <!--===============================================================================================================-->
+        <Attribute Name="TexSizeA" PrettyName="Scale Map A" Group="Per Map Scale" Type="double" Min="1" Max="10">10</Attribute>
+        <Attribute Name="TexSizeB" PrettyName="Scale Map B" Group="Per Map Scale" Type="double" Min="1" Max="10">10</Attribute>
+        <Attribute Name="TexSizeC" PrettyName="Scale Map C" Group="Per Map Scale" Type="double" Min="1" Max="10">10</Attribute>
+        <Attribute Name="TexSizeD" PrettyName="Scale Map D" Group="Per Map Scale" Type="double" Min="1" Max="10">10</Attribute> 
+        <!--===============================================================================================================-->
         <Attribute Name="rot_min" PrettyName="Min Rotation" Group="Rotation" Type="double" Min="-360" Max="360" Description="The min-max rotation of each cell">-360</Attribute>
         <Attribute Name="rot_max" PrettyName="Max Rotation" Group="Rotation" Type="double" Min="-360" Max="360" Description="The min-max rotation of each cell">180</Attribute>
         <!--===============================================================================================================-->
@@ -82,7 +87,6 @@
         <Attribute Name="MapA" PrettyName="MapA" Group="Texture Map A" Type="image" GenerateMipMaps="false"></Attribute>
         <Attribute Name="Invert_A" PrettyName="Invert Map" Group="Texture Map A" Type="bool" Min="false" Max="true">false</Attribute>
         <Attribute Name="MapA_Alpha" PrettyName="Alpha" Group="Texture Map A" Type="stringlist">From Map,From Map,Alpha is Luminance,Alpha is Inverse Luminance</Attribute>
-        <Attribute Name="TexSizeA" PrettyName="Scale" Group="Texture Map A" Type="double" Min="1" Max="10">10</Attribute>
         <Attribute Name="HSMixA" PrettyName="Hue/Sat Shift Mix" Group="Texture Map A" Type="double" Min="0" Max="1">1</Attribute>      
         <Attribute Name="ValMixA" PrettyName="Value Shift Mix" Group="Texture Map A" Type="double" Min="0" Max="1">1</Attribute>      
         <Attribute Name="FadeA" PrettyName="Edge Falloff" Group="Texture Map A" Type="double" Min="0" Max="1">0</Attribute>  
@@ -95,7 +99,6 @@
         <Attribute Name="MapB" PrettyName="MapB" Group="Texture Map B" Type="image" GenerateMipMaps="false"></Attribute>
         <Attribute Name="Invert_B" PrettyName="Invert Map" Group="Texture Map B" Type="bool" Min="false" Max="true">false</Attribute>
         <Attribute Name="MapB_Alpha" PrettyName="Alpha" Group="Texture Map B" Type="stringlist">From Map,From Map,Alpha is Luminance,Alpha is Inverse Luminance</Attribute>
-        <Attribute Name="TexSizeB" PrettyName="Scale" Group="Texture Map B" Type="double" Min="1" Max="10">10</Attribute>
         <Attribute Name="HSMixB" PrettyName="Hue/Sat Shift Mix" Group="Texture Map B" Type="double" Min="0" Max="1">1</Attribute>      
         <Attribute Name="ValMixB" PrettyName="Value Shift Mix" Group="Texture Map B" Type="double" Min="0" Max="1">1</Attribute>      
         <Attribute Name="FadeB" PrettyName="Edge Falloff" Group="Texture Map B" Type="double" Min="0" Max="1">0</Attribute>  
@@ -108,7 +111,6 @@
         <Attribute Name="MapC" PrettyName="MapC" Group="Texture Map C" Type="image" GenerateMipMaps="false"></Attribute>
         <Attribute Name="Invert_C" PrettyName="Invert Map" Group="Texture Map C" Type="bool" Min="false" Max="true">false</Attribute>
         <Attribute Name="MapC_Alpha" PrettyName="Alpha" Group="Texture Map C" Type="stringlist">From Map,From Map,Alpha is Luminance,Alpha is Inverse Luminance</Attribute>
-        <Attribute Name="TexSizeC" PrettyName="Scale" Group="Texture Map C" Type="double" Min="1" Max="10">10</Attribute>
         <Attribute Name="HSMixC" PrettyName="Hue/Sat Shift Mix" Group="Texture Map C" Type="double" Min="0" Max="1">1</Attribute>      
         <Attribute Name="ValMixC" PrettyName="Value Shift Mix" Group="Texture Map C" Type="double" Min="0" Max="1">1</Attribute>      
         <Attribute Name="FadeC" PrettyName="Edge Falloff" Group="Texture Map C" Type="double" Min="0" Max="1">0</Attribute>  
@@ -121,7 +123,6 @@
         <Attribute Name="MapD" PrettyName="MapD" Group="Texture Map D" Type="image" GenerateMipMaps="false"></Attribute>
         <Attribute Name="Invert_D" PrettyName="Invert Map" Group="Texture Map D" Type="bool" Min="false" Max="true">false</Attribute>
         <Attribute Name="MapD_Alpha" PrettyName="Alpha" Group="Texture Map D" Type="stringlist">From Map,From Map,Alpha is Luminance,Alpha is Inverse Luminance</Attribute>
-        <Attribute Name="TexSizeD" PrettyName="Scale" Group="Texture Map D" Type="double" Min="1" Max="10">10</Attribute>
         <Attribute Name="HSMixD" PrettyName="Hue/Sat Shift Mix" Group="Texture Map D" Type="double" Min="0" Max="1">1</Attribute>      
         <Attribute Name="ValMixD" PrettyName="Value Shift Mix" Group="Texture Map D" Type="double" Min="0" Max="1">1</Attribute>      
         <Attribute Name="FadeD" PrettyName="Edge Falloff" Group="Texture Map D" Type="double" Min="0" Max="1">0</Attribute>  
@@ -132,6 +133,7 @@
     <Groups>
         <Group Name="Rotation" Expanded="false"></Group>
         <Group Name="HSV Shift" Expanded="false"></Group>
+        <Group Name="Per Map Scale" Expanded="false"></Group>
         <Group Name="Texture Map A" Expanded="false"></Group>
         <Group Name="Texture Map B" Expanded="false"></Group>
         <Group Name="Texture Map C" Expanded="false"></Group>
