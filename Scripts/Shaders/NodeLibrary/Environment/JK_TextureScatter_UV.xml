@@ -59,17 +59,17 @@
         <!--===============================================================================================================-->   
         <Attribute Name="scene" PrettyName="Scene Size" Group="Global Scale" Type="int" Description="A global modifier for scene size to change slider ranges">100</Attribute>
         <Attribute Name="Scale" PrettyName="Scale" Group="Global Scale" Type="double" Min="0.001" Max="100" Description="Overall UV Scale">40</Attribute>
-        <Attribute Name="TexSizeA" PrettyName="Scale Map A" Group="Global Scale" Type="double" Min="1" Max="10">10</Attribute>
-        <Attribute Name="TexSizeB" PrettyName="Scale Map B" Group="Global Scale" Type="double" Min="1" Max="10">10</Attribute>
-        <Attribute Name="TexSizeC" PrettyName="Scale Map C" Group="Global Scale" Type="double" Min="1" Max="10">10</Attribute>
-        <Attribute Name="TexSizeD" PrettyName="Scale Map D" Group="Global Scale" Type="double" Min="1" Max="10">10</Attribute> 
+        <Attribute Name="TexSizeA" PrettyName="MapA Scale" Group="Global Scale" Type="double" Min="1" Max="10">10</Attribute>
+        <Attribute Name="TexSizeB" PrettyName="MapB Scale" Group="Global Scale" Type="double" Min="1" Max="10">10</Attribute>
+        <Attribute Name="TexSizeC" PrettyName="MapC Scale" Group="Global Scale" Type="double" Min="1" Max="10">10</Attribute>
+        <Attribute Name="TexSizeD" PrettyName="MapD Scale" Group="Global Scale" Type="double" Min="1" Max="10">10</Attribute> 
         <!--===============================================================================================================-->
-        <Attribute Name="ScaleRnd" PrettyName="ScaleRnd" Group="Scale Randomization" Type="double" Min="0.00" Max="1" Description="Introduces a random scale offset to each cell">0.1</Attribute>
-        <Attribute Name="ScaleRndWeight" PrettyName="% Original" Group="Scale Randomization" Type="double" Min="0.00" Max="1" Description="Determines what percentage of cells to keep at original full scale">0.1</Attribute>      
-        <Attribute Name="RndSizeA" PrettyName="Map A Mix" Group="Scale Randomization" Type="double" Min="0" Max="1">1</Attribute>
-        <Attribute Name="RndSizeB" PrettyName="Map B Mix" Group="Scale Randomization" Type="double" Min="0" Max="1">1</Attribute>
-        <Attribute Name="RndSizeC" PrettyName="Map C Mix" Group="Scale Randomization" Type="double" Min="0" Max="1">1</Attribute>
-        <Attribute Name="RndSizeD" PrettyName="Map D Mix" Group="Scale Randomization" Type="double" Min="0" Max="1">1</Attribute>
+        <Attribute Name="ScaleRnd" PrettyName="Randomize Scale" Group="Randomize Scale" Type="double" Min="0.00" Max="1" Description="Introduces a random scale offset to each cell">0.1</Attribute>
+        <Attribute Name="ScaleRndWeight" PrettyName="% Original Scale" Group="Randomize Scale" Type="double" Min="0.00" Max="1" Description="Determines what percentage of cells to keep at original full scale">0.1</Attribute>      
+        <Attribute Name="RndSizeA" PrettyName="MapA Rnd. Mix" Group="Randomize Scale" Type="double" Min="0" Max="1">1</Attribute>
+        <Attribute Name="RndSizeB" PrettyName="MapB Rnd. Mix" Group="Randomize Scale" Type="double" Min="0" Max="1">1</Attribute>
+        <Attribute Name="RndSizeC" PrettyName="MapC Rnd. Mix" Group="Randomize Scale" Type="double" Min="0" Max="1">1</Attribute>
+        <Attribute Name="RndSizeD" PrettyName="MapD Rnd. Mix" Group="Randomize Scale" Type="double" Min="0" Max="1">1</Attribute>
         <!--===============================================================================================================-->
         <Attribute Name="rot_min" PrettyName="Min Rotation" Group="Rotation" Type="double" Min="-360" Max="360" Description="The min-max rotation of each cell">-360</Attribute>
         <Attribute Name="rot_max" PrettyName="Max Rotation" Group="Rotation" Type="double" Min="-360" Max="360" Description="The min-max rotation of each cell">180</Attribute>
@@ -137,7 +137,7 @@
     <Groups>
         <Group Name="Rotation" Expanded="false"></Group>
         <Group Name="HSV Shift" Expanded="false"></Group>
-        <Group Name="Scale Randomization" Expanded="false"></Group>
+        <Group Name="Randomize Scale" Expanded="false"></Group>
         <Group Name="Texture Map A" Expanded="false"></Group>
         <Group Name="Texture Map B" Expanded="false"></Group>
         <Group Name="Texture Map C" Expanded="false"></Group>
