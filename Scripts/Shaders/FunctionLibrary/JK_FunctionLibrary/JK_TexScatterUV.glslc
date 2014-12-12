@@ -42,10 +42,9 @@
 
 
 // TO DO:
-// -- do proper includes in glsh
-// -- it could be possible to introduce perMap rndScale at the ScaleRandomizer point
-//    This will require mixing of rndScale Values though with additional if statements.
-
+// -- do proper includes in glsh - seems to be a bug in windows Mari preventing it
+// -- Clean up occlusion mess in xml
+// -- Add Correct Occlusion Structure to Maps B,C,D from A (alpha is luminance etc.)
 
 // ------------------------------------------------------------------------
 // OPENGL VERSION
@@ -158,6 +157,23 @@ float udnVor(float x,float scale,float lo,float hi, float threshold, float thres
 }
 
 
+// some terrible blurring for contact occlusion
+ 
+vec4 blurredCell(sampler2D inputImageTexture,int samples,float opacity,vec2 uv, float texelWidthOffset,float texelHeightOffset)
+{
+  vec2 singleStepOffset = vec2(texelWidthOffset, texelHeightOffset);
+  vec2 blurCoordinates[15];
+  vec4 sum = vec4(0.0);
+
+  for (int i = 0; i < samples; i += 1)
+  {
+  blurCoordinates[i] = uv.xy + singleStepOffset * (0.107333+(i/10.0));
+  sum += texture(inputImageTexture, blurCoordinates[i]) * (0.00164+(i/opacity));
+  blurCoordinates[i] = uv.xy - singleStepOffset * (0.107333+(i/10.0));
+  sum += texture(inputImageTexture, blurCoordinates[i]) * (0.00164+(i/opacity));
+  }
+  return sum;
+}
 
 
 // ------------------------------------------------------------------------------------------------------
@@ -241,8 +257,18 @@ vec4 JK_texScatterUV(
                     float FadeD,
                     float HardnessD,
                     float roundnessD,
-                    int textureD_AlphaMode
-                )
+                    int textureD_AlphaMode,
+                    int occSamples,
+                    float occOpacity,
+                    bool occMapA,
+                    bool occMapB,
+                    bool occMapC,
+                    bool occMapD,
+                    float occMapAOffset,
+                    float occMapBOffset,
+                    float occMapCOffset,
+                    float occMapDOffset
+                    )
 
 
 
@@ -273,6 +299,9 @@ vec4 JK_texScatterUV(
   vec2 square_d;
   float Falloff,MixVal;
   float _clumps;
+
+  // generic Variable for contact occlusion
+  vec4 layer_color_blur;
 
   // Mixes for different Texture Slots
   float TexMixA,TexMixB,TexMixC,TexMixD;
@@ -307,6 +336,9 @@ vec4 JK_texScatterUV(
   float HSFinalMix = HSMixA;
   // Variable for Value Shift Mix of each texture slot
   float ValFinalMix = ValMixA;
+
+  //BLUR
+  float blurOffset = 0.0;
 
 
 // ------------------------------------------------------------------------------------------------------
@@ -530,9 +562,16 @@ vec4 JK_texScatterUV(
                       // However Alphas are always multiplied by the alpha fade off & Alpha Cutout 
                       // in the end
 
-                      layer_color = texture(textureA,n_uv_a);
+                      layer_color = texture(textureA,n_uv_a);   
                       layer_color.rgb = mix(layer_color.rgb,vec3(1.0)-layer_color.rgb,invert_textureA);
 
+
+                      // Evaluate Contact Occlusion
+                      layer_color_blur = vec4(0.0); // always resetting to 0
+                      if (occMapA)
+                      {
+                      layer_color_blur = blurredCell(textureA,occSamples,occOpacity,n_uv_a+blurOffset,occMapAOffset,occMapAOffset);
+                      }
 
                   
                       // Determine what Alpha is being used. 1) From loaded image 2) Luminance 3)Inv Luminance
@@ -545,12 +584,21 @@ vec4 JK_texScatterUV(
                           case 1:
                           //Alpha is Luminance
                           layer_color.a = dot(vec3(0.2126, 0.7152, 0.0722), layer_color.rgb);
+                          layer_color_blur.a = dot(vec3(0.2126, 0.7152, 0.0722), layer_color_blur.rgb);
                           break;
                           case 2:
                           //Alpha is Inverted Luminance
                           layer_color.a = dot(vec3(0.2126, 0.7152, 0.0722), vec3(1.0) - layer_color.rgb);
+                          layer_color_blur.a = dot(vec3(0.2126, 0.7152, 0.0722), vec3(1.0) - layer_color_blur.rgb);
+
                           break;
                         }
+
+                        // mixing with contact occlusion
+                        layer_color = mix(vec4(0.0,0.0,0.0,layer_color_blur.a),layer_color,layer_color.a);
+
+
+
 
 
                       // ------------------------------- //
@@ -594,7 +642,16 @@ vec4 JK_texScatterUV(
                   
                       if (UseMapB)
                         {
+
                           layer_color_B = texture(textureB,n_uv_b);
+                          
+                          // Evaluate Contact Occlusion
+                          if (occMapB)
+                          {
+                          layer_color_blur = blurredCell(textureB,occSamples,occOpacity,n_uv_b+blurOffset,occMapBOffset,occMapBOffset);
+                          layer_color_B = mix(vec4(0.0,0.0,0.0,layer_color_blur.a),layer_color_B,layer_color_B.a);
+                          }
+
                           layer_color_B.rgb = mix(layer_color_B.rgb,vec3(1.0)-layer_color_B.rgb,invert_textureB);
 
 
@@ -664,6 +721,15 @@ vec4 JK_texScatterUV(
                       if (UseMapC)
                         {
                           layer_color_C = texture(textureC,n_uv_c);
+
+                          // Evaluate Contact Occlusion
+                          if (occMapC)
+                          {
+                          layer_color_blur = blurredCell(textureC,occSamples,occOpacity,n_uv_c+blurOffset,occMapCOffset,occMapCOffset);
+                          layer_color_C = mix(vec4(0.0,0.0,0.0,layer_color_blur.a),layer_color_C,layer_color_C.a);
+                          }
+
+
                           layer_color_C.rgb = mix(layer_color_C.rgb,vec3(1.0)-layer_color_C.rgb,invert_textureC);
 
                           // Determine what Alpha is being used. 1) From loaded image 2) Luminance 3)Inv Luminance
@@ -732,6 +798,16 @@ vec4 JK_texScatterUV(
                       if (UseMapD)
                         {
                           layer_color_D = texture(textureD,n_uv_d);
+
+
+                          // Evaluate Contact Occlusion
+                          if (occMapD)
+                          {
+                          layer_color_blur = blurredCell(textureD,occSamples,occOpacity,n_uv_d+blurOffset,occMapDOffset,occMapDOffset);
+                          layer_color_D = mix(vec4(0.0,0.0,0.0,layer_color_blur.a),layer_color_D,layer_color_D.a);
+                          }
+
+
                           layer_color_D.rgb = mix(layer_color_D.rgb,vec3(1.0)-layer_color_D.rgb,invert_textureD);
 
                           // Determine what Alpha is being used. 1) From loaded image 2) Luminance 3)Inv Luminance
