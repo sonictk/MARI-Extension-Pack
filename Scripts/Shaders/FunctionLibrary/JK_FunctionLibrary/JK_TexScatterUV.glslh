@@ -41,7 +41,7 @@
 
 
 // ------------------------------------------------------------------------
-// FUNCTIONS
+// FUNCTION:
 // ------------------------------------------------------------------------
 
 
@@ -121,12 +121,9 @@ vec4 JK_texScatterUV(
           			int textureD_AlphaMode,
           			int occSamples,
           			float occOpacity,
+          			float occOffset,
           			bool occMapA,
           			bool occMapB,
           			bool occMapC,
-          			bool occMapD,
-          			float occMapAOffset,
-          			float occMapBOffset,
-          			float occMapCOffset,
-          			float occMapDOffset
-				);
+          			bool occMapD
+					);
