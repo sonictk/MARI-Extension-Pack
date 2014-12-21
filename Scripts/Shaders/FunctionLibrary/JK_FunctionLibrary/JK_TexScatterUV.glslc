@@ -10,7 +10,7 @@
 // Web: www.mari.ideascale.com
 // Email: MariIdeas@campi3d.com
 ////////////////////////////////////////////////////////////////////////////////
-// Modified Date: November 25, 2014
+// Modified Date: December 21, 2014
 ////////////////////////////////////////////////////////////////////////////////
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -40,13 +40,18 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 
+// ------------------------------------------------------------------------
+// NOTES + TO DO 
+// ------------------------------------------------------------------------
+/*
 
-// TO DO:
-// -- do proper includes in glsh
-// -- it could be possible to introduce perMap rndScale at the ScaleRandomizer point
-//    This will require mixing of rndScale Values though with additional if statements.
+Once Foundry fixes INCLUDE Bug on Windows, move out forward declarations of functions
+
+A Contact Occlusion Version exists at commit 1db5928ecc0e57aa109c2a6b16ccc1567dcaecde
+but was removed due to performance and stability implications
 
 
+*/
 // ------------------------------------------------------------------------
 // OPENGL VERSION
 // ------------------------------------------------------------------------
@@ -164,7 +169,6 @@ float udnVor(float x,float scale,float lo,float hi, float threshold, float thres
 // ---------------------------MAIN TEXTURE SCATTER------------------------------------------------------
 // ------------------------------------------------------------------------------------------------------                      
                        
-
 
 
 vec4 JK_texScatterUV( 
@@ -824,8 +828,6 @@ vec4 JK_texScatterUV(
 
                         layer_color_comb_C = mriHsv2Rgb(layer_color_comb_C);
                 
-                        // layer_color_comb_C = mix(orig_color_comb_C,layer_color_comb_C,HSFinalMix);
-
 
 // ------------------------------------------------------------------------------------------------------
 //                     Per Cell Alpha Generation
