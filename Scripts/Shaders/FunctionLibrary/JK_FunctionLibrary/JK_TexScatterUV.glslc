@@ -40,19 +40,12 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 
-// ------------------------------------------------------------------------
-// NOTES
-// ------------------------------------------------------------------------
-/* 
 
-  CONTACT OCCLUSION problems due to performance implications
-  Search for CONTACT OCCLUSION
-  
-  TO DO: Once MARI Bug with GLSH Includes is fixes under Windows convert
-  Forward Declarations of Functions to includes.
+// TO DO:
+// -- do proper includes in glsh - seems to be a bug in windows Mari preventing it
+// -- Clean up occlusion mess in xml
+// -- Add Correct Occlusion Structure to Maps B,C,D from A (alpha is luminance etc.)
 
-
-*/
 // ------------------------------------------------------------------------
 // OPENGL VERSION
 // ------------------------------------------------------------------------
@@ -164,24 +157,21 @@ float udnVor(float x,float scale,float lo,float hi, float threshold, float thres
 }
 
 
-// some experimental contact occlusion
-// Really needs some x/y optimization to avoid the unnecessary computations
-vec4 contactOcc(sampler2D inputImageTexture,int samples,float opacity,vec2 uv, float texelWidthOffset,float texelHeightOffset)
+// some terrible blurring for contact occlusion
+ 
+vec4 blurredCell(sampler2D inputImageTexture,int samples,float opacity,vec2 uv, float texelWidthOffset,float texelHeightOffset)
 {
   vec2 singleStepOffset = vec2(texelWidthOffset, texelHeightOffset);
-  vec2 blurCoordinates[8];
+  vec2 blurCoordinates[15];
   vec4 sum = vec4(0.0);
 
-
-  for (int i = 0; i < samples; i += 2)
+  for (int i = 0; i < samples; i += 1)
   {
-  sum += (texture(inputImageTexture,uv) * (0.00164+(i/opacity)) );
   blurCoordinates[i] = uv.xy + singleStepOffset * (0.107333+(i/10.0));
   sum += texture(inputImageTexture, blurCoordinates[i]) * (0.00164+(i/opacity));
   blurCoordinates[i] = uv.xy - singleStepOffset * (0.107333+(i/10.0));
   sum += texture(inputImageTexture, blurCoordinates[i]) * (0.00164+(i/opacity));
   }
- 
   return sum;
 }
 
@@ -270,11 +260,14 @@ vec4 JK_texScatterUV(
                     int textureD_AlphaMode,
                     int occSamples,
                     float occOpacity,
-                    float occOffset,
                     bool occMapA,
                     bool occMapB,
                     bool occMapC,
-                    bool occMapD
+                    bool occMapD,
+                    float occMapAOffset,
+                    float occMapBOffset,
+                    float occMapCOffset,
+                    float occMapDOffset
                     )
 
 
@@ -307,8 +300,7 @@ vec4 JK_texScatterUV(
   float Falloff,MixVal;
   float _clumps;
 
-  
-  // generic Variable for contact occlusion -  CONTACT OCCLUSION (DISABLED)
+  // generic Variable for contact occlusion
   vec4 layer_color_blur;
 
   // Mixes for different Texture Slots
@@ -345,10 +337,8 @@ vec4 JK_texScatterUV(
   // Variable for Value Shift Mix of each texture slot
   float ValFinalMix = ValMixA;
 
-
-  // Contact Occlusion offset. By Default just zero but could be used in the future for a directional
-  // shadow - CONTACT OCCLUSION (DISABLED)
-  float blurOffset = 0.0; 
+  //BLUR
+  float blurOffset = 0.0;
 
 
 // ------------------------------------------------------------------------------------------------------
@@ -510,7 +500,8 @@ vec4 JK_texScatterUV(
      					    float x = udn(rel_s,1.0,rel_s,0.0);
      					    float y = udn(rel_t,1.0,rel_t,0.0);
      					    
-                  //slightly quicker way to do this instead of using voronoi:
+                  // float rad = radians(udnVor( (noi_minor * 777) * layer_idx,noise_scale_A*layer_idx, rot_min, rot_max,0.5,8.0));
+                  // testing - slightly quicker way to do this:
                   float rad = radians(rnd1d_threshold( (noi_minor * 777) * layer_idx,rot_min, rot_max,0.5,8.0));
             
                   rad = remap(rad,0.0,1.0,-1.0,1.0,1.0);
@@ -571,22 +562,16 @@ vec4 JK_texScatterUV(
                       // However Alphas are always multiplied by the alpha fade off & Alpha Cutout 
                       // in the end
 
-                      layer_color = texture(textureA,n_uv_a);
-                      // invert map: 
+                      layer_color = texture(textureA,n_uv_a);   
                       layer_color.rgb = mix(layer_color.rgb,vec3(1.0)-layer_color.rgb,invert_textureA);
 
 
                       // Evaluate Contact Occlusion
                       layer_color_blur = vec4(0.0); // always resetting to 0
-                      
                       if (occMapA)
                       {
-
-                      layer_color_blur = contactOcc(textureA,occSamples,occOpacity,n_uv_a+blurOffset,occOffset,occOffset);
-                      layer_color_blur.a -= (occOpacity/100);
-                      layer_color_blur.a = clamp(layer_color_blur.a,0.0,1.0);        
+                      layer_color_blur = blurredCell(textureA,occSamples,occOpacity,n_uv_a+blurOffset,occMapAOffset,occMapAOffset);
                       }
-                      
 
                   
                       // Determine what Alpha is being used. 1) From loaded image 2) Luminance 3)Inv Luminance
@@ -599,21 +584,19 @@ vec4 JK_texScatterUV(
                           case 1:
                           //Alpha is Luminance
                           layer_color.a = dot(vec3(0.2126, 0.7152, 0.0722), layer_color.rgb);
-                          /* CONTACT OCCLUSION */
-                          layer_color_blur.a = dot(vec3(0.2126, 0.7152, 0.0722), layer_color_blur.rgb); 
+                          layer_color_blur.a = dot(vec3(0.2126, 0.7152, 0.0722), layer_color_blur.rgb);
                           break;
                           case 2:
                           //Alpha is Inverted Luminance
                           layer_color.a = dot(vec3(0.2126, 0.7152, 0.0722), vec3(1.0) - layer_color.rgb);
-                          /* CONTACT OCCLUSION */
-                          layer_color_blur.a = dot(vec3(0.2126, 0.7152, 0.0722), vec3(1.0) - layer_color_blur.rgb); 
+                          layer_color_blur.a = dot(vec3(0.2126, 0.7152, 0.0722), vec3(1.0) - layer_color_blur.rgb);
+
                           break;
                         }
 
-                        /* CONTACT OCCLUSION */
                         // mixing with contact occlusion
                         layer_color = mix(vec4(0.0,0.0,0.0,layer_color_blur.a),layer_color,layer_color.a);
-                        
+
 
 
 
@@ -661,22 +644,15 @@ vec4 JK_texScatterUV(
                         {
 
                           layer_color_B = texture(textureB,n_uv_b);
-                          // invert map:
-                          layer_color_B.rgb = mix(layer_color_B.rgb,vec3(1.0)-layer_color_B.rgb,invert_textureB);
-
-                          layer_color_blur = vec4(0.0); // always resetting to 0
-
-                          /* CONTACT OCCLUSION */
-                          //Evaluate Contact Occlusion
+                          
+                          // Evaluate Contact Occlusion
                           if (occMapB)
                           {
-
-                          layer_color_blur = contactOcc(textureB,occSamples,occOpacity,n_uv_b+blurOffset,occOffset,occOffset);
-                          layer_color_blur.a -= (occOpacity/100);
-                          layer_color_blur.a = clamp(layer_color_blur.a,0.0,1.0);
+                          layer_color_blur = blurredCell(textureB,occSamples,occOpacity,n_uv_b+blurOffset,occMapBOffset,occMapBOffset);
                           layer_color_B = mix(vec4(0.0,0.0,0.0,layer_color_blur.a),layer_color_B,layer_color_B.a);
-                          } 
+                          }
 
+                          layer_color_B.rgb = mix(layer_color_B.rgb,vec3(1.0)-layer_color_B.rgb,invert_textureB);
 
 
                           // Determine what Alpha is being used. 1) From loaded image 2) Luminance 3)Inv Luminance
@@ -689,24 +665,12 @@ vec4 JK_texScatterUV(
                               case 1:
                               //Alpha is Luminance
                               layer_color_B.a = dot(vec4(0.2126, 0.7152, 0.0722, 0.0), layer_color_B);
-                              /* CONTACT OCCLUSION*/
-                              layer_color_blur.a = dot(vec3(0.2126, 0.7152, 0.0722), layer_color_blur.rgb); 
                               break;
                               case 2:
                               //Alpha is Inverted Luminance
                               layer_color_B.a = dot(vec4(0.2126, 0.7152, 0.0722, 0.0), vec4(1.0) - layer_color_B);
-                              /* CONTACT OCCLUSION */
-                              layer_color_blur.a = dot(vec3(0.2126, 0.7152, 0.0722), vec3(1.0) - layer_color_blur.rgb); 
                               break;
                             }
-
-                          /* CONTACT OCCLUSION */
-                          // mixing with contact occlusion
-                          layer_color_B = mix(vec4(0.0,0.0,0.0,layer_color_blur.a),layer_color_B,layer_color_B.a); 
-
-
-
-
 
                           // ------------------------------- //
                           //     Alpha Fade Texture B       //
@@ -757,22 +721,16 @@ vec4 JK_texScatterUV(
                       if (UseMapC)
                         {
                           layer_color_C = texture(textureC,n_uv_c);
-                          // invert map:
-                          layer_color_C.rgb = mix(layer_color_C.rgb,vec3(1.0)-layer_color_C.rgb,invert_textureC);
 
-                          layer_color_blur = vec4(0.0); // always resetting to 0
-
-                          /* CONTACT OCCLUSION */
                           // Evaluate Contact Occlusion
                           if (occMapC)
                           {
-                          layer_color_blur = contactOcc(textureC,occSamples,occOpacity,n_uv_c+blurOffset,occOffset,occOffset);
-                          layer_color_blur.a -= (occOpacity/100);
-                          layer_color_blur.a = clamp(layer_color_blur.a,0.0,1.0);
+                          layer_color_blur = blurredCell(textureC,occSamples,occOpacity,n_uv_c+blurOffset,occMapCOffset,occMapCOffset);
                           layer_color_C = mix(vec4(0.0,0.0,0.0,layer_color_blur.a),layer_color_C,layer_color_C.a);
-                          } 
+                          }
 
 
+                          layer_color_C.rgb = mix(layer_color_C.rgb,vec3(1.0)-layer_color_C.rgb,invert_textureC);
 
                           // Determine what Alpha is being used. 1) From loaded image 2) Luminance 3)Inv Luminance
                           // Please note the texture invert is being evaluated before !
@@ -784,22 +742,12 @@ vec4 JK_texScatterUV(
                               case 1:
                               //Alpha is Luminance
                               layer_color_C.a = dot(vec4(0.2126, 0.7152, 0.0722, 0.0), layer_color_C);
-                              /* CONTACT OCCLUSION */
-                              layer_color_blur.a = dot(vec3(0.2126, 0.7152, 0.0722), layer_color_blur.rgb); 
                               break;
                               case 2:
                               //Alpha is Inverted Luminance
                               layer_color_C.a = dot(vec4(0.2126, 0.7152, 0.0722, 0.0), vec4(1.0) - layer_color_C);
-                              /* CONTACT OCCLUSION   */
-                              layer_color_blur.a = dot(vec3(0.2126, 0.7152, 0.0722), vec3(1.0) - layer_color_blur.rgb);
                               break;
                             }
-
-                          /* CONTACT OCCLUSION */
-                          // mixing with contact occlusion
-                          layer_color_C = mix(vec4(0.0,0.0,0.0,layer_color_blur.a),layer_color_C,layer_color_C.a); 
-
-
 
                           // ------------------------------- //
                           //     Alpha Fade Texture C       //
@@ -850,22 +798,17 @@ vec4 JK_texScatterUV(
                       if (UseMapD)
                         {
                           layer_color_D = texture(textureD,n_uv_d);
-                          // invert map:
-                          layer_color_D.rgb = mix(layer_color_D.rgb,vec3(1.0)-layer_color_D.rgb,invert_textureD);
 
-                          layer_color_blur = vec4(0.0); // always resetting to 0
 
-                          /* CONTACT OCCLUSION */
                           // Evaluate Contact Occlusion
                           if (occMapD)
                           {
-                          layer_color_blur = contactOcc(textureD,occSamples,occOpacity,n_uv_d+blurOffset,occOffset,occOffset);
-                          layer_color_blur.a -= (occOpacity/100);
-                          layer_color_blur.a = clamp(layer_color_blur.a,0.0,1.0);
+                          layer_color_blur = blurredCell(textureD,occSamples,occOpacity,n_uv_d+blurOffset,occMapDOffset,occMapDOffset);
                           layer_color_D = mix(vec4(0.0,0.0,0.0,layer_color_blur.a),layer_color_D,layer_color_D.a);
-                          } 
+                          }
 
 
+                          layer_color_D.rgb = mix(layer_color_D.rgb,vec3(1.0)-layer_color_D.rgb,invert_textureD);
 
                           // Determine what Alpha is being used. 1) From loaded image 2) Luminance 3)Inv Luminance
                           // Please note the texture invert is being evaluated before !
@@ -877,22 +820,12 @@ vec4 JK_texScatterUV(
                               case 1:
                               //Alpha is Luminance
                               layer_color_D.a = dot(vec4(0.2126, 0.7152, 0.0722, 0.0), layer_color_C);
-                              /* CONTACT OCCLUSION */
-                              layer_color_blur.a = dot(vec3(0.2126, 0.7152, 0.0722), layer_color_blur.rgb); 
                               break;
                               case 2:
                               //Alpha is Inverted Luminance
                               layer_color_D.a = dot(vec4(0.2126, 0.7152, 0.0722, 0.0), vec4(1.0) - layer_color_D);
-                              /* CONTACT OCCLUSION */
-                              layer_color_blur.a = dot(vec3(0.2126, 0.7152, 0.0722), vec3(1.0) - layer_color_blur.rgb); 
                               break;
                             }
-
-                          /* CONTACT OCCLUSION */
-                          // mixing with contact occlusion
-                          layer_color_D = mix(vec4(0.0,0.0,0.0,layer_color_blur.a),layer_color_D,layer_color_D.a); 
-
-
 
                           // ------------------------------- //
                           //     Alpha Fade Texture D       //
@@ -959,9 +892,17 @@ vec4 JK_texScatterUV(
                         // mixing Value Mix Contribution from each Tex Slot
                         layer_color_comb_C.b = mix(orig_color_comb_C.b,layer_color_comb_C.b,ValFinalMix); 
 
+                        //testing - a slightly faster way to do this:
+                        // layer_color_comb_C.r += rnd1d_threshold(noi * 1234,A_minH,A_maxH,0.5,1.0);
+                        // layer_color_comb_C.g *= rnd1d_threshold(noi * 2345,A_minS,A_maxS,0.5,1.0);
+                        // layer_color_comb_C.b *= rnd1d_threshold(noi * 3456,A_minV+ValueOffset,A_maxV+ValueOffset,0.5,1.0) + ((LayerAttenuation*layer_idx)/layers);
+
+
                         layer_color_comb_C = mriHsv2Rgb(layer_color_comb_C);
                 
-        
+                        // layer_color_comb_C = mix(orig_color_comb_C,layer_color_comb_C,HSFinalMix);
+
+
 // ------------------------------------------------------------------------------------------------------
 //                     Per Cell Alpha Generation
 // ------------------------------------------------------------------------------------------------------                      
@@ -1036,9 +977,6 @@ vec4 JK_texScatterUV(
        	    }		
         }
       }
-
-
-
   }
 
 
