@@ -118,15 +118,5 @@ vec4 JK_texScatterUV(
           			float FadeD,
           			float HardnessD,
 					float roundnessD,
-          			int textureD_AlphaMode,
-          			int occSamples,
-          			float occOpacity,
-          			bool occMapA,
-          			bool occMapB,
-          			bool occMapC,
-          			bool occMapD,
-          			float occMapAOffset,
-          			float occMapBOffset,
-          			float occMapCOffset,
-          			float occMapDOffset
+          			int textureD_AlphaMode
 				);

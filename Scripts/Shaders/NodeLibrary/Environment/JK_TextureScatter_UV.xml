@@ -133,12 +133,6 @@
         <Attribute Name="HardnessD" PrettyName="Edge Softness" Group="Texture Map D" Type="double" Min="0.0" Max="1.0">0.0</Attribute>  
         <Attribute Name="roundnessD" PrettyName="Edge Roundness" Group="Texture Map D" Type="double" Min="0" Max="1">0</Attribute>  
         <!--===============================================================================================================-->
-        <Attribute Name="occOpacity" PrettyName="Transparency" Group="Contact Occlusion (Slow)" Type="double" Min="0.001" Max="100">50</Attribute>
-        <Attribute Name="occMapAOffset" PrettyName="Size" Group="Contact Occlusion (Slow)" Type="double" Min="0.0" Max="1">0.5</Attribute>
-        <Attribute Name="occMapA" PrettyName="Occlude Map A" Group="Contact Occlusion (Slow)" Type="bool" Min="false" Max="true">false</Attribute>
-        <Attribute Name="occMapB" PrettyName="Occlude Map B" Group="Contact Occlusion (Slow)" Type="bool" Min="false" Max="true">false</Attribute>
-        <Attribute Name="occMapC" PrettyName="Occlude Map C" Group="Contact Occlusion (Slow)" Type="bool" Min="false" Max="true">false</Attribute>
-        <Attribute Name="occMapD" PrettyName="Occlude Map D" Group="Contact Occlusion (Slow)" Type="bool" Min="false" Max="true">false</Attribute>
     </Attributes>
     <Groups>
         <Group Name="Rotation" Expanded="false"></Group>
@@ -216,10 +210,6 @@
                 float MapC_weight = $MapC_weight * Frequency_M;
                 float MapD_weight = $MapD_weight * Frequency_M;
 
-                float occMapAOffset = $occMapAOffset*0.02;
-                int occSamplesA = int(($occMapAOffset+1.0) * (10.0*$occMapAOffset));
-                float occOpacity = pow($occOpacity,($occMapAOffset*2.0));
-
 
                 Output = JK_texScatterUV( UV,
                                         scale,
@@ -293,17 +283,7 @@
                                         FadeD,
                                         HardnessD,
                                         roundnessD,
-                                        $MapD_Alpha,
-                                        occSamplesA,
-                                        occOpacity,
-                                        $occMapA,
-                                        $occMapB,
-                                        $occMapC,
-                                        $occMapD,
-                                        occMapAOffset,
-                                        occMapAOffset,
-                                        occMapAOffset,
-                                        occMapAOffset);
+                                        $MapD_Alpha);
 
 
                 ]]></Body>
