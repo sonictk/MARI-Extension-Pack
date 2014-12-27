@@ -1,9 +1,9 @@
 # ------------------------------------------------------------------------------
-# Mari Shader Library Registration Importer
-# Copyright (c) 2013 Mari Ideascale. All Rights Reserved.
+# Mari Extension Pack Importer
+# Copyright (c) 2014 Mari Ideascale. All Rights Reserved.
 # ------------------------------------------------------------------------------
-# File: initShaders.py
-# Description: Main script to import in the register shader script to excute.
+# File: initExtensionPack.py
+# Description: Main script to import Tools and Shaders and check MARI compatibility
 # ------------------------------------------------------------------------------
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -32,5 +32,27 @@
 # ADVISED OF HE POSSIBILITY OF SUCH DAMAGE.
 # ------------------------------------------------------------------------------
 
-# import shader register script
-import Shaders.RegisterCustomShaders
+
+import mari
+
+# ------------------------------------------------------------------------------
+# Checking Mari Version
+# ------------------------------------------------------------------------------
+
+def isMariSuitable():
+    "Checks Mari Version"
+    MARI_2_6v3_VERSION_NUMBER =   20603300   # see below
+
+    if mari.app.version().number() >=  MARI_2_6v3_VERSION_NUMBER:
+
+        import Tools
+        import Shaders.RegisterCustomShaders
+    
+    else:
+        mari.utils.message("Mari Version not compatible with MARI Extension Pack 1.7")
+        return False
+
+# ------------------------------------------------------------------------------
+
+isMariSuitable()
+
