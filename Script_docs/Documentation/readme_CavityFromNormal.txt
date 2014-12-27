@@ -2,7 +2,7 @@
 # Requirements: This Node requires Mari 2.5 or higher
 #----------------------------------------------------------------
 # Cavity from Tangent Space Normal
-# Copyright (c) 2014 Antoni Kujawa. All Rights Reserved.
+# Copyright (c) 2015 Antoni Kujawa. All Rights Reserved.
 #----------------------------------------------------------------
 # Author: Antoni Kujawa
 #----------------------------------------------------------------

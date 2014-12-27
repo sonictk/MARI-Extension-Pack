@@ -1,7 +1,7 @@
 <!--
 ================================================================================
 == Voronoi Popcorn
-== Copyright (c) 2014 Jens Kafitz. All Rights Reserved.
+== Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
 ================================================================================
 == File: JK_VoronoiPopcorn.xml
 == Description: A Voronoi Based Fractal, with several Noises as offsets. Useful for Veins and other organic features.

@@ -1,6 +1,6 @@
-IDEASCALE NODE PACK
+MARI EXTENSION PACK 1.7
 =====================================================================================
-Copyright (c) 2013-2014 www.mari.ideascale.com. All Rights Reserved.
+Copyright (c) 2015 www.mari.ideascale.com. All Rights Reserved.
 
 Version:
 -----------

@@ -2,7 +2,7 @@
 # Available at: http://mari.ideascale.com/
 # -------------------------------------------------------------------
 # Cylindrical Projection
-# Copyright (c) 2014 Jens Kafitz. All Rights Reserved.
+# Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
 # -------------------------------------------------------------------
 # Author: Jens Kafitz | Mari Ideascale
 # Web: www.campi3d.com

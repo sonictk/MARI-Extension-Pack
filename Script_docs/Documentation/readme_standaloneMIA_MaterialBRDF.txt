@@ -1,5 +1,5 @@
 MIA Material BRDF
-Copyright (c) 2014 Nicholas Breslow. All Rights Reserved.
+Copyright (c) 2015 Nicholas Breslow. All Rights Reserved.
 =====================================================================                   	
 Author: Nicholas Breslow      	
 Web: www.nbreslow.com			

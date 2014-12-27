@@ -1,5 +1,5 @@
 Weave_2D
-Copyright (c) 2014 Nicholas Breslow. All Rights Reserved.
+Copyright (c) 2015 Nicholas Breslow. All Rights Reserved.
 =====================================================================                     	
 Author: Jens Kafitz      	
 Web: www.campi3d.com			

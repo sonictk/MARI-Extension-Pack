@@ -1,7 +1,7 @@
 <!--
 ================================================================================
 == Simple Constants
-== Copyright (c) 2014 Jens Kafitz & TheFoundry. All Rights Reserved.
+== Copyright (c) 2015 Jens Kafitz & TheFoundry. All Rights Reserved.
 ================================================================================
 == Based on original code from theFoundry located in
 == \Mari2.6v1\Bundle\Media\Nodes\Simple\Basic\

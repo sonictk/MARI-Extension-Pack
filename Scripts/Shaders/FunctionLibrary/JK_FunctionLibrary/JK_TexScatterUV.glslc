@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Texture Scatter UV
-// Copyright (c) 2014 Jens Kafitz. All Rights Reserved.
+// Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
 ////////////////////////////////////////////////////////////////////////////////
 // File: JK_TexScatterUV.glslc
 // Description: UV Based Texture Bombing Function(s) for use in JK_TextureScatter_UV.

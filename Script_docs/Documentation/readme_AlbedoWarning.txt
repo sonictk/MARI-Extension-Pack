@@ -1,6 +1,6 @@
 # -------------------------------------------------------------------
 # Albedo Value Warning
-# Copyright (c) 2014 Jens Kafitz & TheFoundry All Rights Reserved.
+# Copyright (c) 2015 Jens Kafitz & TheFoundry All Rights Reserved.
 # -------------------------------------------------------------------
 # Author: Jens Kafitz | Mari Ideascale | The Foundry
 # Web: www.campi3d.com | www.thefoundry.co.uk   
