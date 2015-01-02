@@ -1,10 +1,14 @@
 # ------------------------------------------------------------------------------
-# Merge Duplicate Layers
+# Clone Merge Layers
+# ------------------------------------------------------------------------------
+# Clone & Merge Layers will duplicate selected layers and merge them into one.
+# Merging is done for either all patches or selected patches.
 # ------------------------------------------------------------------------------
 # http://mari.ideascale.com
+# http://cg-cnu.blogspot.in/
 # ------------------------------------------------------------------------------
-# Author: Sreenivas Alapati
-# Modified for MARI Extension Pack: Jens Kafitz
+# Written by Sreenivas Alapati, 2014
+# Modified for MARI Extension Pack by Jens Kafitz, 2015
 # ------------------------------------------------------------------------------
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:

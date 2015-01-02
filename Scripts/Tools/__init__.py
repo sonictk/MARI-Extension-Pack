@@ -2,7 +2,8 @@
 # Mari Extension Tools INIT
 # Copyright (c) 2015 Mari Ideascale. All Rights Reserved.
 # --------------------------------------------------------------------
-# Implementation for MARI Extension Pack: Jens Kafitz
+# Written by Jens Kafitz, 2015
+# http://mari.ideascale.com
 # --------------------------------------------------------------------
 # File: __init__.py
 # Description: The following imports all tools found in the relevant
@@ -39,25 +40,35 @@
 import mari
 
 
-# ------------------------------------------------------------------------------  
+# ------------------------------------------------------------------------------ 
+# PATCHES:
 import Patches.patch_bake_to_imageman as patch_bake_to_imageman
 
+ # CAMERA:
 import Camera.unproject_channel_to_imageman as unproject_channel_to_imageman
 import Camera.unproject_layer_to_imageman as unproject_layer_to_imageman
 
+# LAYERS
 import Layers.channel_layer as channel_layer
 import Layers.mask_from_selection as mask_from_selection
 import Layers.clone_merge_layers as clone_merge_layers
 import Layers.toggle_layer_visibility_lock as toggle_layer_visibility_lock
 import Layers.convert_to_paintable as convert_to_paintable
 
+# CHANNELS:
 import Channels.export_selected_channels as export_selected_channels
 import Channels.flatten_selected_channels as flatten_selected_channels
 import Channels.channel_template as channel_template
 
+# OBJECTS:
 import Object.export_uv_masks as export_uv_masks
 
+# IMAGE MANAGER:
+import ImageManager.export_imageMan_images as exportImageManager
+
+# REVIEWS:
 import Review.screenshot_all_channels as screenshot_all_channels
+
 # ------------------------------------------------------------------------------   
 
 class customScripts():
@@ -133,11 +144,20 @@ class customScripts():
     def convertToPaintable(self):
         convert_to_paintable.convertToPaintable()
 
+
     # --------------------------------------------------------------
-    # OBJECT:
+    # OBJECTS:
 
     def exportUVMasks(self):
         export_uv_masks.exportUVMasks()
+
+
+    # --------------------------------------------------------------
+    # IMAGE MANAGER:
+
+    def exportImageManager(self):
+        exportImageManager.exportSelImgs()
+
 
     # --------------------------------------------------------------
     # REVIEW:
@@ -186,6 +206,10 @@ print '-----------------------------------------'
 print 'View Tools added (1): '
 print 'View Menu: Screenshot All Channels'
 print '-----------------------------------------'
+print 'Image Manager Tool added (1): '
+print 'Image Manager: Export Selection'
+print '-----------------------------------------'
+
 # ------------------------------------------------------------------------------
 
 

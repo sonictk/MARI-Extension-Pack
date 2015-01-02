@@ -1,27 +1,47 @@
 # ------------------------------------------------------------------------------
+# Export Selected Channels
 # ------------------------------------------------------------------------------
 # Export selected channels from one or more objects
 # coding: utf-8
-# Written by Jorel Latraille
+# ------------------------------------------------------------------------------
+# Written by Jorel Latraille, 2014
+# ------------------------------------------------------------------------------
+# http://mari.ideascale.com
+# http://www.jorel-latraille.com/
+# http://www.thefoundry.co.uk
 # ------------------------------------------------------------------------------
 # DISCLAIMER & TERMS OF USE:
 #
 # Copyright (c) The Foundry 2014.
 # All rights reserved.
 #
-# This software is provided as-is with use in commercial projects permitted.
-# Redistribution in commercial projects is also permitted
-# provided that the above copyright notice and this paragraph are
-# duplicated in accompanying documentation,
-# and acknowledge that the software was developed
-# by The Foundry.  The name of the
-# The Foundry may not be used to endorse or promote products derived
-# from this software without specific prior written permission.
-# THIS SOFTWARE IS PROVIDED ``AS IS'' AND WITHOUT ANY EXPRESS OR
-# IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
-# WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# 1. Redistributions of source code must retain the above copyright
+# notice, this list of conditions and the following disclaimer.
+#
+# 2. Redistributions in binary form must reproduce the above copyright
+# notice, this list of conditions and the following disclaimer in the
+# documentation and/or other materials provided with the distribution.
+#
+# 3. Neither the name of the copyright holder nor the names of its
+# contributors may be used to endorse or promote products derived from
+# this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+# IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+# THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+# PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+# CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+# EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+# PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+# OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+# WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+# OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+# ADVISED OF HE POSSIBILITY OF SUCH DAMAGE.
 # ------------------------------------------------------------------------------
-# ------------------------------------------------------------------------------
+
 
 import mari, os, hashlib
 import PythonQt.QtGui as QtGui

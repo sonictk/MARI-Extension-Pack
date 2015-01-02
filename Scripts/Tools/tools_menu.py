@@ -2,7 +2,8 @@
 # Mari Extension Pack GUI Tools
 # Copyright (c) 2015 Mari Ideascale. All Rights Reserved.
 # --------------------------------------------------------------------
-# Implementation for MARI Extension Pack: Jens Kafitz
+# Written by Jens Kafitz, 2015
+# http://mari.ideascale.com
 # --------------------------------------------------------------------
 # File: tools_menu.py
 # Description: The following adds custom scripts to the Mari GUI
@@ -429,6 +430,28 @@ def createToolsMenu():
 
 	mari.menus.addSeparator('MainWindow/Objects','Ambient Occlusion')
 
+
+######################################################################
+# Image Manager
+######################################################################
+
+#  Export selected Image Manager Images
+
+	UI_path = 'MriImageManager/ItemContext'
+	script_menu_path = 'MainWindow/Scripts/Image Manager'
+
+	exportUVMask = mari.actions.create ('Export Selection', 'mari.customScripts.exportImageManager()')
+	mari.menus.addAction(exportUVMask, UI_path)
+	mari.menus.addAction(exportUVMask, script_menu_path)
+
+	icon_filename = 'EdgeMask.png'
+	icon_path = mari.resources.path(mari.resources.ICONS) + '/' + icon_filename
+	exportUVMask.setIconPath(icon_path)
+	exportUVMask.setShortcut('')
+
+	###  Menu Separators ###
+
+	mari.menus.addSeparator(UI_path,'Export Selection')
 
 
 ######################################################################

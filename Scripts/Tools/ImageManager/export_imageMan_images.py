@@ -1,7 +1,9 @@
 # ------------------------------------------------------------------------------
-# Patch Bake to Image Manager
+# Export Images from Image Manager
 # ------------------------------------------------------------------------------
-# Will Bake+Flatten the selected Patches and place the result in the Image Manager
+# Will Export selected Images from the Image Manager
+# If Images have a file format, the file format will be used for export,
+# otherwise TIF Format is used.
 # ------------------------------------------------------------------------------
 # http://mari.ideascale.com
 # http://cg-cnu.blogspot.in/
@@ -34,75 +36,87 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF HE POSSIBILITY OF SUCH DAMAGE.
 # ------------------------------------------------------------------------------
-
 import mari
+from PythonQt import QtGui, QtCore
 import os
 
+class ProgressDialog(QtGui.QDialog):
 
-def patchBake():
-	'''Bake the selected patches to image manager'''
+	def __init__(self, maxStep):
+		super(ProgressDialog, self).__init__()
+		self.setWindowTitle('Exporting Images...')
+
+		self.cancelCpy = False
+
+		layout = QtGui.QVBoxLayout()
+		self.setLayout(layout)
+		self.pbar = QtGui.QProgressBar(self)
+		self.pbar.setRange(0, maxStep)
+		self.pbar.setGeometry(30, 40, 200, 25)
+
+		self.pbar.connect("valueChanged (int)", self.status)
+		layout.addWidget(self.pbar)
+
+		self.cBtn = QtGui.QPushButton("cancel")
+		self.cBtn.connect('clicked()', lambda: self.cancelCopy())
+		layout.addWidget(self.cBtn)
 	
+	def status(self):
+		if self.pbar.value == self.pbar.maximum:
+			self.close()
+		
+	def cancelCopy(self):
+		self.pbar.value = self.pbar.maximum
+		self.cancelCpy = True
+
+def exportSelImgs():
+	''' export the selected images to the given path '''
 	if not mari.projects.current():
-		mari.utils.message('No project currently open', title = 'Error')
+		mari.utils.message("No project currently open")
 		return
 
-	curGeo = mari.geo.current()
-	patchList = list (curGeo.patchList() )
-	selPatchList = [patch for patch in patchList if patch.isSelected() ]
-	
-	if len(selPatchList) == 0:
-		mari.utils.meesage('Select atleast one patch', title = 'Error')
+	path = mari.utils.getExistingDirectory()
+	if not os.path.exists(path):
+		mari.utils.message("Not a valid path")
 		return
-	
-	if mari.app.version().isWindows():
-		path = str(mari.resources.path("MARI_USER_PATH")).replace("\\", "/")
 	else:
-		path = str( mari.resources.path("MARI_USER_PATH") )	
+		path = path + '/'
 
-	curChan = curGeo.currentChannel()
-	curChanName = str(curChan.name())
-	
-	layers = curChan.layerList()
-	
-	mari.history.startMacro('Patch Bake to Image Manager')
-	mari.app.setWaitCursor()
-	
-	for layer in layers:
-		layer.setSelected(True)
-	
-	copyAction = mari.actions.find('/Mari/Layers/Copy')
-	copyAction.trigger()
-	
-	pasteAction = mari.actions.find('/Mari/Layers/Paste')
-	pasteAction.trigger()
-	
-	curChan.mergeLayers()
-	
-	curLayer = curChan.currentLayer()
-	curImgSet = curLayer.imageSet()
-	
-	for patch in selPatchList:
-		
-		uv = patch.uvIndex()
-		
-		curPatchIndex = str(patch.udim())
-		savePath = path + curChanName + '.' + curPatchIndex + '.tif'
-		
-		patchImg = curImgSet.image(uv, -1)
-		patchImg.saveAs(savePath)
-	
-		mari.images.load(savePath)
-		os.remove(savePath)
-	
-	curChan.removeLayers()
-	
-	mari.history.stopMacro()
-	mari.app.restoreCursor()
+	images = mari.images.selected()
 
+	if len(images) == 0:
+		mari.utils.message("No images currently selected")
+		return
+	
+	formats = [ str(i) for i in mari.images.supportedWriteFormats() ]
 
+	maxStep = len( images )
 
-def patch_bake_to_imageman():
+	progressDiag = ProgressDialog(maxStep)
+	progressDiag.show()
 
-	patchBake()
+	progStep = 0
+	for image in images:
 
+		if progressDiag.cancelCpy == True:
+			progressDiag.close()
+			return
 
+		imageName = ( image.filePath() ).split("/")[-1]
+
+		try:
+			format = imageName.split(".")[-1]
+
+			# check if the format is valid...
+			if format in formats:
+				image.saveAs( path + imageName )
+			else:
+				format = ".tif"
+				image.saveAs( path + imageName + format)
+		except:
+			pass
+
+		progStep += 1
+		progressDiag.pbar.setValue(progStep)
+
+mari.menus.addAction(mari.actions.create('Export Images', 'exportSelImgs()'), 'MainWindow/Tools')
