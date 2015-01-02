@@ -27,6 +27,8 @@ import mari
 
 
 def unprojLayerPaint():
+
+  mari.history.startMacro('Unproject Layer to Image Manager')
   projectionCamera = mari.actions.get ("/Mari/Canvas/Projection/Create Projector") 
   projectionCamera.trigger()
   mari.projectors.current().setName("CurrentLayer")
@@ -42,6 +44,7 @@ def unprojLayerPaint():
   mari.projectors.remove("CurrentLayer")
   mari.images.load(unprojectFileLoc)
   mari.tools.setCurrent("Paint Through")
+  mari.history.stopMacro()
   return 
 
 def unproject_layer_to_imageman():

@@ -36,7 +36,7 @@ class FlattenSelectedChannelsGUI(QtGui.QDialog):
         super(FlattenSelectedChannelsGUI, self).__init__(parent)
 
         #Set window title and create a main layout
-        self.setWindowTitle("Flatten Selected Channels")
+        self.setWindowTitle("Duplicate & Flatten Selected Channels")
         main_layout = QtGui.QVBoxLayout()
         
         #Create layout for middle section
@@ -229,6 +229,8 @@ def flattenSelectedChannels():
     if not isProjectSuitable():
         return
     
+    mari.history.startMacro('Duplicate & Flatten Channels')
+
     #Create dialog and execute accordingly
     dialog = FlattenSelectedChannelsGUI()
     if dialog.exec_():
@@ -241,6 +243,8 @@ def flattenSelectedChannels():
             flatten_channel.flatten()
             channel.setName(channel.name() + '_original')
             flatten_channel.setName(orig_name)
+
+    mari.history.stopMacro()
     
 # ------------------------------------------------------------------------------            
 if __name__ == "__main__":

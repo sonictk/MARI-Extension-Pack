@@ -167,7 +167,7 @@ def showUI():
     file_type_combo = QtGui.QComboBox()
     for file_type in g_file_types:
         file_type_combo.addItem(file_type)
-    file_type_combo.setCurrentIndex(file_type_combo.findText('tif'))
+    file_type_combo.setCurrentIndex(file_type_combo.findText('.tif'))
     
     bottom_layout.addWidget(file_type_combo_text)
     bottom_layout.addWidget(file_type_combo)

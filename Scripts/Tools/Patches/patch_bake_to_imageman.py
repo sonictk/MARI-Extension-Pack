@@ -31,7 +31,7 @@ def patchBake():
 	if not mari.projects.current():
 		mari.utils.message('No project currently open', title = 'Error')
 		return
-	
+
 	curGeo = mari.geo.current()
 	patchList = list (curGeo.patchList() )
 	selPatchList = [patch for patch in patchList if patch.isSelected() ]
@@ -50,7 +50,7 @@ def patchBake():
 	
 	layers = curChan.layerList()
 	
-	mari.history.startMacro('Patch Bake')
+	mari.history.startMacro('Patch Bake to Image Manager')
 	mari.app.setWaitCursor()
 	
 	for layer in layers:
@@ -84,6 +84,7 @@ def patchBake():
 	
 	mari.history.stopMacro()
 	mari.app.restoreCursor()
+
 
 
 def patch_bake_to_imageman():

@@ -28,6 +28,9 @@ def screenshotAllChannels():
         mari.utils.message("No project currently open", title = "Error")
         return
 
+    mari.utils.message("Snapshotting multiple Channels requires Incremental Screenshot Setting to be enabled")
+
+    mari.history.startMacro('Snapshot all Channels')
     curGeo = mari.geo.current()
     curChannel = curGeo.currentChannel()
     chanList = curGeo.channelList()
@@ -44,6 +47,7 @@ def screenshotAllChannels():
     curGeo.setCurrentChannel(curChannel)
     curCanvas.repaint()
     mari.app.restoreCursor()
+    mari.history.stopMacro()
 
     return
 

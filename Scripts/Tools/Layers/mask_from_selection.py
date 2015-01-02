@@ -24,13 +24,13 @@ import mari
 
 
 def selectionMask(invert):
+	mari.history.startMacro('Create Mask from Selection')
 	currentObj = mari.geo.current()
 	currentChan = currentObj.currentChannel()
 	currentLayer = currentChan.currentLayer()
 	selectedPatches = currentObj.selectedPatches()
 	
 	newMaskImageSet = currentLayer.makeMask()
-	mari.history.startMacro('Create custom mask')
 	for image in newMaskImageSet.imageList():
 		if invert == False:
 			image.fill(mari.Color(0.0, 0.0, 0.0, 1.0))

@@ -1,6 +1,6 @@
 import mari
 
-current_extension_pack = "1.7"
+
 
 
 # ------------------------------------------------------------------------------  
@@ -11,12 +11,13 @@ import Camera.unproject_layer_to_imageman as unproject_layer_to_imageman
 
 import Layers.channel_mask as channel_mask
 import Layers.mask_from_selection as mask_from_selection
-import Layers.merge_duplicate_layers as merge_duplicate_layers
+import Layers.clone_merge_layers as clone_merge_layers
 import Layers.toggle_layer_visibility_lock as toggle_layer_visibility_lock
 import Layers.convert_to_paintable as convert_to_paintable
 
 import Channels.export_selected_channels as export_selected_channels
 import Channels.flatten_selected_channels as flatten_selected_channels
+import Channels.channel_template as channel_template
 
 import Object.export_uv_masks as export_uv_masks
 
@@ -42,10 +43,19 @@ class customScripts():
     def flattenSelectedChannels(self):
         flatten_selected_channels.flattenSelectedChannels()
 
+    def channel_template_get(self):
+        channel_template.getChannelTemplate()
+
+    def channel_template_create(self):
+        channel_template.createChannelFromTemplate()
+
+    def channel_template_set(self):
+        channel_template.setChannelFromTemplate()
+
     # ------------------------------------------------------------   
 
-    def MergeDuplicate(self):
-        merge_duplicate_layers.MergeDuplicateGUI().exec_()
+    def CloneMerge(self):
+        clone_merge_layers.CloneMergeGUI().exec_()
 
     def toggleSelVisibility(self):
         toggle_layer_visibility_lock.toggleSelVisibility()
@@ -75,7 +85,6 @@ class customScripts():
     def CLCreate_maskgroup(self):
         channel_mask.CLCreate("maskgroup").exec_()
 
-
     def convertToPaintable(self):
         convert_to_paintable.convertToPaintable()
 
@@ -98,25 +107,26 @@ mari.customScripts = customScripts()
 # This is used to generate the menu inside of Mari
 
 import tools_menu
-
 tools_menu.createToolsMenu()
 
-print '-----------------------------------------'
-print "MARI Extension Pack: "+ current_extension_pack
-print '-----------------------------------------'
-print "http://mari.ideascale.com"
-print '-----------------------------------------'
+
+# ------------------------------------------------------------------------------
+# Simple Print out of loaded Python Scripts
+
+
 print "Loading Tool Additions ..."
 print '-----------------------------------------'
-print 'Channel Tools added (2): '
+print 'Channel Tools added (4): '
 print 'Channel Menu: Export Custom Selection'
-print 'Channel Menu: Duplicate+Flatten'
+print 'Channel Menu: Duplicate & Flatten'
+print 'Channel Menu: Resize/Save Channel Resolution'
+print 'Channel Menu: Resize/Load Channel Resolution'
 print '-----------------------------------------'
 print 'Layer Tools added (5): '
 print 'Layer Menu: Add Channel Layer'
 print 'Layer Menu: Layer Mask/Add Mask/Add Channel Mask'
 print 'Layer Menu: Layer Mask/Add Mask/Add Channel Mask (Group)'
-print 'Layer Menu: Duplicate+Merge Layers'
+print 'Layer Menu: Clone & Merge Layers'
 print 'Layer Menu: Convert To Paintable (replaces default)'
 print '-----------------------------------------'
 print 'Patches Tools added (1): '

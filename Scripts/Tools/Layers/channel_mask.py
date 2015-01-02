@@ -50,15 +50,17 @@ def makeCL(sourceChannel, mode, invert):
 		currentChannel.createChannelLayer(channelLayerName, sourceChannel, None, 16)
 		mari.history.stopMacro()
 	else:
-		mari.history.startMacro('Create channel mask')
+		
 		
 		if mode == 'maskgroup':
 			## New Group Layer
+			mari.history.startMacro('Create grouped channel mask')
 			layerGroupName = '%s_grp' % layerName
 			groupLayer = currentChannel.groupLayers([currentLayer], None, None, 16)
 			groupLayer.setName(layerGroupName)
 			layerStack = groupLayer
 		elif mode == 'mask':
+			mari.history.startMacro('Create channel mask')
 			layerStack = currentLayer
 
 

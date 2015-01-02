@@ -26,6 +26,8 @@ import mari
 
 
 def unprojChanPaint():
+
+  mari.history.startMacro('Unproject Channel to Image Manager')
   projectionCamera = mari.actions.get ("/Mari/Canvas/Projection/Create Projector") 
   projectionCamera.trigger() 
   mari.projectors.current().setName("CurrentChannel")
@@ -41,6 +43,7 @@ def unprojChanPaint():
   mari.projectors.remove("CurrentChannel")
   mari.images.load(unprojectFileLoc)
   mari.tools.setCurrent("Paint Through")
+  mari.history.stopMacro()
   return 
 
 def unproject_channel_to_imageman():

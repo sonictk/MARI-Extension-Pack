@@ -1,6 +1,6 @@
 # ------------------------------------------------------------------------------
 # Mari Extension Pack Importer
-# Copyright (c) 2015 Mari Ideascale. All Rights Reserved.
+# Copyright (c) 2014 Mari Ideascale. All Rights Reserved.
 # ------------------------------------------------------------------------------
 # File: initExtensionPack.py
 # Description: Main script to import Tools and Shaders and check MARI compatibility
@@ -35,6 +35,19 @@
 
 import mari
 
+current_extension_pack = "1.7"
+
+# ------------------------------------------------------------------------------
+# Start Console Printout
+# ------------------------------------------------------------------------------
+
+print '-----------------------------------------'
+print "MARI Extension Pack: "+ current_extension_pack
+print '-----------------------------------------'
+print "http://mari.ideascale.com"
+print '-----------------------------------------'
+
+
 # ------------------------------------------------------------------------------
 # Checking Mari Version
 # ------------------------------------------------------------------------------
@@ -56,3 +69,13 @@ def isMariSuitable():
 
 isMariSuitable()
 
+
+# ------------------------------------------------------------------------------
+# End Console Printout success
+# ------------------------------------------------------------------------------
+
+print '#####################################################'
+print 'Mari Extension Pack ' + current_extension_pack + ' finished loading successfully'
+print '#####################################################'
+print '            http://mari.ideascale.com'
+print ''
