@@ -49,33 +49,33 @@ Refer to the contents of the Script_Docs/SDK folder for information
 ##Contributors
 
 
-###PYTHON DEVELOPMENT
+####PYTHON DEVELOPMENT
 
-- Jorel Latraille, http://www.jorel-latraille.com
-- Ben Neall www.bneall.blogspot.co.nz //  bneall@gmail.com
-- Sreenivas Alapati http://cg-cnu.blogspot.in // sreenivas9alapati@gmail.com
-- Miguel A Santiago Jr. www.digiteck3d.com // miguel@digiteck3d.com
-- Jens Kafitz, www.campi3d.com // MariIdeas@campi3d.com
+- Jorel Latraille, *http://www.jorel-latraille.com*
+- Ben Neall *www.bneall.blogspot.co.nz //  bneall@gmail.com*
+- Sreenivas Alapati *http://cg-cnu.blogspot.in // sreenivas9alapati@gmail.com*
+- Miguel A Santiago Jr. *www.digiteck3d.com // miguel@digiteck3d.com*
+- Jens Kafitz, *www.campi3d.com // MariIdeas@campi3d.com*
 - Antoni Kujawa
 
 
-###NODE DEVELOPMENT
+####NODE DEVELOPMENT
 
-- Jens Kafitz www.campi3d.com // MariIdeas@campi3d.com
-- Miguel A Santiago Jr. www.digiteck3d.com // miguel@digiteck3d.com
-- Nicholas Breslow www.nbreslow.com // nick@nbreslow.com
+- Jens Kafitz *www.campi3d.com // MariIdeas@campi3d.com*
+- Miguel A Santiago Jr. *www.digiteck3d.com // miguel@digiteck3d.com*
+- Nicholas Breslow *www.nbreslow.com // nick@nbreslow.com*
 - Antoni Kujawa
 - Orlando Esponda
 - Antonio Neto
 
 
-###SHADER DEVELOPMENT
+####SHADER DEVELOPMENT
 
-- Miguel A Santiago Jr. www.digiteck3d.com // miguel@digiteck3d.com
-- Nicholas Breslow www.nbreslow.com // nick@nbreslow.com
+- Miguel A Santiago Jr. *www.digiteck3d.com // miguel@digiteck3d.com*
+- Nicholas Breslow *www.nbreslow.com // nick@nbreslow.com*
 
 
-###MAC QA
+####MAC QA
 
 - Yasin Hasanian
 - Dave Girard
