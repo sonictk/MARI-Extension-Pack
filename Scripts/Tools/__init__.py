@@ -1,6 +1,42 @@
+# --------------------------------------------------------------------
+# Mari Extension Tools INIT
+# Copyright (c) 2015 Mari Ideascale. All Rights Reserved.
+# --------------------------------------------------------------------
+# Implementation for MARI Extension Pack: Jens Kafitz
+# --------------------------------------------------------------------
+# File: __init__.py
+# Description: The following imports all tools found in the relevant
+#              subfolders to be accessible by tools_menu.py
+# --------------------------------------------------------------------
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# 1. Redistributions of source code must retain the above copyright
+# notice, this list of conditions and the following disclaimer.
+#
+# 2. Redistributions in binary form must reproduce the above copyright
+# notice, this list of conditions and the following disclaimer in the
+# documentation and/or other materials provided with the distribution.
+#
+# 3. Neither the name of the copyright holder nor the names of its
+# contributors may be used to endorse or promote products derived from
+# this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 'AS
+# IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+# THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+# PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+# CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+# EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+# PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+# OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+# WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+# OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+# ADVISED OF HE POSSIBILITY OF SUCH DAMAGE.
+# --------------------------------------------------------------------
+
+
 import mari
-
-
 
 
 # ------------------------------------------------------------------------------  
@@ -9,7 +45,7 @@ import Patches.patch_bake_to_imageman as patch_bake_to_imageman
 import Camera.unproject_channel_to_imageman as unproject_channel_to_imageman
 import Camera.unproject_layer_to_imageman as unproject_layer_to_imageman
 
-import Layers.channel_mask as channel_mask
+import Layers.channel_layer as channel_layer
 import Layers.mask_from_selection as mask_from_selection
 import Layers.clone_merge_layers as clone_merge_layers
 import Layers.toggle_layer_visibility_lock as toggle_layer_visibility_lock
@@ -26,8 +62,14 @@ import Review.screenshot_all_channels as screenshot_all_channels
 
 class customScripts():
 
+    # ------------------------------------------------------------    
+    # PATCHES:
+
     def patch_bake_to_imageman(self):
         patch_bake_to_imageman.patch_bake_to_imageman()
+
+    # ------------------------------------------------------------    
+    # CAMERA:
 
     def unproject_channel_to_imageman(self):
         unproject_channel_to_imageman.unproject_channel_to_imageman()
@@ -36,6 +78,7 @@ class customScripts():
         unproject_layer_to_imageman.unproject_layer_to_imageman()
 
     # ------------------------------------------------------------    
+    # CHANNELS:
 
     def exportSelectedChannels(self):
         export_selected_channels.exportSelectedChannels()
@@ -52,10 +95,12 @@ class customScripts():
     def channel_template_set(self):
         channel_template.setChannelFromTemplate()
 
-    # ------------------------------------------------------------   
+    # ------------------------------------------------------------ 
+    # LAYERS:
 
     def CloneMerge(self):
         clone_merge_layers.CloneMergeGUI().exec_()
+
 
     def toggleSelVisibility(self):
         toggle_layer_visibility_lock.toggleSelVisibility()
@@ -76,24 +121,26 @@ class customScripts():
     def selectionMask_inv(self):
         mask_from_selection.selectionMask(invert=True)
 
-    def CLCreate_layer(self):
-        channel_mask.CLCreate("layer").exec_()
+    def ChannelLayerUI_layer(self):
+        channel_layer.ChannelLayerUI("layer").exec_()
 
-    def CLCreate_layermask(self):
-        channel_mask.CLCreate("mask").exec_()
+    def ChannelLayerUI_layermask(self):
+        channel_layer.ChannelLayerUI("mask").exec_()
 
-    def CLCreate_maskgroup(self):
-        channel_mask.CLCreate("maskgroup").exec_()
+    def ChannelLayerUI_maskgroup(self):
+        channel_layer.ChannelLayerUI("maskgroup").exec_()
 
     def convertToPaintable(self):
         convert_to_paintable.convertToPaintable()
 
     # --------------------------------------------------------------
+    # OBJECT:
 
     def exportUVMasks(self):
         export_uv_masks.exportUVMasks()
 
     # --------------------------------------------------------------
+    # REVIEW:
 
     def screenshot_all_channels(self):
         screenshot_all_channels.screenshotAllChannels()
@@ -135,6 +182,9 @@ print '-----------------------------------------'
 print 'Camera Tools added (2): '
 print 'Camera Menu: Quick Unproject Channel'
 print 'Camera Menu: Quick Unproject Layer'
+print '-----------------------------------------'
+print 'View Tools added (1): '
+print 'View Menu: Screenshot All Channels'
 print '-----------------------------------------'
 # ------------------------------------------------------------------------------
 

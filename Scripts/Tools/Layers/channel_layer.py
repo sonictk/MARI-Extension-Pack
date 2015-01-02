@@ -1,5 +1,5 @@
 # ------------------------------------------------------------------------------
-# Channel mask Tools
+# Channel Layer Tools
 # ------------------------------------------------------------------------------
 # http://mari.ideascale.com
 # http://bneall.blogspot.de/
@@ -39,7 +39,7 @@ from PySide import QtGui
 import mari
 
 
-def makeCL(sourceChannel, mode, invert):
+def makeChannelLayer(sourceChannel, mode, invert):
 	currentChannel = mari.geo.current().currentChannel()
 	currentLayer = currentChannel.currentLayer()
 	layerName = currentLayer.name()
@@ -79,12 +79,12 @@ def makeCL(sourceChannel, mode, invert):
 	
 		mari.history.stopMacro()
 
-class CLCreate(QtGui.QDialog):
+class ChannelLayerUI(QtGui.QDialog):
 	'''GUI to select channel to make into a channel-layer in the current channel
 	modes: 'groupmask', 'mask', 'layer'
 	'''
 	def __init__(self, mode):
-		super(CLCreate, self).__init__()
+		super(ChannelLayerUI, self).__init__()
 		## Dialog Settings
 		self.setFixedSize(300, 100)
 		self.setWindowTitle('Select Channel')
@@ -129,7 +129,7 @@ class CLCreate(QtGui.QDialog):
 	def runCreate(self):
 		sourceChannel = self.selectedChannel()
 		invert = self.invertChannel()
-		makeCL(sourceChannel, self.mode,invert)
+		makeChannelLayer(sourceChannel, self.mode,invert)
 		self.close()
 
 		

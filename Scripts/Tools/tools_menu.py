@@ -45,7 +45,6 @@
 
 import mari
 
-
 def createToolsMenu():
 
 
@@ -364,7 +363,7 @@ def createToolsMenu():
 	UI_path = 'MainWindow/&Layers'
 	script_menu_path = 'MainWindow/Scripts/Layers'
 
-	chanLayer = mari.actions.create('Add Channel Layer', 'mari.customScripts.CLCreate_layer()')
+	chanLayer = mari.actions.create('Add Channel Layer', 'mari.customScripts.ChannelLayerUI_layer()')
 	mari.menus.addAction(chanLayer, UI_path, 'Add Adjustment Layer')
 	mari.menus.addAction(chanLayer, script_menu_path)
 
@@ -380,7 +379,7 @@ def createToolsMenu():
 	UI_path = 'MainWindow/&Layers/Layer Mask/Add Mask'
 	script_menu_path = 'MainWindow/Scripts/Layers/Layer Mask'
 
-	chanMask = mari.actions.create('Add Channel Mask', 'mari.customScripts.CLCreate_layermask()')
+	chanMask = mari.actions.create('Add Channel Mask', 'mari.customScripts.ChannelLayerUI_layermask()')
 	mari.menus.addAction(chanMask, UI_path)
 	mari.menus.addAction(chanMask, script_menu_path)
 
@@ -395,7 +394,7 @@ def createToolsMenu():
 	UI_path = 'MainWindow/&Layers/Layer Mask/Add Mask'
 	script_menu_path = 'MainWindow/Scripts/Layers/Layer Mask'
 
-	chanMaskGrp = mari.actions.create('Add grouped Channel Mask', 'mari.customScripts.CLCreate_maskgroup()')
+	chanMaskGrp = mari.actions.create('Add grouped Channel Mask', 'mari.customScripts.ChannelLayerUI_maskgroup()')
 	mari.menus.addAction(chanMaskGrp, UI_path)
 	mari.menus.addAction(chanMaskGrp, script_menu_path)
 
