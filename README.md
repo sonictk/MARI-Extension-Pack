@@ -1,14 +1,13 @@
-MARI EXTENSION PACK 1.7
-=====================================================================================
+#MARI EXTENSION PACK 1.7
+
 Copyright (c) 2015 www.mari.ideascale.com. All Rights Reserved.
 
-Version:
------------
-Nodepack :  1.50  //  MARI Function Library: 1.08
+
+##Version:
+Extension Pack :  1.7  //  MARI Function Library: 1.11
 
 
-Info
------------------
+##Info
 General Development Area for custom nodes, custom shaders and Python scripts
 Mirroring www.mari.ideascale.com.
 
@@ -19,13 +18,12 @@ A collabarative space for development is available here:
 https://github.com/campi3d/IdeascaleNodePack
 
 
-GIT Workflow
------------------
+##GIT Workflow
+
 We have adopted the git flow branching model.
 
 A comprehensive Step-by-Step is available on the Twiki: 
 https://github.com/campi3d/IdeascaleNodePack/wiki/Making-a-change---step-by-step-Tutorial
-
 
 
 SUBBRANCH -> DEV -> RELEASE CANDIDATE (Optional) -> MASTER
@@ -42,38 +40,49 @@ In order to keep track of things it would be good if major new features just get
 so we have some sort of easy way to assemble release information.
 
 
-Adding new nodes, shaders and functions
------------------
+##Adding new nodes, shaders, functions & Python Scripts
+
 Refer to the contents of the Script_Docs/SDK folder for information
 
 
 
-Contributors
------------------
+##Contributors
 
-- Miguel A Santiago Jr. www.digiteck3d.com // miguel@digiteck3d.com
 
-- Nicholas Breslow www.nbreslow.com // nick@nbreslow.com
+###PYTHON DEVELOPMENT
 
-- Jens Kafitz www.campi3d.com // MariIdeas@campi3d.com
-
+- Jorel Latraille, http://www.jorel-latraille.com
 - Ben Neall www.bneall.blogspot.co.nz //  bneall@gmail.com
-
-- Antonio Neto
-
-- Orlando Esponda
-
+- Sreenivas Alapati http://cg-cnu.blogspot.in // sreenivas9alapati@gmail.com
+- Miguel A Santiago Jr. www.digiteck3d.com // miguel@digiteck3d.com
+- Jens Kafitz, www.campi3d.com // MariIdeas@campi3d.com
 - Antoni Kujawa
 
 
-Thank you
------------------
+###NODE DEVELOPMENT
 
-Yasin Hasanian & Dave Girard for MAC QA
+- Jens Kafitz www.campi3d.com // MariIdeas@campi3d.com
+- Miguel A Santiago Jr. www.digiteck3d.com // miguel@digiteck3d.com
+- Nicholas Breslow www.nbreslow.com // nick@nbreslow.com
+- Antoni Kujawa
+- Orlando Esponda
+- Antonio Neto
 
 
-License
------------------
+###SHADER DEVELOPMENT
+
+- Miguel A Santiago Jr. www.digiteck3d.com // miguel@digiteck3d.com
+- Nicholas Breslow www.nbreslow.com // nick@nbreslow.com
+
+
+###MAC QA
+
+- Yasin Hasanian
+- Dave Girard
+
+
+##License
+
 
 Redistribution and use in source and binary forms, with or without modification, are permitted
 provided that the following conditions are met:

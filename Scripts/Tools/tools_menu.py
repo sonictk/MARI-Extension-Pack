@@ -130,7 +130,7 @@ def createToolsMenu():
 
 # --------------------------------------------------------------------
 
-	###   Export Custom Selection ###
+	###   Export Custom Channel Selection ###
 
 	# Some Duplication in Menus but at least it makes sense this way
 
@@ -444,7 +444,7 @@ def createToolsMenu():
 	mari.menus.addAction(exportUVMask, UI_path)
 	mari.menus.addAction(exportUVMask, script_menu_path)
 
-	icon_filename = 'EdgeMask.png'
+	icon_filename = 'ExtractImage.png'
 	icon_path = mari.resources.path(mari.resources.ICONS) + '/' + icon_filename
 	exportUVMask.setIconPath(icon_path)
 	exportUVMask.setShortcut('')

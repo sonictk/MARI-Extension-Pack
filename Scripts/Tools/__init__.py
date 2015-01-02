@@ -183,33 +183,34 @@ tools_menu.createToolsMenu()
 
 print "Loading Tool Additions ..."
 print '-----------------------------------------'
-print 'Channel Tools added (4): '
+print 'Channel Palette Additions (4): '
 print 'Channel Menu: Export Custom Selection'
 print 'Channel Menu: Duplicate & Flatten'
 print 'Channel Menu: Resize/Save Channel Resolution'
 print 'Channel Menu: Resize/Load Channel Resolution'
 print '-----------------------------------------'
-print 'Layer Tools added (5): '
+print 'Layer Palette Additions (9): '
 print 'Layer Menu: Add Channel Layer'
 print 'Layer Menu: Layer Mask/Add Mask/Add Channel Mask'
 print 'Layer Menu: Layer Mask/Add Mask/Add Channel Mask (Group)'
 print 'Layer Menu: Clone & Merge Layers'
 print 'Layer Menu: Convert To Paintable (replaces default)'
+print 'Layer Menu: Toggle Visibility selected/unselected
+print 'Layer Menu: Toggle Lock selected/unselected'
 print '-----------------------------------------'
-print 'Patches Tools added (1): '
+print 'Patches Palette Additions (1): '
 print 'Patches Menu: Patch to Image Manager'
 print '-----------------------------------------'
-print 'Camera Tools added (2): '
+print 'Camera Palette Additions (2): '
 print 'Camera Menu: Quick Unproject Channel'
 print 'Camera Menu: Quick Unproject Layer'
 print '-----------------------------------------'
-print 'View Tools added (1): '
+print 'View Palette Additions (1): '
 print 'View Menu: Screenshot All Channels'
 print '-----------------------------------------'
-print 'Image Manager Tool added (1): '
+print 'Image Manager Palette Additions (1): '
 print 'Image Manager: Export Selection'
 print '-----------------------------------------'
-
 # ------------------------------------------------------------------------------
 
 

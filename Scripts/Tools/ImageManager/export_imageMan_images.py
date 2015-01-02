@@ -119,4 +119,3 @@ def exportSelImgs():
 		progStep += 1
 		progressDiag.pbar.setValue(progStep)
 
-mari.menus.addAction(mari.actions.create('Export Images', 'exportSelImgs()'), 'MainWindow/Tools')
