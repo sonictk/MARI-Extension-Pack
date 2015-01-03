@@ -9,7 +9,7 @@ TBA
 
 #####ENVIRONMENT PROCEDURALS
 
-- Texture Scatter UV
+**Texture Scatter UV**
 A UV based Texture Bombing Node capable of creating tileable textures on a standard 
 Maya Plane. Windows Users please refer to "Known Issues & Workarounds" at the bottom of this page
 for important information to avoid display driver instability during baking.
