@@ -1,27 +1,44 @@
-Release Notes for Shader/Nodepack 1.60
-=====================================================================================
+#Release Notes for MARI EXTENSION PACK 2.0
+Copyright (c) 2015 www.mari.ideascale.com. All Rights Reserved.
 
-Release Date
------------
+##Release Date
 TBA
 
-Added Features:
------------
+##Added Features:
+
+
+####ENVIRONMENT PROCEDURALS
 
 - Texture Scatter UV
 A UV based Texture Bombing Node capable of creating tileable textures on a standard 
-Maya Plane
-
-- VoronoiPopcorn
-A complex procedural for creating veins, cracks, crumbled paper looks etc.
+Maya Plane. Windows Users please refer to "Known Issues & Workarounds" at the bottom of this page
+for important information to avoid display driver instability during baking.
 
 - Axis Projection
 Axis Projection is similar to a Triplanar Projection but with a lot more control over
 rotation of projection in space (for objects that are not perfectly aligned in XYZ)
 and isolation of each +/- axis
 
+####GEOMETRY PROCEDURALS
+
 - Backface Mask
 An way to isolate interior faces of objects for example cloth lining. Work off your objects normals
+
+####NOISE PROCEDURALS
+
+- VoronoiPopcorn
+A complex procedural for creating veins, cracks, crumbled paper looks etc.
+
+
+####BASIC PROCEDURALS
+
+- Black/White/Grey Constants
+Ever realized how many times you create a constant, then set it to black, white or grey ? 
+If the answer is : "A lot" then this simple addition of the 3 preconfigured constants will come in handy.
+Press TAB and type !
+
+
+####ADJUSTMENT LAYERS
 
 - Illegal Albedo Warning
 Adjustment layer that gives a visual warning when values outisde a custom value range are detected.
@@ -29,34 +46,121 @@ Adjustment layer that gives a visual warning when values outisde a custom value 
 - Posterize
 Simple Posterize adjustment implementation, specifying how many color/value steps you want
 
-- Black/White/Grey Constants
-Ever realized how many times you create a constant, then set it to black, white or grey ? 
-If the answer is : "A lot" then this simple addition of the 3 preconfigured constants will come in handy.
-Press TAB and type !
 
-Feature Improvements:
------------
+####IMAGE MANAGER
+
+- Export Selection
+A new feature was added to export multiple selected images from the Image Manager.
+Existing naming and extensions are respected. If no extension is found "tif" will be used.
+
+
+####OBJECT MENU
+
+- Export UV Mask
+A new feature was added to the Object Menu that allows you to export Geometry UV Masks
+
+
+####CHANNELS MENU
+
+- Duplicate & Flatten
+A new feature was added that allows you to easily flatten a duplicated of a selected channel.
+Naming of the new channel is inherited from the original, any sharing on the original is maintained.
+
+- Export Custom Selection
+A new Export Mode was added that allows you to export a custom selection of channels across multiple geometries
+
+- Save/Load/Create from Channel Resolution
+A new feature was added that allows you to transfer mixed UDIM Resolution Layouts between Channels
+
+
+####LAYERS MENU
+
+- Clone & Merge
+A new feature was added to give similar functionality to Photoshops "Merge Visible".
+Clone & Merge will create a merged copy of all selected layers - optionally for selected UDIMs only.
+
+- Toggle Visibility
+New options have been added to toggle visibility state of multiple selected/unselected layers
+
+- Toggle Lock
+New options have been added to toggle lock state of multiple selected/unselected layers
+
+- Channel Layer
+A new option has been added to simplify the use of entire Channels in another Layerstack
+
+- Channel Layer Mask + Grouped Channel Layer Mask
+New options have been added to the "Add Mask" Menu to simplify the use of complete channels in a layer mask.
+"Add grouped Channel mask" will place the selected layers in a group first and apply the channel mask to the group node.
+
+- Mask from Selection
+New options have been added to the "Add Mask" Menu to create Masks from selected patches.
+
+
+####PATCHES MENU
+
+- Patch to Image Manager
+A new option was added to the Patches Menu that will bake a copy of selected patches
+and place the images in the Image Manager
+
+
+####CAMERA MENU
+
+- Quick Unproject Channel/Layer
+Two new options where added to quickly unproject the currently visibly
+channel or layer to the Image Manager
+
+
+####VIEW MENU
+
+- Screenshot All Channels
+A new option was added to automatically screenshot all Channels in your project
+(requires "Incremental" to be turned on under "Screenshot Settings")
+
+
+
+##Feature Improvements:
+
+
+####ADJUSTMENT LAYERS
+
 - "Color Range to Mask" now has a basic Grade Module for selected colors. Due to the size + expense 
   of the node baking or caching is recommended in bigger layer stacks.
 
 - "Enhance Selection" Mode in Color Range to Mask was improved
+
+####GEOMETRY PROCEDURALS
 
 - Polysurface Curvature now has a "Hard Edged" Mode that will clip grey values
 
 - Polysurface Curvature now has a "Attentuate by Ambient Occlusion" Mode
 
 
-Bugfixes:
------------
-- Legacy Cloud was broken and not behaving like Mari Cloud
+####LAYERS MENU
 
-- svn or git files in the directories could cause the nodepack to not load properly
+- Convert to Paintable
+Convert to Paintable now supports selection of multiple Layers.
+Layers will be converted to Paintable ones in the selected order.
 
 
 
-Known issues & Workarounds:
------------
-- (WINDOWS USERS ONLY): Texture Scatter UV will crash your display driver
+##Bugfixes:
+
+
+####GENERAL
+
+- svn or git files in the directories could cause the extension pack to not load properly
+
+
+####NOISE PROCEDURALS
+
+- Legacy Cloud was broken and not behaving like Mari Cloud in Ideascale Nodepack 1.5
+
+
+
+##Known issues & Workarounds:
+
+
+- (WINDOWS USERS ONLY): Texture Scatter UV will crash your display driver during baking/flattening
   due to an automated windows feature that lets your driver time out after
   a few seconds of inactivity. To work around this you need to set
 
@@ -73,117 +177,35 @@ Known issues & Workarounds:
 
 
 
-Release Notes for Shader/Nodepack 1.50
-=====================================================================================
+##Credits:
 
-Release Date
------------
-25 June 2014
+####PYTHON DEVELOPMENT
 
-
-Added Features:
------------
-- Cylindrical Projection - a full Cylindrical Projection Node, optimized for easy setup in 3D Space.
-  Demo Videos: https://vimeo.com/93711136 // https://vimeo.com/94145101
-- Color Range to Mask - a powerful Adjustment Shader similar to Photoshop's Select Color Range
-  Demo Video: https://vimeo.com/92507840
-- Squid Skin Procedural - organic Noise Pattern
-- Cavity Map from Tangent Space Normal - Using a Tangent space normal map will output you a pseudo cavity map
-
-Feature Improvements:
------------
-- Military Camo - a more flexible Camo procedural was added allowing for 3 color steps. Layer them up by setting Color A to transparent for more elaborate effects
-- The original Camo Procedural with 2 Colors has been deprecated. You can use the new Military Camo with a Spacing of 0 for the same effect.
-- A variety of interface improvements have been made, collapsing less used node groups by default (Mari 2.6v2+ only)
+- Jorel Latraille, *http://www.jorel-latraille.com*
+- Ben Neall *www.bneall.blogspot.co.nz //  bneall@gmail.com*
+- Sreenivas Alapati *http://cg-cnu.blogspot.in // sreenivas9alapati@gmail.com*
+- Miguel A Santiago Jr. *www.digiteck3d.com // miguel@digiteck3d.com*
+- Jens Kafitz, *www.campi3d.com // MariIdeas@campi3d.com*
+- Antoni Kujawa
 
 
-Bugfixes:
------------
-- A missing Library Name File within the FunctionLibrary Directory could cause the Nodepack to not load when mixed with
-  single node releases from mari.ideascale.com.
-- various fixes for MAC configurations that had issues with the Nodepack before
-- Turning on Displacement in Shaders no longer causes a Shader Error when the Nodepack is installed
-- UV Mode for Noises that broke in Nodepack 1.21 Maintenance release is now fixed
-- Baking Paint with the Falloff Map active in a Channel Mask no longer causes the baked paint to shift 
-- Depth Mode on the Falloff Map has been removed due to instability. Use the Depth mask in the Projection Palette instead
-- Custom Object Normal, Axis Mask, Paintable Gabor and PolysurfaceCurvature will no longer show an 
-  error when used in a displacement preview channel
+####NODE DEVELOPMENT
+
+- Jens Kafitz *www.campi3d.com // MariIdeas@campi3d.com*
+- Miguel A Santiago Jr. *www.digiteck3d.com // miguel@digiteck3d.com*
+- Nicholas Breslow *www.nbreslow.com // nick@nbreslow.com*
+- Antoni Kujawa
+- Orlando Esponda
+- Antonio Neto
 
 
-Known Issues & Workarounds:
------------
-- When a Nodepack Node is used in a Channel, that is plugged into the ChannelMask (Projection Palette), 
-projecting Paint from the Paintbuffer will throw an error. This is related to a MARI Bug that we will
-need the Foundry to fix.
-The current workaround is to cache any Nodepack Node in the Channel, at which point the Channel Mask will work.
+####SHADER DEVELOPMENT
 
-- the paintableGabor can crash nvidia display drivers when used in a Displacement Preview Channel. 
-  The current workaround is to cache the GaborNoise.
+- Miguel A Santiago Jr. *www.digiteck3d.com // miguel@digiteck3d.com*
+- Nicholas Breslow *www.nbreslow.com // nick@nbreslow.com*
 
 
-Developer Notes:
------------
-- As of this version of the Nodepack <DefaultName> is used for Node names in the Mari Interface.
-  <ID> will no longer be called but is required by Mari to ensure Version consistency. Please refer
-  to the SDK Docs within your Script_Docs/SDK/ Folder for more information
+####MAC QA
 
-
-
-
-Release Notes for Shader/Nodepack 1.20
-=====================================================================================
-
-Release Date
------------
-5 March 2014
-
-
-Best bits of 1.20:
------------
-- a shader mimicking Mental Ray's mia_material_x in look and handling
-- new procedurals Dots, Stripes, Weave, superEllipse + superShape
-- Noises and Procedurals can now be optionally evaluated in UV Space
-
-
-Requirements:
------------
-- This Node+Shader Pack requires MARI 2.5v2 or higher.
-
-
-Added Features:
------------
-- new BRDF Standalone Shader "MIA Material BRDF" mimicking very closely results and handling of Mental Ray's mia_material_x
-- new BRDF Difuse Shaders with Energy Conservation such as OrenNayar Difuse
-- new BRDF Specular Shaders with Energy Conservation such as WardAnisotropic and WardIsotropic
-- new procedural superShape. A complex procedural with an large amount of shape variations based on the "Superformula"
-  (http://en.wikipedia.org/wiki/Superformula). Can for example be used to create clothing patterns such as chainmail, denim, star patterns etc.
-- new procedural Weave. Cloth/Weave Pattern that you might know from Maya.
-- new procedural superEllipse. A procedural creating anything from rounded rectangles to ellipses.
-- new procedural Dot Pattern. An improved Dot Procedural which a lot of cool extras
-- new procedural Stripes. An improved Stripes Procedural which a lot of cool extras
-- new environment Falloff Map with options for Fresnel, Distance etc.. This is not bakeable/convert to paintable but for visual enhancements + channel masking
-
-Feature Improvements:
------------
-- previously existing noise and fractal nodes can now be switched to UV Space via the "Space/UV Space" Checkbox. 
-- UI improvements have been made for a variety of nodes to give a more unified user experience between nodes
-- Color A/B has been added to "Spotify" Node.
-- various Bugfixes in Library
-- Adjustment "NormalMapMerge" was deprecated since Mari now has this functionality build in
-
-
-Development:
------------
-- Documentation improvements in Script_Docs/SDK Folder for new Developers
-- new Functions for modifying UV Space have been added. Refer to section 7) of the Function Overview in the SDK Documentation
-- new Distance Functions have been added. Refer to section 10)  of the Function Overview in the SDK Documentation
-- new Value Functions have been added. Refer to section 8)  of the Function Overview in the SDK Documentation
-
-
-
-Credits:
------------
-
-- Miguel A Santiago Jr., Nicholas Breslow, Jens Kafitz, Ben Neall, Antonio Neto, Orlando Esponda, Antoni Kujawa
-
-
+- Yasin Hasanian
+- Dave Girard
