@@ -14,27 +14,35 @@ A UV based Texture Bombing Node capable of creating tileable textures on a stand
 Maya Plane. Windows Users please refer to "Known Issues & Workarounds" at the bottom of this page
 for important information to avoid display driver instability during baking.
 
+<<<<<<< HEAD
+######Axis Projection
+=======
 - Axis Projection
 
+>>>>>>> origin/1.7-Python-Roundup
 Axis Projection is similar to a Triplanar Projection but with a lot more control over
 rotation of projection in space (for objects that are not perfectly aligned in XYZ)
 and isolation of each +/- axis
 
 #####GEOMETRY PROCEDURALS
 
+<<<<<<< HEAD
+######Backface Mask
+=======
 - Backface Mask
 
+>>>>>>> origin/1.7-Python-Roundup
 An way to isolate interior faces of objects for example cloth lining. Work off your objects normals
 
 #####NOISE PROCEDURALS
 
-- VoronoiPopcorn
+######VoronoiPopcorn
 A complex procedural for creating veins, cracks, crumbled paper looks etc.
 
 
 #####BASIC PROCEDURALS
 
-- Black/White/Grey Constants
+######Black/White/Grey Constants
 Ever realized how many times you create a constant, then set it to black, white or grey ? 
 If the answer is : "A lot" then this simple addition of the 3 preconfigured constants will come in handy.
 Press TAB and type !
@@ -42,79 +50,79 @@ Press TAB and type !
 
 #####ADJUSTMENT LAYERS
 
-- Illegal Albedo Warning
+######Illegal Albedo Warning
 Adjustment layer that gives a visual warning when values outisde a custom value range are detected.
 
-- Posterize
+######Posterize
 Simple Posterize adjustment implementation, specifying how many color/value steps you want
 
 
 #####IMAGE MANAGER
 
-- Export Selection
+######Export Selection
 A new feature was added to export multiple selected images from the Image Manager.
 Existing naming and extensions are respected. If no extension is found "tif" will be used.
 
 
 #####OBJECT MENU
 
-- Export UV Mask
+######Export UV Mask
 A new feature was added to the Object Menu that allows you to export Geometry UV Masks
 
 
 #####CHANNELS MENU
 
-- Duplicate & Flatten
+######Duplicate & Flatten
 A new feature was added that allows you to easily flatten a duplicated of a selected channel.
 Naming of the new channel is inherited from the original, any sharing on the original is maintained.
 
-- Export Custom Selection
+######Export Custom Selection
 A new Export Mode was added that allows you to export a custom selection of channels across multiple geometries
 
-- Save/Load/Create from Channel Resolution
+######Save/Load/Create from Channel Resolution
 A new feature was added that allows you to transfer mixed UDIM Resolution Layouts between Channels
 
 
 #####LAYERS MENU
 
-- Clone & Merge
+######Clone & Merge
 A new feature was added to give similar functionality to Photoshops "Merge Visible".
 Clone & Merge will create a merged copy of all selected layers - optionally for selected UDIMs only.
 
-- Toggle Visibility
+######Toggle Visibility
 New options have been added to toggle visibility state of multiple selected/unselected layers
 
-- Toggle Lock
+######Toggle Lock
 New options have been added to toggle lock state of multiple selected/unselected layers
 
-- Channel Layer
+######Channel Layer
 A new option has been added to simplify the use of entire Channels in another Layerstack
 
-- Channel Layer Mask + Grouped Channel Layer Mask
+######Channel Layer Mask + Grouped Channel Layer Mask
 New options have been added to the "Add Mask" Menu to simplify the use of complete channels in a layer mask.
 "Add grouped Channel mask" will place the selected layers in a group first and apply the channel mask to the group node.
 
-- Mask from Selection
+######Mask from Selection
 New options have been added to the "Add Mask" Menu to create Masks from selected patches.
 
 
 #####PATCHES MENU
 
-- Patch to Image Manager
+######Patch to Image Manager
 A new option was added to the Patches Menu that will bake a copy of selected patches
 and place the images in the Image Manager
 
 
 #####CAMERA MENU
 
-- Quick Unproject Channel/Layer
+######Quick Unproject Channel/Layer
 Two new options where added to quickly unproject the currently visibly
 channel or layer to the Image Manager
 
 
 #####VIEW MENU
 
-- Screenshot All Channels
+######Screenshot All Channels
 A new option was added to automatically screenshot all Channels in your project
 (requires "Incremental" to be turned on under "Screenshot Settings")
 
@@ -139,7 +147,7 @@ A new option was added to automatically screenshot all Channels in your project
 
 #####LAYERS MENU
 
-- Convert to Paintable
+######Convert to Paintable
 Convert to Paintable now supports selection of multiple Layers.
 Layers will be converted to Paintable ones in the selected order.
 
