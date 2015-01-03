@@ -1,5 +1,5 @@
 MARI Function Library 1.09
-Copyright (c) 2014 MARI.IDEASCALE.COM All Rights Reserved.
+Copyright (c) 2015 MARI.IDEASCALE.COM All Rights Reserved.
 ===================================================================== 
                       	
 Contributors: =======================================================

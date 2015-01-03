@@ -1,6 +1,6 @@
 # -------------------------------------------------------------------
 # Posterize
-# Copyright (c) 2014 TheFoundry All Rights Reserved.
+# Copyright (c) 2015 TheFoundry All Rights Reserved.
 # -------------------------------------------------------------------
 # Node Impementation: Jens Kafitz | Based on work done at TheFoundry
 # Web: www.campi3d.com | www.thefoundry.co.uk   

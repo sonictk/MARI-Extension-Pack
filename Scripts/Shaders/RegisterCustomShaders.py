@@ -55,9 +55,9 @@ import xml.etree.ElementTree as ET
 base_path = os.path.dirname(__file__)
 default_shader_path = '%s/NodeLibrary' % base_path
 default_lib_path = '%s/FunctionLibrary' % base_path
-min_mari_version = '2.6'
-current_lib_version = '1.09'
-current_mari_version = '2.6'
+min_mari_version = 20603300
+current_lib_version = '1.11'
+current_mari_version = 20103300
 
 def mariVersion():
     '''Loads current mari version'''
@@ -65,7 +65,8 @@ def mariVersion():
     # grab our global variable
     global current_mari_version
 
-    current_mari_version = '%d.%d' % (mari.app.version().major(), mari.app.version().minor())
+    current_mari_version = mari.app.version().number()
+
 
 def libNamerNode():
     '''Check to see if library renamer is in place'''
@@ -310,6 +311,8 @@ def loadShaders():
             except Exception as exc:
                 print 'Error Registering %s Node : %s : %s' % (standalone[0], standalone[1], str(exc))
 
+
+
 # check to make sure we meet the min mari version
 mariVersion()
 
@@ -320,10 +323,7 @@ if current_mari_version >= min_mari_version:
     print ""
     libVersion()  # call and check for library version
     print '-----------------------------------------'
-    print "Mari Shader Library v" + current_lib_version
-    print '-----------------------------------------'
-    print "DigiTecK3D     : www.digiteck3d.com"
-    print "Mari Ideascale : www.mari.ideascale.com"
+    print "Mari Shader Library v" + current_lib_version +" loading ..."
     print '-----------------------------------------'
     print 'Functions Library : Loading'
     print '-----------------------------------------'

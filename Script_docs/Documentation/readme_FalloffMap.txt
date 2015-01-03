@@ -1,6 +1,6 @@
 #----------------------------------------------------------------
 Falloff Map
-Copyright (c) 2014 Antonio Neto. All Rights Reserved.
+Copyright (c) 2015 Antonio Neto. All Rights Reserved.
 #----------------------------------------------------------------                   	
 Author: Antonio Neto  
 #----------------------------------------------------------------
