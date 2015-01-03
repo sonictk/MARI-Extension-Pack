@@ -9,12 +9,13 @@ TBA
 
 #####ENVIRONMENT PROCEDURALS
 
-*Texture Scatter UV
-A UV based Texture Bombing Node capable of creating tileable textures on a standard 
-Maya Plane. Windows Users please refer to "Known Issues & Workarounds" at the bottom of this page
-for important information to avoid display driver instability during baking.
+- Texture Scatter UV
+  A UV based Texture Bombing Node capable of creating tileable textures on a standard 
+  Maya Plane. Windows Users please refer to "Known Issues & Workarounds" at the bottom of this page
+  for important information to avoid display driver instability during baking.
 
 - Axis Projection
+
 Axis Projection is similar to a Triplanar Projection but with a lot more control over
 rotation of projection in space (for objects that are not perfectly aligned in XYZ)
 and isolation of each +/- axis
@@ -22,6 +23,7 @@ and isolation of each +/- axis
 #####GEOMETRY PROCEDURALS
 
 - Backface Mask
+
 An way to isolate interior faces of objects for example cloth lining. Work off your objects normals
 
 #####NOISE PROCEDURALS
