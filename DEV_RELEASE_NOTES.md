@@ -22,7 +22,6 @@ and isolation of each +/- axis
 
 #####GEOMETRY PROCEDURALS
 
-<<<<<<< HEAD
 ######Backface Mask
 An way to isolate interior faces of objects for example cloth lining. Work off your objects normals
 
