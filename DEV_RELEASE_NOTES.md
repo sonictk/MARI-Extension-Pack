@@ -14,12 +14,8 @@ A UV based Texture Bombing Node capable of creating tileable textures on a stand
 Maya Plane. Windows Users please refer to "Known Issues & Workarounds" at the bottom of this page
 for important information to avoid display driver instability during baking.
 
-<<<<<<< HEAD
-######Axis Projection
-=======
-- Axis Projection
 
->>>>>>> origin/1.7-Python-Roundup
+######Axis Projection
 Axis Projection is similar to a Triplanar Projection but with a lot more control over
 rotation of projection in space (for objects that are not perfectly aligned in XYZ)
 and isolation of each +/- axis
@@ -28,10 +24,6 @@ and isolation of each +/- axis
 
 <<<<<<< HEAD
 ######Backface Mask
-=======
-- Backface Mask
-
->>>>>>> origin/1.7-Python-Roundup
 An way to isolate interior faces of objects for example cloth lining. Work off your objects normals
 
 #####NOISE PROCEDURALS
