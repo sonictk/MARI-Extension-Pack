@@ -36,12 +36,25 @@
 # --------------------------------------------------------------------
 
 
-######################################################################
-# The following adds new functionality to the MARI Gui.
-# Items are placed within existing Menus (UI_Path) and a copy is placed
-# in a common Script Menu (script_menu_path)
-# Shortcut Bindings are available but not necessarily set
-######################################################################
+
+
+# --------------------------------------------------------------------
+
+
+'''The following adds new functionality to the MARI Gui.
+Items are grouped by the standard MARI Menus they appear in such as
+CHANNELS,LAYERS,PATCHES etc.
+
+Items are placed within existing Menus (UI_Path) and a copy is placed
+in a common Script Menu (script_menu_path)
+
+Shortcut Bindings are available but not necessarily set.'''
+
+
+# --------------------------------------------------------------------
+
+
+
 
 
 import mari
@@ -49,74 +62,30 @@ import mari
 def createToolsMenu():
 
 
+
 ######################################################################
-# Patches
+# Objects
 ######################################################################
 
-	UI_path = 'MainWindow/&Patches'
-	script_menu_path = 'MainWindow/Scripts/Patches'
 
-# --------------------------------------------------------------------
+#  Export UV Mask
 
+	UI_path = 'MainWindow/Objects'
+	script_menu_path = 'MainWindow/Scripts/Objects'
 
-	###   Patch Bake to Image Manager ### 
+	exportUVMask = mari.actions.create ('Export UV Mask', 'mari.customScripts.exportUVMasks()')
+	mari.menus.addAction(exportUVMask, UI_path, 'Ambient Occlusion')
+	mari.menus.addAction(exportUVMask, script_menu_path)
 
-	PatchToImageMgr= mari.actions.create('Patch to Image Manager', 'mari.customScripts.patch_bake_to_imageman()')
-	mari.menus.addAction(PatchToImageMgr, UI_path,'UV Mask to Image Manager')
-	mari.menus.addAction(PatchToImageMgr, script_menu_path)
-
-	icon_filename = 'SaveToImageManager.png'
+	icon_filename = 'EdgeMask.png'
 	icon_path = mari.resources.path(mari.resources.ICONS) + '/' + icon_filename
-	PatchToImageMgr.setIconPath(icon_path)
-	PatchToImageMgr.setShortcut('')
-
-# --------------------------------------------------------------------
+	exportUVMask.setIconPath(icon_path)
+	exportUVMask.setShortcut('')
 
 
-	###  Menu Separator ###
+	###  Menu Separators ###
 
-	mari.menus.addSeparator(UI_path,'UV Mask to Image Manager')
-
-
-
-######################################################################
-# Camera
-######################################################################
-
-	UI_path = 'MainWindow/&Camera'
-	script_menu_path = 'MainWindow/Scripts/Camera'
-
-# --------------------------------------------------------------------
-
-	###  Quick Unproject Channel to Image Manager ### 
-
-	ChannelToImageMgr = mari.actions.create('Quick Unproject Channel', 'mari.customScripts.unproject_channel_to_imageman()')
-	mari.menus.addAction(ChannelToImageMgr, script_menu_path)
-	mari.menus.addAction(ChannelToImageMgr, UI_path,'Camera Left')
-
-	icon_filename = 'SaveToImageManager.png'
-	icon_path = mari.resources.path(mari.resources.ICONS) + '/' + icon_filename
-	ChannelToImageMgr.setIconPath(icon_path)
-	ChannelToImageMgr.setShortcut('')
-
-# --------------------------------------------------------------------
-
-	###   Quick Unproject Layer to Image Manager ###
-
-	LayerToImageMgr = mari.actions.create('Quick Unproject Layer', 'mari.customScripts.unproject_layer_to_imageman()')
-	mari.menus.addAction(LayerToImageMgr, UI_path,'Camera Left')
-	mari.menus.addAction(LayerToImageMgr, script_menu_path)
-
-	icon_filename = 'SaveToImageManager.png'
-	icon_path = mari.resources.path(mari.resources.ICONS) + '/' + icon_filename
-	LayerToImageMgr.setIconPath(icon_path)
-	LayerToImageMgr.setShortcut('')
-
-# --------------------------------------------------------------------
-
-	###  Quick Unproject Menu Separator ###
-
-	mari.menus.addSeparator(UI_path,'Camera Left')
+	mari.menus.addSeparator('MainWindow/Objects','Ambient Occlusion')
 
 
 
@@ -124,27 +93,6 @@ def createToolsMenu():
 # Channels
 ######################################################################
 
-	UI_path_A = 'MainWindow/&Channels/Export Flattened'
-	UI_path_B = 'MainWindow/&Channels/Export'
-	script_menu_path = 'MainWindow/Scripts/Channels'
-
-# --------------------------------------------------------------------
-
-	###   Export Custom Channel Selection ###
-
-	# Some Duplication in Menus but at least it makes sense this way
-
-	ExportSelected = mari.actions.create ('Export Custom Channel Selection', 'mari.customScripts.exportSelectedChannels()')
-	mari.menus.addAction(ExportSelected, UI_path_A,'Export Current Channel Flattened')
-	mari.menus.addAction(ExportSelected, UI_path_B,'Export Current Channel')
-	mari.menus.addAction(ExportSelected, script_menu_path)
-	
-	icon_filename = 'ExportImages.png'
-	icon_path = mari.resources.path(mari.resources.ICONS) + '/' + icon_filename
-	ExportSelected.setIconPath(icon_path)
-	ExportSelected.setShortcut('')
-
-# --------------------------------------------------------------------
 
 	###   Duplicate & Flatten Selected Channels ###
 
@@ -162,11 +110,29 @@ def createToolsMenu():
 
 # --------------------------------------------------------------------
 
+	###   Export Custom Channel Selection ###
+
+	# Added twice to main interface to maintain existing logic
+	UI_path_A = 'MainWindow/&Channels/Export Flattened'
+	UI_path_B = 'MainWindow/&Channels/Export'
+	script_menu_path = 'MainWindow/Scripts/Channels/Export'
+
+	ExportSelected = mari.actions.create ('Export Custom Channel Selection', 'mari.customScripts.exportSelectedChannels()')
+	mari.menus.addAction(ExportSelected, UI_path_A,'Export Current Channel Flattened')
+	mari.menus.addAction(ExportSelected, UI_path_B,'Export Current Channel')
+	mari.menus.addAction(ExportSelected, script_menu_path)
+	
+	icon_filename = 'ExportImages.png'
+	icon_path = mari.resources.path(mari.resources.ICONS) + '/' + icon_filename
+	ExportSelected.setIconPath(icon_path)
+	ExportSelected.setShortcut('')
+
+# --------------------------------------------------------------------
+
 	###   Save Channel Resolution ###
 
-
 	UI_path = 'MainWindow/&Channels/Resize'
-	script_menu_path = 'MainWindow/Scripts/Channels/Resolution Template'
+	script_menu_path = 'MainWindow/Scripts/Channels/Template'
 
 	getChannelTemplate = mari.actions.create ('Save Channel Resolution ', 'mari.customScripts.channel_template_get()')
 
@@ -178,8 +144,12 @@ def createToolsMenu():
 	getChannelTemplate.setIconPath(icon_path)
 	getChannelTemplate.setShortcut('')
 
+# --------------------------------------------------------------------
 
 	###    Load Channel Resolution ###
+
+	UI_path = 'MainWindow/&Channels/Resize'
+	script_menu_path = 'MainWindow/Scripts/Channels/Template'
 
 	setChannelTemplate = mari.actions.create ('Load Channel Resolution', 'mari.customScripts.channel_template_set()')
 
@@ -191,7 +161,7 @@ def createToolsMenu():
 	setChannelTemplate.setIconPath(icon_path)
 	setChannelTemplate.setShortcut('')
 
-
+# --------------------------------------------------------------------
 
 	###    Create Channel from Resolution ###
 
@@ -199,7 +169,7 @@ def createToolsMenu():
 	# Ideally we should come up with a way to add this to the "Channel Size" Dropdowns under "Add Channel" / "Quick Channel"
 
 	UI_path = 'MainWindow/&Channels'
-	script_menu_path = 'MainWindow/Scripts/Channels/Resolution Template'
+	script_menu_path = 'MainWindow/Scripts/Channels/Template'
 
 	newChannelFromTemplate = mari.actions.create ('Create Channel from Resolution', 'mari.customScripts.channel_template_set()')
 
@@ -213,10 +183,26 @@ def createToolsMenu():
 	
 
 
-
 ######################################################################
 # Layers
 ######################################################################
+
+
+	###  Channel Layer ###
+
+	UI_path = 'MainWindow/&Layers'
+	script_menu_path = 'MainWindow/Scripts/Layers'
+
+	chanLayer = mari.actions.create('Add Channel Layer', 'mari.customScripts.ChannelLayerUI_layer()')
+	mari.menus.addAction(chanLayer, UI_path, 'Add Adjustment Layer')
+	mari.menus.addAction(chanLayer, script_menu_path)
+
+	icon_filename = 'linked.png'
+	icon_path = mari.resources.path(mari.resources.ICONS) + '/' + icon_filename
+	chanLayer.setIconPath(icon_path)
+	chanLayer.setShortcut('')
+
+# --------------------------------------------------------------------
 
 	###  Clone & merge layers ###
 
@@ -269,7 +255,7 @@ def createToolsMenu():
 	###  Toggle Layer Visbility ###
 
 	UI_path = 'MainWindow/&Layers/' + u'Visibility + Lock'
-	script_menu_path = 'MainWindow/Scripts/Layers/'
+	script_menu_path = 'MainWindow/Scripts/Layers/' + u'Visibility + Lock'
 
 
 	toggleSelVisibility = mari.actions.create('Toggle Selected Visibility', 'mari.customScripts.toggleSelVisibility()')
@@ -290,9 +276,13 @@ def createToolsMenu():
 	toggleUnselVisibility.setIconPath(icon_path)
 	toggleUnselVisibility.setShortcut('')
 
+
 # --------------------------------------------------------------------
 
 	###  Toggle Layer Lock ###
+
+	UI_path = 'MainWindow/&Layers/' + u'Visibility + Lock'
+	script_menu_path = 'MainWindow/Scripts/Layers/Visibility + Lock'
 	
 	toggleSelLock = mari.actions.create('Toggle Selected Lock', 'mari.customScripts.toggleSelLock()')
 	mari.menus.addAction(toggleSelLock, UI_path)
@@ -312,8 +302,9 @@ def createToolsMenu():
 	toggleUnselLock.setIconPath(icon_path)
 	toggleUnselLock.setShortcut('')
 
+# --------------------------------------------------------------------
 
-	###  Lock/Visibility Separator ###
+	###  Lock/Visibility Separator Main Interface ###
 
 	mari.menus.addSeparator(UI_path,'Toggle Selected Lock')
 	mari.menus.addSeparator('MainWindow/&Layers/','Remove Layers')
@@ -325,7 +316,7 @@ def createToolsMenu():
 	###  Layer Mask from Selection ###
 
 	UI_path = 'MainWindow/&Layers/Layer Mask/Add Mask'
-	script_menu_path = 'MainWindow/Scripts/Layers/Layer Mask/'
+	script_menu_path = 'MainWindow/Scripts/Layers/Layer Mask'
 
 
 	mask_from_selection = mari.actions.create('From Patch Selection', 'mari.customScripts.selectionMask()')
@@ -350,28 +341,6 @@ def createToolsMenu():
 	icon_path = mari.resources.path(mari.resources.ICONS) + '/' + icon_filename
 	mask_from_selection.setIconPath(icon_path)
 	mask_from_selection.setShortcut('')
-
-	###  Layer Mask Menu Separators ###
-
-	# mari.menus.addSeparator('MainWindow/&Layers/Layer Mask/Add Mask/','From Alpha')
-
-
-# --------------------------------------------------------------------
-
-
-	###  Channel Layer ###
-
-	UI_path = 'MainWindow/&Layers'
-	script_menu_path = 'MainWindow/Scripts/Layers'
-
-	chanLayer = mari.actions.create('Add Channel Layer', 'mari.customScripts.ChannelLayerUI_layer()')
-	mari.menus.addAction(chanLayer, UI_path, 'Add Adjustment Layer')
-	mari.menus.addAction(chanLayer, script_menu_path)
-
-	icon_filename = 'linked.png'
-	icon_path = mari.resources.path(mari.resources.ICONS) + '/' + icon_filename
-	chanLayer.setIconPath(icon_path)
-	chanLayer.setShortcut('')
 
 # --------------------------------------------------------------------
 
@@ -407,28 +376,97 @@ def createToolsMenu():
 
 
 ######################################################################
-# Object
+# Patches
 ######################################################################
 
 
-#  Export UV Mask
+	###   Patch Bake to Image Manager ### 
 
-	UI_path = 'MainWindow/Objects'
-	script_menu_path = 'MainWindow/Scripts/Objects'
+	UI_path = 'MainWindow/&Patches'
+	script_menu_path = 'MainWindow/Scripts/Patches'
 
-	exportUVMask = mari.actions.create ('Export UV Mask', 'mari.customScripts.exportUVMasks()')
-	mari.menus.addAction(exportUVMask, UI_path, 'Ambient Occlusion')
-	mari.menus.addAction(exportUVMask, script_menu_path)
+	PatchToImageMgr= mari.actions.create('Patch to Image Manager', 'mari.customScripts.patch_bake_to_imageman()')
+	mari.menus.addAction(PatchToImageMgr, UI_path,'UV Mask to Image Manager')
+	mari.menus.addAction(PatchToImageMgr, script_menu_path)
 
-	icon_filename = 'EdgeMask.png'
+	icon_filename = 'SaveToImageManager.png'
 	icon_path = mari.resources.path(mari.resources.ICONS) + '/' + icon_filename
-	exportUVMask.setIconPath(icon_path)
-	exportUVMask.setShortcut('')
+	PatchToImageMgr.setIconPath(icon_path)
+	PatchToImageMgr.setShortcut('')
+
+# --------------------------------------------------------------------
 
 
-	###  Menu Separators ###
+	###  Menu Separator ###
 
-	mari.menus.addSeparator('MainWindow/Objects','Ambient Occlusion')
+	mari.menus.addSeparator(UI_path,'UV Mask to Image Manager')
+
+
+
+######################################################################
+# Camera
+######################################################################
+
+
+	###  Quick Unproject Channel to Image Manager ### 
+
+	UI_path = 'MainWindow/&Camera'
+	script_menu_path = 'MainWindow/Scripts/Camera'
+
+	ChannelToImageMgr = mari.actions.create('Quick Unproject Channel', 'mari.customScripts.unproject_channel_to_imageman()')
+	mari.menus.addAction(ChannelToImageMgr, script_menu_path)
+	mari.menus.addAction(ChannelToImageMgr, UI_path,'Camera Left')
+
+	icon_filename = 'SaveToImageManager.png'
+	icon_path = mari.resources.path(mari.resources.ICONS) + '/' + icon_filename
+	ChannelToImageMgr.setIconPath(icon_path)
+	ChannelToImageMgr.setShortcut('')
+
+# --------------------------------------------------------------------
+
+	###   Quick Unproject Layer to Image Manager ###
+
+	UI_path = 'MainWindow/&Camera'
+	script_menu_path = 'MainWindow/Scripts/Camera'
+
+	LayerToImageMgr = mari.actions.create('Quick Unproject Layer', 'mari.customScripts.unproject_layer_to_imageman()')
+	mari.menus.addAction(LayerToImageMgr, UI_path,'Camera Left')
+	mari.menus.addAction(LayerToImageMgr, script_menu_path)
+
+	icon_filename = 'SaveToImageManager.png'
+	icon_path = mari.resources.path(mari.resources.ICONS) + '/' + icon_filename
+	LayerToImageMgr.setIconPath(icon_path)
+	LayerToImageMgr.setShortcut('')
+
+# --------------------------------------------------------------------
+
+	###  Camera Menu Separator ###
+
+	UI_path = 'MainWindow/&Camera'
+	mari.menus.addSeparator(UI_path,'Camera Left')
+
+
+
+
+######################################################################
+# Review
+######################################################################
+
+# Screenshot all Channels
+
+	UI_path = 'MainWindow/View'
+	script_menu_path = 'MainWindow/Scripts/View'
+
+	screenshotChannels = mari.actions.create('Screenshot All Channels','mari.customScripts.screenshot_all_channels()')
+	mari.menus.addAction(screenshotChannels, UI_path, 'Screenshot Settings')
+	mari.menus.addAction(screenshotChannels, script_menu_path)
+
+	icon_filename = 'CanvasSnapshot.png'
+	icon_path = mari.resources.path(mari.resources.ICONS) + '/' + icon_filename
+	screenshotChannels.setIconPath(icon_path)
+	screenshotChannels.setShortcut('')
+
+
 
 
 ######################################################################
@@ -452,26 +490,5 @@ def createToolsMenu():
 	###  Menu Separators ###
 
 	mari.menus.addSeparator(UI_path,'Export Selection')
-
-
-######################################################################
-# Review
-######################################################################
-
-# Screenshot all Channels
-
-	UI_path = 'MainWindow/View'
-	script_menu_path = 'MainWindow/Scripts/Review'
-
-	screenshotChannels = mari.actions.create('Screenshot All Channels','mari.customScripts.screenshot_all_channels()')
-	mari.menus.addAction(screenshotChannels, UI_path, 'Screenshot Settings')
-	mari.menus.addAction(screenshotChannels, script_menu_path)
-
-	icon_filename = 'CanvasSnapshot.png'
-	icon_path = mari.resources.path(mari.resources.ICONS) + '/' + icon_filename
-	screenshotChannels.setIconPath(icon_path)
-	screenshotChannels.setShortcut('')
-
-
 
 

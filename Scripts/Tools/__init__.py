@@ -195,7 +195,7 @@ print 'Layer Menu: Layer Mask/Add Mask/Add Channel Mask'
 print 'Layer Menu: Layer Mask/Add Mask/Add Channel Mask (Group)'
 print 'Layer Menu: Clone & Merge Layers'
 print 'Layer Menu: Convert To Paintable (replaces default)'
-print 'Layer Menu: Toggle Visibility selected/unselected
+print 'Layer Menu: Toggle Visibility selected/unselected'
 print 'Layer Menu: Toggle Lock selected/unselected'
 print '-----------------------------------------'
 print 'Patches Palette Additions (1): '

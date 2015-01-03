@@ -40,7 +40,7 @@ In order to keep track of things it would be good if major new features just get
 so we have some sort of easy way to assemble release information.
 
 
-##Adding new nodes, shaders, functions & Python Scripts
+##Adding new nodes, shaders, functions & scripts
 
 Refer to the contents of the Script_Docs/SDK folder for information
 
