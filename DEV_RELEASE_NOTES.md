@@ -7,7 +7,7 @@ TBA
 ##Added Features:
 
 
-####ENVIRONMENT PROCEDURALS
+#####ENVIRONMENT PROCEDURALS
 
 - Texture Scatter UV
 A UV based Texture Bombing Node capable of creating tileable textures on a standard 
@@ -19,18 +19,18 @@ Axis Projection is similar to a Triplanar Projection but with a lot more control
 rotation of projection in space (for objects that are not perfectly aligned in XYZ)
 and isolation of each +/- axis
 
-####GEOMETRY PROCEDURALS
+#####GEOMETRY PROCEDURALS
 
 - Backface Mask
 An way to isolate interior faces of objects for example cloth lining. Work off your objects normals
 
-####NOISE PROCEDURALS
+#####NOISE PROCEDURALS
 
 - VoronoiPopcorn
 A complex procedural for creating veins, cracks, crumbled paper looks etc.
 
 
-####BASIC PROCEDURALS
+#####BASIC PROCEDURALS
 
 - Black/White/Grey Constants
 Ever realized how many times you create a constant, then set it to black, white or grey ? 
@@ -38,7 +38,7 @@ If the answer is : "A lot" then this simple addition of the 3 preconfigured cons
 Press TAB and type !
 
 
-####ADJUSTMENT LAYERS
+#####ADJUSTMENT LAYERS
 
 - Illegal Albedo Warning
 Adjustment layer that gives a visual warning when values outisde a custom value range are detected.
@@ -47,20 +47,20 @@ Adjustment layer that gives a visual warning when values outisde a custom value 
 Simple Posterize adjustment implementation, specifying how many color/value steps you want
 
 
-####IMAGE MANAGER
+#####IMAGE MANAGER
 
 - Export Selection
 A new feature was added to export multiple selected images from the Image Manager.
 Existing naming and extensions are respected. If no extension is found "tif" will be used.
 
 
-####OBJECT MENU
+#####OBJECT MENU
 
 - Export UV Mask
 A new feature was added to the Object Menu that allows you to export Geometry UV Masks
 
 
-####CHANNELS MENU
+#####CHANNELS MENU
 
 - Duplicate & Flatten
 A new feature was added that allows you to easily flatten a duplicated of a selected channel.
@@ -73,7 +73,7 @@ A new Export Mode was added that allows you to export a custom selection of chan
 A new feature was added that allows you to transfer mixed UDIM Resolution Layouts between Channels
 
 
-####LAYERS MENU
+#####LAYERS MENU
 
 - Clone & Merge
 A new feature was added to give similar functionality to Photoshops "Merge Visible".
@@ -96,21 +96,21 @@ New options have been added to the "Add Mask" Menu to simplify the use of comple
 New options have been added to the "Add Mask" Menu to create Masks from selected patches.
 
 
-####PATCHES MENU
+#####PATCHES MENU
 
 - Patch to Image Manager
 A new option was added to the Patches Menu that will bake a copy of selected patches
 and place the images in the Image Manager
 
 
-####CAMERA MENU
+#####CAMERA MENU
 
 - Quick Unproject Channel/Layer
 Two new options where added to quickly unproject the currently visibly
 channel or layer to the Image Manager
 
 
-####VIEW MENU
+#####VIEW MENU
 
 - Screenshot All Channels
 A new option was added to automatically screenshot all Channels in your project
@@ -121,21 +121,21 @@ A new option was added to automatically screenshot all Channels in your project
 ##Feature Improvements:
 
 
-####ADJUSTMENT LAYERS
+#####ADJUSTMENT LAYERS
 
 - "Color Range to Mask" now has a basic Grade Module for selected colors. Due to the size + expense 
   of the node baking or caching is recommended in bigger layer stacks.
 
 - "Enhance Selection" Mode in Color Range to Mask was improved
 
-####GEOMETRY PROCEDURALS
+#####GEOMETRY PROCEDURALS
 
 - Polysurface Curvature now has a "Hard Edged" Mode that will clip grey values
 
 - Polysurface Curvature now has a "Attentuate by Ambient Occlusion" Mode
 
 
-####LAYERS MENU
+#####LAYERS MENU
 
 - Convert to Paintable
 Convert to Paintable now supports selection of multiple Layers.
@@ -146,12 +146,12 @@ Layers will be converted to Paintable ones in the selected order.
 ##Bugfixes:
 
 
-####GENERAL
+#####GENERAL
 
 - svn or git files in the directories could cause the extension pack to not load properly
 
 
-####NOISE PROCEDURALS
+#####NOISE PROCEDURALS
 
 - Legacy Cloud was broken and not behaving like Mari Cloud in Ideascale Nodepack 1.5
 
@@ -179,7 +179,7 @@ Layers will be converted to Paintable ones in the selected order.
 
 ##Credits:
 
-####PYTHON DEVELOPMENT
+#####PYTHON DEVELOPMENT
 
 - Jorel Latraille, *http://www.jorel-latraille.com*
 - Ben Neall *www.bneall.blogspot.co.nz //  bneall@gmail.com*
@@ -189,7 +189,7 @@ Layers will be converted to Paintable ones in the selected order.
 - Antoni Kujawa
 
 
-####NODE DEVELOPMENT
+#####NODE DEVELOPMENT
 
 - Jens Kafitz *www.campi3d.com // MariIdeas@campi3d.com*
 - Miguel A Santiago Jr. *www.digiteck3d.com // miguel@digiteck3d.com*
@@ -199,13 +199,13 @@ Layers will be converted to Paintable ones in the selected order.
 - Antonio Neto
 
 
-####SHADER DEVELOPMENT
+#####SHADER DEVELOPMENT
 
 - Miguel A Santiago Jr. *www.digiteck3d.com // miguel@digiteck3d.com*
 - Nicholas Breslow *www.nbreslow.com // nick@nbreslow.com*
 
 
-####MAC QA
+#####MAC QA
 
 - Yasin Hasanian
 - Dave Girard
