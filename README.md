@@ -1,10 +1,10 @@
-#MARI EXTENSION PACK 1.7
+#MARI EXTENSION PACK 2.0
 
 Copyright (c) 2015 www.mari.ideascale.com. All Rights Reserved.
 
 
 ##Version:
-Extension Pack :  1.7  //  MARI Function Library: 1.11
+Extension Pack :  2.0  //  MARI Function Library: 1.11
 
 
 ##Info

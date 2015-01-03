@@ -35,7 +35,7 @@
 
 import mari
 
-current_extension_pack = "1.7"
+current_extension_pack = "2.0"
 
 # ------------------------------------------------------------------------------
 # Start Console Printout
@@ -64,7 +64,7 @@ def isMariSuitable():
 	return True, True
     
     else:
-        mari.utils.message("Mari Version not compatible with MARI Extension Pack 1.7")
+        mari.utils.message("Mari Version not compatible with MARI Extension Pack 2.0")
         return False, False
 
 # ------------------------------------------------------------------------------
