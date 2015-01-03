@@ -61,6 +61,30 @@ def unprojChanPaint():
   mari.history.stopMacro()
   return 
 
+
+def _isProjectSuitable():
+    """Checks project state."""
+    MARI_2_0V1_VERSION_NUMBER = 20001300    # see below
+    if mari.app.version().number() >= MARI_2_0V1_VERSION_NUMBER:
+    
+        if mari.projects.current() is None:
+            mari.utils.message("Please open a project before running.")
+            return False, False
+
+        if mari.app.version().number() >= 20603300:
+            return True, True
+
+        return True, False
+        
+    else:
+        mari.utils.message("You can only run this script in Mari 2.6v3 or newer.")
+        return False, False
+
+
+
 def unproject_channel_to_imageman():
+  suitable = _isProjectSuitable()
+  if not suitable[0]:
+        return
 
   unprojChanPaint()

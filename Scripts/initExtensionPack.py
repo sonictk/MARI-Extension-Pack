@@ -54,28 +54,42 @@ print '-----------------------------------------'
 
 def isMariSuitable():
     "Checks Mari Version"
-    MARI_2_6v3_VERSION_NUMBER =   20603300   # see below
+    MARI_2_6v3_VERSION_NUMBER =   20603300 #MARI 2.6v3
 
     if mari.app.version().number() >=  MARI_2_6v3_VERSION_NUMBER:
 
         import Tools
         import Shaders.RegisterCustomShaders
+
+	return True, True
     
     else:
         mari.utils.message("Mari Version not compatible with MARI Extension Pack 1.7")
-        return False
+        return False, False
 
 # ------------------------------------------------------------------------------
 
-isMariSuitable()
+def ExtensionPackInit():
+	suitable = isMariSuitable()
+
+# End Console Printout Failure
+
+	if not suitable[0]:
+		print ' '
+		print '  Mari Extension Pack ' + current_extension_pack
+		print '     DID NOT LOAD'
+		print ' '
+		print 'Reason: Incompatible Mari Version'	
+		print ' '
+		return
+
+# End Console Printout success:
+   
+	print '#####################################################'
+	print 'Mari Extension Pack ' + current_extension_pack + ' finished loading successfully'
+	print '#####################################################'
+	print '            http://mari.ideascale.com'
+	print ''
 
 
-# ------------------------------------------------------------------------------
-# End Console Printout success
-# ------------------------------------------------------------------------------
-
-print '#####################################################'
-print 'Mari Extension Pack ' + current_extension_pack + ' finished loading successfully'
-print '#####################################################'
-print '            http://mari.ideascale.com'
-print ''
+ExtensionPackInit()

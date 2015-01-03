@@ -48,9 +48,34 @@ import mari
 version = "0.01"
 geo_dict = {}
 
+
+# ------------------------------------------------------------------------------
+
+def _isProjectSuitable():
+    """Checks project state."""
+    MARI_2_0V1_VERSION_NUMBER = 20001300    # see below
+    if mari.app.version().number() >= MARI_2_0V1_VERSION_NUMBER:
+    
+        if mari.projects.current() is None:
+            mari.utils.message("Please open a project before running.")
+            return False, False
+
+        if mari.app.version().number() >= 20603300:
+            return True, True
+
+        return True, False
+    
+    else:
+        mari.utils.message("You can only run this script in Mari 2.6v3 or newer.")
+        return False, False
+
+
 # ------------------------------------------------------------------------------
 def getChannelTemplate():
     "Get current channel's patch resolutions and create a template."
+    suitable = _isProjectSuitable()
+    if not suitable[0]:
+          return
     mari.history.startMacro('Save Channel Resolution')
     global geo_dict
     geo = mari.geo.current()
@@ -64,6 +89,9 @@ def getChannelTemplate():
 # ------------------------------------------------------------------------------
 def setChannelFromTemplate():
     "Set current channel's patch resolutions from a template."
+    suitable = _isProjectSuitable()
+    if not suitable[0]:
+          return
     mari.history.startMacro('Load Channel Resolution')
     geo = mari.geo.current()
     if not geo_dict.has_key(geo):
@@ -81,6 +109,9 @@ def setChannelFromTemplate():
 # ------------------------------------------------------------------------------
 def createChannelFromTemplate():
     "Create a channel from a template."
+    suitable = _isProjectSuitable()
+    if not suitable[0]:
+          return
     mari.history.startMacro('Create Channel from Saved Resolution')
     geo = mari.geo.current()
     if not geo_dict.has_key(geo):

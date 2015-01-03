@@ -124,6 +124,8 @@ A new option was added to automatically screenshot all Channels in your project
 
 #####ADJUSTMENT LAYERS
 
+######Color Range to Mask
+
 - "Color Range to Mask" now has a basic Grade Module for selected colors. Due to the size + expense 
   of the node baking or caching is recommended in bigger layer stacks.
 
@@ -131,9 +133,12 @@ A new option was added to automatically screenshot all Channels in your project
 
 #####GEOMETRY PROCEDURALS
 
+######Polysurface Curvature
+
 - Polysurface Curvature now has a "Hard Edged" Mode that will clip grey values
 
-- Polysurface Curvature now has a "Attentuate by Ambient Occlusion" Mode
+- Polysurface Curvature now has a "Attentuate by Ambient Occlusion" Mode, giving more plausible results on
+  hard-surface objects
 
 
 #####LAYERS MENU
@@ -192,9 +197,9 @@ Layers will be converted to Paintable ones in the selected order.
 
 #####NODE DEVELOPMENT
 
-- Jens Kafitz *www.campi3d.com // MariIdeas@campi3d.com*
 - Miguel A Santiago Jr. *www.digiteck3d.com // miguel@digiteck3d.com*
 - Nicholas Breslow *www.nbreslow.com // nick@nbreslow.com*
+- Jens Kafitz *www.campi3d.com // MariIdeas@campi3d.com*
 - Antoni Kujawa
 - Orlando Esponda
 - Antonio Neto

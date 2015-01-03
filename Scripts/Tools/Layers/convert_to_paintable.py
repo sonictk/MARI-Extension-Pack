@@ -124,7 +124,7 @@ def isProjectSuitable():
         return True
         
     else:
-        mari.utils.message("You can only run this script in Mari 2.0v1 or newer.")
+        mari.utils.message("You can only run this script in Mari 2.6v3 or newer.")
         return False
 
 # ------------------------------------------------------------------------------

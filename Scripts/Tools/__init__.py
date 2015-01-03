@@ -67,7 +67,7 @@ import Object.export_uv_masks as export_uv_masks
 import ImageManager.export_imageMan_images as exportImageManager
 
 # REVIEWS:
-import Review.screenshot_all_channels as screenshot_all_channels
+import View.screenshot_all_channels as screenshot_all_channels
 
 # ------------------------------------------------------------------------------   
 

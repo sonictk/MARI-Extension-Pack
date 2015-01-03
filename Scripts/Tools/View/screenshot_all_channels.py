@@ -1,13 +1,13 @@
 # ------------------------------------------------------------------------------
-# Mask from Selection
+# Screenshot All Channels
 # ------------------------------------------------------------------------------
-# Creates a Mask based on selected patches
+# Will do Screenshots of all Channels and export them based on the path provided
+# in Screenshot Settings
 # ------------------------------------------------------------------------------
 # http://mari.ideascale.com
-# http://bneall.blogspot.de/
+# http://cg-cnu.blogspot.in/
 # ------------------------------------------------------------------------------
-# Written by Ben Neal, 2014
-# Modified for MARI Extension Pack by Jens Kafitz, 2015
+# Written by Sreenivas Alapati, 2014
 # ------------------------------------------------------------------------------
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -36,51 +36,35 @@
 # ADVISED OF HE POSSIBILITY OF SUCH DAMAGE.
 # ------------------------------------------------------------------------------
 
-
 import mari
 
-def _isProjectSuitable():
-    """Checks project state."""
-    MARI_2_0V1_VERSION_NUMBER = 20001300    # see below
-    if mari.app.version().number() >= MARI_2_0V1_VERSION_NUMBER:
-    
-        if mari.projects.current() is None:
-            mari.utils.message("Please open a project before running.")
-            return False, False
+def screenshotAllChannels():
+    '''Take screenshot of all the channels for the current view '''
 
-        if mari.app.version().number() >= 20603300:
-            return True, True
+    if mari.projects.current() == None:
+        mari.utils.message("No project currently open", title = "Error")
+        return
 
-        return True, False
-        
-    else:
-        mari.utils.message("You can only run this script in Mari 2.6v3 or newer.")
-        return False, False
+    mari.utils.message("Snapshotting multiple Channels requires Incremental Screenshot Setting to be enabled")
 
+    mari.history.startMacro('Snapshot all Channels')
+    curGeo = mari.geo.current()
+    curChannel = curGeo.currentChannel()
+    chanList = curGeo.channelList()
+    curCanvas = mari.canvases.current()
 
+    mari.app.setWaitCursor()
 
-def selectionMask(invert):
- 	suitable = _isProjectSuitable()
- 	if not suitable[0]:
- 	      return
-	mari.history.startMacro('Create Mask from Selection')
-	currentObj = mari.geo.current()
-	currentChan = currentObj.currentChannel()
-	currentLayer = currentChan.currentLayer()
-	selectedPatches = currentObj.selectedPatches()
-	
-	newMaskImageSet = currentLayer.makeMask()
-	for image in newMaskImageSet.imageList():
-		if invert == False:
-			image.fill(mari.Color(0.0, 0.0, 0.0, 1.0))
-		else:
-			image.fill(mari.Color(1.0, 1.0, 1.0, 1.0))
-	
-	for patch in selectedPatches:
-		selectedImage = currentObj.patchImage(patch, newMaskImageSet)
-		if invert == False:
-			selectedImage.fill(mari.Color(1.0, 1.0, 1.0, 1.0))
-		else:
-			selectedImage.fill(mari.Color(0.0, 0.0, 0.0, 1.0))
-	mari.history.stopMacro()
+    for chan in chanList:
+        curGeo.setCurrentChannel(chan)
+        curCanvas.repaint()
+        snapAction = mari.actions.find ('/Mari/Canvas/Take Screenshot')
+        snapAction.trigger()
+
+    curGeo.setCurrentChannel(curChannel)
+    curCanvas.repaint()
+    mari.app.restoreCursor()
+    mari.history.stopMacro()
+
+    return
 
