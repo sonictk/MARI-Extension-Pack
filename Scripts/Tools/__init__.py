@@ -42,32 +42,32 @@ import mari
 
 # ------------------------------------------------------------------------------ 
 # PATCHES:
-import Patches.patch_bake_to_imageman as patch_bake_to_imageman
+import Patches.extPack_patch_bake_to_imageman as patch_bake_to_imageman
 
  # CAMERA:
-import Camera.unproject_channel_to_imageman as unproject_channel_to_imageman
-import Camera.unproject_layer_to_imageman as unproject_layer_to_imageman
+import Camera.extPack_unproject_channel_to_imageman as unproject_channel_to_imageman
+import Camera.extPack_unproject_layer_to_imageman as unproject_layer_to_imageman
 
 # LAYERS
-import Layers.channel_layer as channel_layer
-import Layers.mask_from_selection as mask_from_selection
-import Layers.clone_merge_layers as clone_merge_layers
-import Layers.toggle_layer_visibility_lock as toggle_layer_visibility_lock
-import Layers.convert_to_paintable as convert_to_paintable
+import Layers.extPack_channel_layer as channel_layer
+import Layers.extPack_mask_from_selection as mask_from_selection
+import Layers.extPack_clone_merge_layers as clone_merge_layers
+import Layers.extPack_toggle_visibility_lock as toggle_layer_visibility_lock
+import Layers.extPack_convert_to_paintable as convert_to_paintable
 
 # CHANNELS:
-import Channels.export_selected_channels as export_selected_channels
-import Channels.flatten_selected_channels as flatten_selected_channels
-import Channels.channel_template as channel_template
+import Channels.extPack_exportSelectedChannels as export_selected_channels
+import Channels.extPack_flattenSelectedChannels as flatten_selected_channels
+import Channels.extPack_channelTemplate as channel_template
 
 # OBJECTS:
-import Object.export_uv_masks as export_uv_masks
+import Object.extPack_export_uv_masks as export_uv_masks
 
 # IMAGE MANAGER:
-import ImageManager.export_imageMan_images as exportImageManager
+import ImageManager.extPack_export_imageMan_images as exportImageManager
 
 # REVIEWS:
-import View.screenshot_all_channels as screenshot_all_channels
+import View.extPack_screenshot_all_channels as screenshot_all_channels
 
 # ------------------------------------------------------------------------------   
 
