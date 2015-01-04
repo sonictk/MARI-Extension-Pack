@@ -36,14 +36,23 @@
 import mari
 import os
 import xml.etree.ElementTree as ET
+import time
 from PySide import QtGui
 
 
-# global variables
-base_path = mari.resources.path(mari.resources.USER_SCRIPTS)
+# EXTENSION PACK VERSION
 current_extension_pack = "2.0"
 
 
+
+# SCRIPT DIRECTORY PATH(S)
+base_path = os.path.abspath(mari.resources.path(mari.resources.USER_SCRIPTS))
+if mari.app.version().isWindows():
+    base_path = base_path.split(';')
+else:
+    base_path = base_path.split(':')
+
+# ------------------------------------------------------------------------------
 
 def checkMariVersion():
     "Checks if Mari Version is compatible"
@@ -58,8 +67,9 @@ def checkMariVersion():
         return False, False
 
 # ------------------------------------------------------------------------------
+
 def detectScriptConflict():
-	'''Finds existing copies of script files from ideascale'''
+	'''Finds existing copies from the blacklist of script files from ideascale'''
 
 	# This is the Blacklist of Files that are being looked for
 	# If one of these is found, the ExtensionPack will refuse to load
@@ -69,7 +79,7 @@ def detectScriptConflict():
 					'ak_unprojectChannelToImageman_v1-ab0cd4.py','ak_unprojectChannelToImageman_v1-ab0cd4.pyc',
 					'ak_unprojectLayerToImageman_v1-4c13d7.py','ak_unprojectLayerToImageman_v1-4c13d7.pyc',
 					'mergeDuplicateLayers.py','mergeDuplicateLayers.pyc',
-					'screenshotAllChannels.py','screenshotAllChannels.pyc'
+					'screenshotAllChannels.py','screenshotAllChannels.pyc',
 					'channel_template.py','channel_template.pyc','convert_selected_to_paintable.py',
 					'convert_selected_to_paintable.pyc','export_image_manager_images.py','export_image_manager_images.pyc',
 					'export_selected_channels.py','export_selected_channels.pyc','export_uv_masks.py','export_uv_masks.pyc'
@@ -79,19 +89,21 @@ def detectScriptConflict():
 	errorDict = {}
 	conflict = False
 
-	for path, subdirs, files in os.walk(base_path):
+	for scriptpath in base_path:
 
-		path_str = path.replace("\\", "/")
-
-		for name in files:
-
-			for FileName in illegalFiles:
-
-				if name.startswith(FileName) and name.endswith(FileName) :
+		for path, subdirs, files in os.walk(scriptpath):
 	
-					errorDict[name] = path_str + '/' + FileName
-					conflict = True
+			path_str = path.replace("\\", "/")
 	
+			for name in files:
+	
+				for FileName in illegalFiles:
+	
+					if name.startswith(FileName) and name.endswith(FileName) :
+		
+						errorDict[name] = path_str + '/' + FileName
+						conflict = True
+		
 
 	return conflict, errorDict      
  
@@ -99,9 +111,10 @@ def detectScriptConflict():
 
 
 def versionConflictCheck():
-	'''Checks for Script Version Conflicts'''
+	'''Outputs Version Conflicts to Python Console'''
 	version_conflict = detectScriptConflict()
 	pathLib = version_conflict[1]
+	pathDict = {}
 
 	if version_conflict[0]:
 
@@ -114,29 +127,67 @@ def versionConflictCheck():
 			print 'Please remove the following from your Script Directory:'
 			print ''
 			for path in pathLib:
-				print pathLib[path]
+				path_edit = pathLib[path]
+				path_str = path_edit.replace("\\", "/")
+				pathDict[path_str] = path_str
+				print path_str
 			print ''
 			print '#####################################################'
 			print ''
 			print '	       MARI EXTENSION PACK DID NOT LOAD'
 			print '         See printout above to resolve'
 			print ''
-			return False, pathLib
+			print '#####################################################'
+			return False, pathDict
 
 	else:
 
-		return True, True
+		return True, pathDict
+
+# ------------------------------------------------------------------------------
+
+def resolveScriptConflict(input_paths):
+	''' Will rename any offending files and edit JTOOLS-INIT File if found to remove imports '''
+
+	print ''
+	print '	        MARI EXTENSION PACK CONFLICT  '
+	print '      Trying automatic conflict resolve'
+	print ''
+
+	for files in input_paths:
+		file_exists = os.path.exists(files)
+		if file_exists:
+				os.rename(files,files+'.VersionConflict')
+				time.sleep(1)
+				print 'Renamed conflicting file, (.VersionConflict):'
+				print files
+				print ''
+		else:
+				files = files.replace("/", "\\")
+				os.rename(files,files+'.VersionConflict')
+				time.sleep(1)
+				print 'Renamed conflicting file, (.VersionConflict):'
+				print files
+				print ''
+
+
+	
+
+	mari.utils.message("Please restart MARI to complete automatic resolve")
+	
+
+
+# ------------------------------------------------------------------------------
+
 
 
 class versionConflictUI(QtGui.QDialog):
 	'''Dialog listing Scripts in conflict with Extension Pack'''
-	def __init__(self,paths):
+	def __init__(self,input_paths):
 		super(versionConflictUI, self).__init__()
 		# Dialog Settings
 		self.setFixedSize(550, 200)
 		self.setWindowTitle('EXTENSION PACK VERSION CONFLICT')
-		## Vars
-		self.path = paths
 		# Layouts
 		layoutV1 = QtGui.QVBoxLayout()
 		layoutH1 = QtGui.QHBoxLayout()
@@ -158,17 +209,21 @@ class versionConflictUI(QtGui.QDialog):
 		layoutH1.addWidget(self.resolveBtn)
 		# Connections
 		self.cancelBtn.clicked.connect(self.excepDialog)
-		self.resolveBtn.clicked.connect(self.resolveScriptConflict)
+		self.resolveBtn.clicked.connect(lambda: self.closeResolveDialog(input_paths))
+		self.raise_()
+		self.activateWindow()
 
 	def excepDialog(self):
 		''' Closes Dialog and throws a warning message '''
 		self.close()
 		mari.utils.message("MARI Extension Pack did NOT LOAD: Version Conflict")
 
+	def closeResolveDialog(self,input_paths):
+		''' Attempts to rename offending files and edit JTOOLS-INIT '''
+		resolveScriptConflict(input_paths)
+		self.close()
 
-	def resolveScriptConflict(self):
-		''' Will remove any offending files and edit JTOOLS-INIT File if found '''
-		print ''
+
 
 # ------------------------------------------------------------------------------
 
@@ -193,8 +248,8 @@ def extPackLoad():
 	script_version = versionConflictCheck()
 
 	if not script_version[0]:
-		pathLib = script_version[1]
-		versionConflictUI(pathLib).exec_()
+		paths = script_version[1]
+		versionConflictUI(paths).exec_()
 		return
 	
 	else:
