@@ -374,6 +374,9 @@ class versionConflictUI(QtGui.QDialog):
 
 		if scriptResolve and jtoolsresolve:
 			mari.utils.message('Conflicts successfully fixed. Please restart MARI')
+
+		else:
+			mari.utils.message('An error occured during the automatic fix.\nYou may not have write permissions to the Script Folder\nCheck Python Console for details.')
 			
 		self.close()
 
