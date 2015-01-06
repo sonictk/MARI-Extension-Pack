@@ -100,6 +100,7 @@ illegal_Func = ["def convertSelectedToPaintable(self):","convert_selected_to_pai
 # versionConflictCheck()
 # detectJTOOLS()
 # resolveScriptConflict(input_paths)
+# resolveJToolsConflict(jtools_path)
 # versionConflictUI(QtGui.QDialog)
 # extPackLoad()
 
