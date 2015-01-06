@@ -192,6 +192,9 @@ def detectJTOOLS():
 	''' Will scan for old JTOOLS Versions. If found it usually means some modules need to be removed 
 		from its init file'''
 
+	module_wrong = False
+	module_path = ''
+
 	for scriptpath in base_path:
 		for root, dirs, files in os.walk(scriptpath):
 			for dir in dirs:
