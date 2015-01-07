@@ -5,6 +5,8 @@
 # File: initExtensionPack.py
 # Description: Main script to import Tools and Shaders and check MARI compatibility
 # ------------------------------------------------------------------------------
+# Author: Jens Kafitz, 2015
+# ------------------------------------------------------------------------------
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
 #

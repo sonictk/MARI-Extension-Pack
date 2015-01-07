@@ -58,6 +58,7 @@ default_lib_path = '%s/FunctionLibrary' % base_path
 min_mari_version = 20603300
 current_lib_version = '1.11'
 current_mari_version = 20103300
+register_shader_version = '2.0'
 
 def mariVersion():
     '''Loads current mari version'''

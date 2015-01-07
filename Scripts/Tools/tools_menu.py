@@ -59,6 +59,8 @@ Shortcut Bindings are available but not necessarily set.'''
 
 import mari
 
+tool_menu_version = '0.1'
+
 def createToolsMenu():
 
 
