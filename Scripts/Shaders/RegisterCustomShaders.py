@@ -175,15 +175,23 @@ def loadShaders():
             continue
         root = xml.getroot()
 
-        # check for the name id tag
+        # check for the name DefaultName tag
         shaderName = root.find('DefaultName')
         # check to see if tag is set
         if shaderName != None:
             # grab our xml set name
             shaderName = shaderName.text
         else:
-            # no id name set in node
-            print 'XML Name Not Set'
+            # no DefaultName Tag set in node
+            shaderName = root.find('ID')
+            shaderName = shaderName.text
+            print ''
+            print '-----------------------------------------'
+            print '<WARNING> '+ shaderName + ' is using ID Tag for Naming'
+            print 'This can cause errors, please use <DEFAULTNAME> Tag'
+            print '-----------------------------------------'
+            print ''
+            
 
         # assume all default procedural type
         shaderType = 'Procedural'
