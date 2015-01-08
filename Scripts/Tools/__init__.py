@@ -67,8 +67,11 @@ import Object.extPack_export_uv_masks as export_uv_masks
 # IMAGE MANAGER:
 import ImageManager.extPack_export_imageMan_images as exportImageManager
 
-# REVIEWS:
+# VIEW:
 import View.extPack_screenshot_all_channels as screenshot_all_channels
+
+# HELP:
+import Help.extPack_online_help as onlineHelp
 
 # ------------------------------------------------------------------------------   
 
@@ -161,11 +164,16 @@ class customScripts():
 
 
     # --------------------------------------------------------------
-    # REVIEW:
+    # VIEW:
 
     def screenshot_all_channels(self):
         screenshot_all_channels.screenshotAllChannels()
 
+    # --------------------------------------------------------------
+    # HELP:
+
+    def open_online_help(self):
+        onlineHelp.openExtPackHelp()
 
 # ------------------------------------------------------------------------------
 

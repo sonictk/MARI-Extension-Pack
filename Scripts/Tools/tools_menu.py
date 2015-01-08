@@ -451,7 +451,7 @@ def createToolsMenu():
 
 
 ######################################################################
-# Review
+# VIEW
 ######################################################################
 
 # Screenshot all Channels
@@ -494,3 +494,24 @@ def createToolsMenu():
 	mari.menus.addSeparator(UI_path,'Export Selection')
 
 
+######################################################################
+# ONLINE HELP
+######################################################################
+
+# EXTENSION PACK ONLINE HELP
+
+	UI_path = 'MainWindow/Help'
+	script_menu_path = 'MainWindow/Scripts/Help'
+
+	screenshotChannels = mari.actions.create('Extension Pack Online Help','mari.customScripts.open_online_help()')
+	mari.menus.addAction(screenshotChannels, UI_path, 'Release Notes')
+	mari.menus.addAction(screenshotChannels, script_menu_path)
+
+	icon_filename = 'Help.png'
+	icon_path = mari.resources.path(mari.resources.ICONS) + '/' + icon_filename
+	screenshotChannels.setIconPath(icon_path)
+	screenshotChannels.setShortcut('')
+
+	###  Menu Separators ###
+
+	mari.menus.addSeparator(UI_path,'Release Notes')
