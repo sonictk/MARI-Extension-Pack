@@ -363,6 +363,7 @@ class versionConflictUI(QtGui.QDialog):
 	def closeResolveDialog(self,input_paths,jtools_path):
 		''' Attempts to rename offending files and edit JTOOLS-INIT '''
 		scriptResolve = resolveScriptConflict(input_paths)
+		jtoolsresolve = True
 		if scriptResolve:
 			print 'File Rename:  Successful'
 		else:

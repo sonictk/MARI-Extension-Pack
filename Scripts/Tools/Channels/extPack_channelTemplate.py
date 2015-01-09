@@ -44,6 +44,7 @@
 # ------------------------------------------------------------------------------
 
 import mari
+import PySide.QtGui as QtGui
 
 version = "0.01"
 geo_dict = {}
@@ -53,8 +54,8 @@ geo_dict = {}
 
 def _isProjectSuitable():
     """Checks project state."""
-    MARI_2_0V1_VERSION_NUMBER = 20001300    # see below
-    if mari.app.version().number() >= MARI_2_0V1_VERSION_NUMBER:
+    MARI_2_5V2_VERSION_NUMBER = 20502300    # see below
+    if mari.app.version().number() >= MARI_2_5V2_VERSION_NUMBER:
     
         if mari.projects.current() is None:
             mari.utils.message("Please open a project before running.")
@@ -117,7 +118,13 @@ def createChannelFromTemplate():
     if not geo_dict.has_key(geo):
         mari.utils.message('There is no Channel Resolution saved for the current geometry, please use "/Channel/Resize/Save Channel Resolution" to save one')
         return
-    channel = geo.createChannel(name, geo_dict[geo][1][0], geo_dict[geo][1][0], geo_dict[geo][0])
+    name = (u'', True)
+    while name == (u'', True):
+        iD = QtGui.QInputDialog()
+        name = iD.getText(iD, 'Channel Name','Channel name e.g. COL_skin')
+    if name[1] == False:
+        return
+    channel = geo.createChannel(name[0], geo_dict[geo][1][0], geo_dict[geo][1][0], geo_dict[geo][0])
     for item in geo_dict[geo]:
         if item == geo_dict[geo][0]:
             continue

@@ -44,12 +44,12 @@
 
 
 import mari, os, hashlib
-import PythonQt.QtGui as QtGui
-import PythonQt.QtCore as QtCore
+import PySide.QtGui as QtGui
+import PySide.QtCore as QtCore
 
-version = "0.04"
+version = "0.05"
 
-USER_ROLE = 34          # PythonQtGui.Qt.UserRole
+USER_ROLE = 34          # PySide.Qt.UserRole
 
 # ------------------------------------------------------------------------------
 class ExportSelectedChannelsUI(QtGui.QDialog):
@@ -71,8 +71,7 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
         #Create channel layout, label, and widget. Finally populate.
         channel_layout = QtGui.QVBoxLayout()
         channel_header_layout = QtGui.QHBoxLayout()
-        self.channel_label = QtGui.QLabel("Channels")
-        _setBold(self.channel_label)
+        self.channel_label = QtGui.QLabel("<strong>Channels</strong>")
         self.channel_list = QtGui.QListWidget()
         self.channel_list.setSelectionMode(self.channel_list.ExtendedSelection)
         
@@ -97,7 +96,7 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
         for item in chan_list:
             for channel in item[1]:
                 self.channel_list.addItem(item[0] + ' : ' + channel.name())
-                self.channel_list.item(self.channel_list.count - 1).setData(USER_ROLE, channel)
+                self.channel_list.item(self.channel_list.count() - 1).setData(USER_ROLE, channel)
         
         #Add filter layout and channel list to channel layout
         channel_layout.addLayout(channel_header_layout)
@@ -115,8 +114,7 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
         #Add wrapped QtGui.QListWidget with custom functions
         export_layout = QtGui.QVBoxLayout()
         export_header_layout = QtGui.QHBoxLayout()
-        self.export_label = QtGui.QLabel("Channels To Export")
-        _setBold(self.export_label)
+        self.export_label = QtGui.QLabel("<strong>Channels To Export</strong>")
         self.export_list = ChannelsToExportList()
         self.export_list.setSelectionMode(self.export_list.ExtendedSelection)
         
@@ -137,8 +135,8 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
         export_layout.addWidget(self.export_list)
         
         #Hook up add/remove buttons
-        self.remove_button.connect("clicked()", self.export_list._removeChannels)
-        self.add_button.connect("clicked()", lambda: self.export_list._addChannels(self.channel_list))
+        self.remove_button.clicked.connect(self.export_list._removeChannels)
+        self.add_button.clicked.connect(lambda: self.export_list._addChannels(self.channel_list))
 
         #Add widgets to top layout
         top_layout.addLayout(channel_layout)
@@ -161,7 +159,7 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
         path_pixmap = QtGui.QPixmap(mari.resources.path(mari.resources.ICONS) + '/ExportImages.png')
         icon = QtGui.QIcon(path_pixmap)
         path_button = QtGui.QPushButton(icon, "")
-        path_button.connect("clicked()", self._getPath)
+        path_button.clicked.connect(self._getPath)
         self.path_line_edit.setText(export_path_template)
             
         #Add path line input and button to middle layout    
@@ -174,7 +172,7 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
 
         #Add export everything check box
         self.export_everything_box = QtGui.QCheckBox('Export Everything')
-        self.export_everything_box.connect("clicked()", self._exportEverything)
+        self.export_everything_box.clicked.connect(self._exportEverything)
 
         top_group_layout.addLayout(top_layout)
         top_group_layout.addLayout(path_layout)
@@ -208,7 +206,7 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
 
         self.export_flattened_box.setChecked(True)
         self.export_full_patch_bleed_box.setChecked(True)
-        # self.export_remove_alpha_box.setChecked(True)
+        self.export_remove_alpha_box.setChecked(True)
 
         bottom_group.setLayout(check_box_layout)
 
@@ -221,8 +219,8 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
         self.button_box = QtGui.QDialogButtonBox()
         self.button_box.setOrientation(QtCore.Qt.Horizontal)
         self.button_box.setStandardButtons(QtGui.QDialogButtonBox.Ok | QtGui.QDialogButtonBox.Cancel)
-        self.button_box.button(QtGui.QDialogButtonBox.Ok).connect("clicked()", self._checkInput)
-        self.button_box.button(QtGui.QDialogButtonBox.Cancel).connect("clicked()", self.reject)
+        self.button_box.button(QtGui.QDialogButtonBox.Ok).clicked.connect(self._checkInput)
+        self.button_box.button(QtGui.QDialogButtonBox.Cancel).clicked.connect(self.reject)
 
         #Add bottom layout to main layout and set main layout to dialog's layout
         main_layout.addWidget(self.button_box)
@@ -244,7 +242,7 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
     
     #Get the path from existing directory
     def _getPath(self):
-        path = mari.utils.misc.getSaveFileName(parent=self, caption='Export Path', dir='', filter='', selected_filter=None, options=0, save_filename='')
+        path = mari.utils.misc.getSaveFileName(parent=None, caption='Export Path', dir='', filter='', selected_filter=None, options=0, save_filename='')
         if path == "":
             return
         else:
@@ -257,7 +255,7 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
     #Check path and template will work, check if export everything box is ticked if not make sure there are some channels to export
     def _checkInput(self):
         file_types = ['.' + format for format in mari.images.supportedWriteFormats()]
-        path_template = self.path_line_edit.text
+        path_template = self.path_line_edit.text()
         if not os.path.exists(os.path.split(path_template)[0]):
             title = 'Create Directories'
             text = 'Path does not exist "%s".' %os.path.split(path_template)[0]
@@ -282,7 +280,7 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
 
     #Get export path and template
     def _getExportPathTemplate(self):
-        return self.path_line_edit.text
+        return self.path_line_edit.text()
 
     #Get export everything box is ticked (bool)
     def _getExportEverything(self):
@@ -321,7 +319,7 @@ class ChannelsToExportList(QtGui.QListWidget):
         self.setSelectionMode(self.ExtendedSelection)
         
     def _currentChannels(self):
-        return [self.item(index).data(USER_ROLE) for index in range(self.count)]
+        return [self.item(index).data(USER_ROLE) for index in range(self.count())]
         
     def _addChannels(self, channel_list):
         "Adds an operation from the current selections of channels and directories."
@@ -337,7 +335,7 @@ class ChannelsToExportList(QtGui.QListWidget):
             if channel not in current_channels:
                 current_channels.add(channel)
                 self.addItem(item.text())
-                self.item(self.count - 1).setData(USER_ROLE, channel)
+                self.item(self.count() - 1).setData(USER_ROLE, channel)
         
     def _removeChannels(self):
         "Removes any currently selected operations."
@@ -348,8 +346,8 @@ class ChannelsToExportList(QtGui.QListWidget):
 # ------------------------------------------------------------------------------
 def _updateChannelFilter(channel_filter_box, channel_list):
     """For each item in the channel list display, set it to hidden if it doesn't match the filter text."""
-    match_words = channel_filter_box.text.lower().split()
-    for item_index in range(channel_list.count):
+    match_words = channel_filter_box.text().lower().split()
+    for item_index in range(channel_list.count()):
         item = channel_list.item(item_index)
         item_text_lower = item.text().lower()
         matches = all([word in item_text_lower for word in match_words])
@@ -358,19 +356,13 @@ def _updateChannelFilter(channel_filter_box, channel_list):
 # ------------------------------------------------------------------------------
 def _updateExportFilter(export_filter_box, export_list):
     """For each item in the export list display, set it to hidden if it doesn't match the filter text."""
-    match_words = export_filter_box.text.lower().split()
-    for item_index in range(export_list.count):
+    match_words = export_filter_box.text().lower().split()
+    for item_index in range(export_list.count()):
         item = export_list.item(item_index)
         item_text_lower = item.text().lower()
         matches = all([word in item_text_lower for word in match_words])
         item.setHidden(not matches)
     
-# ------------------------------------------------------------------------------  
-def _setBold(widget):
-    """Sets text to bold."""
-    font = widget.font
-    font.setWeight(75)
-    widget.setFont(font)
 
 # ------------------------------------------------------------------------------
 class InfoUI(QtGui.QMessageBox):

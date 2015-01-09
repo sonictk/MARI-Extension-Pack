@@ -43,11 +43,12 @@
 # ------------------------------------------------------------------------------
 
 import mari, os
-import PythonQt.QtGui as QtGui
+import PySide.QtGui as QtGui
 
-version = "0.03"
+version = "0.05"
 
-USER_ROLE = 32          # PythonQt.Qt.UserRole
+USER_ROLE = 32          # PySide.Qt.UserRole
+
 
 g_eum_window = None
 g_eum_cancelled = False
@@ -75,7 +76,7 @@ def exportUVMasks():
 def exportMasks(g_eum_window, q_geo_list, file_type_combo):
     "Export the masks"
     geo_list = q_geo_list.currentGeometry()
-    file_type = file_type_combo.currentText
+    file_type = file_type_combo.currentText()
 
     if len(geo_list) == 0:
         return False
@@ -125,8 +126,7 @@ def showUI():
     #Create geometry layout, label, and widget. Finally populate.
     geo_layout = QtGui.QVBoxLayout()
     geo_header_layout = QtGui.QHBoxLayout()
-    geo_label = QtGui.QLabel("Geometry")
-    setBold(geo_label)
+    geo_label = QtGui.QLabel("<strong>Geometry</strong>")
     geo_list = QtGui.QListWidget()
     geo_list.setSelectionMode(geo_list.ExtendedSelection)
     
@@ -144,7 +144,7 @@ def showUI():
     geo = mari.geo.current()
     for geo in mari.geo.list():
         geo_list.addItem(geo.name())
-        geo_list.item(geo_list.count - 1).setData(USER_ROLE, geo)
+        geo_list.item(geo_list.count() - 1).setData(USER_ROLE, geo)
     
     geo_layout.addLayout(geo_header_layout)
     geo_layout.addWidget(geo_list)
@@ -160,15 +160,14 @@ def showUI():
     
     #Add wrapped QtGui.QListWidget with custom functions
     geometry_to_copy_layout = QtGui.QVBoxLayout()
-    geometry_to_copy_label = QtGui.QLabel("Geometry to export UV masks from.")
-    setBold(geometry_to_copy_label)
+    geometry_to_copy_label = QtGui.QLabel("<strong>Geometry to export UV masks from.</strong>")
     geometry_to_copy_widget = GeoToExportList()
     geometry_to_copy_layout.addWidget(geometry_to_copy_label)
     geometry_to_copy_layout.addWidget(geometry_to_copy_widget)
     
     #Hook up add/remove buttons
-    remove_button.connect("clicked()", geometry_to_copy_widget.removeGeometry)
-    add_button.connect("clicked()", lambda: geometry_to_copy_widget.addGeometry(geo_list))
+    remove_button.clicked.connect(geometry_to_copy_widget.removeGeometry)
+    add_button.clicked.connect(lambda: geometry_to_copy_widget.addGeometry(geo_list))
 
     #Add widgets to centre layout
     centre_layout.addLayout(geo_layout)
@@ -195,9 +194,8 @@ def showUI():
     #Add OK Cancel buttons layout, buttons and add
     main_ok_button = QtGui.QPushButton("OK")
     main_cancel_button = QtGui.QPushButton("Cancel")
-    main_ok_button.connect("clicked()", lambda: exportMasks(g_eum_window, geometry_to_copy_widget, file_type_combo))
-    main_cancel_button.connect("clicked()", g_eum_window.reject)
-    
+    main_ok_button.clicked.connect(lambda: exportMasks(g_eum_window, geometry_to_copy_widget, file_type_combo))
+    main_cancel_button.clicked.connect(g_eum_window.reject)    
     bottom_layout.addWidget(main_ok_button)
     bottom_layout.addWidget(main_cancel_button)
     
@@ -217,7 +215,7 @@ class GeoToExportList(QtGui.QListWidget):
         self.setSelectionMode(self.ExtendedSelection)
         
     def currentGeometry(self):
-        return [self.item(index).data(USER_ROLE) for index in range(self.count)]
+        return [self.item(index).data(USER_ROLE) for index in range(self.count())]
         
     def addGeometry(self, geo_list):
         "Adds an operation from the current selections of geometry and directories."
@@ -233,7 +231,7 @@ class GeoToExportList(QtGui.QListWidget):
             if geo not in current_geometry:
                 current_geometry.add(geo)
                 self.addItem(geo.name())
-                self.item(self.count - 1).setData(USER_ROLE, geo)
+                self.item(self.count() - 1).setData(USER_ROLE, geo)
         
     def removeGeometry(self):
         "Removes any currently selected operations."
@@ -244,20 +242,14 @@ class GeoToExportList(QtGui.QListWidget):
 # ------------------------------------------------------------------------------
 def updateFilter(filter_box, geo_list):
     "For each item in the geo list display, set it to hidden if it doesn't match the filter text."
-    match_words = filter_box.text.lower().split()
-    for item_index in range(geo_list.count):
+    match_words = filter_box.text().lower().split()
+    for item_index in range(geo_list.count()):
         item = geo_list.item(item_index)
         item_text_lower = item.text().lower()
         matches = all([word in item_text_lower for word in match_words])
         item.setHidden(not matches)
 
-# ------------------------------------------------------------------------------  
-def setBold(widget):
-    "Sets text to bold."
-    font = widget.font
-    font.setWeight(75)
-    widget.setFont(font)            
-    
+   
 # ------------------------------------------------------------------------------
 def isProjectSuitable():
     "Checks project state and Mari version."

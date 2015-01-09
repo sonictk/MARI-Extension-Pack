@@ -45,11 +45,11 @@
 
 
 import mari
-import PythonQt.QtGui as QtGui
+import PySide.QtGui as QtGui
 
-version = "0.03"
+version = "0.05"
 
-USER_ROLE = 32          # PythonQt.Qt.UserRole
+USER_ROLE = 32          # PySide.Qt.UserRole
 
 # ------------------------------------------------------------------------------       
 class FlattenSelectedChannelsGUI(QtGui.QDialog):
@@ -67,8 +67,7 @@ class FlattenSelectedChannelsGUI(QtGui.QDialog):
         #Create channel layout, label, and widget. Finally populate.
         channel_layout = QtGui.QVBoxLayout()
         channel_header_layout = QtGui.QHBoxLayout()
-        channel_label = QtGui.QLabel("Channels")
-        setBold(channel_label)
+        channel_label = QtGui.QLabel("<strong>Channels</strong>")
         channel_list = QtGui.QListWidget()
         channel_list.setSelectionMode(channel_list.ExtendedSelection)
         
@@ -93,7 +92,7 @@ class FlattenSelectedChannelsGUI(QtGui.QDialog):
         for item in chan_list:
             for channel in item[1]:
                 channel_list.addItem(item[0] + ' : ' + channel.name())
-                channel_list.item(channel_list.count - 1).setData(USER_ROLE, channel)
+                channel_list.item(channel_list.count() - 1).setData(USER_ROLE, channel)
         
         #Add filter layout and channel list to channel layout
         channel_layout.addLayout(channel_header_layout)
@@ -111,8 +110,7 @@ class FlattenSelectedChannelsGUI(QtGui.QDialog):
         #Add wrapped QtGui.QListWidget with custom functions
         flatten_layout = QtGui.QVBoxLayout()
         flatten_header_layout = QtGui.QHBoxLayout()
-        flatten_label = QtGui.QLabel("Channels To Flatten")
-        setBold(flatten_label)
+        flatten_label = QtGui.QLabel("<strong>Channels To Flatten</strong>")
         self.flatten_list = ChannelsToFlattenList()
         self.flatten_list.setSelectionMode(self.flatten_list.ExtendedSelection)
         
@@ -133,8 +131,8 @@ class FlattenSelectedChannelsGUI(QtGui.QDialog):
         flatten_layout.addWidget(self.flatten_list)
         
         #Hook up add/remove buttons
-        remove_button.connect("clicked()", self.flatten_list.removeChannels)
-        add_button.connect("clicked()", lambda: self.flatten_list.addChannels(channel_list))
+        remove_button.clicked.connect(self.flatten_list.removeChannels)
+        add_button.clicked.connect(lambda: self.flatten_list.addChannels(channel_list))
 
         #Add widgets to centre layout
         centre_layout.addLayout(channel_layout)
@@ -150,8 +148,8 @@ class FlattenSelectedChannelsGUI(QtGui.QDialog):
         button_layout.addWidget(cancel_button)
         
         #Hook up OK/Cancel button clicked signal to accept/reject slot
-        ok_button.connect("clicked()", self.accept)
-        cancel_button.connect("clicked()", self.reject)
+        ok_button.clicked.connect(self.accept)
+        cancel_button.clicked.connect(self.reject)
         
         #Add layouts to main layout and dialog
         main_layout.addLayout(centre_layout)
@@ -171,7 +169,7 @@ class ChannelsToFlattenList(QtGui.QListWidget):
         self.setSelectionMode(self.ExtendedSelection)
         
     def currentChannels(self):
-        return [self.item(index).data(USER_ROLE) for index in range(self.count)]
+        return [self.item(index).data(USER_ROLE) for index in range(self.count())]
         
     def addChannels(self, channel_list):
         "Adds an operation from the current selections of channels and directories."
@@ -187,7 +185,7 @@ class ChannelsToFlattenList(QtGui.QListWidget):
             if channel not in current_channels:
                 current_channels.add(channel)
                 self.addItem(item.text())
-                self.item(self.count - 1).setData(USER_ROLE, channel)
+                self.item(self.count() - 1).setData(USER_ROLE, channel)
         
     def removeChannels(self):
         "Removes any currently selected operations."
@@ -198,8 +196,8 @@ class ChannelsToFlattenList(QtGui.QListWidget):
 # ------------------------------------------------------------------------------
 def updateChannelFilter(channel_filter_box, channel_list):
     "For each item in the channel list display, set it to hidden if it doesn't match the filter text."
-    match_words = channel_filter_box.text.lower().split()
-    for item_index in range(channel_list.count):
+    match_words = channel_filter_box.text().lower().split()
+    for item_index in range(channel_list.count()):
         item = channel_list.item(item_index)
         item_text_lower = item.text().lower()
         matches = all([word in item_text_lower for word in match_words])
@@ -208,20 +206,13 @@ def updateChannelFilter(channel_filter_box, channel_list):
 # ------------------------------------------------------------------------------
 def updateFlattenFilter(flatten_filter_box, flatten_list):
     "For each item in the flatten list display, set it to hidden if it doesn't match the filter text."
-    match_words = flatten_filter_box.text.lower().split()
-    for item_index in range(flatten_list.count):
+    match_words = flatten_filter_box.text().lower().split()
+    for item_index in range(flatten_list.count()):
         item = flatten_list.item(item_index)
         item_text_lower = item.text().lower()
         matches = all([word in item_text_lower for word in match_words])
         item.setHidden(not matches)
     
-# ------------------------------------------------------------------------------  
-def setBold(widget):
-    "Sets text to bold."
-    font = widget.font
-    font.setWeight(75)
-    widget.setFont(font)
-
 # ------------------------------------------------------------------------------
 def isProjectSuitable():
     "Checks project state."
