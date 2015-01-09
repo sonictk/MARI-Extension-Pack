@@ -409,8 +409,8 @@ def _exportChannels(args_dict):
             for data in metadata:            
                 channel.setMetadata(*data)
                 channel.setMetadataEnabled(data[0], False)
-            channel.setMetadata('jtoolsOnlyModifiedTextures', True)
-            channel.setMetadataEnabled('jtoolsOnlyModifiedTextures', False)  
+            channel.setMetadata('OnlyModifiedTextures', True)
+            channel.setMetadataEnabled('OnlyModifiedTextures', False)  
     else:
         for channel in args_dict['channels']:
             uv_index_list = []
@@ -427,8 +427,8 @@ def _exportChannels(args_dict):
             for data in metadata:            
                 channel.setMetadata(*data)
                 channel.setMetadataEnabled(data[0], False)
-            channel.setMetadata('jtoolsOnlyModifiedTextures', True)
-            channel.setMetadataEnabled('jtoolsOnlyModifiedTextures', False)        
+            channel.setMetadata('OnlyModifiedTextures', True)
+            channel.setMetadataEnabled('OnlyModifiedTextures', False)        
     #If successful let the user know
     mari.utils.message("Export Successful")
     
@@ -464,8 +464,8 @@ def _exportEverything(args_dict):
             for data in metadata:            
                 channel.setMetadata(*data)
                 channel.setMetadataEnabled(data[0], False)
-            channel.setMetadata('jtoolsOnlyModifiedTextures', True)
-            channel.setMetadataEnabled('jtoolsOnlyModifiedTextures', False)
+            channel.setMetadata('OnlyModifiedTextures', True)
+            channel.setMetadataEnabled('OnlyModifiedTextures', False)
     else:
         for channel in channels:
             uv_index_list = []
@@ -482,8 +482,8 @@ def _exportEverything(args_dict):
             for data in metadata:            
                 channel.setMetadata(*data)
                 channel.setMetadataEnabled(data[0], False)
-            channel.setMetadata('jtoolsOnlyModifiedTextures', True)
-            channel.setMetadataEnabled('jtoolsOnlyModifiedTextures', False)
+            channel.setMetadata('OnlyModifiedTextures', True)
+            channel.setMetadataEnabled('OnlyModifiedTextures', False)
     #If successful let the user know
     mari.utils.message("Export Successful")
 
@@ -514,7 +514,7 @@ def exportSelectedChannels():
 # ------------------------------------------------------------------------------
 def _onlyModifiedTextures(channel):
     """Manage channels so only modified patch images get exported"""
-    if channel.hasMetadata('jtoolsOnlyModifiedTextures'):
+    if channel.hasMetadata('OnlyModifiedTextures'):
         uv_index_list, metadata = _getChangedUvIndexes(channel)   
     else:
         uv_index_list, metadata = _setChannelUvIndexes(channel)
