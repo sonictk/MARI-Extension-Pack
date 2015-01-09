@@ -220,6 +220,9 @@ print '-----------------------------------------'
 print 'Image Manager Palette Additions (1): '
 print 'Image Manager: Export Selection'
 print '-----------------------------------------'
+print 'Help Menu Additions (1): '
+print 'Help Menu: Mari Extension Pack Help'
+print '-----------------------------------------'
 # ------------------------------------------------------------------------------
 
 
