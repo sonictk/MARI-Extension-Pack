@@ -59,7 +59,7 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
 
         #Set window title and create a main layout
         self.bool_ = bool_
-        self.setWindowTitle("Export Selected Channels")
+        self.setWindowTitle("Export Custom Channel Selection")
         main_layout = QtGui.QVBoxLayout()
         top_group = QtGui.QGroupBox()
         middle_group = QtGui.QGroupBox()
@@ -206,7 +206,7 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
 
         self.export_flattened_box.setChecked(True)
         self.export_full_patch_bleed_box.setChecked(True)
-        self.export_remove_alpha_box.setChecked(True)
+        self.export_remove_alpha_box.setChecked(False)
 
         bottom_group.setLayout(check_box_layout)
 
