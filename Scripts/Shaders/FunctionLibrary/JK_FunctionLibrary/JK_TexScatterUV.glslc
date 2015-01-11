@@ -144,8 +144,8 @@ float udn(float x,float scale,float lo,float hi)
 { 
   vec3 x_3 = vec3(x*scale);
   float valnoi = Value3D(x_3);
-  float output = (smoothstep(.25, .75, (valnoi)) * ((hi) - (lo)) + (lo));
-  return output;
+  float result = (smoothstep(.25, .75, (valnoi)) * ((hi) - (lo)) + (lo));
+  return result;
 }
 
 
@@ -158,8 +158,8 @@ float udnVor(float x,float scale,float lo,float hi, float threshold, float thres
   vec3 pos1,pos2,f1cell,f2cell;
   voronoi_simple(x_3,1.0,f1cell,threshold,threshold_bound);
   float remap = f1cell.r;
-  float output = (smoothstep(.25, .75, (remap)) * ((hi) - (lo)) + (lo));
-  return output;
+  float result = (smoothstep(.25, .75, (remap)) * ((hi) - (lo)) + (lo));
+  return result;
 }
 
 
@@ -911,8 +911,8 @@ vec4 JK_texScatterUV(
 // ------------------------------------------------------------------------------------------------------                      
                         
 
-        vec4 output = mix(surface_color,clamp(surface_color,vec4(0.0),vec4(1.0)),clampValues);
-        return output;
+        vec4 result = mix(surface_color,clamp(surface_color,vec4(0.0),vec4(1.0)),clampValues);
+        return result;
 
 }
 
