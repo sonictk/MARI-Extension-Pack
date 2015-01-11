@@ -59,7 +59,7 @@ else:
 # BLACKLIST FOR VERSION CONFLICTS:
 
 
-# Blacklist of Files in Script Directories - any one of these will throw an error since they are included in the extension pack
+# Blacklist of PY Files in Script Directories - any one of these will throw an error since they are included in the extension pack
 illegalFiles = ["bnChanLayer.py","bnChanLayer.pyc","bnMaskFromSelection.py","bnMaskFromSelection.pyc",
 				"patch_bake.py","patch_bake.pyc","toggle_layer_visibility_lock.py","toggle_layer_visibility_lock.pyc",
 				"ak_unprojectChannelToImageman_v1-ab0cd4.py","ak_unprojectChannelToImageman_v1-ab0cd4.pyc",
@@ -74,6 +74,8 @@ illegalFiles = ["bnChanLayer.py","bnChanLayer.pyc","bnMaskFromSelection.py","bnM
 				"flatten_selected_channels.py","flatten_selected_channels.pyc","layer_visibility.py","layer_visibility.pyc"
 				]
 
+# Blacklist of Shader Files in Script Directories - any one of these will throw an error since they are included in the extension pack
+illegalShaders = ["JK_AlbedoWarning.xml","initShaders.py","initShaders.pyc"]
 
 # Blacklist of Modules within JTOOLS __INIT__ - any of these will cause an error after the original file was renamed
 illegal_Modules = ["import channel_template","import convert_selected_to_paintable","import export_image_manager_images",
@@ -129,8 +131,10 @@ def checkMariVersion():
 def detectScriptConflict():
 	'''Finds existing copies from the blacklist of script files from ideascale'''
 
-	errorDict = {}
-	conflict = False
+	script_error_dict = {}
+	shader_error_dict = {}
+	script_conflict = False
+	shader_conflict = False
 
 	for scriptpath in base_path:
 
@@ -140,14 +144,23 @@ def detectScriptConflict():
 	
 			for name in files:
 	
-				for FileName in illegalFiles:
+				for script_name in illegalFiles:
 	
-					if name.startswith(FileName) and name.endswith(FileName) :
+					if name.startswith(script_name) and name.endswith(script_name) :
 		
-						errorDict[name] = path_str + '/' + FileName
-						conflict = True
+						script_error_dict[name] = path_str + '/' + script_name
+						script_conflict = True
 
-	return conflict, errorDict      
+				for shader_name in illegalShaders:
+					
+					if name.startswith(shader_name) and name.endswith(shader_name) :
+						
+						shader_error_dict[name] = path_str + '/' + shader_name
+						shader_conflict = True
+
+	
+	return script_conflict, shader_conflict, script_error_dict, shader_error_dict     
+
 
 # ------------------------------------------------------------------------------
 
@@ -156,36 +169,55 @@ def detectScriptConflict():
 def versionConflictCheck():
 	'''Outputs Version Conflicts to Python Console'''
 	version_conflict = detectScriptConflict()
-	pathLib = version_conflict[1]
-	pathDict = {}
 
-	if version_conflict[0]:
+	# Script Conflict Dict
+	# [0] Script Conflict
+	# [1] Shader Conflict
+	# [2] Script Error Paths
+	# [3] Shader Error Paths
+
+	script_pathLib = version_conflict[2]
+	shader_pathLib = version_conflict[3]
+	script_pathDict = {}
+	shader_pathDict = {}
+
+	if version_conflict[0] or version_conflict[1]:
 
 			print '#####################################################'
 			print '           VERSION CONFLICT DETECTED '
 			print '#####################################################'
 			print 'The following files in your Script Directory are'
 			print 'in conflict with the Extension Pack (old version)'
-	
-			print ''
-			print 'Please remove or rename the following from your Script Directory:'
-			print ''
-			for path in pathLib:
-				path_edit = pathLib[path]
-				path_str = path_edit.replace("\\", "/")
-				pathDict[path_str] = path_str
-				print path_str
-			print ''
+
+			if version_conflict[0]:
+				print ''
+				print 'Please remove or rename the following from your Script Directory:'
+				print ''
+				for script_path in script_pathLib:
+					script_path_edit = script_pathLib[script_path]
+					script_path_str = script_path_edit.replace("\\", "/")
+					script_pathDict[script_path_str] = script_path_str
+					print script_path_str
+				print ''
+			if version_conflict[1]:
+				print 'Please remove the following conflicting shader or node versions:'
+				print ''
+				for shader_path in shader_pathLib:
+					shader_path_edit = shader_pathLib[shader_path]
+					shader_path_str = shader_path_edit.replace("\\", "/")
+					shader_pathDict[shader_path_str] = shader_path_str
+					print shader_path_str
+				print ''
+
 			print '-----------------------------------------------------'
 			print ''
 
-			return True, pathDict
+			return True, script_pathDict, shader_pathDict, version_conflict[0], version_conflict[1]
 
 
 	else:
 
-		return False, pathDict
-
+		return False, script_pathDict, shader_pathDict,  version_conflict[0], version_conflict[1]
 
 
 # ------------------------------------------------------------------------------
@@ -235,46 +267,83 @@ def detectJTOOLS():
 
 # ------------------------------------------------------------------------------
  
-def resolveScriptConflict(input_paths):
+def resolveScriptConflict(script_input_state):
 	''' Will rename any offending files'''
 
 	print ''
 	print '      Trying automatic conflict resolve'
 	print ''
 	print '#####################################################'
-	success_state = False
-	for files in input_paths:
-		success_state = False
-		file_exists = os.path.exists(files) 
+
+	script_success_state = False
+	shader_success_state = False
+
+	script_input_paths = script_input_state[1]
+	shader_input_paths = script_input_state[2]
+
+
+	# Script_Input_state dict
+	# [0] General Conflict (Scripts or Shaders)
+	# [1] Script Error Paths
+	# [2] Shader Error Paths
+	# [3] Script Conflict Exists
+	# [4] Shader Conflict Exists
+	
+	# Fixing conflicting scripts
+	for script_files in script_input_paths:
+		script_success_state = False
+		file_exists = os.path.exists(script_files) 
 		# tests if a .VersionConflict file exists as well:
-		file_conflict_exists = os.path.exists(files+'.VersionConflict') 
+		file_conflict_exists = os.path.exists(script_files+'.VersionConflict') 
 		if file_exists:
 				if file_conflict_exists:
-					os.remove(files+'.VersionConflict')
-				os.rename(files,files+'.VersionConflict')
+					os.remove(script_files+'.VersionConflict')
+				os.rename(script_files,script_files+'.VersionConflict')
 				time.sleep(1)
 				print 'Renamed conflicting file, (.VersionConflict):'
-				print files
+				print script_files
 				print ''
-				success_state = True
+				script_success_state = True
 
 		else:
-				files = files.replace("/", "\\")
-				file_conflict_exists = os.path.exists(files+'.VersionConflict') 
+				script_files = script_files.replace("/", "\\")
+				file_conflict_exists = os.path.exists(script_files+'.VersionConflict') 
 				if file_conflict_exists:
-					os.remove(files+'.VersionConflict')
-				os.rename(files,files+'.VersionConflict')
+					os.remove(script_files+'.VersionConflict')
+				os.rename(script_files,script_files+'.VersionConflict')
 				time.sleep(1)
 				print 'Renamed conflicting file, (.VersionConflict):'
-				print files
+				print script_files
 				print ''
-				success_state = True
+				script_success_state = True
 
 
-	return success_state
+	for shader_files in shader_input_paths:
+			shader_success_state = False
+			file_exists = os.path.exists(shader_files) 
+			if file_exists:
+					os.remove(shader_files)
+					time.sleep(1)
+					print ''
+					print 'Removed old shader file:'
+					print shader_files
+					print ''
+					shader_success_state = True
+	
+			else:
+					shader_files = shader_files.replace("/", "\\")
+					os.remove(shader_files)
+					time.sleep(1)
+					print ''
+					print 'Removed old shader file:'
+					print shader_files
+					print ''
+					shader_success_state = True
+
+
+	return script_success_state, shader_success_state, script_input_state[3], script_input_state[4]
 
 	
-
 # ------------------------------------------------------------------------------
 
 def resolveJToolsConflict(jtools_path):
@@ -325,7 +394,7 @@ def resolveJToolsConflict(jtools_path):
 
 class versionConflictUI(QtGui.QDialog):
 	'''Dialog listing Scripts in conflict with Extension Pack'''
-	def __init__(self,input_paths,jtools_path):
+	def __init__(self,script_input_state,jtools_path):
 		super(versionConflictUI, self).__init__()
 		# Dialog Settings
 		self.setFixedSize(550, 200)
@@ -351,7 +420,7 @@ class versionConflictUI(QtGui.QDialog):
 		layoutH1.addWidget(self.resolveBtn)
 		# Connections
 		self.cancelBtn.clicked.connect(self.excepDialog)
-		self.resolveBtn.clicked.connect(lambda: self.closeResolveDialog(input_paths,jtools_path))
+		self.resolveBtn.clicked.connect(lambda: self.closeResolveDialog(script_input_state,jtools_path))
 		self.raise_()
 		self.activateWindow()
 
@@ -360,15 +429,44 @@ class versionConflictUI(QtGui.QDialog):
 		self.close()
 		mari.utils.message("MARI Extension Pack did NOT LOAD:\nVersion Conflict\nCheck Python Console for Details")
 
-	def closeResolveDialog(self,input_paths,jtools_path):
+	def closeResolveDialog(self,script_input_state,jtools_path):
 		''' Attempts to rename offending files and edit JTOOLS-INIT '''
-		scriptResolve = resolveScriptConflict(input_paths)
+		scriptResolve = resolveScriptConflict(script_input_state)
+
+		# Script_Resolve dict
+		# [0] script fix success
+		# [1] shader fix success
+		# [2] script problem existed
+		# [3] shader problem existed
+
 		jtoolsresolve = True
-		if scriptResolve:
-			print 'File Rename:  Successful'
+		tools_resolve = True
+		shaders_resolve = True
+
+		if scriptResolve[2]: #if there was a problem at all
+			if scriptResolve[0]: #if it was fixed
+				print 'Script File Rename:  Successful'
+				print ''
+				tools_resolve = True
+			else:
+				print 'Script File Rename Failed: You may not have write permissions to the folder'
+				print ''
+				tools_resolve = False
 		else:
-			print 'File Rename Failed: You may not have write permissions to the folder'	
-		
+			tools_resolve = True
+
+		if scriptResolve[3]: #if there was a problem at all
+			if scriptResolve[1]: #if it was fixed
+				print 'Old Shaders removed:  Successful'
+				print ''
+				shaders_resolve = True
+			else:
+				print 'Removal of old Shaders failed: You may not have write permissions to the folder'	
+				print ''
+				shaders_resolve = False
+		else:
+			shaders_resolve = True
+	
 		if jtools_path != '':
 			jtoolsresolve = resolveJToolsConflict(jtools_path)
 			if jtoolsresolve:
@@ -379,7 +477,7 @@ class versionConflictUI(QtGui.QDialog):
 				print 'You may not have write permissions to the folder'
 				print ''
 
-		if scriptResolve and jtoolsresolve:
+		if tools_resolve and shaders_resolve and jtoolsresolve:
 			mari.utils.message('Conflicts successfully fixed. Please restart MARI')
 
 		else:
@@ -407,13 +505,18 @@ def extPackLoad():
 
 	# Checking Script Conflicts & jtools init state
 	script_version = versionConflictCheck()
+
+	# Script Version Check Dict
+	# [0] General Conflict (Scripts or Shaders)
+	# [1] Script Error Paths
+	# [2] Shader Error Paths
+	# [3] Script Conflict Exists
+	# [4] Shader Conflict Exists
+
 	jtools = detectJTOOLS()
 
 
-
-
 	if script_version[0] or jtools[1]:
-		paths = script_version[1]
 		# Location of JTOOLS INIT, empty if it doesn't exist
 		jtools_path = jtools[1]
 
@@ -434,7 +537,7 @@ def extPackLoad():
 		print '#####################################################'
 			
 
-		versionConflictUI(paths,jtools_path).exec_()
+		versionConflictUI(script_version,jtools_path).exec_()
 
 		return
 	

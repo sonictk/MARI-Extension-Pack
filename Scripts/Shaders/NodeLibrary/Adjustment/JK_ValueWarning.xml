@@ -1,6 +1,6 @@
 <!--
 ================================================================================
-== Albedo Value Warning
+== Illegal Value Warning
 == Copyright (c) 2015 Jens Kafitz & TheFoundry. All Rights Reserved.
 ================================================================================
 == File: JK_AlbedoWarning.xml
@@ -46,7 +46,7 @@
 
 <Node>
   <ID>IllegalColorWarning</ID>
-      <DefaultName>Illegal Albedo Warning</DefaultName>
+      <DefaultName>Illegal Value Warning</DefaultName>
     <Category>/Custom/</Category>
   <Inputs>
     <Input Name="Albedo"></Input>
