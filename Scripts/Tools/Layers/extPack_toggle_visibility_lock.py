@@ -3,17 +3,11 @@
 # ------------------------------------------------------------------------------
 # Allows the user to affect Visibility & Lock State of multiple selected layers
 # ------------------------------------------------------------------------------
-# Written by Jorel Latraille, 2014
-# ------------------------------------------------------------------------------
 # http://mari.ideascale.com
-# http://www.jorel-latraille.com/
-# http://www.thefoundry.co.uk
+# http://cg-cnu.blogspot.in/
 # ------------------------------------------------------------------------------
-# DISCLAIMER & TERMS OF USE:
-#
-# Copyright (c) The Foundry 2014.
-# All rights reserved.
-#
+# Written by Sreenivas Alapati, 2014
+# ------------------------------------------------------------------------------
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
 #
@@ -40,6 +34,7 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF HE POSSIBILITY OF SUCH DAMAGE.
 # ------------------------------------------------------------------------------
+
 
 
 import mari
