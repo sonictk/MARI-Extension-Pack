@@ -173,80 +173,50 @@ float udnVor(float x,float scale,float lo,float hi, float threshold, float thres
 
 vec4 JK_texScatterUV( 
 
-                    vec2 UV,
-                    float scale,
-                    float ScaleRnd,
-                    float ScaleRndWeight,
-                    float frequency,
-                    float layers,
-                    float noise_scale_A,
-                    bool forceTile,
-                    float jitter_scale,
-                    float rot_min,
-                    float rot_max,
-                    int BlendMode,
-                    float MapASize,
-                    float MapBSize,
-                    float MapCSize,
-                    float MapDSize,
-                    float RndSizeA,
-                    float RndSizeB,
-                    float RndSizeC,
-                    float RndSizeD,
-                    float HSVSeed,
-                    float ValueOffset,
-                    float LayerAttenuation,
-                    float A_minH,
-                    float A_maxH,
-                    float A_minS,
-                    float A_maxS,
-                    float A_minV,
-                    float A_maxV,
-                    float HSMixA,
-                    float HSMixB,
-                    float HSMixC,
-                    float HSMixD,
-                    float ValMixA,
-                    float ValMixB,
-                    float ValMixC,
-                    float ValMixD,
-                    float clampValues,
-                    sampler2D textureA,
-                    float textureA_weight,
-                    float Clumping_MapA,
-                    float invert_textureA,
-                    float FadeA,
-                    float HardnessA,
-                    float roundnessA,
-                    int textureA_AlphaMode,
-                    bool UseMapB,
-                    sampler2D textureB,
-                    float textureB_weight,
-                    float Clumping_MapB,
-                    float invert_textureB,
-                    float FadeB,
-                    float HardnessB,
-                    float roundnessB,
-                    int textureB_AlphaMode,
-                    bool UseMapC,
-                    sampler2D textureC,
-                    float textureC_weight,
-                    float Clumping_MapC,
-                    float invert_textureC,
-                    float FadeC,
-                    float HardnessC,
-                    float roundnessC,
-                    int textureC_AlphaMode,
-                    bool UseMapD,
-                    sampler2D textureD,
-                    float textureD_weight,
-                    float Clumping_MapD,
-                    float invert_textureD,
-                    float FadeD,
-                    float HardnessD,
-                    float roundnessD,
-                    int textureD_AlphaMode
-                )
+          vec2 UV,
+          float scale,
+          float ScaleRnd,
+          float ScaleRndWeight,
+          float frequency,
+          float layers,
+          float noise_scale_A,
+          bool forceTile,
+          float jitter_scale,
+          float rot_min,
+          float rot_max,
+          int BlendMode,
+          vec4 TexSize,
+          vec4 RndSize,
+          float HSVSeed,
+          float ValueOffset,
+          float LayerAttenuation,
+          float A_minH,
+          float A_maxH,
+          float A_minS,
+          float A_maxS,
+          float A_minV,
+          float A_maxV,
+          vec4 HSMix,
+          vec4 ValMix,
+          float clampValues,
+          sampler2D textureA,
+          int textureA_AlphaMode,
+          bool UseMapB,
+          sampler2D textureB,
+          int textureB_AlphaMode,
+          bool UseMapC,
+          sampler2D textureC,
+          int textureC_AlphaMode,
+          bool UseMapD,
+          sampler2D textureD,
+          int textureD_AlphaMode,
+          vec4 Map_Weight,
+          vec4 Clumping,
+          vec4 invert,
+          vec4 Fade,
+          vec4 Hardness,
+          vec4 roundness
+        )
 
 
 
@@ -257,6 +227,60 @@ vec4 JK_texScatterUV(
 //                      Unassigned Variables
 // ------------------------------------------------------------------------------------------------------                      
                        
+  // Unwrapping combined vec4s into components
+  // Floats were passed through as vec4s to avoid a Mari crash when canceling a bake and restarting it
+
+  float roundnessA = roundness.r;
+  float roundnessB = roundness.g;
+  float roundnessC = roundness.b;
+  float roundnessD = roundness.a;
+
+  float HardnessA = Hardness.r;
+  float HardnessB = Hardness.g;
+  float HardnessC = Hardness.b;
+  float HardnessD = Hardness.a;
+
+  float FadeA = Fade.r;
+  float FadeB = Fade.g;
+  float FadeC = Fade.b;
+  float FadeD = Fade.a;
+
+  float invert_textureA = invert.r;
+  float invert_textureB = invert.g;
+  float invert_textureC = invert.b;
+  float invert_textureD = invert.a;
+
+  float Clumping_MapA = Clumping.r;
+  float Clumping_MapB = Clumping.g;
+  float Clumping_MapC = Clumping.b;
+  float Clumping_MapD = Clumping.a;
+
+  float textureA_weight = Map_Weight.r;
+  float textureB_weight = Map_Weight.g;
+  float textureC_weight = Map_Weight.b;
+  float textureD_weight = Map_Weight.a;
+
+  float HSMixA = HSMix.r;
+  float HSMixB = HSMix.g;
+  float HSMixC = HSMix.b;
+  float HSMixD = HSMix.a;
+
+  float ValMixA = ValMix.r;
+  float ValMixB = ValMix.g;
+  float ValMixC = ValMix.b;
+  float ValMixD = ValMix.a;
+
+  float RndSizeA = RndSize.r;
+  float RndSizeB = RndSize.g;
+  float RndSizeC = RndSize.b;
+  float RndSizeD = RndSize.a;
+
+  float MapASize = TexSize.r;
+  float MapBSize = TexSize.g;
+  float MapCSize = TexSize.b;
+  float MapDSize = TexSize.a;
+
+// -------------------------------------------------------------------
 
   vec4 layer_color,layer_color_B,layer_color_C,layer_color_D;
   vec4 layer_color_comb,layer_color_comb_B,layer_color_comb_C;
@@ -290,7 +314,8 @@ vec4 JK_texScatterUV(
 
 // ------------------------------------------------------------------------------------------------------
 //                      Assigned Variables
-// ------------------------------------------------------------------------------------------------------                      
+// ------------------------------------------------------------------------------------------------------      
+                
   // quick hack to make it tileable
   int tmpscale = int(scale);
   scale = float(tmpscale);

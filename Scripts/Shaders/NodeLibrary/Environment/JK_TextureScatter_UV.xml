@@ -158,6 +158,14 @@
 
                 vec2 UV = fract(#UV);
 
+
+                // passing a vec4 into function to save function arguments, 
+                // otherwise it can crash Mari when aborting a bake
+                vec4 RndSize = vec4($RndSizeA,$RndSizeB,$RndSizeC,$RndSizeD);
+                vec4 HSMix = vec4($HSMixA,$HSMixB,$HSMixC,$HSMixD);                     
+                vec4 ValMix = vec4($ValMixA,$ValMixB,$ValMixC,$ValMixD);                                       
+                                         
+                                                                
                 // Base Scene Size. This is to give more range on the scale slider
                 float scene = float($scene) / 100.0;
                 float scale = ( (100.0 ) - $Scale*2.0) / scene;
@@ -168,20 +176,34 @@
                 float invertB = float($Invert_B);
                 float invertC = float($Invert_C);
                 float invertD = float($Invert_D);
+                // passing a vec4 into function to save function arguments, 
+                // otherwise it can crash Mari when aborting a bake
+                vec4 invert = vec4(invertA,invertB,invertC,invertD);
 
                 //Square Fade
                 float FadeA = $FadeA*4.0;
                 float FadeB = $FadeB*4.0;
                 float FadeC = $FadeC*4.0;
                 float FadeD = $FadeD*4.0;
+                // passing a vec4 into function to save function arguments, 
+                // otherwise it can crash Mari when aborting a bake
+                vec4 Fade = vec4(FadeA,FadeB,FadeC,FadeD);
+
                 float roundnessA = $roundnessA+0.1 ;
                 float roundnessB = $roundnessB+0.1 ;
                 float roundnessC = $roundnessC+0.1 ;
                 float roundnessD = $roundnessD+0.1 ;
+                // passing a vec4 into function to save function arguments, 
+                // otherwise it can crash Mari when aborting a bake
+                vec4 roundness = vec4(roundnessA,roundnessB,roundnessC,roundnessD);
+
                 float HardnessA = 10.0 - ($HardnessA*10.0);
                 float HardnessB = 10.0 - ($HardnessB*10.0);
                 float HardnessC = 10.0 - ($HardnessC*10.0);
                 float HardnessD = 10.0 - ($HardnessD*10.0);
+                // passing a vec4 into function to save function arguments, 
+                // otherwise it can crash Mari when aborting a bake
+                vec4 Hardness = vec4(HardnessA,HardnessB,HardnessC,HardnessD);
 
                 float jitterScale = 5123.456;
                 float NoiseScaleA = $NoiseScaleA/scene ;
@@ -193,11 +215,18 @@
                 float TexSizeB = 11 - $TexSizeB;
                 float TexSizeC = 11 - $TexSizeC;
                 float TexSizeD = 11 - $TexSizeD;
+                // passing a vec4 into function to save function arguments, 
+                // otherwise it can crash Mari when aborting a bake
+                vec4 TexSize = vec4(TexSizeA,TexSizeB,TexSizeC,TexSizeD);
+
 
                 float ClumpingA = clamp( ($Clumping-0.01) + ( ($ClumpingA-0.01)*(1.0-$Clumping)),0.0,1.0);
                 float ClumpingB = clamp( ($Clumping-0.01) + ( ($ClumpingB-0.01)*(1.0-$Clumping)),0.0,1.0);
                 float ClumpingC = clamp( ($Clumping-0.01) + ( ($ClumpingC-0.01)*(1.0-$Clumping)),0.0,1.0);
                 float ClumpingD = clamp( ($Clumping-0.01) + ( ($ClumpingD-0.01)*(1.0-$Clumping)),0.0,1.0);
+                // passing a vec4 into function to save function arguments, 
+                // otherwise it can crash Mari when aborting a bake
+                vec4 Clumping = vec4(ClumpingA,ClumpingB,ClumpingC,ClumpingD);
 
                 float ScaleRnd = 1.0 - $ScaleRnd/4.0;
                 float ScaleRndWeight = ($ScaleRndWeight) + 1.0;
@@ -209,7 +238,9 @@
                 float MapB_weight = $MapB_weight * Frequency_M;
                 float MapC_weight = $MapC_weight * Frequency_M;
                 float MapD_weight = $MapD_weight * Frequency_M;
-
+                // passing a vec4 into function to save function arguments, 
+                // otherwise it can crash Mari when aborting a bake
+                vec4 Map_Weight = vec4(MapA_weight,MapB_weight,MapC_weight,MapD_weight);
 
                 Output = JK_texScatterUV( UV,
                                         scale,
@@ -223,14 +254,8 @@
                                         $rot_min,
                                         $rot_max,
                                         $BlendMode,
-                                        TexSizeA,
-                                        TexSizeB,
-                                        TexSizeC,
-                                        TexSizeD,
-                                        $RndSizeA,
-                                        $RndSizeB,
-                                        $RndSizeC,
-                                        $RndSizeD,
+                                        TexSize,
+                                        RndSize,
                                         $HSVSeed,
                                         $ValOffset,
                                         $LayerAtten,
@@ -240,50 +265,26 @@
                                         $A_maxS,
                                         $A_minV,
                                         $A_maxV,
-                                        $HSMixA,
-                                        $HSMixB,
-                                        $HSMixC,
-                                        $HSMixD,
-                                        $ValMixA,
-                                        $ValMixB,
-                                        $ValMixC,
-                                        $ValMixD,
+                                        HSMix,
+                                        ValMix,
                                         _clamp,
                                         $MapA,
-                                        MapA_weight,
-                                        ClumpingA,
-                                        invertA,
-                                        FadeA,
-                                        HardnessA,
-                                        roundnessA,
                                         $MapA_Alpha,
                                         $UseMapB,
                                         $MapB,
-                                        MapB_weight,
-                                        ClumpingB,
-                                        invertB,
-                                        FadeB,
-                                        HardnessB,
-                                        roundnessB,
                                         $MapB_Alpha,
                                         $UseMapC,
                                         $MapC,
-                                        MapC_weight,
-                                        ClumpingC,
-                                        invertC,
-                                        FadeC,
-                                        HardnessC,
-                                        roundnessC,
                                         $MapC_Alpha,
                                         $UseMapD,
                                         $MapD,
-                                        MapD_weight,
-                                        ClumpingD,
-                                        invertD,
-                                        FadeD,
-                                        HardnessD,
-                                        roundnessD,
-                                        $MapD_Alpha);
+                                        $MapD_Alpha,
+                                        Map_Weight,
+                                        Clumping,
+                                        invert,
+                                        Fade,
+                                        Hardness,
+                                        roundness);
 
 
                 ]]></Body>
