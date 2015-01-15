@@ -51,8 +51,8 @@
     </Inputs>
     <Attributes>
         <!--===============================================================================================================-->
-        <Attribute Name="Adjust" PrettyName="Adjust Curvature" Group="" Type="double" Logarithmic="1" Min="0" Max="1">0.1</Attribute>
-        <Attribute Name="Size" PrettyName="Adjust Scene Size" Group="" Type="double" Logarithmic="1" Min="0" Max="1">0.1</Attribute>
+        <Attribute Name="Adjust" PrettyName="Curvature" Group="" Type="double" Logarithmic="1" Min="0" Max="1">0.1</Attribute>
+        <Attribute Name="Size" PrettyName="Intensity" Group="" Type="double" Logarithmic="1" Min="0" Max="2">0.1</Attribute>
         <Attribute Name="Invert" PrettyName="Invert" Group="" Type="bool" Min="false" Max="true">false</Attribute>
         <Attribute Name="absolute" PrettyName="Hard Edged" Group="Extra Attributes" Type="bool" Min="false" Max="true">false</Attribute>
         <Attribute Name="AO" PrettyName="Attenuate with AmbientOcclusion" Group="Extra Attributes" Type="bool" Min="false" Max="true">false</Attribute>
@@ -118,6 +118,7 @@
 
 
                 float result = mix(curvature,inv_curv,float($Invert));
+                result = clamp(result,0.0,1.0);
 
                 
                 Output = vec4(result,result,result,1.0);
