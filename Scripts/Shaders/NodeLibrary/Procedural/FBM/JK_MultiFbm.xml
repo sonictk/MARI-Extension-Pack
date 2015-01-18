@@ -56,24 +56,24 @@
         <Attribute Name="Size" Group="Base" Type="double" Min="0" Max="1" Description="The general feature size" >0.4</Attribute>
         <Attribute Name="octaves" Group="Base" Type="float" Min="0" Max="8" Description="Visual complexitity of noise" >3</Attribute>
         <Attribute Name="lacunarity" Group="Base" Type="double" Min="0" Max="8" Description="Frequency spacing between successive octaves" >4</Attribute>
-        <Attribute Name="Amp" PrettyName="Amplitute" Group="Base" Type="double" Min="0.0001" Max="1" Description="Each successive octave gets multiplied gain*amplitute, smaller values result in less contrast between frequencies" >0.5</Attribute>
+        <Attribute Name="Amp" PrettyName="amplitude" Group="Base" Type="double" Min="0.0001" Max="1" Description="Each successive octave gets multiplied gain*amplitude, smaller values result in less contrast between frequencies" >0.5</Attribute>
         <Attribute Name="FreqOffset" PrettyName="Offset" Group="Base" Type="double" Min="0.0001" Max="1" Description="Frequency Offset" >0.5</Attribute>
         <Attribute Name="SeedBase" PrettyName="Seed" Group="Base" Type="double" Min="1" Max="100000" Logarithmic="1" Description="frequency">1</Attribute>
         <!--===============================================================================================================-->
-        <Attribute Name="gain" Group="Base" Type="double" Min="0" Max="1" Description="Each successive octave gets multiplied gain*amplitute, smaller values result in less contrast for the overal result">1</Attribute>
+        <Attribute Name="gain" Group="Base" Type="double" Min="0" Max="1" Description="Each successive octave gets multiplied gain*amplitude, smaller values result in less contrast for the overal result">1</Attribute>
         <Attribute Name="Threshold" PrettyName="Threshold" Group="Base" Type="double" Min="0" Max="1" Description="Threshold of final result" >0.1</Attribute>
         <Attribute Name="Clip" PrettyName="Soft Clip Result" Group="Base" Type="double" Min="0.001" Max="1" Description="extends the threshold box by a fixed value up and down">0.6</Attribute>
         <Attribute Name="Absolut" PrettyName="Absolute Values" Group="Base" Type="bool" Min="false" Max="true" Description="By default positive and negative noise values will all be treated as positive making for a denser noise. This will remove any negative noise values">false</Attribute>
         <Attribute Name="Invert" PrettyName="Invert" Group="Base" Type="bool" Min="false" Max="true" Description="Inverts the Noise result before ColorA+B are applied" >false</Attribute>
         <!--===============================================================================================================-->
         <Attribute Name="PreviewA" PrettyName="Preview Handle A" Group="Handle A" Type="bool" Min="false" Max="true" Description="Shows you the Result from the Fractal in Handle A" >false</Attribute>
-        <Attribute Name="HandleA" Group="Handle A" Type="stringlist" Description="Which feature from Base Noise to be driven by secondary noise" >Octave,None,Size,Octave,Lacunarity,Amplitute,Offset,Gain</Attribute>
+        <Attribute Name="HandleA" Group="Handle A" Type="stringlist" Description="Which feature from Base Noise to be driven by secondary noise" >Octave,None,Size,Octave,Lacunarity,amplitude,Offset,Gain</Attribute>
         <Attribute Name="ASize" Group="Handle A" Type="double" Min="0" Max="1" Description="The general feature size for HandleA" >0.5</Attribute>
         <Attribute Name="AOctaves" Group="Handle A" Type="float" Min="0" Max="8" Description="Visual complexitity of noise" >3</Attribute>
         <Attribute Name="ALacunarity" Group="Handle A" Type="double" Min="0" Max="8" Description="Frequency spacing between successive octaves" >4</Attribute>
-        <Attribute Name="Aamp" PrettyName="AAmplitute" Group="Handle A" Type="double" Min="0.0001" Max="1" Description="Each successive octave gets multiplied gain*amplitute, smaller values result in less contrast between frequencies">0.5</Attribute>
+        <Attribute Name="Aamp" PrettyName="Aamplitude" Group="Handle A" Type="double" Min="0.0001" Max="1" Description="Each successive octave gets multiplied gain*amplitude, smaller values result in less contrast between frequencies">0.5</Attribute>
         <Attribute Name="AFreqOffset" PrettyName="Offset" Group="Handle A" Type="double" Min="0.0001" Max="1" Description="Frequency Offset for HandleA" >0.5</Attribute>
-        <Attribute Name="AGain" Group="Handle A" Type="double" Min="0" Max="1" Description="Each successive octave gets multiplied gain*amplitute, smaller values result in less contrast for the overal result" >1</Attribute>
+        <Attribute Name="AGain" Group="Handle A" Type="double" Min="0" Max="1" Description="Each successive octave gets multiplied gain*amplitude, smaller values result in less contrast for the overal result" >1</Attribute>
         <Attribute Name="SeedA" PrettyName="Seed A" Group="Handle A" Type="double" Min="1" Max="100000" Logarithmic="1" Description="Randomize position">1</Attribute>
         <Attribute Name="nMinA" PrettyName="New Min A" Group="Handle A" Type="double" Min="0.001" Max="8" Description="New minumum Value for Handle A">1.0</Attribute>
         <Attribute Name="nMaxA" PrettyName="New Max A" Group="Handle A" Type="double" Min="0.001" Max="8" Description="New maximum Value for Handle A">1.2</Attribute>
@@ -81,13 +81,13 @@
         <Attribute Name="EnforceA" PrettyName="Negative as transparent" Group="Handle A" Type="bool" Min="false" Max="true" Description="When Clip Negative is turned on, this will enforce the clipped areas trhoughout the entire fractal, so any further modification only affects the existing shapes">false</Attribute>
         <!--===============================================================================================================-->
         <Attribute Name="PreviewB" PrettyName="Preview Handle B" Group="Handle B" Type="bool" Min="false" Max="true" Description="Shows you the Result from the Fractal in Handle B" >false</Attribute>
-        <Attribute Name="HandleB" Group="Handle B" Type="stringlist" Description="Which feature from Base Noise to be driven by tertiary noise" >None,None,Size,Octave,Lacunarity,Amplitute,Offset,Gain</Attribute>
+        <Attribute Name="HandleB" Group="Handle B" Type="stringlist" Description="Which feature from Base Noise to be driven by tertiary noise" >None,None,Size,Octave,Lacunarity,amplitude,Offset,Gain</Attribute>
         <Attribute Name="BSize" Group="Handle B" Type="double" Min="0" Max="1" Description="The general feature size for HandleB" >0.5</Attribute>
         <Attribute Name="BOctaves" Group="Handle B" Type="float" Min="0" Max="8" Description="Visual complexitity of noise" >3</Attribute>
         <Attribute Name="BLacunarity" Group="Handle B" Type="double" Min="0" Max="8" Description="Frequency spacing between successive octaves" >4</Attribute>
-        <Attribute Name="Bamp" PrettyName="BAmplitute" Group="Handle B" Type="double" Min="0.0001" Max="1" Description="Each successive octave gets multiplied gain*amplitute, smaller values result in less contrast between frequencies" >0.5</Attribute>
+        <Attribute Name="Bamp" PrettyName="Bamplitude" Group="Handle B" Type="double" Min="0.0001" Max="1" Description="Each successive octave gets multiplied gain*amplitude, smaller values result in less contrast between frequencies" >0.5</Attribute>
         <Attribute Name="BFreqOffset" PrettyName="Offset" Group="Handle B" Type="double" Min="0.0001" Max="1" Description="Frequency Offset HandleB" >0.5</Attribute>
-        <Attribute Name="BGain" Group="Handle B" Type="double" Min="0" Max="1" Description="Each successive octave gets multiplied gain*amplitute, smaller values result in less contrast for the overal result">1.0</Attribute>
+        <Attribute Name="BGain" Group="Handle B" Type="double" Min="0" Max="1" Description="Each successive octave gets multiplied gain*amplitude, smaller values result in less contrast for the overal result">1.0</Attribute>
         <Attribute Name="SeedB" PrettyName="Seed B" Group="Handle B" Type="double" Min="1" Max="100000" Logarithmic="1" Description="Randomize position">1</Attribute>
         <Attribute Name="nMinB" PrettyName="New Min B" Group="Handle B" Type="double" Min="0.001" Max="8" Description="New minumum Value for Handle B" >3.0</Attribute>
         <Attribute Name="nMaxB" PrettyName="New Max B" Group="Handle B" Type="double" Min="0.001" Max="8" Description="New maximum Value for Handle B" >3.05</Attribute>
@@ -314,7 +314,7 @@
                         black_enforceA = $EnforceA;
                     break;
 
-                    //AMPLITUTE
+                    //amplitude
                     case 4:
                         ANoise_Val = (0.9999* ANew) + 0.0001 ;
                         final_amp = ANoise_Val;
@@ -378,7 +378,7 @@
                         black_enforceB = $EnforceB;
                     break;
 
-                    //AMPLITUTE
+                    //amplitude
                     case 4:
                         final_amp = BNoise_Val*mix(1.0,ANoise_Val,AAmpInUse);
                         black_enforceB = $EnforceB;

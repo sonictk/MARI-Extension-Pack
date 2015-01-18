@@ -74,11 +74,11 @@
         <Attribute Name="widthAdd" PrettyName="Density Gain" Group="Seondary Noise" Type="double" Min="0.01" Max="50" Logarithmic="1" Description="Gain of secondary Noise">3</Attribute>
         <!--===============================================================================================================-->
         <Attribute Name="lrg_shp_iteration" PrettyName="Large Detail Amount" Group="Large Edge Detail" Type="double" Min="0" Max="5" Description="Octaves of noise to offset Shapes with">2</Attribute>
-        <Attribute Name="lrg_shp_amp" PrettyName="Detail Amplitute" Group="Large Edge Detail" Type="double" Min="0" Max="10" Description="Amplitute of noise to offset Shapes with">3</Attribute>
+        <Attribute Name="lrg_shp_amp" PrettyName="Detail amplitude" Group="Large Edge Detail" Type="double" Min="0" Max="10" Description="amplitude of noise to offset Shapes with">3</Attribute>
         <Attribute Name="lrg_shp_scale" PrettyName="Detail Scale" Group="Large Edge Detail" Type="double" Min="0.001" Max="100" Description="Scale of noise to offset Shapes with, this will always be larger than the one of the secondary offset noise">50</Attribute>
         <!--===============================================================================================================-->
         <Attribute Name="sml_shp_iteration" PrettyName="Small Detail Amount" Group="Small Edge Detail" Type="double" Min="0" Max="5" Description="Octaves of noise to offset Shapes with">1.5</Attribute>
-        <Attribute Name="sml_shp_amp" PrettyName="Detail Amplitute" Group="Small Edge Detail" Type="double" Min="0" Max="10" Description="Amplitute of noise to offset Shapes with">3</Attribute>
+        <Attribute Name="sml_shp_amp" PrettyName="Detail amplitude" Group="Small Edge Detail" Type="double" Min="0" Max="10" Description="amplitude of noise to offset Shapes with">3</Attribute>
         <Attribute Name="sml_shp_scale" PrettyName="Detail Scale" Group="Small Edge Detail" Type="double" Min="0.001" Max="50" Description="Scale of noise to offset Shapes with, this will always be smaller than the one of the primary offset noise">15</Attribute>
         <!--===============================================================================================================-->
         <Attribute Name="uv" PrettyName="UV Space" Group="Space" Type="bool" Min="false" Max="true" Description="Runs the noise 2d uv based, use offset/scale x/y and rotate z" >false</Attribute>

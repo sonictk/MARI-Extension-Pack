@@ -60,7 +60,7 @@
         <Attribute Name="FOffset" PrettyName="Offset" Group="Size" Type="double" Min="0.0001" Max="1" Description="Frequency Offset">0.5</Attribute>
         <Attribute Name="Seed" PrettyName="Seed" Group="Size" Type="double" Min="1" Max="100000" Logarithmic="1" Description="frequency">50</Attribute>
         <!--===============================================================================================================-->
-        <Attribute Name="Amp" PrettyName="Amplitute" Group="Modifiers" Type="double" Min="0.0001" Max="1" Description="Scaling factor between successive octaves">1</Attribute>
+        <Attribute Name="Amp" PrettyName="amplitude" Group="Modifiers" Type="double" Min="0.0001" Max="1" Description="Scaling factor between successive octaves">1</Attribute>
         <Attribute Name="gain" Group="Modifiers" Type="double" Min="0" Max="1" Description="The Contrast of the Noise">1.0</Attribute>
         <Attribute Name="Baseline" Group="Modifiers" Type="double" Min="0" Max="1" Description="After each Noise Routine the Noise gets reprocessed (noise*Baseline+Baseline) to a new Baseline,0 turns this behavior off">0.5</Attribute>
         <Attribute Name="Absolut" PrettyName="Absolute Values" Group="Modifiers" Type="bool" Min="false" Max="true" Description="By default positive and negative noise values will all be treated as positive making for a denser noise. This will remove any negative noise values">false</Attribute>
