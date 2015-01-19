@@ -69,7 +69,7 @@
         <Attribute Name="octaves" PrettyName="Density" Group="Relationship Color A/B" Type="double" Min="1" Max="10" Logarithmic="1" Description="Octaves of primary Noise">2</Attribute>
         <Attribute Name="octaveGain" PrettyName="Density Gain" Group="Relationship Color A/B" Type="double" Min="0.01" Max="50" Logarithmic="1" Description="Octave Gain of primary Noise">3</Attribute>
         <!--===============================================================================================================-->
-        <Attribute Name="lacunarity" PrettyName="Lacunarity" Group="Lacunarity" Type="double" Min="0" Max="1000" Logarithmic="1" Description="Lacunarity of secondary overlay noise, set to 0 to turn it off">0</Attribute>      
+        <Attribute Name="lacunarity" PrettyName="Lacunarity" Group="Lacunarity" Type="double" Min="0" Max="1000" Logarithmic="1" Description="Lacunarity of secondary overlay noise, set to 0 to turn it off">1</Attribute>      
         <Attribute Name="width" PrettyName="Density" Group="Lacunarity" Type="double" Min="1" Max="10" Logarithmic="1" Description="Scale of secondary Noise">2</Attribute>
         <Attribute Name="widthAdd" PrettyName="Density Gain" Group="Lacunarity" Type="double" Min="0.01" Max="50" Logarithmic="1" Description="Gain of secondary Noise">3</Attribute>
         <!--===============================================================================================================-->
