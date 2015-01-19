@@ -12,7 +12,7 @@
 == Web: www.mari.ideascale.com
 == Email: MariIdeas@campi3d.com
 ================================================================================
-== Modified Date: August, 12 2014
+== Modified Date: January, 17 2015
 ================================================================================
 == Redistribution and use in source and binary forms, with or without
 == modification, are permitted provided that the following conditions are met:
@@ -69,9 +69,9 @@
         <Attribute Name="octaves" PrettyName="Density" Group="Relationship Color A/B" Type="double" Min="1" Max="10" Logarithmic="1" Description="Octaves of primary Noise">2</Attribute>
         <Attribute Name="octaveGain" PrettyName="Density Gain" Group="Relationship Color A/B" Type="double" Min="0.01" Max="50" Logarithmic="1" Description="Octave Gain of primary Noise">3</Attribute>
         <!--===============================================================================================================-->
-        <Attribute Name="lacunarity" PrettyName="Secondary Scale" Group="Seondary Noise" Type="double" Min="0" Max="1000" Logarithmic="1" Description="Lacunarity of secondary overlay noise, set to 0 to turn it off">0</Attribute>      
-        <Attribute Name="width" PrettyName="Density" Group="Seondary Noise" Type="double" Min="1" Max="10" Logarithmic="1" Description="Scale of secondary Noise">2</Attribute>
-        <Attribute Name="widthAdd" PrettyName="Density Gain" Group="Seondary Noise" Type="double" Min="0.01" Max="50" Logarithmic="1" Description="Gain of secondary Noise">3</Attribute>
+        <Attribute Name="lacunarity" PrettyName="Lacunarity" Group="Lacunarity" Type="double" Min="0" Max="1000" Logarithmic="1" Description="Lacunarity of secondary overlay noise, set to 0 to turn it off">0</Attribute>      
+        <Attribute Name="width" PrettyName="Density" Group="Lacunarity" Type="double" Min="1" Max="10" Logarithmic="1" Description="Scale of secondary Noise">2</Attribute>
+        <Attribute Name="widthAdd" PrettyName="Density Gain" Group="Lacunarity" Type="double" Min="0.01" Max="50" Logarithmic="1" Description="Gain of secondary Noise">3</Attribute>
         <!--===============================================================================================================-->
         <Attribute Name="lrg_shp_iteration" PrettyName="Large Detail Amount" Group="Large Edge Detail" Type="double" Min="0" Max="5" Description="Octaves of noise to offset Shapes with">2</Attribute>
         <Attribute Name="lrg_shp_amp" PrettyName="Detail amplitude" Group="Large Edge Detail" Type="double" Min="0" Max="10" Description="amplitude of noise to offset Shapes with">3</Attribute>
