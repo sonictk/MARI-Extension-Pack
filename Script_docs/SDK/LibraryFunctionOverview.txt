@@ -38,6 +38,15 @@
 // ---------------------------------------------
 // ---------------------------------------------
 
+//   /FunctionLibrary/JK_FunctionLibrary/JK_TexScatterUV.glslc
+//	  1D Random Function with Thresholding
+float rnd1d_threshold(float x,float lo,float hi,float threshold,float threshold_bound);
+
+//   /FunctionLibrary/JK_FunctionLibrary/JK_TexScatterUV.glslc
+// simple Noise based cells
+float udn(float x,float scale,float lo,float hi);
+
+
 
 //   /FunctionLibrary/DT3D_FunctionLibrary/BS_GpuNoiseLib.glslc
 //   Noise type picker function
@@ -267,6 +276,12 @@ vec4 DT3D_RidgedNoise(vec3 Po, vec4 colorA, vec4 colorB, float frequency, int oc
 // Voronoi Functions
 // ---------------------------------------------
 // ---------------------------------------------
+
+//   /FunctionLibrary/JK_FunctionLibrary/JK_TexScatterUV.glslc
+// A very expensive, voronoi based noise for seeding. 
+float udnVor(float x,float scale,float lo,float hi, float threshold, float threshold_bound);
+
+
 
 //   /FunctionLibrary/DT3D_FunctionLibrary/DT3D_ProceduralLib.glslc
 // CellularNoiseLib.glslc

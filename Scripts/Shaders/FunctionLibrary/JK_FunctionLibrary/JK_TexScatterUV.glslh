@@ -90,3 +90,18 @@ vec4 JK_texScatterUV(
 					vec4 Hardness,
 					vec4 roundness
 				);
+
+
+//1D Random Function with Thresholding
+float rnd1d_threshold(float x,float lo,float hi,float threshold,float threshold_bound);
+
+// voronoi cellular pattern generator from DT3D_CellularNoise.glslc 
+// but a little simplified for better performance and with a threshold.
+void voronoi_simple(vec3 position, float jitterD,out vec3 f1cell,float threshold,float threshold_bound);
+
+// simple Noise based cells
+float udn(float x,float scale,float lo,float hi);
+
+
+// A very expensive, voronoi based noise for seeding. 
+float udnVor(float x,float scale,float lo,float hi, float threshold, float threshold_bound);
