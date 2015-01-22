@@ -13,11 +13,6 @@ Mirroring www.mari.ideascale.com.
 
 This includes all User Content including Python Scripts and user created Nodes
 
-A collabarative space for development is available here:
-
-https://github.com/campi3d/IdeascaleNodePack
-
-
 ##GIT Workflow
 
 We have adopted the git flow branching model.
@@ -25,16 +20,6 @@ We have adopted the git flow branching model.
 A comprehensive Step-by-Step is available on the Twiki: 
 https://github.com/campi3d/IdeascaleNodePack/wiki/Making-a-change---step-by-step-Tutorial
 
-
-SUBBRANCH -> DEV -> RELEASE CANDIDATE (Optional) -> MASTER
-
-MASTER is always a released version.
-DEV is the sum of all Development (more or less stable)
-Development Branches (referred to as "sub branch" in this document)  are branched off DEV.
-
-Once a sub branch is completed, a pull request is made to DEV.
-If many changes are made to DEV from different Collaborators,
-a RELEASE CANDIDATE Branch may be created from DEV before merged into MASTER.
 
 In order to keep track of things it would be good if major new features just get noted down in the release notes within the DEV Branch
 so we have some sort of easy way to assemble release information.
@@ -44,6 +29,16 @@ so we have some sort of easy way to assemble release information.
 
 Refer to the contents of the Script_Docs/SDK folder for information
 
+
+##Documentation
+
+Complete online help is available here
+
+http://www.campi3d.com/External/MariExtensionPack/help/MARI%20Extension%20Pack.html
+
+
+The raw authoring files are located in the Help folder.
+HelpNDoc Personal Learning Edition (free) was used to author the help.
 
 
 ##Contributors
