@@ -27,7 +27,9 @@ so we have some sort of easy way to assemble release information.
 
 ##Adding new nodes, shaders, functions & scripts
 
-Refer to the contents of the Script_Docs/SDK folder for information
+Refer to SDK site of the help
+
+http://www.campi3d.com/External/MariExtensionPack/help/MARI%20Extension%20Pack.html?SDK.html
 
 
 ##Documentation
