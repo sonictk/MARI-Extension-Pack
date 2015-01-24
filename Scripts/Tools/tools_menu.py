@@ -479,17 +479,18 @@ def createToolsMenu():
 	UI_path_C = 'MriLayerShader/CollectionContext'
 	script_menu_path = 'MainWindow/Scripts/Shaders'
 
-	action = mari.actions.create(
+	syncObjectShaders = mari.actions.create(
 	    "Sync Object Shaders", "mari.customScripts.setAllObjectsToShader()"
 	    )
-	mari.menus.addAction(action, UI_path_A, '-Flat')
-	mari.menus.addAction(action, UI_path_B)
-	mari.menus.addAction(action, UI_path_C,'Duplicate Shader')
-	mari.menus.addAction(action, script_menu_path)
+	mari.menus.addAction(syncObjectShaders, UI_path_A, '-Flat')
+	mari.menus.addAction(syncObjectShaders, UI_path_B)
+	mari.menus.addAction(syncObjectShaders, UI_path_C,'Duplicate Shader')
+	mari.menus.addAction(syncObjectShaders, script_menu_path)
 
 	icon_filename = "Shader.png"
 	icon_path = mari.resources.path(mari.resources.ICONS) + '/' + icon_filename
-	action.setIconPath(icon_path)
+	syncObjectShaders.setIconPath(icon_path)
+	syncObjectShaders.setShortcut('')
 
 ######################################################################
 # Image Manager
