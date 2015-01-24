@@ -71,7 +71,8 @@ illegalFiles = ["bnChanLayer.py","bnChanLayer.pyc","bnMaskFromSelection.py","bnM
 				"channel_template.py","channel_template.pyc","convert_selected_to_paintable.py",
 				"convert_selected_to_paintable.pyc","export_image_manager_images.py","export_image_manager_images.pyc",
 				"export_selected_channels.py","export_selected_channels.pyc","export_uv_masks.py","export_uv_masks.pyc",
-				"flatten_selected_channels.py","flatten_selected_channels.pyc","layer_visibility.py","layer_visibility.pyc"
+				"flatten_selected_channels.py","flatten_selected_channels.pyc","layer_visibility.py","layer_visibility.pyc",
+				"set_all_current_shader.py","set_all_current_shader.pyc"
 				]
 
 # Blacklist of Shader Files in Script Directories - any one of these will throw an error since they are included in the extension pack
@@ -79,7 +80,8 @@ illegalShaders = ["JK_AlbedoWarning.xml","initShaders.py","initShaders.pyc"]
 
 # Blacklist of Modules within JTOOLS __INIT__ - any of these will cause an error after the original file was renamed
 illegal_Modules = ["import channel_template","import convert_selected_to_paintable","import export_image_manager_images",
-				"import export_selected_channels","import export_uv_masks","import flatten_selected_channels","import layer_visibility"
+				"import export_selected_channels","import export_uv_masks","import flatten_selected_channels","import layer_visibility",
+				"import set_all_current_shader"
 			    ]
 
 
@@ -92,7 +94,8 @@ illegal_Func = ["def convertSelectedToPaintable(self):","convert_selected_to_pai
 				"def flattenSelectedChannels(self):","flatten_selected_channels.flattenSelectedChannels()",
 				"def getChannelTemplate(self):","channel_template.getChannelTemplate()",
 				"def layerVisibility(self):","layer_visibility.layerVisibility()",
-				"def setChannelFromTemplate(self):","channel_template.setChannelFromTemplate()"]
+				"def setChannelFromTemplate(self):","channel_template.setChannelFromTemplate()",
+				"def setAllCurrentShader(self):","set_all_current_shader.setAllCurrentShader()"]
 
 
 ######################################################################

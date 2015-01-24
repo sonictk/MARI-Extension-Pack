@@ -61,6 +61,9 @@ import Channels.extPack_exportSelectedChannels as export_selected_channels
 import Channels.extPack_flattenSelectedChannels as flatten_selected_channels
 import Channels.extPack_channelTemplate as channel_template
 
+# SHADERS:
+import Shaders.extPack_set_all_current_shader as setAllCurrentShader
+
 # OBJECTS:
 import Object.extPack_export_uv_masks as export_uv_masks
 
@@ -148,6 +151,12 @@ class customScripts():
     def convertToPaintable(self):
         convert_to_paintable.convertToPaintable()
 
+    # --------------------------------------------------------------
+    # Shaders:
+
+    def setAllObjectsToShader(self):
+        setAllCurrentShader.setAllCurrentShader()
+
 
     # --------------------------------------------------------------
     # OBJECTS:
@@ -209,6 +218,9 @@ print 'Layer Menu: Toggle Lock selected/unselected'
 print '-----------------------------------------'
 print 'Patches Palette Additions (1): '
 print 'Patches Menu: Patch to Image Manager'
+print '-----------------------------------------'
+print 'Shader Palette Additions (1): '
+print 'Shading Menu: Sync Object Shaders'
 print '-----------------------------------------'
 print 'Camera Palette Additions (2): '
 print 'Camera Menu: Quick Unproject Channel'
