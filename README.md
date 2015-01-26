@@ -1,79 +1,85 @@
-IDEASCALE NODE PACK
-=====================================================================================
-Copyright (c) 2013-2014 www.mari.ideascale.com. All Rights Reserved.
+#MARI EXTENSION PACK 2.0
 
-Version:
------------
-Nodepack :  1.50  //  MARI Function Library: 1.08
+Copyright (c) 2015 www.mari.ideascale.com. All Rights Reserved.
 
 
-Info
------------------
+##Version:
+Extension Pack :  2.0  //  MARI Function Library: 1.11
+
+
+##Info
 General Development Area for custom nodes, custom shaders and Python scripts
 Mirroring www.mari.ideascale.com.
 
 This includes all User Content including Python Scripts and user created Nodes
 
-A collabarative space for development is available here:
+##GIT Workflow
 
-https://github.com/campi3d/IdeascaleNodePack
-
-
-GIT Workflow
------------------
 We have adopted the git flow branching model.
 
 A comprehensive Step-by-Step is available on the Twiki: 
 https://github.com/campi3d/IdeascaleNodePack/wiki/Making-a-change---step-by-step-Tutorial
 
 
-
-SUBBRANCH -> DEV -> RELEASE CANDIDATE (Optional) -> MASTER
-
-MASTER is always a released version.
-DEV is the sum of all Development (more or less stable)
-Development Branches (referred to as "sub branch" in this document)  are branched off DEV.
-
-Once a sub branch is completed, a pull request is made to DEV.
-If many changes are made to DEV from different Collaborators,
-a RELEASE CANDIDATE Branch may be created from DEV before merged into MASTER.
-
 In order to keep track of things it would be good if major new features just get noted down in the release notes within the DEV Branch
 so we have some sort of easy way to assemble release information.
 
 
-Adding new nodes, shaders and functions
------------------
-Refer to the contents of the Script_Docs/SDK folder for information
+##Adding new nodes, shaders, functions & scripts
+
+Refer to SDK site of the help
+
+http://www.campi3d.com/External/MariExtensionPack/help/MARI%20Extension%20Pack.html?SDK.html
 
 
+##Documentation
 
-Contributors
------------------
+Complete online help is available here
 
-- Miguel A Santiago Jr. www.digiteck3d.com // miguel@digiteck3d.com
+http://www.campi3d.com/External/MariExtensionPack/help/MARI%20Extension%20Pack.html
 
-- Nicholas Breslow www.nbreslow.com // nick@nbreslow.com
 
-- Jens Kafitz www.campi3d.com // info@campi3d.com
+The raw authoring files are located in the Help folder.
+HelpNDoc Personal Learning Edition (free) was used to author the help.
 
-- Ben Neall www.bneall.blogspot.co.nz //  bneall@gmail.com
 
-- Antonio Neto
+##Contributors
 
-- Orlando Esponda
 
+####PYTHON DEVELOPMENT
+
+- Jorel Latraille, *http://www.jorel-latraille.com*
+- Ben Neall *www.bneall.blogspot.co.nz //  bneall@gmail.com*
+- Sreenivas Alapati *http://cg-cnu.blogspot.in // sreenivas9alapati@gmail.com*
+- Miguel A Santiago Jr. *www.digiteck3d.com // miguel@digiteck3d.com*
+- Jens Kafitz, *www.campi3d.com // MariIdeas@campi3d.com*
 - Antoni Kujawa
 
 
-Thank you
------------------
+####NODE DEVELOPMENT
 
-Yasin Hasanian & Dave Girard for MAC QA
+- Jens Kafitz *www.campi3d.com // MariIdeas@campi3d.com*
+- Miguel A Santiago Jr. *www.digiteck3d.com // miguel@digiteck3d.com*
+- Nicholas Breslow *www.nbreslow.com // nick@nbreslow.com*
+- Antoni Kujawa
+- Orlando Esponda
+- Antonio Neto
 
 
-License
------------------
+####SHADER DEVELOPMENT
+
+- Miguel A Santiago Jr. *www.digiteck3d.com // miguel@digiteck3d.com*
+- Nicholas Breslow *www.nbreslow.com // nick@nbreslow.com*
+
+
+####MAC QA
+
+- Yasin Hasanian
+- Dave Girard
+
+
+##License
+
 
 Redistribution and use in source and binary forms, with or without modification, are permitted
 provided that the following conditions are met:

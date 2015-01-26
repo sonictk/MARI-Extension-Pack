@@ -9,7 +9,7 @@
 == Author: Jens Kafitz | Mari Ideascale
 == Web: www.campi3d.com
 == Web: www.mari.ideascale.com
-== Email: info@campi3d.com
+== Email: MariIdeas@campi3d.com
 ================================================================================
 == Modified Date: June, 16 2014
 ================================================================================
@@ -54,7 +54,7 @@
     <Attributes>
         <!--===============================================================================================================-->
         <Attribute Name="preview" PrettyName="Show Background" Group="Preview" Type="bool" Min="true" Max="false">true</Attribute>
-        <Attribute Name="wipe" Group="Preview" Type="float" Min="0.0" Max="1.0">0.5</Attribute>
+        <Attribute Name="wipe" Group="Preview" Type="float" Min="0.0" Max="1.0">1.0</Attribute>
         <Attribute Name="inverseBuffer" PrettyName="Reverse Wipe" Group="Preview" Type="bool" Min="true" Max="false">false</Attribute>
         <Attribute Name="SelectionPreview" PrettyName="Selection Preview" Group="Preview" Type="stringlist">Stencil,Grayscale,Stencil,Black Matte,White Matte</Attribute>
         <!--===============================================================================================================-->
@@ -86,6 +86,14 @@
         <Attribute Name="RangeMin" PrettyName="Range Min" Group="Enhance Selection" Type="float" Min="0.0" Max="1.0">0.2</Attribute>
         <Attribute Name="RangeMax" PrettyName="Range Max" Group="Enhance Selection" Type="float" Min="0.0" Max="1.0">0.3</Attribute>
         <!--===============================================================================================================-->
+        <Attribute Name="Grade" PrettyName="Grade Mode" Group="Grade Mode" Type="bool" Min="true" Max="false">false</Attribute>
+        <Attribute Name="Hue"        PrettyName="Hue Shift"        Group="Grade Mode" Type="double" Min="-180.0" Max="180.0">0.0</Attribute>
+        <Attribute Name="Saturation" PrettyName="Saturation Scale" Group="Grade Mode" Type="double" Min="0.0" Max="10.0">1.0</Attribute>
+        <Attribute Name="Value"      PrettyName="Value Scale"      Group="Grade Mode" Type="double" Min="0.0" Max="10.0">1.0</Attribute>
+        <Attribute Name="Gamma" Group="Grade Mode" Type="double" Min="0.0" Max="3.0">1.0</Attribute>
+        <Attribute Name="Contrast" Group="Grade Mode" Type="double" Min="0.0" Max="2.0">1.0</Attribute>
+        <Attribute Name="ContrastPivot" PrettyName="Contrast Pivot" Group="Grade Mode" Type="double" Min="0.0" Max="1.0">0.5</Attribute>
+       
     </Attributes>
     <Groups>
         <Group Name="Enhance Selection" Expanded="false"></Group>
@@ -229,8 +237,26 @@
                 range = mix(range,background,selectionType);
 
                 vec3 previewSplit = mix(range,background,d);
+                vec4 SelectionResult = vec4 (mix(range,previewSplit,preview),#Input.a);
 
-                Output = vec4 (mix(range,previewSplit,preview),#Input.a);
+                if ($Grade)
+                {
+                    vec4 HSV = mriRgb2Hsv(#Input);
+                    bool Chromatic = 0.0 < HSV.g;
+                    HSV.r += $Hue;
+                    HSV.r = fract(HSV.r / 360.0) * 360.0;
+                    HSV.g *= $Saturation;
+                    HSV.b *= $Value;
+                    vec4 colorCorrect = Chromatic ? mriHsv2Rgb(HSV) : vec4(vec3(HSV.b), HSV.a);
+                    for (int i = 0; i != 3; ++i) {
+                    colorCorrect[i] = colorCorrect[i] > 0 ? pow(colorCorrect[i], 1.0/$Gamma) : colorCorrect[i];
+                    colorCorrect = (colorCorrect-vec4($ContrastPivot))*$Contrast+vec4($ContrastPivot);
+                    }
+                    SelectionResult = mix(#Input,colorCorrect,_range);
+
+                }
+                
+                Output = SelectionResult;
 
                 ]]></Body>
             </Shader>

@@ -9,9 +9,9 @@
 == Author: Jens Kafitz | Mari Ideascale
 == Web: www.campi3d.com
 == Web: www.mari.ideascale.com
-== Email: info@campi3d.com
+== Email: MariIdeas@campi3d.com
 ================================================================================
-== Modified Date: June, 16 2014
+== Modified Date: January, 13 2015
 ================================================================================
 == Redistribution and use in source and binary forms, with or without
 == modification, are permitted provided that the following conditions are met:
@@ -50,17 +50,18 @@
     </Inputs>
     <Attributes>
         <!--===============================================================================================================-->
-        <Attribute Name="rP" PrettyName="Rotate Precision" Group="Rotate Normal" Type="double" Min="0" Max="1">1</Attribute>
         <Attribute Name="rX" PrettyName="Rotate X" Group="Rotate Normal" Type="double" Min="0" Max="360">0</Attribute>
         <Attribute Name="rY" PrettyName="Rotate Y" Group="Rotate Normal" Type="double" Min="0" Max="360">0</Attribute>
         <Attribute Name="rZ" PrettyName="Rotate Z" Group="Rotate Normal" Type="double" Min="0" Max="360">0</Attribute>
         <!--===============================================================================================================-->
-        <Attribute Name="oP" PrettyName="Offset Precision" Group="Offset Normal" Type="double" Min="0" Max="10">1</Attribute>
         <Attribute Name="oX" PrettyName="Offset X" Group="Offset Normal" Type="double" Min="-1" Max="1">0</Attribute>
         <Attribute Name="oY" PrettyName="Offset Y" Group="Offset Normal" Type="double" Min="-1" Max="1">0</Attribute>
         <Attribute Name="oZ" PrettyName="Offset Z" Group="Offset Normal" Type="double" Min="-1" Max="1">0</Attribute>
-        <!--===============================================================================================================-->
+
     </Attributes>
+    <Groups>
+        <Group Name="Precision" Expanded="false"></Group>
+    </Groups>
     <Contexts>
         <Context Type="NodeGraphView">
             <Inputs>
@@ -83,16 +84,13 @@
 
                 #if defined MRI_SHADER_FRAGMENT || defined MRI_SHADER_TESS_EVALUATION
 
-                float g = $rP;
-                float h = $oP;
+                float rX = $rX;
+                float rY = $rY;
+                float rZ = $rZ;
 
-                float rX = $rX * $rP;
-                float rY = $rY * $rP;
-                float rZ = $rZ * $rP;
-
-                float oX = $oX * $oP;
-                float oY = $oY * $oP;
-                float oZ = $oZ * $oP;
+                float oX = $oX;
+                float oY = $oY;
+                float oZ = $oZ;
 
                 // build the needed vector attributes for position transform, offset max growths exponentially
                 vec3 trans = vec3(oX,oY,oZ);

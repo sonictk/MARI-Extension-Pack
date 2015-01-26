@@ -1,0 +1,262 @@
+<!--
+================================================================================
+== Mari Ideascale Procedural Library
+== Copyright (c) 2013 Jens Kafitz. All Rights Reserved.
+================================================================================
+== File: JK_AxisMask.xml
+== Description: Axis mask node to create masking based on specific directions.
+================================================================================
+== Author: Jens Kafitz | Mari Ideascale
+== Web: www.campi3d.com
+== Web: www.mari.ideascale.com
+== Email: MariIdeas@campi3d.com
+================================================================================
+== Modified Date: June, 16 2014
+================================================================================
+== Redistribution and use in source and binary forms, with or without
+== modification, are permitted provided that the following conditions are met:
+==
+== 1. Redistributions of source code must retain the above copyright
+== notice, this list of conditions and the following disclaimer.
+==
+== 2. Redistributions in binary form must reproduce the above copyright
+== notice, this list of conditions and the following disclaimer in the
+== documentation and/or other materials provided with the distribution.
+==
+== 3. Neither the name of the copyright holder nor the names of its
+== contributors may be used to endorse or promote products derived from
+== this software without specific prior written permission.
+==
+== THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+== IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+== THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+== PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+== CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+== EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+== PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+== OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+== WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+== OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+== ADVISED OF HE POSSIBILITY OF SUCH DAMAGE.
+================================================================================
+-->
+<Node>
+    <ID>Axis Projection</ID>
+    <DefaultName>Axis Projection</DefaultName>
+    <Category>Environment/Custom/</Category>
+  <Cost>0.7</Cost>
+  <CostDescription>Some calculations and some texture lookup</CostDescription>
+  <Inputs>
+      <Input Name="Mask"></Input>
+      <Input Name="Position"></Input>
+      <Input Name="Normal"></Input>
+  </Inputs>
+  <Attributes>
+      <!--===============================================================================================================-->
+      <Attribute Name="worldScale" Group="Image" PrettyName="World Scale" Type="int" Min="0.0" Logarithmic="0">1</Attribute>
+      <Attribute Name="Image" Group="Image" PrettyName="Image" Type="image"></Attribute>
+      <Attribute Name="Inv" PrettyName="Invert" Group="Image" Type="bool" Min="false" Max="true" >false</Attribute>
+      <Attribute Name="Repeat" Group="Image" PrettyName="Repeat" Type="float" Min="0" Max="50" Logarithmic="1">1</Attribute>
+      <Attribute Name="Angle" Group="Image" PrettyName="Angle" Type="float" Min="0" Max="360" Logarithmic="0">0</Attribute>
+      <Attribute Name="UOffset" Group="Image" PrettyName="U Offset" Type="float" Min="-1" Max="1" Logarithmic="0">0</Attribute>
+      <Attribute Name="VOffset" Group="Image" PrettyName="V Offset" Type="float" Min="-1" Max="1" Logarithmic="0">0</Attribute>
+      <Attribute Name="UScale" Group="Image" PrettyName="U Scale" Type="float" Min="-1" Max="1" Logarithmic="0">1</Attribute>
+      <Attribute Name="VScale" Group="Image" PrettyName="V Scale" Type="float" Min="-1" Max="1" Logarithmic="0">1</Attribute>
+      <!--===============================================================================================================-->
+      <Attribute Name="sX" PrettyName="X" Group="Axis" Type="bool" Min="false" Max="true" >false</Attribute>
+      <Attribute Name="ExpandX" Group="Axis" PrettyName="Expand" Type="float" Min="0" Max="2.0" Logarithmic="0">1.0</Attribute>
+      <Attribute Name="sminX" PrettyName="-X" Group="Axis" Type="bool" Min="false" Max="true" >false</Attribute>
+      <Attribute Name="ExpandMinX" Group="Axis" PrettyName="Expand" Type="float" Min="0" Max="2.0" Logarithmic="0">1.0</Attribute>
+      <Attribute Name="sY" PrettyName="Y" Group="Axis" Type="bool" Min="false" Max="true" >true</Attribute>
+      <Attribute Name="ExpandY" Group="Axis" PrettyName="Expand" Type="float" Min="0" Max="2.0" Logarithmic="0">1.0</Attribute>
+      <Attribute Name="sminY" PrettyName="-Y" Group="Axis" Type="bool" Min="false" Max="true" >false</Attribute>
+      <Attribute Name="ExpandMinY" Group="Axis" PrettyName="Expand" Type="float" Min="0" Max="2.0" Logarithmic="0">1.0</Attribute> 
+      <Attribute Name="sZ" PrettyName="Z" Group="Axis" Type="bool" Min="false" Max="true" >false</Attribute>
+      <Attribute Name="ExpandZ" Group="Axis" PrettyName="Expand" Type="float" Min="0" Max="2.0" Logarithmic="0">1.0</Attribute> 
+      <Attribute Name="sminZ" PrettyName="-Z" Group="Axis" Type="bool" Min="false" Max="true" >false</Attribute>
+      <Attribute Name="ExpandMinZ" Group="Axis" PrettyName="Expand" Type="float" Min="0" Max="2.0" Logarithmic="0">1.0</Attribute> 
+      <!--===============================================================================================================-->  
+      <Attribute Name="jitter" PrettyName="Jitter" Group="Softness Falloff" Type="double" Min="0.00000000000001" Max="1">0.00000000000001</Attribute>  
+      <Attribute Name="FO" PrettyName="Softness Falloff" Group="Softness" Type="curve" >0,0,0.4025,0,0.47,0.137273,0.52,0.834091,0.575,0.996364,1,1</Attribute>
+      <!--===============================================================================================================-->
+      <Attribute Name="rX" PrettyName="Rotate X" Group="Global Axis Rotation" Type="double" Min="0" Max="360" >0</Attribute>
+      <Attribute Name="rY" PrettyName="Rotate Y" Group="Global Axis Rotation" Type="double" Min="0" Max="360" >0</Attribute>
+      <Attribute Name="rZ" PrettyName="Rotate Z" Group="Global Axis Rotation" Type="double" Min="0" Max="360" >0</Attribute>
+      <!--===============================================================================================================-->
+
+  </Attributes>
+  <Contexts>
+      <Context Type="NodeGraphView">
+          <Inputs>
+              <Input Name="Mask"><Pos>100,0</Pos></Input>
+              <Input Name="Position"><Pos>100,-20</Pos></Input>
+              <Input Name="Normal"><Pos>100,-40</Pos></Input>
+          </Inputs>
+      </Context>
+      <Context Type="GLSL">
+          <Shader ShaderType='Fragment'>
+              <Inputs>
+                  <Input Name="Position"><Default>(State.Position - u_MriObjectCenter)</Default></Input>
+                  <Input Name="Normal"><Default>State.Normal</Default></Input>
+              </Inputs>
+          </Shader>
+
+          <Shader ShaderType='TessEvaluation'>
+              <Inputs>
+                  <Input Name="Position"><Default>State.Position</Default></Input>
+                  <Input Name="Normal"><Default>State.Normal</Default></Input>
+              </Inputs>
+          </Shader>
+
+          <Shader>
+              <Inputs>
+                  <Input Name="Mask"><Default>vec4(1,1,1,1)</Default></Input>
+              </Inputs>
+              <Body>
+    <![CDATA[
+
+    // Axis Separation from JK_AxisMask.xml
+
+    // build rotational vec3 from sliders
+    vec3 rotate = vec3($rX,$rY,$rZ);
+
+    // build modified state.normal via mari function library call
+    vec3 _N = positionTransform(State.Normal,vec3(0.0),rotate,vec3(1.0));
+    vec3 pos = positionTransform(State.Position,vec3(0.0),rotate,vec3(1.0));
+
+    // divisor for p in fbm jitter function
+    float pow_J = pow($jitter,length(_N));
+
+    // fbm function for jitter effect.
+    float J = vlnoise(_N/vec3(pow_J),$jitter);
+
+    // mix between jittered and unjittered result. mix is never 100percent jittered since values are too high
+    vec3 P = mix(_N,_N + vec3(J),$jitter/4);
+
+
+    // separating positive and negative ps to determine direction
+    float X = clamp(P.x,0.000000000,1000000000000000.0);
+    float minX = clamp(P.x,0.0000000000,1000000000000000.0) - P.x;
+    float Y = clamp(P.y,0.000000000,1000000000000000.0);
+    float minY = clamp(P.y,0.000000000,1000000000000000.0) - P.y;
+    float Z = clamp(P.z,0.000000000,1000000000000000.0);
+    float minZ = clamp(P.z,0.000000000,1000000000000000.0) - P.z;
+    float zero_a = 0.0;
+
+    // mixing the clamped directions against 0 based on ui selection
+    float resA = mix(zero_a,X,$sX);
+    float resB = mix(zero_a,minX,$sminX);
+    float resC = mix(zero_a,Y,$sY);
+    float resD = mix(zero_a,minY,$sminY);
+    float resE = mix(zero_a,Z,$sZ);
+    float resF = mix(zero_a,minZ,$sminZ);
+
+    // looking up result against falloff curve
+    resA = mriCurveLookup($FO,resA*$ExpandX);
+    resB = mriCurveLookup($FO,resB*$ExpandMinX);
+    resC = mriCurveLookup($FO,resC*$ExpandY);
+    resD = mriCurveLookup($FO,resD*$ExpandMinY);
+    resE = mriCurveLookup($FO,resE*$ExpandZ);
+    resF = mriCurveLookup($FO,resF*$ExpandMinZ);
+
+    // blending all ui selections together
+    float _res = max(resA,resB);
+    _res = max(_res,resC);
+    _res = max(_res,resD);
+    _res = max(_res,resE);
+    _res = max(_res,resF);
+
+  
+    vec2 FrontUv;
+    if ( $sZ || $sminZ)
+    {
+      {
+          if ($worldScale <= 0.0)
+          {
+              FrontUv = vec2(0.0, 0.0);
+          }
+          else
+          {
+              FrontUv = (1.0 / $worldScale) * pos.xy * vec2( $UScale, -$VScale);
+          }
+          float angleRads = radians( $Angle);
+          float cosAngle = cos( angleRads);
+          float sinAngle = sin( angleRads);
+          FrontUv = mat2( cosAngle, -sinAngle, sinAngle, cosAngle ) * FrontUv;
+          FrontUv *= vec2( $Repeat);
+          FrontUv += vec2( -$UOffset, $VOffset);
+          FrontUv -= vec2(0.5, 0.5);
+      }
+    }
+
+
+    vec2 TopUv;
+    if ( $sY || $sminY)
+      {
+        {
+            if ($worldScale <= 0.0)
+            {
+                TopUv = vec2(0.0, 0.0);
+            }
+            else
+            {
+                TopUv = (1.0 / $worldScale) * pos.xz * vec2( -$UScale, -$VScale);
+            }
+            float angleRads = radians( $Angle);
+            float cosAngle = cos( angleRads);
+            float sinAngle = sin( angleRads);
+            TopUv = mat2( cosAngle, -sinAngle, sinAngle, cosAngle ) * TopUv;
+            TopUv *= vec2( $Repeat);
+            TopUv += vec2( -$UOffset, $VOffset);
+            TopUv -= vec2(0.5, 0.5);
+        }
+  
+      }
+
+    vec2 RightUv;
+    if ( $sX || $sminX)
+    {
+      {
+          if ($worldScale <= 0.0)
+          {
+              RightUv = vec2(0.0, 0.0);
+          }
+          else
+          {
+              RightUv = (1.0 / $worldScale) * pos.zy * vec2( $UScale, -$VScale);
+          }
+          float angleRads = radians( $Angle);
+          float cosAngle = cos( angleRads);
+          float sinAngle = sin( angleRads);
+          RightUv = mat2( cosAngle, -sinAngle, sinAngle, cosAngle ) * RightUv;
+          RightUv *= vec2( $Repeat);
+          RightUv += vec2( -$UOffset, $VOffset);
+          RightUv -= vec2(0.5, 0.5);
+      }
+    }
+
+    //Comp Results together.
+    vec4 result = texture( $Image, RightUv.xy);
+    result = mix(vec4(0.0),result,resA);
+    result = Comp_Default( result, texture( $Image  ,RightUv.xy  ), resB);
+    result = Comp_Default( result, texture( $Image  ,TopUv.xy  ), resC);
+    result = Comp_Default( result, texture( $Image  ,TopUv.xy  ), resD);
+    result = Comp_Default( result, texture( $Image,FrontUv.xy), resE);
+    result = Comp_Default( result, texture( $Image,FrontUv.xy), resF);
+    Output = result;
+    //Apply original Image Alpha and Invert
+    Output.a = _res * Output.a;
+    Output = vec4( mix(Output.r,1.0-Output.r,float($Inv)),
+                   mix(Output.g,1.0-Output.g,float($Inv)),
+                   mix(Output.b,1.0-Output.b,float($Inv)),
+                   Output.a
+                  );
+
+    ]]>
+              </Body>
+          </Shader>
+      </Context>
+  </Contexts>
+</Node>
+
+    

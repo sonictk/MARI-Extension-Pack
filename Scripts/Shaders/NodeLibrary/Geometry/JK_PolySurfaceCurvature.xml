@@ -9,9 +9,9 @@
 == Author: Jens Kafitz | Mari Ideascale
 == Web: www.campi3d.com
 == Web: www.mari.ideascale.com
-== Email: info@campi3d.com
+== Email: MariIdeas@campi3d.com
 ================================================================================
-== Modified Date: June, 16 2014
+== Modified Date: January 13, 2015
 ================================================================================
 == Redistribution and use in source and binary forms, with or without
 == modification, are permitted provided that the following conditions are met:
@@ -51,10 +51,14 @@
     </Inputs>
     <Attributes>
         <!--===============================================================================================================-->
-        <Attribute Name="Adjust" PrettyName="Adjust Curvature" Group="" Type="double" Logarithmic="1" Min="0" Max="1">0.1</Attribute>
-        <Attribute Name="Size" PrettyName="Adjust Scene Size" Group="" Type="double" Logarithmic="1" Min="0" Max="1">0.1</Attribute>
+        <Attribute Name="Adjust" PrettyName="Curvature" Group="" Type="double" Logarithmic="1" Min="0" Max="1">0.1</Attribute>
+        <Attribute Name="Size" PrettyName="Intensity" Group="" Type="double" Logarithmic="1" Min="0" Max="2">0.1</Attribute>
         <Attribute Name="Invert" PrettyName="Invert" Group="" Type="bool" Min="false" Max="true">false</Attribute>
+        <Attribute Name="absolute" PrettyName="Hard Edged" Group="Extra Attributes" Type="bool" Min="false" Max="true">false</Attribute>
+        <Attribute Name="AO" PrettyName="Attenuate with AmbientOcclusion" Group="Extra Attributes" Type="bool" Min="false" Max="true">false</Attribute>
+     
         <!--===============================================================================================================-->
+
     </Attributes>
     <Contexts>
         <Context Type="NodeGraphView">
@@ -79,32 +83,47 @@
             <Shader>
                 <Body><![CDATA[
 
+
+                #if defined MRI_SHADER_FRAGMENT || defined MRI_SHADER_TESS_EVALUATION
+
                 vec3 N = #Normal;
                 vec3 P = #Position;
+                float AO = mix(1.0,State.AmbientOcclusion,float($AO));
 
-                float size_pow = (pow(10000.0,$Size*$Size)-1.0) + 0.0001;
 
-                float tuneCurvature = $Adjust*size_pow;
+                float hardEdge = float($absolute);
 
-                #if defined MRI_SHADER_TESS_EVALUATION
+
+                float Size = AO*$Size;
+                float Adjust = AO*$Adjust;
+
+
+                float size_pow = (pow(10000.0,Size*Size)-1.0) + 0.0001;
+
 
                 float curvN = 0.0;
                 float curvP = 0.0;
 
-                #else defined MRI_SHADER_FRAGMENT
-                float curvN = length(fwidth(N));
-                float curvP = length(fwidth(P));
+           
+                float tuneCurvature = (Adjust*size_pow);
+                curvN = length(fwidth(N)) ;
+                curvP = length(fwidth(P)) ;
 
-                #endif
-
+                
                 float mixer = clamp(curvN,0,1) / curvP;
 
                 float curvature = clamp((mixer*tuneCurvature),0.0,1.0);
+                curvature = mix(curvature,(softThreshold(0.5,0.0,curvature)),hardEdge);
                 float inv_curv = 1.0 - curvature;
 
-                float _mix = mix(curvature,inv_curv,float($Invert));
 
-                Output = vec4(_mix,_mix,_mix,1.0);
+                float result = mix(curvature,inv_curv,float($Invert));
+                result = clamp(result,0.0,1.0);
+
+                
+                Output = vec4(result,result,result,1.0);
+
+                #endif
 
 
                 ]]></Body>

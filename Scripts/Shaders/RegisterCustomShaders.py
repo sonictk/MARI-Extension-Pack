@@ -55,9 +55,10 @@ import xml.etree.ElementTree as ET
 base_path = os.path.dirname(__file__)
 default_shader_path = '%s/NodeLibrary' % base_path
 default_lib_path = '%s/FunctionLibrary' % base_path
-min_mari_version = '2.5'
-current_lib_version = '1.06'
-current_mari_version = '2.5'
+min_mari_version = 20603300
+current_lib_version = '1.11'
+current_mari_version = 20103300
+register_shader_version = '2.0'
 
 def mariVersion():
     '''Loads current mari version'''
@@ -65,7 +66,8 @@ def mariVersion():
     # grab our global variable
     global current_mari_version
 
-    current_mari_version = '%d.%d' % (mari.app.version().major(), mari.app.version().minor())
+    current_mari_version = mari.app.version().number()
+
 
 def libNamerNode():
     '''Check to see if library renamer is in place'''
@@ -114,7 +116,8 @@ def loadLibraries():
     libDict = {}
     for path, subdirs, files in os.walk(default_lib_path):
         for name in files:
-            libDict[name] = path
+            if not name.startswith("."):
+                libDict[name] = path
 
     # find the library paths for the libraries
     for lib in libDict:
@@ -149,6 +152,7 @@ def loadLibraries():
                 print 'Registered Library: %s' % libName
         except Exception as exc:
                 print 'Error Registering Library: %s : %s' % (libName, str(exc))
+                
 
 def loadShaders():
     '''Loads custom shaders'''
@@ -171,15 +175,23 @@ def loadShaders():
             continue
         root = xml.getroot()
 
-        # check for the name id tag
+        # check for the name DefaultName tag
         shaderName = root.find('DefaultName')
         # check to see if tag is set
         if shaderName != None:
             # grab our xml set name
             shaderName = shaderName.text
         else:
-            # no id name set in node
-            print 'XML Name Not Set'
+            # no DefaultName Tag set in node
+            shaderName = root.find('ID')
+            shaderName = shaderName.text
+            print ''
+            print '-----------------------------------------'
+            print '<WARNING> '+ shaderName + ' is using ID Tag for Naming'
+            print 'This can cause errors, please use <DEFAULTNAME> Tag'
+            print '-----------------------------------------'
+            print ''
+            
 
         # assume all default procedural type
         shaderType = 'Procedural'
@@ -309,6 +321,8 @@ def loadShaders():
             except Exception as exc:
                 print 'Error Registering %s Node : %s : %s' % (standalone[0], standalone[1], str(exc))
 
+
+
 # check to make sure we meet the min mari version
 mariVersion()
 
@@ -319,10 +333,7 @@ if current_mari_version >= min_mari_version:
     print ""
     libVersion()  # call and check for library version
     print '-----------------------------------------'
-    print "Mari Shader Library v" + current_lib_version
-    print '-----------------------------------------'
-    print "DigiTecK3D     : www.digiteck3d.com"
-    print "Mari Ideascale : www.mari.ideascale.com"
+    print "Mari Shader Library v" + current_lib_version +" loading ..."
     print '-----------------------------------------'
     print 'Functions Library : Loading'
     print '-----------------------------------------'

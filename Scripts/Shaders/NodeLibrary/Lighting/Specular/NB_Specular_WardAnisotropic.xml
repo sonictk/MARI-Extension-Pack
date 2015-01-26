@@ -1,7 +1,7 @@
 <!--
 ================================================================================
 == Nicholas Breslow Mari Brdf Shader Library
-== Copyright (c) 2014 Nicholas Breslow. All Rights Reserved.
+== Copyright (c) 2015 Nicholas Breslow. All Rights Reserved.
 ================================================================================
 == File: NB_Specular_WardAnisotropic.xml
 == Description: Greg ward anisotropic specular highlight shading model node.
