@@ -36,7 +36,7 @@
 # ------------------------------------------------------------------------------
 
 import mari
-import os, time
+import os
 
 
 def patchBake():
@@ -95,7 +95,7 @@ def patchBake():
 			mari.images.load(savePath)
 			os.remove(savePath)
 
-		except Exception, e:
+		except Exception:
 			
 			pass
 	
