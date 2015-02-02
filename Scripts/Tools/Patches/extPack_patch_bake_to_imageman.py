@@ -36,7 +36,7 @@
 # ------------------------------------------------------------------------------
 
 import mari
-import os
+import os, time
 
 
 def patchBake():
@@ -77,28 +77,34 @@ def patchBake():
 	pasteAction.trigger()
 	
 	curChan.mergeLayers()
-	
+
 	curLayer = curChan.currentLayer()
 	curImgSet = curLayer.imageSet()
-	
+
 	for patch in selPatchList:
+		try: 
 		
-		uv = patch.uvIndex()
+			uv = patch.uvIndex()
+			
+			curPatchIndex = str(patch.udim())
+			savePath = path + curChanName + '.' + curPatchIndex + '.tif'
+			
+			patchImg = curImgSet.image(uv, -1)
+			patchImg.saveAs(savePath)
 		
-		curPatchIndex = str(patch.udim())
-		savePath = path + curChanName + '.' + curPatchIndex + '.tif'
-		
-		patchImg = curImgSet.image(uv, -1)
-		patchImg.saveAs(savePath)
+			mari.images.load(savePath)
+			os.remove(savePath)
+
+		except Exception, e:
+			
+			pass
 	
-		mari.images.load(savePath)
-		os.remove(savePath)
 	
+	curLayer.setName('BakeToImageManager')
 	curChan.removeLayers()
 	
 	mari.history.stopMacro()
 	mari.app.restoreCursor()
-
 
 
 def patch_bake_to_imageman():
