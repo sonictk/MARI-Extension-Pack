@@ -55,6 +55,7 @@
       <!--===============================================================================================================-->
       <Attribute Name="worldScale" Group="Image" PrettyName="World Scale" Type="int" Min="0.0" Logarithmic="0">1</Attribute>
       <Attribute Name="Image" Group="Image" PrettyName="Image" Type="image"></Attribute>
+      <Attribute Name="Alpha" PrettyName="Suppress Image Alpha" Group="Image" Type="bool" Min="false" Max="true" >false</Attribute>
       <Attribute Name="Inv" PrettyName="Invert" Group="Image" Type="bool" Min="false" Max="true" >false</Attribute>
       <Attribute Name="Repeat" Group="Image" PrettyName="Repeat" Type="float" Min="0" Max="50" Logarithmic="1">1</Attribute>
       <Attribute Name="Angle" Group="Image" PrettyName="Angle" Type="float" Min="0" Max="360" Logarithmic="0">0</Attribute>
@@ -236,13 +237,35 @@
     }
 
     //Comp Results together.
-    vec4 result = texture( $Image, RightUv.xy);
-    result = mix(vec4(0.0),result,resA);
-    result = Comp_Default( result, texture( $Image  ,RightUv.xy  ), resB);
-    result = Comp_Default( result, texture( $Image  ,TopUv.xy  ), resC);
-    result = Comp_Default( result, texture( $Image  ,TopUv.xy  ), resD);
-    result = Comp_Default( result, texture( $Image,FrontUv.xy), resE);
-    result = Comp_Default( result, texture( $Image,FrontUv.xy), resF);
+    
+   // Converting Alpha Checkbox to float to use in mixers.
+    float AlphaMix = float($Alpha);
+    vec4 result; 
+    
+    // tempTex is used to write the results of each directional projection into a variable
+    // tempTex_AlphaMix is stripping out the Alpha of the projection if AlphaSurpression is on
+    vec4 tempTex = texture( $Image, RightUv.xy);
+    vec4 tempTex_AlphaMix = mix(tempTex,vec4(tempTex.rgb,1.0),float($Alpha));
+
+
+    // for the first iteration a simple mix against 0.0 is done.
+    result = mix(vec4(0.0),tempTex_AlphaMix,resA);
+    result = Comp_Default( result, tempTex_AlphaMix, resB);
+
+    // tempTex then splitting alpha then comping
+    tempTex = texture( $Image  ,TopUv.xy  );
+    tempTex_AlphaMix = mix(tempTex,vec4(tempTex.rgb,1.0),AlphaMix);
+
+    result = Comp_Default( result,tempTex_AlphaMix, resC);
+    result = Comp_Default( result,tempTex_AlphaMix, resD);
+
+    // tempTex then splitting alpha then comping
+    tempTex = texture( $Image,FrontUv.xy);
+    tempTex_AlphaMix = mix(tempTex,vec4(tempTex.rgb,1.0),AlphaMix);
+
+    result = Comp_Default( result, tempTex_AlphaMix, resE);
+    result = Comp_Default( result, tempTex_AlphaMix, resF);
+
     Output = result;
     //Apply original Image Alpha and Invert
     Output.a = _res * Output.a;

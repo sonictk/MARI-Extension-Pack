@@ -1,22 +1,8 @@
-#Release Notes for MARI EXTENSION PACK 2.1
-Copyright (c) 2015 www.mari.ideascale.com. All Rights Reserved.
-
-
-##Bugfixes:
-
-######Patch to Image Manager
-Patch to Image Manager would not remove temporary layer when invalid
-UDIM Numbers (uvs in negative space) were found.
-
-
-
-----------------------------------------------------------------------
-
 #Release Notes for MARI EXTENSION PACK 2.0
 Copyright (c) 2015 www.mari.ideascale.com. All Rights Reserved.
 
 ##Release Date
-28 January 2015
+TBA
 
 ##Added Features:
 
