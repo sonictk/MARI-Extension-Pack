@@ -7,8 +7,8 @@
 # http://mari.ideascale.com
 # http://bneall.blogspot.de/
 # ------------------------------------------------------------------------------
-# Written by Ben Neal, 2014
-# Modified for MARI Extension Pack by Jens Kafitz, 2015
+# Author: Ben Neal, 2014
+# Contributions: Jens Kafitz, 2015
 # ------------------------------------------------------------------------------
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -63,11 +63,34 @@ def _isProjectSuitable():
 
 
 def makeChannelLayer(sourceChannel, mode, invert):
+
+	geo =  mari.geo.current()
+	channels = geo.channelList()
 	currentChannel = mari.geo.current().currentChannel()
-	currentLayer = currentChannel.currentLayer()
+	currentLayer = mari.current.layer()
 	layerName = currentLayer.name()
 	channelLayerName = sourceChannel.name()
-	
+
+	if not currentLayer.isSelected():
+
+		for channel in channels:
+		    layers = channel.layerList()
+		    for layer in layers:
+		        
+		        if layer.isSelected():
+					currentChannel = channel
+					currentLayer = layer
+					break
+		        if layer.hasMaskStack():
+		            layerMask = layer.maskStack()
+		            layerMaskList = layerMask.layerList()
+		            for maskLayer in layerMaskList:
+		                if maskLayer.isSelected():
+							currentChannel = layerMask
+							currentLayer = maskLayer
+							break
+           
+
 	if mode == 'layer':
 		mari.history.startMacro('Create channel Layer')
 		currentChannel.createChannelLayer(channelLayerName, sourceChannel, None, 16)
@@ -76,16 +99,22 @@ def makeChannelLayer(sourceChannel, mode, invert):
 		
 		
 		if mode == 'maskgroup':
-			## New Group Layer
-			mari.history.startMacro('Create grouped channel mask')
-			layerGroupName = '%s_grp' % layerName
-			groupLayer = currentChannel.groupLayers([currentLayer], None, None, 16)
-			groupLayer.setName(layerGroupName)
-			layerStack = groupLayer
+			if currentLayer.isShaderLayer():
+				mari.utils.message('Groups are not supported for Shader Layers')
+				return
+			else:
+				try:
+					## New Group Layer
+					mari.history.startMacro('Create grouped channel mask')
+					layerGroupName = '%s_grp' % layerName
+					groupLayer = currentChannel.groupLayers([currentLayer], None, None, 16)
+					groupLayer.setName(layerGroupName)
+					layerStack = groupLayer
+				except Exception:
+					pass
 		elif mode == 'mask':
 			mari.history.startMacro('Create channel mask')
 			layerStack = currentLayer
-
 
 
 		
@@ -141,7 +170,8 @@ class ChannelLayerUI(QtGui.QDialog):
 		currentChannel = mari.geo.current().currentChannel()
 		channelList = mari.geo.current().channelList()
 		for channel in channelList:
-			if channel is not currentChannel:
+			shaderChannel = channel.isShaderStack()
+			if channel is not currentChannel and not shaderChannel:
 				self.chanCombo.addItem(channel.name(), channel)
 	
 	def selectedChannel(self):
