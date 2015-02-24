@@ -91,8 +91,10 @@ class FlattenSelectedChannelsGUI(QtGui.QDialog):
             chan_list.append((geo.name(), geo.channelList()))
         for item in chan_list:
             for channel in item[1]:
-                channel_list.addItem(item[0] + ' : ' + channel.name())
-                channel_list.item(channel_list.count() - 1).setData(USER_ROLE, channel)
+                shaderChannel = channel.isShaderStack()
+                if not shaderChannel:
+                    channel_list.addItem(item[0] + ' : ' + channel.name())
+                    channel_list.item(channel_list.count() - 1).setData(USER_ROLE, channel)
         
         #Add filter layout and channel list to channel layout
         channel_layout.addLayout(channel_header_layout)

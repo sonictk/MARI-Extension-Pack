@@ -95,8 +95,10 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
             chan_list.append((geo.name(), geo.channelList()))
         for item in chan_list:
             for channel in item[1]:
-                self.channel_list.addItem(item[0] + ' : ' + channel.name())
-                self.channel_list.item(self.channel_list.count() - 1).setData(USER_ROLE, channel)
+                shaderChannel = channel.isShaderStack()
+                if not shaderChannel:
+                    self.channel_list.addItem(item[0] + ' : ' + channel.name())
+                    self.channel_list.item(self.channel_list.count() - 1).setData(USER_ROLE, channel)
         
         #Add filter layout and channel list to channel layout
         channel_layout.addLayout(channel_header_layout)
