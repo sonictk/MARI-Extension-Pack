@@ -3,9 +3,19 @@ Copyright (c) 2015 www.mari.ideascale.com. All Rights Reserved.
 
 ##Feature Improvements:
 
+#####ENVIRONMENT PROCEDURALS
+
+######Axis Projection
+
+A new option 'Suppress Alpha' was added to optionally ignore the Alpha of the loaded image
+
+Performance of the Node was increased
+
+
 #####LAYERS MENU
 
 ######Channel Layer / ChannelLayerMask / ChannelLayerMask (grouped)
+
 Channel Layer+Masks now work within the context of a layeredShader
 
 Channel Layer+Masks now work correctly with pinned, floating or docked
@@ -18,7 +28,8 @@ layeredShaders in the channel selection dropdown
 
 ######Patch to Image Manager
 Patch to Image Manager would not remove temporary layer when invalid
-UDIM Numbers (uvs in negative space) were found.
+UDIM Numbers were found (for example when a plane is touching the
+UV borders)
 
 
 
