@@ -63,13 +63,47 @@ def selectionMask(invert):
  	suitable = _isProjectSuitable()
  	if not suitable[0]:
  	      return
+
 	mari.history.startMacro('Create Mask from Selection')
+
 	currentObj = mari.geo.current()
+	channels = currentObj.channelList()
 	currentChan = currentObj.currentChannel()
 	currentLayer = currentChan.currentLayer()
 	selectedPatches = currentObj.selectedPatches()
+
+	if not currentLayer.isSelected():
+
+		for channel in channels:
+		    layers = channel.layerList()
+		    for layer in layers:
+		        
+		        if layer.isSelected():
+					currentChan = channel
+					currentLayer = layer
+					break
+		        if layer.hasMaskStack():
+		            layerMask = layer.maskStack()
+		            layerMaskList = layerMask.layerList()
+		            for maskLayer in layerMaskList:
+		                if maskLayer.isSelected():
+							currentChan = layerMask
+							currentLayer = maskLayer
+							break
 	
-	newMaskImageSet = currentLayer.makeMask()
+	if currentLayer.hasMaskStack():
+		layerMaskStack = currentLayer.maskStack()
+		newMask = layerMaskStack.createPaintableLayer('MaskFromSelection')
+		newMaskImageSet = newMask.imageSet()
+	elif currentLayer.hasMask():
+		layerMaskStack = currentLayer.makeMaskStack()
+		newMask = layerMaskStack.createPaintableLayer('MaskFromSelection')
+		newMaskImageSet = newMask.imageSet()
+	else:
+		newMask = currentLayer.makeMask()
+		newMaskImageSet = newMask.imageSet()
+
+
 	for image in newMaskImageSet.imageList():
 		if invert == False:
 			image.fill(mari.Color(0.0, 0.0, 0.0, 1.0))

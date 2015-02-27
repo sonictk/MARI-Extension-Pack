@@ -109,18 +109,24 @@ def makeChannelLayer(sourceChannel, mode, invert):
 					layerGroupName = '%s_grp' % layerName
 					groupLayer = currentChannel.groupLayers([currentLayer], None, None, 16)
 					groupLayer.setName(layerGroupName)
-					layerStack = groupLayer
+					layerMaskStack = groupLayer.makeMaskStack()
+					layerMaskStack.removeLayers(layerMaskStack.layerList())	
 				except Exception:
 					pass
+
 		elif mode == 'mask':
 			mari.history.startMacro('Create channel mask')
-			layerStack = currentLayer
 
+			## New Layer Mask Stack.
+			## If mask exists convert, if stack exists keep, else make new stack
+			if currentLayer.hasMaskStack():
+				layerMaskStack = currentLayer.maskStack()
+			elif currentLayer.hasMask():
+				layerMaskStack = currentLayer.makeMaskStack()
+			else:
+				layerMaskStack = currentLayer.makeMaskStack()
+				layerMaskStack.removeLayers(layerMaskStack.layerList())			
 
-		
-		## New Layer Mask Stack
-		layerMaskStack = layerStack.makeMaskStack()
-		layerMaskStack.removeLayers(layerMaskStack.layerList())
 		
 		## Create Mask Channel Layer
 		maskChannelLayerName = '%s(Shared Channel)' % channelLayerName
