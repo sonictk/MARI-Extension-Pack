@@ -60,6 +60,34 @@ def _isProjectSuitable():
         mari.utils.message("You can only run this script in Mari 2.6v3 or newer.")
         return False, False
 
+def selectedLayersValidation():
+    ''' Validates the selection no matter where in the Mari interface'''
+
+    curGeo = mari.geo.current()
+    curChannel = curGeo.currentChannel()
+    channels = curGeo.channelList()
+    curLayer = mari.current.layer()
+
+    if not curLayer.isSelected():
+        
+                for channel in channels:
+                    layers = channel.layerList()
+                    for layer in layers:
+                        
+                        if layer.isSelected():
+                            curChannel = channel
+                            curLayer = layer
+                            break
+                        if layer.hasMaskStack():
+                            layerMask = layer.maskStack()
+                            layerMaskList = layerMask.layerList()
+                            for maskLayer in layerMaskList:
+                                if maskLayer.isSelected():
+                                    curChannel = layerMask
+                                    curLayer = maskLayer
+                                    break
+
+    return curGeo,curChannel,curLayer
 
 
 def clone_merge_layers(mode):
@@ -69,9 +97,13 @@ def clone_merge_layers(mode):
     if not suitable[0]:
           return
 
-    curGeo = mari.geo.current()
-    curChan = curGeo.currentChannel()
-    curActiveLayerName = str(curChan.currentLayer().name())
+    geo_data = selectedLayersValidation()
+    # Geo Data = 0 current geo, 1 current channel , 2 current layer
+    curGeo = geo_data[0]
+    curChan = geo_data[1]
+    curLayer = geo_data[2]
+
+    curActiveLayerName = str(curLayer.name())
     
     patches = list(curGeo.patchList())
     unSelPatches = [ patch for patch in patches if not patch.isSelected() ]
@@ -85,9 +117,13 @@ def clone_merge_layers(mode):
     pasteAction = mari.actions.find('/Mari/Layers/Paste')
     pasteAction.trigger()
     
-    curChan.mergeLayers()
-    
-    curLayer = curChan.currentLayer()
+    mergeAction = mari.actions.find('/Mari/Layers/Merge Layers')
+    mergeAction.trigger()
+
+    # rerunning layer search
+    geo_data = selectedLayersValidation()  
+  
+    curLayer = geo_data[2]
 
     if mode == 'selected':
         if len(patches) != len(unSelPatches):

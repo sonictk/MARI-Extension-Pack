@@ -9,23 +9,26 @@ Copyright (c) 2015 www.mari.ideascale.com. All Rights Reserved.
 
 A new option 'Suppress Alpha' was added to optionally ignore the Alpha of the loaded image
 
-Performance of the Node was increased
+Overall performance of the Node was increased significantly
 
 
 #####LAYERS MENU
 
 ######Channel Layer / ChannelLayerMask / ChannelLayerMask (grouped)
 
-Channel Layer+Masks now work within the context of a layeredShader
+Channel Layer+Masks now works with layeredShaders
 
-Channel Masks now respect existing masks and mask stacks on creation
+Channel Masks now respect existing masks or mask stacks on creation by converting simple masks
+into a mask stack and adding the channel mask or in case of existing mask stacks adding to it.
 
 
 ######Mask from Selection
 
-PatchSelectionMasks now work within the context of a layeredShader
+PatchSelectionMasks now work with layeredShaders
 
-PatchSelectionMasks now respect existing masks and mask stacks on creation
+PatchSelectionMasks now respect existing masks or mask stacks  on creation by converting simple masks
+into a mask stack and adding the channel mask or in case of existing mask stacks adding to it.
+
 
 
 ##Bugfixes:
@@ -33,9 +36,10 @@ PatchSelectionMasks now respect existing masks and mask stacks on creation
 #####PATCHES
 
 ######Patch to Image Manager
-Patch to Image Manager would not remove temporary layer when invalid
+Patch to Image Manager would not remove temporary layers when invalid
 UDIM Numbers were found (for example when a plane is touching the
 UV borders)
+
 
 #####CHANNELS
 
@@ -61,6 +65,13 @@ layeredShaders in the channel selection dropdown
 PatchSelectionMasks now work correctly with pinned, floating or docked
 Channels that are not currently active but accessible in the interface
 
+
+######Clone & Merge
+
+Clone & Merge previously did not work correctly when executed in mask stacks
+
+Clone & Merge now work correctly with pinned, floating or docked
+Channels that are not currently active but accessible in the interface
 
 ----------------------------------------------------------------------
 
