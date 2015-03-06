@@ -60,35 +60,73 @@ def _isProjectSuitable():
         mari.utils.message("You can only run this script in Mari 2.6v3 or newer.")
         return False, False
 
-def selectedLayersValidation():
-    ''' Validates the selection no matter where in the Mari interface'''
+# ------------------------------------------------------------------------------    
+# The following are used to find selections no matter where in the Mari Interface:
+# returnTru(),getLayerList(),findLayerSelection()
+# 
+# This is to support a) Layered Shader Stacks b) deeply nested stacks (maskstack,adjustment stacks),
+# as well as cases where users are working in pinned or docked channels without it being the current channel
 
+# ------------------------------------------------------------------------------
+
+def returnTrue(layer):
+    """Returns True for any object passed to it."""
+    return True
+    
+# ------------------------------------------------------------------------------
+def getLayerList(layer_list, criterionFn):
+    """Returns a list of all of the layers in the stack that match the given criterion function, including substacks."""
+    matching = []
+    for layer in layer_list:
+        if criterionFn(layer):
+            matching.append(layer)
+        if hasattr(layer, 'layerStack'):
+            matching.extend(getLayerList(layer.layerStack().layerList(), criterionFn))
+        if layer.hasMaskStack():
+            matching.extend(getLayerList(layer.maskStack().layerList(), criterionFn))
+        if hasattr(layer, 'hasAdjustmentStack') and layer.hasAdjustmentStack():
+            matching.extend(getLayerList(layer.adjustmentStack().layerList(), criterionFn))
+        
+    return matching
+# ------------------------------------------------------------------------------
+
+def findLayerSelection():
+    """Searches for the current selection if mari.current.layer is not the same as layer.isSelected"""
+    
     curGeo = mari.geo.current()
     curChannel = curGeo.currentChannel()
     channels = curGeo.channelList()
     curLayer = mari.current.layer()
+    layers = ()
+    layerList = ()
+    layerSelect = False
+     
+    if curLayer.isSelected():
 
-    if not curLayer.isSelected():
+        layerSelect = True
+
+    else:
+    
+        for channel in channels:
+            
+            layerList = channel.layerList()
+            layers = getLayerList(layerList,returnTrue)
         
-                for channel in channels:
-                    layers = channel.layerList()
-                    for layer in layers:
-                        
-                        if layer.isSelected():
-                            curChannel = channel
-                            curLayer = layer
-                            break
-                        if layer.hasMaskStack():
-                            layerMask = layer.maskStack()
-                            layerMaskList = layerMask.layerList()
-                            for maskLayer in layerMaskList:
-                                if maskLayer.isSelected():
-                                    curChannel = layerMask
-                                    curLayer = maskLayer
-                                    break
+            for layer in layers:
+    
+                if layer.isSelected():
+                    curLayer = layer
+                    curChannel = channel
+                    layerSelect = True
 
-    return curGeo,curChannel,curLayer
+    
+    if not layerSelect:
+        mari.utils.message('No Layer Selection found. \n \n Please select at least one Layer.')
 
+
+    return curGeo,curLayer,curChannel
+
+# ------------------------------------------------------------------------------
 
 def clone_merge_layers(mode):
     ''' Creates a merge duplicate of selected layers - patch modes ALL or SELECTED'''
@@ -97,11 +135,11 @@ def clone_merge_layers(mode):
     if not suitable[0]:
           return
 
-    geo_data = selectedLayersValidation()
+    geo_data = findLayerSelection()
     # Geo Data = 0 current geo, 1 current channel , 2 current layer
     curGeo = geo_data[0]
-    curChan = geo_data[1]
-    curLayer = geo_data[2]
+    curChan = geo_data[2]
+    curLayer = geo_data[1]
 
     curActiveLayerName = str(curLayer.name())
     
@@ -121,9 +159,9 @@ def clone_merge_layers(mode):
     mergeAction.trigger()
 
     # rerunning layer search
-    geo_data = selectedLayersValidation()  
+    geo_data = findLayerSelection()
   
-    curLayer = geo_data[2]
+    curLayer = geo_data[1]
 
     if mode == 'selected':
         if len(patches) != len(unSelPatches):

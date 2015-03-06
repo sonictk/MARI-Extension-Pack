@@ -50,40 +50,23 @@ import mari
 
 version = "0.01"
 
+
+# ------------------------------------------------------------------------------    
+# The following are used to find multi selections no matter where in the Mari Interface:
+# returnTru(),getLayerList(),findLayerSelection()
+# 
+# This is to support a) Layered Shader Stacks b) deeply nested stacks (maskstack,adjustment stacks),
+# as well as cases where users are working in pinned or docked channels without it being the current channel
+
 # ------------------------------------------------------------------------------
-def convertToPaintable():
-    "Convert selected layers to paintable layers."
-    if not isProjectSuitable(): #Check if project is suitable
-        return False
-    
-    geo = mari.geo.current()
-    channel = geo.currentChannel()
-    layer_list = getLayerList(channel.layerList(), returnTrue)
-    selected = getSelected(layer_list)
-        
-    for layer in selected:
-        layer.makeCurrent()
-        convertToPaintable = mari.actions.get('/Mari/Layers/Convert To Paintable')
-        convertToPaintable.trigger()
-                
-# ------------------------------------------------------------------------------    
-def getSelected(layer_list):
-    "Returns a list of selected layers."
-    matching = []
-    for layer in layer_list:
-        if layer.isSelected():
-            matching.append(layer)
-            
-    return matching
-    
-# ------------------------------------------------------------------------------    
+
 def returnTrue(layer):
-    "Returns True for any object passed to it."
+    """Returns True for any object passed to it."""
     return True
     
 # ------------------------------------------------------------------------------
 def getLayerList(layer_list, criterionFn):
-    "Returns a list of all of the layers in the stack that match the given criterion function, including substacks."
+    """Returns a list of all of the layers in the stack that match the given criterion function, including substacks."""
     matching = []
     for layer in layer_list:
         if criterionFn(layer):
@@ -96,6 +79,70 @@ def getLayerList(layer_list, criterionFn):
             matching.extend(getLayerList(layer.adjustmentStack().layerList(), criterionFn))
         
     return matching
+# ------------------------------------------------------------------------------
+
+def findLayerSelection():
+    """Searches for the current selection if mari.current.layer is not the same as layer.isSelected"""
+    
+    curGeo = mari.geo.current()
+    curChannel = curGeo.currentChannel()
+    channels = curGeo.channelList()
+    curLayer = mari.current.layer()
+    layers = ()
+    layerSelList = []
+    chn_layerList = ()
+    
+    layerSelect = False
+     
+    if curLayer.isSelected():
+   
+        chn_layerList = curChannel.layerList()
+        layers = getLayerList(chn_layerList,returnTrue)
+        
+        for layer in layers:
+    
+            if layer.isSelected():
+
+                layerSelList.append(layer)
+                layerSelect = True       
+
+    else:
+    
+        for channel in channels:
+            
+            chn_layerList = channel.layerList()
+            layers = getLayerList(chn_layerList,returnTrue)
+        
+            for layer in layers:
+    
+                if layer.isSelected():
+                    curLayer = layer
+                    curChannel = channel
+                    layerSelList.append(layer)
+                    layerSelect = True
+
+    
+    if not layerSelect:
+        mari.utils.message('No Layer Selection found. \n \n Please select at least one Layer.')
+
+
+    return curGeo,curLayer,curChannel,layerSelList
+
+
+# ------------------------------------------------------------------------------
+def convertToPaintable():
+    "Convert selected layers to paintable layers."
+    if not isProjectSuitable(): #Check if project is suitable
+        return False
+    
+    geo_data = findLayerSelection()
+    selected = geo_data[3]
+        
+    for layer in selected:
+        layer.makeCurrent()
+        convertToPaintable = mari.actions.get('/Mari/Layers/Convert To Paintable')
+        convertToPaintable.trigger()
+                
     
 # ------------------------------------------------------------------------------
 def isProjectSuitable():

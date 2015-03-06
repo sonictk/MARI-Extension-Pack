@@ -60,35 +60,97 @@ def _isProjectSuitable():
         mari.utils.message("You can only run this script in Mari 2.6v3 or newer.")
         return False, False
 
+# ------------------------------------------------------------------------------    
+
+# The following are used to find selections no matter where in the Mari Interface:
+# returnTru(),getLayerList(),findLayerSelection()
+# 
+# This is to support a) Layered Shader Stacks b) deeply nested stacks (maskstack,adjustment stacks),
+# as well as cases where users are working in pinned or docked channels without it being the current channel
+
+# ------------------------------------------------------------------------------
+
+def returnTrue(layer):
+    """Returns True for any object passed to it."""
+    return True
+    
+# ------------------------------------------------------------------------------
+def getLayerList(layer_list, criterionFn):
+    """Returns a list of all of the layers in the stack that match the given criterion function, including substacks."""
+    matching = []
+    for layer in layer_list:
+        if criterionFn(layer):
+            matching.append(layer)
+        if hasattr(layer, 'layerStack'):
+            matching.extend(getLayerList(layer.layerStack().layerList(), criterionFn))
+        if layer.hasMaskStack():
+            matching.extend(getLayerList(layer.maskStack().layerList(), criterionFn))
+        if hasattr(layer, 'hasAdjustmentStack') and layer.hasAdjustmentStack():
+            matching.extend(getLayerList(layer.adjustmentStack().layerList(), criterionFn))
+        
+    return matching
+# ------------------------------------------------------------------------------
+
+
+def findLayerSelection():
+    """Searches for the current selection if mari.current.layer is not the same as layer.isSelected"""
+    
+    curGeo = mari.geo.current()
+    curChannel = curGeo.currentChannel()
+    channels = curGeo.channelList()
+    curLayer = mari.current.layer()
+    layers = ()
+    layerSelList = []
+    chn_layerList = ()
+    
+    layerSelect = False
+     
+    if curLayer.isSelected():
+   
+        chn_layerList = curChannel.layerList()
+        layers = getLayerList(chn_layerList,returnTrue)
+        
+        for layer in layers:
+    
+            if layer.isSelected():
+
+                layerSelList.append(layer)
+                layerSelect = True       
+
+    else:
+    
+        for channel in channels:
+            
+            chn_layerList = channel.layerList()
+            layers = getLayerList(chn_layerList,returnTrue)
+        
+            for layer in layers:
+    
+                if layer.isSelected():
+                    curLayer = layer
+                    curChannel = channel
+                    layerSelList.append(layer)
+                    layerSelect = True
+
+    
+    if not layerSelect:
+        mari.utils.message('No Layer Selection found. \n \n Please select at least one Layer.')
+
+
+    return curGeo,curLayer,curChannel,layerSelList
+
+
+# ------------------------------------------------------------------------------
 
 
 def makeChannelLayer(sourceChannel, mode, invert):
 
-	geo =  mari.geo.current()
-	channels = geo.channelList()
-	currentChannel = mari.geo.current().currentChannel()
-	currentLayer = mari.current.layer()
+	object_data = findLayerSelection()
+	currentChannel = object_data[2]
+	currentLayer = object_data[1]
+	currentSelection = object_data[3]
 	layerName = currentLayer.name()
 	channelLayerName = sourceChannel.name()
-
-	if not currentLayer.isSelected():
-
-		for channel in channels:
-		    layers = channel.layerList()
-		    for layer in layers:
-		        
-		        if layer.isSelected():
-					currentChannel = channel
-					currentLayer = layer
-					break
-		        if layer.hasMaskStack():
-		            layerMask = layer.maskStack()
-		            layerMaskList = layerMask.layerList()
-		            for maskLayer in layerMaskList:
-		                if maskLayer.isSelected():
-							currentChannel = layerMask
-							currentLayer = maskLayer
-							break
            
 
 	if mode == 'layer':
@@ -105,37 +167,54 @@ def makeChannelLayer(sourceChannel, mode, invert):
 			else:
 				try:
 					## New Group Layer
+					layerName = currentLayer.name()
 					mari.history.startMacro('Create grouped channel mask')
 					layerGroupName = '%s_grp' % layerName
-					groupLayer = currentChannel.groupLayers([currentLayer], None, None, 16)
+					groupLayer = currentChannel.groupLayers([currentSelection], None, None, 16)
 					groupLayer.setName(layerGroupName)
 					layerMaskStack = groupLayer.makeMaskStack()
 					layerMaskStack.removeLayers(layerMaskStack.layerList())	
+
+					## Create Mask Channel Layer
+					maskChannelLayerName = '%s(Shared Channel)' % channelLayerName
+					layerMaskStack.createChannelLayer(maskChannelLayerName, sourceChannel)
+
+					if invert == 1:
+						layerMaskStack.createAdjustmentLayer("Invert","Filter/Invert")
+
+					mari.history.stopMacro()
+		
 				except Exception:
 					pass
 
 		elif mode == 'mask':
 			mari.history.startMacro('Create channel mask')
 
-			## New Layer Mask Stack.
-			## If mask exists convert, if stack exists keep, else make new stack
-			if currentLayer.hasMaskStack():
-				layerMaskStack = currentLayer.maskStack()
-			elif currentLayer.hasMask():
-				layerMaskStack = currentLayer.makeMaskStack()
-			else:
-				layerMaskStack = currentLayer.makeMaskStack()
-				layerMaskStack.removeLayers(layerMaskStack.layerList())			
+			for layer in currentSelection:			
+				
+				layerName = layer.name()
+				currentLayer = layer
+				
+				## New Layer Mask Stack.
+				## If mask exists convert, if stack exists keep, else make new stack
+				if currentLayer.hasMaskStack():
+					layerMaskStack = currentLayer.maskStack()
+				elif currentLayer.hasMask():
+					layerMaskStack = currentLayer.makeMaskStack()
+				else:
+					layerMaskStack = currentLayer.makeMaskStack()
+					layerMaskStack.removeLayers(layerMaskStack.layerList())
 
-		
-		## Create Mask Channel Layer
-		maskChannelLayerName = '%s(Shared Channel)' % channelLayerName
-		layerMaskStack.createChannelLayer(maskChannelLayerName, sourceChannel)
+				## Create Mask Channel Layer
+				maskChannelLayerName = '%s(Shared Channel)' % channelLayerName
+				layerMaskStack.createChannelLayer(maskChannelLayerName, sourceChannel)	
 
-		if invert == 1:
-			layerMaskStack.createAdjustmentLayer("Invert","Filter/Invert")
+				if invert == 1:
+					layerMaskStack.createAdjustmentLayer("Invert","Filter/Invert")
+
+			mari.history.stopMacro()
 	
-		mari.history.stopMacro()
+		
 
 class ChannelLayerUI(QtGui.QDialog):
 	'''GUI to select channel to make into a channel-layer in the current channel
