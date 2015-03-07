@@ -38,7 +38,22 @@
 
 import mari
 
+
+def _isProjectSuitable():
+	if mari.projects.current() is None:
+		mari.utils.message("Please open a project before running.")
+		return False, False
+
+	else:
+		return True,True
+
+
 def disableViewport():
+	suitable = _isProjectSuitable()
+	if not suitable[0]:
+		action = mari.actions.find('/Mari/Scripts/Pause Viewport Update')
+		action.setChecked(False)
+		return
 
 	disableViewport = mari.actions.get('/Mari/Canvas/Toggle Shader Compiling')
 	disableViewport.trigger()

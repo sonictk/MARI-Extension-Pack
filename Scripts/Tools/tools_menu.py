@@ -523,7 +523,6 @@ def createToolsMenu():
 	lightingToolbar.addAction('/Mari/Scripts/Pause Viewport Update', [0,0], False)
 	lightingToolbar.setLocked(isLocked)
 
-
 	###  Menu Separators ###
 
 	mari.menus.addSeparator(UI_path,'Toggle Wireframe')
