@@ -59,6 +59,7 @@ import Layers.extPack_convert_to_paintable as convert_to_paintable
 # CHANNELS:
 import Channels.extPack_exportSelectedChannels as export_selected_channels
 import Channels.extPack_flattenSelectedChannels as flatten_selected_channels
+import Channels.extPack_cacheSelectedChannels as cache_selected_channels
 import Channels.extPack_channelTemplate as channel_template
 
 # SHADERS:
@@ -72,6 +73,9 @@ import ImageManager.extPack_export_imageMan_images as exportImageManager
 
 # VIEW:
 import View.extPack_screenshot_all_channels as screenshot_all_channels
+
+# SHADING:
+import Shading.extPack_disableViewport as disableViewport
 
 # HELP:
 import Help.extPack_online_help as onlineHelp
@@ -103,6 +107,9 @@ class customScripts():
 
     def flattenSelectedChannels(self):
         flatten_selected_channels.flattenSelectedChannels()
+
+    def cacheSelectedChannels(self):
+        cache_selected_channels.cacheSelectedChannels()
 
     def channel_template_get(self):
         channel_template.getChannelTemplate()
@@ -152,11 +159,10 @@ class customScripts():
         convert_to_paintable.convertToPaintable()
 
     # --------------------------------------------------------------
-    # Shaders:
+    # SHADERS:
 
     def setAllObjectsToShader(self):
         setAllCurrentShader.setAllCurrentShader()
-
 
     # --------------------------------------------------------------
     # OBJECTS:
@@ -177,6 +183,13 @@ class customScripts():
 
     def screenshot_all_channels(self):
         screenshot_all_channels.screenshotAllChannels()
+
+    # --------------------------------------------------------------
+    # SHADING:
+
+    def disableViewport(self):
+        disableViewport.disableViewport()
+
 
     # --------------------------------------------------------------
     # HELP:

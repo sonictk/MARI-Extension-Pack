@@ -1,6 +1,19 @@
 #Release Notes for MARI EXTENSION PACK 2.1
 Copyright (c) 2015 www.mari.ideascale.com. All Rights Reserved.
 
+
+##New Features:
+
+######SHADING
+
+######Pause Viewport Update
+
+A new icon was added to the 'Lighting' Toolbar. When pressed the Mari Viewport
+will be deactivated/paused. This allows for operations such as Layer-reordering
+do be done at significantly increased speed without having to wait for a viewport
+update each time.
+
+
 ##Feature Improvements:
 
 #####ENVIRONMENT PROCEDURALS

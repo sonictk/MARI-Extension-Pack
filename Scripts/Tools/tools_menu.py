@@ -58,12 +58,18 @@ Shortcut Bindings are available but not necessarily set.'''
 
 
 import mari
+import os
 
 tool_menu_version = '0.1'
 
+
+# Icon Path for custom icons
+extPack_icon_path = os.path.abspath(mari.resources.path(mari.resources.USER_SCRIPTS)) + '\\Tools\\Icons'
+extPack_icon_path = extPack_icon_path.replace("\\", "/")
+
+
+
 def createToolsMenu():
-
-
 
 ######################################################################
 # Objects
@@ -131,6 +137,21 @@ def createToolsMenu():
 
 # --------------------------------------------------------------------
 
+	###   Cache Channel Selection ###
+
+	UI_path = 'MainWindow/&Channels'
+	script_menu_path = 'MainWindow/Scripts/Channels'
+
+	DuplicateFlatten = mari.actions.create ('Cache Selected', 'mari.customScripts.cacheSelectedChannels()')
+	mari.menus.addAction(DuplicateFlatten, UI_path, 'Transfer')
+	mari.menus.addAction(DuplicateFlatten, script_menu_path)
+
+	icon_filename = 'BakeShader.png'
+	icon_path = mari.resources.path(mari.resources.ICONS) + '/' + icon_filename
+	DuplicateFlatten.setIconPath(icon_path)
+	DuplicateFlatten.setShortcut('')
+
+# --------------------------------------------------------------------
 	###   Save Channel Resolution ###
 
 	UI_path = 'MainWindow/&Channels/Resize'
@@ -468,6 +489,46 @@ def createToolsMenu():
 	screenshotChannels.setIconPath(icon_path)
 	screenshotChannels.setShortcut('')
 
+
+
+######################################################################
+# Shading
+######################################################################
+
+#  Disable Viewport Refresh
+
+	script_menu_path = 'MainWindow/Scripts/Shading'
+	UI_path = 'MainWindow/&Shading'
+	
+	action_viewportDisable = mari.actions.create("Pause Viewport Update", "mari.customScripts.disableViewport()")
+	action_viewportDisable.setCheckable(True)
+
+	mari.menus.addAction(action_viewportDisable, script_menu_path)
+	mari.menus.addAction(action_viewportDisable, UI_path, 'Toggle Wireframe')
+
+	icon_filename = 'extPack_disableViewport.png'
+	icon_path = extPack_icon_path + '/' + icon_filename
+	action_viewportDisable.setIconPath(icon_path)
+
+
+	action_viewportDisable.setStatusTip('Pause Viewport Update. This can help speed up operations by not having to wait for the viewport to update.')
+	action_viewportDisable.setToolTip('Pause Viewport Update')
+	action_viewportDisable.setWhatsThis('Pause Viewport Update. A repackaged toggleShaderCompile action')
+
+
+	# Adding to default lighting toolbar 
+	lightingToolbar = mari.app.findToolBar('Lighting')
+	isLocked = lightingToolbar.isLocked()
+	lightingToolbar.setLocked(False)
+	lightingToolbar.addAction('/Mari/Scripts/Pause Viewport Update', [0,0], False)
+	lightingToolbar.setLocked(isLocked)
+
+
+	###  Menu Separators ###
+
+	mari.menus.addSeparator(UI_path,'Toggle Wireframe')
+
+
 ######################################################################
 # Shaders
 ######################################################################
@@ -482,6 +543,11 @@ def createToolsMenu():
 	syncObjectShaders = mari.actions.create(
 	    "Sync Object Shaders", "mari.customScripts.setAllObjectsToShader()"
 	    )
+
+	syncObjectShaders.setStatusTip('Sync your Shader Selection across all Objects')
+	syncObjectShaders.setToolTip('Sync Object Shader Selection')
+	syncObjectShaders.setWhatsThis('Sync Object Shader Selection between Objects')
+
 	mari.menus.addAction(syncObjectShaders, UI_path_A, '-Flat')
 	mari.menus.addAction(syncObjectShaders, UI_path_B)
 	mari.menus.addAction(syncObjectShaders, UI_path_C,'Duplicate Shader')
@@ -491,6 +557,7 @@ def createToolsMenu():
 	icon_path = mari.resources.path(mari.resources.ICONS) + '/' + icon_filename
 	syncObjectShaders.setIconPath(icon_path)
 	syncObjectShaders.setShortcut('')
+
 
 ######################################################################
 # Image Manager
