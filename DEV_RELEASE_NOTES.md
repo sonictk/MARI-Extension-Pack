@@ -25,6 +25,14 @@ A new option 'Suppress Alpha' was added to optionally ignore the Alpha of the lo
 Overall performance of the Node was increased significantly
 
 
+#####CHANNELS
+
+######Export Selected Channels + Duplicate Flatten Channels
+
+'Export Selected Channels' + 'Duplicate Flatten Channels' Object/Channels are now sorted alphabetically (like channels/object palette).
+The current object's channels will be bumped to the top of the interface.
+
+
 #####LAYERS MENU
 
 ######Channel Layer / Channel Layer Mask / Channel Layer Mask (grouped)

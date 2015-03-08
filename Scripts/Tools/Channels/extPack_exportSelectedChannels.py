@@ -89,16 +89,25 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
         channel_header_layout.addWidget(self.channel_filter_box)
         
         #Populate geo : channel list widget
-        geo_list = mari.geo.list()
+        geo_list = sorted(mari.geo.list(), key=lambda x: x.name())
         chan_list = []
+
         for geo in geo_list:
-            chan_list.append((geo.name(), geo.channelList()))
+            # add geo in alphabetical sorting with all channels for each geo in alphabetical sorting, except current one which will go to the top
+            if geo is not mari.geo.current():
+                chan_list.append((geo.name(), sorted(geo.channelList(), key=lambda x: unicode.lower(x.name()))))
+
+        # Push current object to the top of the list
+        currentObj = (mari.geo.current().name(),sorted(mari.geo.current().channelList(),key=lambda x: unicode.lower(x.name())) )
+        chan_list.insert(0,currentObj)
+
         for item in chan_list:
             for channel in item[1]:
                 shaderChannel = channel.isShaderStack()
                 if not shaderChannel:
                     self.channel_list.addItem(item[0] + ' : ' + channel.name())
                     self.channel_list.item(self.channel_list.count() - 1).setData(USER_ROLE, channel)
+
         
         #Add filter layout and channel list to channel layout
         channel_layout.addLayout(channel_header_layout)
