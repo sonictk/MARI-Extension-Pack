@@ -5,6 +5,7 @@
 # coding: utf-8
 # ------------------------------------------------------------------------------
 # Written by Jorel Latraille, 2014
+# Modified by Jens Kafitz, 2015
 # ------------------------------------------------------------------------------
 # http://mari.ideascale.com
 # http://www.jorel-latraille.com/
@@ -88,30 +89,10 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
         channel_header_layout.addWidget(self.channel_search_icon)
         channel_header_layout.addWidget(self.channel_filter_box)
         
-        #Populate geo : channel list widget
-        geo_list = sorted(mari.geo.list(), key=lambda x: x.name())
-        chan_list = []
-
-        for geo in geo_list:
-            # add geo in alphabetical sorting with all channels for each geo in alphabetical sorting, except current one which will go to the top
-            if geo is not mari.geo.current():
-                chan_list.append((geo.name(), sorted(geo.channelList(), key=lambda x: unicode.lower(x.name()))))
-
-        # Push current object to the top of the list
-        currentObj = (mari.geo.current().name(),sorted(mari.geo.current().channelList(),key=lambda x: unicode.lower(x.name())) )
-        chan_list.insert(0,currentObj)
-
-        for item in chan_list:
-            for channel in item[1]:
-                shaderChannel = channel.isShaderStack()
-                if not shaderChannel:
-                    self.channel_list.addItem(item[0] + ' : ' + channel.name())
-                    self.channel_list.item(self.channel_list.count() - 1).setData(USER_ROLE, channel)
-                    if channel is mari.current.channel():
-                        currentChannelRow = self.channel_list.count()-1
-
-        # Set currently active channel to selected
-        self.channel_list.setCurrentRow(currentChannelRow)  
+        #Populate Channel List, channellist gets full channel list from project and amount of channels on current object (which sit at the top of the list)
+        self.channel_list= self.populateChannelList(self.channel_list)
+        currentObjChannels = self.channel_list[1]
+        self.channel_list = self.channel_list[0]
     
         #Add filter layout and channel list to channel layout
         channel_layout.addLayout(channel_header_layout)
@@ -185,12 +166,19 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
         #Add to top group
         top_group_layout = QtGui.QVBoxLayout()
 
+        #Add Display all Objects check box
+        displayAllObjBox = QtGui.QCheckBox('List all Objects')
+        displayAllObjBox.clicked.connect(lambda: listAllObjects(self.channel_list,currentObjChannels,displayAllObjBox.isChecked()))
+
+        
+
         #Add export everything check box
         self.export_everything_box = QtGui.QCheckBox('Export Everything')
         self.export_everything_box.clicked.connect(self._exportEverything)
 
         top_group_layout.addLayout(top_layout)
         top_group_layout.addLayout(path_layout)
+        top_group_layout.addWidget(displayAllObjBox)
         top_group_layout.addWidget(self.export_everything_box)
         top_group.setLayout(top_group_layout)
     
@@ -241,6 +229,47 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
         main_layout.addWidget(self.button_box)
         self.setLayout(main_layout)
 
+        #calling once to cull the object list, whole thing doesn't really make for a snappy interface appearance
+        listAllObjects(self.channel_list,currentObjChannels,displayAllObjBox.isChecked())     
+
+    #Generate List of Channels for the Channel List
+    def populateChannelList(self,channel_list):
+    
+           #Populate geo : channel list widget
+               geo_list = sorted(mari.geo.list(), key=lambda x: x.name())
+               chan_list = []
+               sorted_list = []
+       
+               for geo in geo_list:
+                   # add geo in alphabetical sorting with all channels for each geo in alphabetical sorting, except current one which will go to the top
+                   if geo is not mari.geo.current():
+                       sorted_list = sorted(geo.channelList(), key=lambda x: unicode.lower( x.name() ) )
+                       chan_list.append((geo.name(), sorted_list))
+                       
+       
+               # Push current object to the top of the list
+               currentObjName = mari.current.geo().name()
+               sorted_list = sorted(mari.geo.current().channelList(),key=lambda x: unicode.lower( x.name() ) )
+               currentChannelCount = len(sorted_list)
+               currentObj = (currentObjName,sorted_list)       
+               chan_list.insert(0,currentObj)
+       
+               for item in chan_list:
+                   for channel in item[1]:
+                       shaderChannel = channel.isShaderStack()
+                       if not shaderChannel:
+                           channel_list.addItem(item[0] + ' : ' + channel.name())
+                           channel_list.item(channel_list.count() - 1).setData(USER_ROLE, channel)
+                           if channel is mari.current.channel():
+                               currentChannelRow = channel_list.count()-1
+       
+               # Set currently active channel to selected
+               channel_list.setCurrentRow(currentChannelRow)      
+               
+               return channel_list, currentChannelCount
+
+
+    
     #Hide parts of interface if export everything is ticked
     def _exportEverything(self):
         _bool = self.export_everything_box.isChecked()
@@ -367,6 +396,24 @@ def _updateChannelFilter(channel_filter_box, channel_list):
         item_text_lower = item.text().lower()
         matches = all([word in item_text_lower for word in match_words])
         item.setHidden(not matches)
+
+# ------------------------------------------------------------------------------
+
+def listAllObjects(channel_list, cur_obj_channels, showAll):
+    """For each item in the channel list display, set it to hidden if it doesn't match current Object."""
+
+    if showAll:
+        listSize = channel_list.count()
+        for index in range(cur_obj_channels,listSize):
+            item = channel_list.item(index)
+            item.setHidden(False)
+
+    else:
+        listSize = channel_list.count()
+        for index in range(cur_obj_channels,listSize):
+            item = channel_list.item(index)
+            item.setHidden(True)
+
         
 # ------------------------------------------------------------------------------
 def _updateExportFilter(export_filter_box, export_list):

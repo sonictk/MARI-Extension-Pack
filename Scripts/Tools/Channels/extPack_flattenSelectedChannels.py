@@ -6,6 +6,7 @@
 # coding: utf-8
 # ------------------------------------------------------------------------------
 # Written by Jorel Latraille, 2014
+# Modified by Jens Kafitz, 2015
 # ------------------------------------------------------------------------------
 # http://mari.ideascale.com
 # http://www.jorel-latraille.com/
@@ -42,6 +43,54 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF HE POSSIBILITY OF SUCH DAMAGE.
 # ------------------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------------------
+# Duplicate and flatten selected channels
+# ------------------------------------------------------------------------------
+# Duplicate and flatten selected channels. The Channel is first duplicated, then flattened, then renamed
+# to the original name. The unflattened Channel is suffixed with _original.
+# coding: utf-8
+# ------------------------------------------------------------------------------
+# Written by Jorel Latraille, 2014
+# ------------------------------------------------------------------------------
+# http://mari.ideascale.com
+# http://www.jorel-latraille.com/
+# http://www.thefoundry.co.uk
+# ------------------------------------------------------------------------------
+# DISCLAIMER & TERMS OF USE:
+#
+# Copyright (c) The Foundry 2014.
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# 1. Redistributions of source code must retain the above copyright
+# notice, this list of conditions and the following disclaimer.
+#
+# 2. Redistributions in binary form must reproduce the above copyright
+# notice, this list of conditions and the following disclaimer in the
+# documentation and/or other materials provided with the distribution.
+#
+# 3. Neither the name of the copyright holder nor the names of its
+# contributors may be used to endorse or promote products derived from
+# this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+# IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+# THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+# PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+# CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+# EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+# PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+# OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+# WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+# OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+# ADVISED OF HE POSSIBILITY OF SUCH DAMAGE.
+# ------------------------------------------------------------------------------
+
+
 
 
 import mari
@@ -83,32 +132,12 @@ class FlattenSelectedChannelsGUI(QtGui.QDialog):
         channel_search_icon.setPixmap(search_pixmap)
         channel_header_layout.addWidget(channel_search_icon)
         channel_header_layout.addWidget(channel_filter_box)
-        
-        #Populate geo : channel list widget
-        geo_list = sorted(mari.geo.list(), key=lambda x: x.name())
-        chan_list = []
+ 
+        #Populate Channel List, channellist gets full channel list from project and amount of channels on current object (which sit at the top of the list)
+        channel_list= self.populateChannelList(channel_list)
+        currentObjChannels = channel_list[1]
+        channel_list = channel_list[0]
 
-        for geo in geo_list:
-            # add geo in alphabetical sorting with all channels for each geo in alphabetical sorting, except current one which will go to the top
-            if geo is not mari.geo.current():
-                chan_list.append((geo.name(), sorted(geo.channelList(), key=lambda x: unicode.lower(x.name()))))
-
-        # Push current object to the top of the list
-        currentObj = (mari.geo.current().name(),sorted(mari.geo.current().channelList(),key=lambda x: unicode.lower(x.name())) )
-        chan_list.insert(0,currentObj)
-
-        for item in chan_list:
-            for channel in item[1]:
-                shaderChannel = channel.isShaderStack()
-                if not shaderChannel:
-                    channel_list.addItem(item[0] + ' : ' + channel.name())
-                    channel_list.item(channel_list.count() - 1).setData(USER_ROLE, channel)
-                    if channel is mari.current.channel():
-                        currentChannelRow = channel_list.count()-1
-
-        # Set currently active channel to selected
-        channel_list.setCurrentRow(currentChannelRow)      
-        
         
         #Add filter layout and channel list to channel layout
         channel_layout.addLayout(channel_header_layout)
@@ -141,6 +170,7 @@ class FlattenSelectedChannelsGUI(QtGui.QDialog):
         flatten_search_icon.setPixmap(search_pixmap)
         flatten_header_layout.addWidget(flatten_search_icon)
         flatten_header_layout.addWidget(flatten_filter_box)
+
         
         #Add filter layout and flatten list to flatten layout
         flatten_layout.addLayout(flatten_header_layout)
@@ -154,11 +184,14 @@ class FlattenSelectedChannelsGUI(QtGui.QDialog):
         centre_layout.addLayout(channel_layout)
         centre_layout.addLayout(middle_button_layout)
         centre_layout.addLayout(flatten_layout)
+
         
         #Create button layout and hook them up
         button_layout = QtGui.QHBoxLayout()
         ok_button = QtGui.QPushButton("&OK")
         cancel_button = QtGui.QPushButton("&Cancel")
+        displayAllObjBox = QtGui.QCheckBox('List all Objects')
+        button_layout.addWidget(displayAllObjBox)
         button_layout.addStretch()
         button_layout.addWidget(ok_button)
         button_layout.addWidget(cancel_button)
@@ -167,14 +200,60 @@ class FlattenSelectedChannelsGUI(QtGui.QDialog):
         ok_button.clicked.connect(self.accept)
         cancel_button.clicked.connect(self.reject)
         
+        #Hook up List All Object Checkbox
+        displayAllObjBox.clicked.connect(lambda: listAllObjects(channel_list,currentObjChannels,displayAllObjBox.isChecked()))
+
+        
         #Add layouts to main layout and dialog
         main_layout.addLayout(centre_layout)
         main_layout.addLayout(button_layout)
         self.setLayout(main_layout)
         
+        #calling once to cull the object list, whole thing doesn't really make for a snappy interface appearance
+        listAllObjects(channel_list,currentObjChannels,displayAllObjBox.isChecked())       
+  
+# ------------------------------------------------------------------------------
+
+    def populateChannelList(self,channel_list):
+
+        #Populate geo : channel list widget
+            geo_list = sorted(mari.geo.list(), key=lambda x: x.name())
+            chan_list = []
+            sorted_list = []
+    
+            for geo in geo_list:
+                # add geo in alphabetical sorting with all channels for each geo in alphabetical sorting, except current one which will go to the top
+                if geo is not mari.geo.current():
+                    sorted_list = sorted(geo.channelList(), key=lambda x: unicode.lower( x.name() ) )
+                    chan_list.append((geo.name(), sorted_list))
+                    
+    
+            # Push current object to the top of the list
+            currentObjName = mari.current.geo().name()
+            sorted_list = sorted(mari.geo.current().channelList(),key=lambda x: unicode.lower( x.name() ) )
+            currentChannelCount = len(sorted_list)
+            currentObj = (currentObjName,sorted_list)       
+            chan_list.insert(0,currentObj)
+    
+            for item in chan_list:
+                for channel in item[1]:
+                    shaderChannel = channel.isShaderStack()
+                    if not shaderChannel:
+                        channel_list.addItem(item[0] + ' : ' + channel.name())
+                        channel_list.item(channel_list.count() - 1).setData(USER_ROLE, channel)
+                        if channel is mari.current.channel():
+                            currentChannelRow = channel_list.count()-1
+    
+            # Set currently active channel to selected
+            channel_list.setCurrentRow(currentChannelRow)      
+            
+            return channel_list, currentChannelCount
+
+# ------------------------------------------------------------------------------
+        
     def getChannelsToFlatten(self):
         return self.flatten_list.currentChannels()
-    
+
 # ------------------------------------------------------------------------------   
 class ChannelsToFlattenList(QtGui.QListWidget):
     "Stores a list of operations to perform."
@@ -212,13 +291,33 @@ class ChannelsToFlattenList(QtGui.QListWidget):
 # ------------------------------------------------------------------------------
 def updateChannelFilter(channel_filter_box, channel_list):
     "For each item in the channel list display, set it to hidden if it doesn't match the filter text."
+    
     match_words = channel_filter_box.text().lower().split()
+   
     for item_index in range(channel_list.count()):
         item = channel_list.item(item_index)
         item_text_lower = item.text().lower()
         matches = all([word in item_text_lower for word in match_words])
         item.setHidden(not matches)
-        
+
+
+# ------------------------------------------------------------------------------
+def listAllObjects(channel_list, cur_obj_channels, showAll):
+    """For each item in the channel list display, set it to hidden if it doesn't match current Object."""
+
+    if showAll:
+        listSize = channel_list.count()
+        for index in range(cur_obj_channels,listSize):
+            item = channel_list.item(index)
+            item.setHidden(False)
+
+    else:
+        listSize = channel_list.count()
+        for index in range(cur_obj_channels,listSize):
+            item = channel_list.item(index)
+            item.setHidden(True)
+
+
 # ------------------------------------------------------------------------------
 def updateFlattenFilter(flatten_filter_box, flatten_list):
     "For each item in the flatten list display, set it to hidden if it doesn't match the filter text."
@@ -276,5 +375,6 @@ def flattenSelectedChannels():
     mari.history.stopMacro()
     
 # ------------------------------------------------------------------------------            
+  
 if __name__ == "__main__":
     flattenSelectedChannels()
