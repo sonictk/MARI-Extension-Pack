@@ -32,6 +32,8 @@ Overall performance of the Node was increased significantly
 'Export Selected Channels' + 'Duplicate Flatten Channels' Object/Channels are now sorted alphabetically (like channels/object palette).
 The current object's channels will be bumped to the top of the interface.
 
+The currently active channel will be pre-selected in the interface
+
 
 #####LAYERS MENU
 

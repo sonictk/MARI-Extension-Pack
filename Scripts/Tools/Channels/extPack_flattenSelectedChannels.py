@@ -103,7 +103,12 @@ class FlattenSelectedChannelsGUI(QtGui.QDialog):
                 if not shaderChannel:
                     channel_list.addItem(item[0] + ' : ' + channel.name())
                     channel_list.item(channel_list.count() - 1).setData(USER_ROLE, channel)
+                    if channel is mari.current.channel():
+                        currentChannelRow = channel_list.count()-1
 
+        # Set currently active channel to selected
+        channel_list.setCurrentRow(currentChannelRow)      
+        
         
         #Add filter layout and channel list to channel layout
         channel_layout.addLayout(channel_header_layout)
