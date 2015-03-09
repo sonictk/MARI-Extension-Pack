@@ -236,8 +236,13 @@ class FlattenSelectedChannelsGUI(QtGui.QDialog):
             chan_list.insert(0,currentObj)
     
             for item in chan_list:
+                shaderChannelCountCheck = False
+                if item[0] is currentObjName:
+                    shaderChannelCountCheck = True
                 for channel in item[1]:
                     shaderChannel = channel.isShaderStack()
+                    if shaderChannel and shaderChannelCountCheck:
+                        currentChannelCount -= 1     
                     if not shaderChannel:
                         channel_list.addItem(item[0] + ' : ' + channel.name())
                         channel_list.item(channel_list.count() - 1).setData(USER_ROLE, channel)

@@ -236,37 +236,42 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
     def populateChannelList(self,channel_list):
     
            #Populate geo : channel list widget
-               geo_list = sorted(mari.geo.list(), key=lambda x: x.name())
-               chan_list = []
-               sorted_list = []
-       
-               for geo in geo_list:
-                   # add geo in alphabetical sorting with all channels for each geo in alphabetical sorting, except current one which will go to the top
-                   if geo is not mari.geo.current():
-                       sorted_list = sorted(geo.channelList(), key=lambda x: unicode.lower( x.name() ) )
-                       chan_list.append((geo.name(), sorted_list))
-                       
-       
-               # Push current object to the top of the list
-               currentObjName = mari.current.geo().name()
-               sorted_list = sorted(mari.geo.current().channelList(),key=lambda x: unicode.lower( x.name() ) )
-               currentChannelCount = len(sorted_list)
-               currentObj = (currentObjName,sorted_list)       
-               chan_list.insert(0,currentObj)
-       
-               for item in chan_list:
-                   for channel in item[1]:
-                       shaderChannel = channel.isShaderStack()
-                       if not shaderChannel:
-                           channel_list.addItem(item[0] + ' : ' + channel.name())
-                           channel_list.item(channel_list.count() - 1).setData(USER_ROLE, channel)
-                           if channel is mari.current.channel():
-                               currentChannelRow = channel_list.count()-1
-       
-               # Set currently active channel to selected
-               channel_list.setCurrentRow(currentChannelRow)      
-               
-               return channel_list, currentChannelCount
+        geo_list = sorted(mari.geo.list(), key=lambda x: x.name())
+        chan_list = []
+        sorted_list = []
+        
+        for geo in geo_list:
+            # add geo in alphabetical sorting with all channels for each geo in alphabetical sorting, except current one which will go to the top
+            if geo is not mari.geo.current():
+                sorted_list = sorted(geo.channelList(), key=lambda x: unicode.lower( x.name() ) )
+                chan_list.append((geo.name(), sorted_list))
+                
+        
+         # Push current object to the top of the list
+        currentObjName = mari.current.geo().name()
+        sorted_list = sorted(mari.geo.current().channelList(),key=lambda x: unicode.lower( x.name() ) )
+        currentChannelCount = len(sorted_list)
+        currentObj = (currentObjName,sorted_list)       
+        chan_list.insert(0,currentObj)
+        
+        for item in chan_list:
+            shaderChannelCountCheck = False
+            if item[0] is currentObjName:
+                shaderChannelCountCheck = True
+            for channel in item[1]:
+                shaderChannel = channel.isShaderStack()
+                if shaderChannel and shaderChannelCountCheck:
+                    currentChannelCount -= 1     
+                if not shaderChannel:
+                    channel_list.addItem(item[0] + ' : ' + channel.name())
+                    channel_list.item(channel_list.count() - 1).setData(USER_ROLE, channel)
+                    if channel is mari.current.channel():
+                        currentChannelRow = channel_list.count()-1
+        
+        # Set currently active channel to selected
+        channel_list.setCurrentRow(currentChannelRow)      
+        
+        return channel_list, currentChannelCount
 
 
     
