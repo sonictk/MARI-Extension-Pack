@@ -121,7 +121,7 @@ def checkMariVersion():
 
     if mari.app.version().number() >=  MARI_2_6v3_VERSION_NUMBER:
 
-	return True, True
+		return True, True
     
     else:
         mari.utils.message("Mari Version not compatible with MARI Extension Pack 2.0")

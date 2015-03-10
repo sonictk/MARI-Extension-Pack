@@ -59,7 +59,7 @@ import Layers.extPack_convert_to_paintable as convert_to_paintable
 # CHANNELS:
 import Channels.extPack_exportSelectedChannels as export_selected_channels
 import Channels.extPack_flattenSelectedChannels as flatten_selected_channels
-import Channels.extPack_cacheSelectedChannels as cache_selected_channels
+# import Channels.extPack_cacheSelectedChannels as cache_selected_channels
 import Channels.extPack_channelTemplate as channel_template
 
 # SHADERS:
@@ -108,8 +108,8 @@ class customScripts():
     def flattenSelectedChannels(self):
         flatten_selected_channels.flattenSelectedChannels()
 
-    def cacheSelectedChannels(self):
-        cache_selected_channels.cacheSelectedChannels()
+    # def cacheSelectedChannels(self):
+        # cache_selected_channels.cacheSelectedChannels()
 
     def channel_template_get(self):
         channel_template.getChannelTemplate()
