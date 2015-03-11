@@ -68,9 +68,9 @@ def makeChannelLayer(sourceChannel, mode, invert):
     """Creates Channel Layer, channel Layer Mask or channel Layer mask grouped"""
 
     selectionData = getSelectedLayer().findSelection()
-    currentChannel = selectionData[1]
-    currentLayer = selectionData[2]
-    currentSelection = selectionData[3]
+    currentStack = selectionData[2]
+    currentLayer = selectionData[3]
+    currentSelection = selectionData[4]
 
     layerName = currentLayer.name()
     
@@ -80,8 +80,9 @@ def makeChannelLayer(sourceChannel, mode, invert):
         mari.history.startMacro('Create channel Layer')
         for channel in sourceChannel:
             channelLayerName = channel.name()
-            currentChannel.createChannelLayer(channelLayerName, channel, None, 16)
+            currentStack.createChannelLayer(channelLayerName, channel, None, 16)
         mari.history.stopMacro()
+
     else:
         
         
@@ -95,7 +96,9 @@ def makeChannelLayer(sourceChannel, mode, invert):
                     layerName = currentLayer.name()
                     mari.history.startMacro('Create grouped channel mask')
                     layerGroupName = '%s_grp' % layerName
-                    groupLayer = currentChannel.groupLayers([currentSelection], None, None, 16)
+                    selectionData = getSelectedLayer().findSelection()
+                    currentStack = selectionData[2]
+                    groupLayer = currentStack.groupLayers([currentSelection], None, None, 16)
                     groupLayer.setName(layerGroupName)
                     layerMaskStack = groupLayer.makeMaskStack()
                     layerMaskStack.removeLayers(layerMaskStack.layerList()) 
@@ -160,9 +163,11 @@ class ChannelLayerUI(QtGui.QDialog):
             super(ChannelLayerUI, self).__init__()
             self.setFixedSize(340, 400)
             #Set window title and create a main layout
-            title = "Select Channel Layer"
-            if mode is 'maskgroup' or 'mask':
-                title = "Select Channel Layer Mask"
+            title = "Channel Layer"
+            if mode is 'mask':
+                title = "Channel Layer Mask"
+            if mode is 'maskgroup':
+                title = "Channel Layer Group Mask"
             self.setWindowTitle(title)
             main_layout = QtGui.QVBoxLayout()
             
@@ -285,7 +290,6 @@ class ChannelLayerUI(QtGui.QDialog):
 # as well as cases where users are working in pinned or docked channels without it being the current channel
 # ------------------------------------------------------------------------------
 
-
 class getSelectedLayer():
     """Searches for Layer Selection in Substacks and searches for current channel if currentChannel is not the            
     selected one (when a channel is opened as floating or pinned palette)"""
@@ -302,35 +306,43 @@ class getSelectedLayer():
 
         curGeo = mari.current.geo()
         curChannel = mari.current.channel()
+        curStack = curChannel
         curLayer = mari.current.layer()
         channels = curGeo.channelList()
 
-        layers = ()
+        layerStacks = ()
         curSelList = []
         chn_layerList = ()
-        
+        layer = None
+        stack = None   
         layerSelect = False
          
         if  curLayer.isSelected():
             chn_layerList = curChannel.layerList()
-            layers = self.cl_getLayerList(chn_layerList,self.cl_returnTrue)
-            
-            for layer in layers:
-        
+            layerStacks = self.cl_getLayerList(chn_layerList,curChannel,self.cl_returnTrue)
+
+            for item in layerStacks:
+                layer = item[1]
+                stack = item[0]   
                 if layer.isSelected():
                     curSelList.append(layer)
-                    layerSelect = True       
+                    layerSelect = True
+                    curStack = stack
+                    curChannel = curChannel 
+
         else:
         
             for channel in channels:
                 
                 chn_layerList = channel.layerList()
-                layers = self.cl_getLayerList(chn_layerList,self.cl_returnTrue)
+                layerStacks = self.cl_getLayerList(chn_layerList,channel,self.cl_returnTrue)
             
-                for layer in layers:
-        
+                for item in layerStacks:
+                    layer = item[1]
+                    stack = item[0] 
                     if layer.isSelected():
                         curLayer = layer
+                        curStack = stack
                         curChannel = channel
                         curSelList.append(layer)
                         layerSelect = True
@@ -338,7 +350,7 @@ class getSelectedLayer():
         if not layerSelect:
             mari.utils.message('No Layer Selection found. \n \n Please select at least one Layer.')
  
-        return curGeo,curChannel,curLayer,curSelList               
+        return curGeo,curChannel,curStack,curLayer,curSelList               
 
 
 
@@ -348,20 +360,25 @@ class getSelectedLayer():
 
 
 
-    def cl_getLayerList(self,layer_list, criterionFn):
+    def cl_getLayerList(self,layer_list, stack, criterionFn):
         """Returns a list of all of the layers in the stack that match the given criterion function, including substacks."""
-        matching = []
+        matchingLayers = []
+        tu = ()
         for layer in layer_list:
             if criterionFn(layer):
-                matching.append(layer)
-            if hasattr(layer, 'layerStack'):
-                matching.extend(self.cl_getLayerList(layer.layerStack().layerList(), criterionFn))
+                tu = stack,layer
+                matchingLayers.append(tu)
+            if hasattr(layer, 'layerStack'):  
+                matchingLayers.extend(self.cl_getLayerList(layer.layerStack().layerList(),layer.layerStack(),criterionFn))
             if layer.hasMaskStack():
-                matching.extend(self.cl_getLayerList(layer.maskStack().layerList(), criterionFn))
+                matchingLayers.extend(self.cl_getLayerList(layer.maskStack().layerList(),layer.maskStack(), criterionFn))
             if hasattr(layer, 'hasAdjustmentStack') and layer.hasAdjustmentStack():
-                matching.extend(self.cl_getLayerList(layer.adjustmentStack().layerList(), criterionFn))
+                matchingLayers.extend(self.cl_getLayerList(layer.adjustmentStack().layerList(),layer.adjustmentStack(), criterionFn))
+
+
             
-        return matching
+        return matchingLayers
 
 # ------------------------------------------------------------------------------
+
 

@@ -37,14 +37,16 @@ Only channels from the current object will be displayed by default now.
 A new checkbox 'List all Objects' was added  to return to the previous behavior.
 The current object's channels will be bumped to the top of the list.
 
-Channels created by layeredShader stacks will no longer appear in the list
+Channels created by layeredShader stacks (with cryptic channel names) will no longer appear in the list
 
 
 #####LAYERS MENU
 
 ######Channel Layer / Channel Layer Mask / Channel Layer Mask (grouped)
 
-Channel Layer Selection has a new Interface, giving alphabetical channel sorting and allowing for multiSelection.
+Channel Layer Selection has a new Interface, with alphabetical channel sorting and channel filtering options
+
+Multi Selections of Channel Layer are now possible. For each selected channel in the interface one channel layer will be added.
 
 "Channel Layer" + "Channel Layer Mask" now works with layeredShaders
 
