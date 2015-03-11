@@ -7,8 +7,7 @@
 # http://mari.ideascale.com
 # http://bneall.blogspot.de/
 # ------------------------------------------------------------------------------
-# Author: Ben Neal, 2014
-# Contributions: Jens Kafitz, 2015
+# Author: Ben Neal, Jens Kafitz, 2015
 # ------------------------------------------------------------------------------
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -38,21 +37,22 @@
 # ------------------------------------------------------------------------------
 
 
-from PySide import QtGui
 import mari
+import PySide.QtGui as QtGui
+
+USER_ROLE = 32          # PySide.Qt.UserRole
+
+# ------------------------------------------------------------------------------
 
 
 def _isProjectSuitable():
-    """Checks project state."""
-    MARI_2_0V1_VERSION_NUMBER = 20001300    # see below
-    if mari.app.version().number() >= MARI_2_0V1_VERSION_NUMBER:
+    """Checks project state and mari version"""
+    MARI_2_6V3_VERSION_NUMBER = 20603300   # see below
+    if mari.app.version().number() >= MARI_2_6V3_VERSION_NUMBER:
     
         if mari.projects.current() is None:
             mari.utils.message("Please open a project before running.")
             return False, False
-
-        if mari.app.version().number() >= 20603300:
-            return True, True
 
         return True, False
         
@@ -60,216 +60,308 @@ def _isProjectSuitable():
         mari.utils.message("You can only run this script in Mari 2.6v3 or newer.")
         return False, False
 
-# ------------------------------------------------------------------------------    
-
-# The following are used to find selections no matter where in the Mari Interface:
-# returnTru(),getLayerList(),findLayerSelection()
-# 
-# This is to support a) Layered Shader Stacks b) deeply nested stacks (maskstack,adjustment stacks),
-# as well as cases where users are working in pinned or docked channels without it being the current channel
-
-# ------------------------------------------------------------------------------
-
-def returnTrue(layer):
-    """Returns True for any object passed to it."""
-    return True
-    
-# ------------------------------------------------------------------------------
-def getLayerList(layer_list, criterionFn):
-    """Returns a list of all of the layers in the stack that match the given criterion function, including substacks."""
-    matching = []
-    for layer in layer_list:
-        if criterionFn(layer):
-            matching.append(layer)
-        if hasattr(layer, 'layerStack'):
-            matching.extend(getLayerList(layer.layerStack().layerList(), criterionFn))
-        if layer.hasMaskStack():
-            matching.extend(getLayerList(layer.maskStack().layerList(), criterionFn))
-        if hasattr(layer, 'hasAdjustmentStack') and layer.hasAdjustmentStack():
-            matching.extend(getLayerList(layer.adjustmentStack().layerList(), criterionFn))
-        
-    return matching
-# ------------------------------------------------------------------------------
-
-
-def findLayerSelection():
-    """Searches for the current selection if mari.current.layer is not the same as layer.isSelected"""
-    
-    curGeo = mari.geo.current()
-    curChannel = curGeo.currentChannel()
-    channels = curGeo.channelList()
-    curLayer = mari.current.layer()
-    layers = ()
-    layerSelList = []
-    chn_layerList = ()
-    
-    layerSelect = False
-     
-    if curLayer.isSelected():
-   
-        chn_layerList = curChannel.layerList()
-        layers = getLayerList(chn_layerList,returnTrue)
-        
-        for layer in layers:
-    
-            if layer.isSelected():
-
-                layerSelList.append(layer)
-                layerSelect = True       
-
-    else:
-    
-        for channel in channels:
-            
-            chn_layerList = channel.layerList()
-            layers = getLayerList(chn_layerList,returnTrue)
-        
-            for layer in layers:
-    
-                if layer.isSelected():
-                    curLayer = layer
-                    curChannel = channel
-                    layerSelList.append(layer)
-                    layerSelect = True
-
-    
-    if not layerSelect:
-        mari.utils.message('No Layer Selection found. \n \n Please select at least one Layer.')
-
-
-    return curGeo,curLayer,curChannel,layerSelList
-
 
 # ------------------------------------------------------------------------------
 
 
 def makeChannelLayer(sourceChannel, mode, invert):
+    """Creates Channel Layer, channel Layer Mask or channel Layer mask grouped"""
 
-	object_data = findLayerSelection()
-	currentChannel = object_data[2]
-	currentLayer = object_data[1]
-	currentSelection = object_data[3]
-	layerName = currentLayer.name()
-	channelLayerName = sourceChannel.name()
-           
+    selectionData = getSelectedLayer().findSelection()
+    currentChannel = selectionData[1]
+    currentLayer = selectionData[2]
+    currentSelection = selectionData[3]
 
-	if mode == 'layer':
-		mari.history.startMacro('Create channel Layer')
-		currentChannel.createChannelLayer(channelLayerName, sourceChannel, None, 16)
-		mari.history.stopMacro()
-	else:
-		
-		
-		if mode == 'maskgroup':
-			if currentLayer.isShaderLayer():
-				mari.utils.message('Groups are not supported for Shader Layers')
-				return
-			else:
-				try:
-					## New Group Layer
-					layerName = currentLayer.name()
-					mari.history.startMacro('Create grouped channel mask')
-					layerGroupName = '%s_grp' % layerName
-					groupLayer = currentChannel.groupLayers([currentSelection], None, None, 16)
-					groupLayer.setName(layerGroupName)
-					layerMaskStack = groupLayer.makeMaskStack()
-					layerMaskStack.removeLayers(layerMaskStack.layerList())	
+    layerName = currentLayer.name()
+    
+    
 
-					## Create Mask Channel Layer
-					maskChannelLayerName = '%s(Shared Channel)' % channelLayerName
-					layerMaskStack.createChannelLayer(maskChannelLayerName, sourceChannel)
+    if mode == 'layer':
+        mari.history.startMacro('Create channel Layer')
+        for channel in sourceChannel:
+            channelLayerName = channel.name()
+            currentChannel.createChannelLayer(channelLayerName, channel, None, 16)
+        mari.history.stopMacro()
+    else:
+        
+        
+        if mode == 'maskgroup':
+            if currentLayer.isShaderLayer():
+                mari.utils.message('Groups are not supported for Shader Layers')
+                return
+            else:
+                try:
+                    ## New Group Layer
+                    layerName = currentLayer.name()
+                    mari.history.startMacro('Create grouped channel mask')
+                    layerGroupName = '%s_grp' % layerName
+                    groupLayer = currentChannel.groupLayers([currentSelection], None, None, 16)
+                    groupLayer.setName(layerGroupName)
+                    layerMaskStack = groupLayer.makeMaskStack()
+                    layerMaskStack.removeLayers(layerMaskStack.layerList()) 
 
-					if invert == 1:
-						layerMaskStack.createAdjustmentLayer("Invert","Filter/Invert")
+                    ## Create Mask Channel Layer
+                    
+                    for channel in sourceChannel:
+                        channelLayerName = channel.name()
+                        maskChannelLayerName = '%s(Shared Channel)' % channelLayerName
+                        layerMaskStack.createChannelLayer(maskChannelLayerName, channel)
 
-					mari.history.stopMacro()
-		
-				except Exception:
-					pass
+                    if invert == 1:
+                       layerMaskStack.createAdjustmentLayer("Invert","Filter/Invert")
 
-		elif mode == 'mask':
-			mari.history.startMacro('Create channel mask')
+                    mari.history.stopMacro()
+        
+                except Exception:
+                    pass
 
-			for layer in currentSelection:			
-				
-				layerName = layer.name()
-				currentLayer = layer
-				
-				## New Layer Mask Stack.
-				## If mask exists convert, if stack exists keep, else make new stack
-				if currentLayer.hasMaskStack():
-					layerMaskStack = currentLayer.maskStack()
-				elif currentLayer.hasMask():
-					layerMaskStack = currentLayer.makeMaskStack()
-				else:
-					layerMaskStack = currentLayer.makeMaskStack()
-					layerMaskStack.removeLayers(layerMaskStack.layerList())
+        elif mode == 'mask':
+            mari.history.startMacro('Create channel mask')
 
-				## Create Mask Channel Layer
-				maskChannelLayerName = '%s(Shared Channel)' % channelLayerName
-				layerMaskStack.createChannelLayer(maskChannelLayerName, sourceChannel)	
+            for layer in currentSelection:          
+                
+                layerName = layer.name()
+                currentLayer = layer
+                
+                ## New Layer Mask Stack.
+                ## If mask exists convert, if stack exists keep, else make new stack
+                if currentLayer.hasMaskStack():
+                    layerMaskStack = currentLayer.maskStack()
+                elif currentLayer.hasMask():
+                    layerMaskStack = currentLayer.makeMaskStack()
+                else:
+                    layerMaskStack = currentLayer.makeMaskStack()
+                    layerMaskStack.removeLayers(layerMaskStack.layerList())
 
-				if invert == 1:
-					layerMaskStack.createAdjustmentLayer("Invert","Filter/Invert")
+                ## Create Mask Channel Layer
+                
+                for channel in sourceChannel:
 
-			mari.history.stopMacro()
-	
-		
+                    channelLayerName = channel.name()
+                    maskChannelLayerName = '%s(Shared Channel)' % channelLayerName
+                    layerMaskStack.createChannelLayer(maskChannelLayerName, channel)  
+
+                if invert == 1:
+                    layerMaskStack.createAdjustmentLayer("Invert","Filter/Invert")
+
+            mari.history.stopMacro()
+    
+
+# ------------------------------------------------------------------------------
+
 
 class ChannelLayerUI(QtGui.QDialog):
-	'''GUI to select channel to make into a channel-layer in the current channel
-	modes: 'groupmask', 'mask', 'layer'
-	'''
-	def __init__(self, mode):
-		suitable = _isProjectSuitable()
-		if suitable[0]:
-			super(ChannelLayerUI, self).__init__()
-			## Dialog Settings
-			self.setFixedSize(300, 100)
-			self.setWindowTitle('Select Channel')
-			## Vars
-			self.mode = mode
-			## Layouts
-			layoutV1 = QtGui.QVBoxLayout()
-			layoutH1 = QtGui.QHBoxLayout()
-			self.setLayout(layoutV1)
-			## Widgets
-			self.chanCombo = QtGui.QComboBox()
-			self.okBtn = QtGui.QPushButton('Ok')
-			self.cancelBtn = QtGui.QPushButton('Cancel')
-			self.invertBtn = QtGui.QCheckBox('Invert')
-			## Populate 
-			layoutV1.addWidget(self.chanCombo)
-			layoutV1.addLayout(layoutH1)
-			layoutH1.addWidget(self.cancelBtn)
-			layoutH1.addWidget(self.okBtn)
-			if mode is not 'layer':
-				layoutH1.addWidget(self.invertBtn)
-			## Connections
-			self.okBtn.clicked.connect(self.runCreate)
-			self.cancelBtn.clicked.connect(self.close)
-			## Init
-			self.init()
-	
-	def init(self):
-		currentChannel = mari.geo.current().currentChannel()
-		channelList = mari.geo.current().channelList()
-		for channel in channelList:
-			shaderChannel = channel.isShaderStack()
-			if channel is not currentChannel and not shaderChannel:
-				self.chanCombo.addItem(channel.name(), channel)
-	
-	def selectedChannel(self):
-		return self.chanCombo.itemData(self.chanCombo.currentIndex(),32)
+    '''GUI to select channel to make into a channel-layer in the current channel
+    modes: 'maskgroup', 'mask', 'layer'
+    '''
+    def __init__(self, mode):
+        suitable = _isProjectSuitable()
+        if suitable[0]:        
+            super(ChannelLayerUI, self).__init__()
+            self.setFixedSize(340, 400)
+            #Set window title and create a main layout
+            title = "Select Channel Layer"
+            if mode is 'maskgroup' or 'mask':
+                title = "Select Channel Layer Mask"
+            self.setWindowTitle(title)
+            main_layout = QtGui.QVBoxLayout()
+            
+            #Create layout for middle section
+            centre_layout = QtGui.QHBoxLayout()
+            
+            #Create channel layout, label, and widget. Finally populate.
+            channel_layout = QtGui.QVBoxLayout()
+            channel_header_layout = QtGui.QHBoxLayout()
+            channel_label = QtGui.QLabel("<strong>Channels</strong>")
+            channel_list = QtGui.QListWidget()
+            channel_list.setSelectionMode(channel_list.ExtendedSelection)
+            
+            #Create filter box for channel list
+            channel_filter_box = QtGui.QLineEdit()
+            mari.utils.connect(channel_filter_box.textEdited, lambda: self.updateChannelFilter(channel_filter_box, channel_list))
+            
+            #Create layout and icon/label for channel filter
+            channel_header_layout.addWidget(channel_label)
+            channel_header_layout.addStretch()
+            channel_search_icon = QtGui.QLabel()
+            search_pixmap = QtGui.QPixmap(mari.resources.path(mari.resources.ICONS) + '/Lookup.png')
+            channel_search_icon.setPixmap(search_pixmap)
+            channel_header_layout.addWidget(channel_search_icon)
+            channel_header_layout.addWidget(channel_filter_box)
+ 
+            #Populate Channel List, channellist gets full channel list from project and amount of channels on current object (which sit at the top of the list)
+            channel_list= self.populateChannelList(channel_list)
+   
+            #Add filter layout and channel list to channel layout
+            channel_layout.addLayout(channel_header_layout)
+            channel_layout.addWidget(channel_list)
 
-	def invertChannel(self):
-		return self.invertBtn.isChecked()
+            
+            #Add widgets to centre layout
+            centre_layout.addLayout(channel_layout)
+            
+            #Create button layout and hook them up
+            button_layout = QtGui.QHBoxLayout()
+            ok_button = QtGui.QPushButton("&OK")
+            cancel_button = QtGui.QPushButton("&Cancel")
+            Invert_box = QtGui.QCheckBox('Invert Channel')
+            if mode is not 'layer':
+                button_layout.addWidget(Invert_box)
+            button_layout.addStretch()
+            button_layout.addWidget(ok_button)
+            button_layout.addWidget(cancel_button)
+     
 
-	
-	def runCreate(self):
-		sourceChannel = self.selectedChannel()
-		invert = self.invertChannel()
-		makeChannelLayer(sourceChannel, self.mode,invert)
-		self.close()
+            #Hook up OK/Cancel button clicked signal to accept/reject slot
+            ok_button.clicked.connect(lambda: self.runCreate(mode,channel_list,Invert_box.isChecked()))
+            cancel_button.clicked.connect(self.reject)
+            
 
+            #Add layouts to main layout and dialog
+            main_layout.addLayout(centre_layout)
+            main_layout.addLayout(button_layout)
+            self.setLayout(main_layout)
+
+
+# ------------------------------------------------------------------------------
+
+    def populateChannelList(self,channel_list):
+		"Add channels to channel list"
+		selectionData = getSelectedLayer().findSelection()
+		geo = selectionData[0]
+		cur_chan = selectionData[1]
+		chan_list = sorted(geo.channelList(), key=lambda x: unicode.lower( x.name() ) )
 		
+		for channel in chan_list:
+			shaderChannel = channel.isShaderStack()
+			if channel is cur_chan:
+				pass
+			else:
+				if not shaderChannel:
+					channel_list.addItem(channel.name())
+					channel_list.item(channel_list.count() - 1).setData(USER_ROLE, channel)
+		
+		return channel_list
+
+# ------------------------------------------------------------------------------
+
+    def updateChannelFilter(self,channel_filter_box, channel_list):
+        "For each item in the channel list display, set it to hidden if it doesn't match the filter text."
+        
+        match_words = channel_filter_box.text().lower().split()
+       
+        for item_index in range(channel_list.count()):
+            item = channel_list.item(item_index)
+            item_text_lower = item.text().lower()
+            matches = all([word in item_text_lower for word in match_words])
+            item.setHidden(not matches)
+    
+    
+# ------------------------------------------------------------------------------
+   
+    def selectedChannel(self,channel_list):
+        "get channel selection"
+        
+        multiSelection = []
+        for item in channel_list.selectedItems():
+            multiSelection.append(item.data(USER_ROLE))
+
+        return multiSelection
+
+
+    
+    def runCreate(self,mode,channel_list,invert):
+        "execute channel layer creation"
+        sourceChannel = self.selectedChannel(channel_list)
+        makeChannelLayer(sourceChannel,mode,invert)
+        self.close()
+
+
+# ------------------------------------------------------------------------------    
+# The following are used to find selections no matter where in the Mari Interface:
+# returnTrue(),cl_getLayerList(),cl_findLayerSelection()
+# 
+# This is to support a) Layered Shader Stacks b) deeply nested stacks (maskstack,adjustment stacks),
+# as well as cases where users are working in pinned or docked channels without it being the current channel
+# ------------------------------------------------------------------------------
+
+
+class getSelectedLayer():
+    """Searches for Layer Selection in Substacks and searches for current channel if currentChannel is not the            
+    selected one (when a channel is opened as floating or pinned palette)"""
+
+    def __init__(self):
+        curGeo = None
+        curChannel = None
+        curLayer = None
+          
+
+    def findSelection(self):
+        """Searches for Layer Selection in Substacks and searches for current channel if currentChannel is not the            
+        selected one (when a channel is opened as floating or pinned palette)"""
+
+        curGeo = mari.current.geo()
+        curChannel = mari.current.channel()
+        curLayer = mari.current.layer()
+        channels = curGeo.channelList()
+
+        layers = ()
+        curSelList = []
+        chn_layerList = ()
+        
+        layerSelect = False
+         
+        if  curLayer.isSelected():
+            chn_layerList = curChannel.layerList()
+            layers = self.cl_getLayerList(chn_layerList,self.cl_returnTrue)
+            
+            for layer in layers:
+        
+                if layer.isSelected():
+                    curSelList.append(layer)
+                    layerSelect = True       
+        else:
+        
+            for channel in channels:
+                
+                chn_layerList = channel.layerList()
+                layers = self.cl_getLayerList(chn_layerList,self.cl_returnTrue)
+            
+                for layer in layers:
+        
+                    if layer.isSelected():
+                        curLayer = layer
+                        curChannel = channel
+                        curSelList.append(layer)
+                        layerSelect = True
+        
+        if not layerSelect:
+            mari.utils.message('No Layer Selection found. \n \n Please select at least one Layer.')
+ 
+        return curGeo,curChannel,curLayer,curSelList               
+
+
+
+    def cl_returnTrue(self,layer):
+        """Returns True for any object passed to it."""
+        return True
+
+
+
+    def cl_getLayerList(self,layer_list, criterionFn):
+        """Returns a list of all of the layers in the stack that match the given criterion function, including substacks."""
+        matching = []
+        for layer in layer_list:
+            if criterionFn(layer):
+                matching.append(layer)
+            if hasattr(layer, 'layerStack'):
+                matching.extend(self.cl_getLayerList(layer.layerStack().layerList(), criterionFn))
+            if layer.hasMaskStack():
+                matching.extend(self.cl_getLayerList(layer.maskStack().layerList(), criterionFn))
+            if hasattr(layer, 'hasAdjustmentStack') and layer.hasAdjustmentStack():
+                matching.extend(self.cl_getLayerList(layer.adjustmentStack().layerList(), criterionFn))
+            
+        return matching
+
+# ------------------------------------------------------------------------------
+

@@ -44,6 +44,8 @@ Channels created by layeredShader stacks will no longer appear in the list
 
 ######Channel Layer / Channel Layer Mask / Channel Layer Mask (grouped)
 
+Channel Layer Selection has a new Interface, giving alphabetical channel sorting and allowing for multiSelection.
+
 "Channel Layer" + "Channel Layer Mask" now works with layeredShaders
 
 "Channel Layer Mask" now respects existing masks or mask stacks on creation by converting simple masks
