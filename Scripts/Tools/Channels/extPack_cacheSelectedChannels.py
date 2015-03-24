@@ -1,13 +1,13 @@
 # ------------------------------------------------------------------------------
-# Cache Selected Channels
+# Cache/Uncache Selected Channels
 # ------------------------------------------------------------------------------
-# Gives the user a UI to select Channels to cache. Caching is done from the topmost layer
-# of each layerstack. If items are already cached within they will be encapsulated in the second cache.
+# Gives the user a UI to select Channels to cache or uncache.
+# Additional options give consideration to shared layers & channels.
+# Uncaching supports 'deep uncaching' of nested caches
 # ------------------------------------------------------------------------------
 # Written by Jens Kafitz, 2015 using UI Elements from Jorel Latraille, 2014
 # ------------------------------------------------------------------------------
 # http://mari.ideascale.com
-
 # ------------------------------------------------------------------------------
 # DISCLAIMER & TERMS OF USE:
 #
@@ -50,6 +50,21 @@ version = "0.01"
 USER_ROLE = 32          # PySide.Qt.UserRole
 
 # ------------------------------------------------------------------------------
+
+# ----------------------------------------------
+# Main UI Class:
+# cacheSelectedChannelsGUI
+#       __init__ : UI
+#       populateChannelList: Add channels to UI
+#       _cacheMode: Call if Caching Button is pressed, forwards to cacheUncache() class
+#       _uncacheMode: Call if Uncaching Button is pressed, forwards to cacheUncache() class
+#       _ignoreSharedLayers: Checks state of UI Checbox
+#       _ignoreCachedLayers: Checks state of UI Checbox
+#       _ignoreSharedChannels: Checks state of UI Checbox
+#       _deepUncache: Checks state of UI Checbox
+# ----------------------------------------------
+
+
 class cacheSelectedChannelsGUI(QtGui.QDialog):
     "Create main UI."
     def __init__(self, parent=None):
@@ -144,7 +159,7 @@ class cacheSelectedChannelsGUI(QtGui.QDialog):
         top_group_layout.addLayout(top_layout)
         top_group.setLayout(top_group_layout)
 
-# -----------------------------------------------------------------------------------------------------
+
         #Add ObjectList layout and check boxes
         objectList_layout = QtGui.QGridLayout()
 
@@ -168,7 +183,7 @@ class cacheSelectedChannelsGUI(QtGui.QDialog):
         self.Cache_ignoreSharedChannels_box.setChecked(True)
         middle_group_layout.addWidget(self.Cache_ignoreSharedChannels_box,0,2)
 
-        self.Cache_deepUncaching_box = QtGui.QCheckBox('Deep uncache Shared Layers')
+        self.Cache_deepUncaching_box = QtGui.QCheckBox('Deep uncache nested caches')
         self.Cache_deepUncaching_box.setChecked(True)
         middle_group_layout.addWidget(self.Cache_deepUncaching_box,0,3)
 
@@ -204,8 +219,7 @@ class cacheSelectedChannelsGUI(QtGui.QDialog):
         listAllObjects(self.channel_list,currentObjChannels,displayAllObjBox.isChecked())
 
 
-# ------------------------------------------------------------------------------
-
+    #Add Channels to UI Channel List
     def populateChannelList(self,channel_list):
 
         #Populate geo : channel list widget
@@ -246,20 +260,61 @@ class cacheSelectedChannelsGUI(QtGui.QDialog):
 
             return channel_list, currentChannelCount
 
-# ------------------------------------------------------------------------------
+    #queries UI option user selection
+    def _getOptionSelection(self):
+        args_dict_cache = {
+        'ignoreSharedLayers' : self._ignoreSharedLayers(),
+        'ignoreCachedLayers' : self._ignoreCachedLayers(),
+        'ignoreSharedChannels' : self._ignoreSharedChannels(),
+        }
+        args_dict_uncache = {
+        'deepUncache' : self._deepUncache()
+        }
+        return args_dict_cache,args_dict_uncache
 
+    # caching execution stepping stone function
     def _cacheMode(self):
         currentChannels  =  self.cache_list.currentChannels()
-        cacheUncache().cache_selection(currentChannels)
+        options = self._getOptionSelection()
+        cacheUncache().cache_selection(currentChannels,options[0])
         self.accept()
 
-
+    # uncaching execution stepping stone function
     def _uncacheMode(self):
         currentChannels  =  self.cache_list.currentChannels()
-        cacheUncache().uncache_selection(currentChannels)
+        options = self._getOptionSelection()
+        cacheUncache().uncache_selection(currentChannels,options[1])
         self.accept()
 
+
+    #Get CacheSharedLayers individually box (bool)
+    def _ignoreSharedLayers(self):
+        return self.Cache_ignoreSharedLayers_box.isChecked()
+
+    #Get Skip existing cached layers box (bool)
+    def _ignoreCachedLayers(self):
+        return self.Cache_ignoreCachedLayers_box.isChecked()
+
+    #Get Skip caching of shared channels box (bool)
+    def _ignoreSharedChannels(self):
+        return self.Cache_ignoreSharedChannels_box.isChecked()
+
+    #Get deep uncache nested caches box (bool)
+    def _deepUncache(self):
+        return self.Cache_deepUncaching_box.isChecked()
+
 # ------------------------------------------------------------------------------
+
+
+# ----------------------------------------------
+# ChannelsToCacheList:
+#       __init__
+#       currentChannels: Parses final channel selection from UI to cacheUncache()
+#       addChannels: Adds Channels from ChannelList UI to ChannelsSelectedUI element
+#       removeChannels: Removes Channels from ChannelsSelectedUI
+# ----------------------------------------------
+
+
 class ChannelsToCacheList(QtGui.QListWidget):
     "Stores a list of operations to perform."
 
@@ -294,6 +349,12 @@ class ChannelsToCacheList(QtGui.QListWidget):
             self.takeItem(index)
 
 # ------------------------------------------------------------------------------
+
+
+# ----------------------------------------------
+#  Updates Channel List in UI based on Filter Text Box
+# ----------------------------------------------
+
 def updateChannelFilter(Channel_filter_box, channel_list):
     "For each item in the Channel list display, set it to hidden if it doesn't match the filter text."
     match_words = Channel_filter_box.text().lower().split()
@@ -305,6 +366,27 @@ def updateChannelFilter(Channel_filter_box, channel_list):
 
 
 # ------------------------------------------------------------------------------
+
+# ----------------------------------------------
+#  Updates ChannelToCache List in UI based on Filter Text Box
+# ----------------------------------------------
+
+def updateCacheFilter(cache_filter_box, cache_list):
+    "For each item in the cache list display, set it to hidden if it doesn't match the filter text."
+    match_words = cache_filter_box.text().lower().split()
+    for item_index in range(cache_list.count()):
+        item = cache_list.item(item_index)
+        item_text_lower = item.text().lower()
+        matches = all([word in item_text_lower for word in match_words])
+        item.setHidden(not matches)
+
+# ------------------------------------------------------------------------------
+
+# ----------------------------------------------
+#  Updates Channel List in UI based on listAllObjects Checkbox
+# ----------------------------------------------
+
+
 def listAllObjects(channel_list, cur_obj_channels, showAll):
     """For each item in the channel list display, set it to hidden if it doesn't match current Object."""
 
@@ -323,78 +405,97 @@ def listAllObjects(channel_list, cur_obj_channels, showAll):
 
 # ------------------------------------------------------------------------------
 
-def updateCacheFilter(cache_filter_box, cache_list):
-    "For each item in the cache list display, set it to hidden if it doesn't match the filter text."
-    match_words = cache_filter_box.text().lower().split()
-    for item_index in range(cache_list.count()):
-        item = cache_list.item(item_index)
-        item_text_lower = item.text().lower()
-        matches = all([word in item_text_lower for word in match_words])
-        item.setHidden(not matches)
 
-# ------------------------------------------------------------------------------
+# ----------------------------------------------
+# Main Class responsible for Caching/Uncaching
+# cacheUncache:
+#       __init__
+#       cache_selection: Called when Cache Button is pressed, caches based on options selected
+#       uncache_selection: Called when UnCache Button is pressed, uncaches based on options selected
+#
+# ----------------------------------------------
 
 class cacheUncache():
     "Caches or Uncaches selection"
-    def _init_(self,currentChannels):
+    def _init_(self,currentChannels,options):
         channelsToDo = currentChannels
+        options = options
 
-    def cache_selection(self,currentChannels):
+    def cache_selection(self,currentChannels,CacheOptions):
         " Caches selection"
-
-        mari.history.startMacro('Cache Selected Channels')
 
         Channels_to_cache = currentChannels
 
-        for Channel in Channels_to_cache:
+        mari.history.startMacro('Cache Selected Channels')
+
+      # Checking if any options are enabled, if none just run caching normally
+      customOptionsOff = True
+        for key,value in list(CacheOptions.items()):
+            if value:
+                customOptionsOff = False
+
+        if customOptionsOff:
+
+            for Channel in Channels_to_cache:
+                geo = Channel.geoEntity()
+                chanName = Channel.name()
+
+                try:
+                    currentLayer = Channel.currentLayer()
+                    currentLayer.setSelected(False)
+                    layerList = Channel.layerList()
+                    layerList[0].setSelected(True)
+                    layerList[0].setCachedUpToHere(True)
+
+                except Exception:
+                    pass
+                    print "Channel " + chanName + " could not be cached"
 
 
-            geo = Channel.geoEntity()
-            chanName = Channel.name()
-
-            try:
-                currentLayer = Channel.currentLayer()
-                currentLayer.setSelected(False)
-                layerList = Channel.layerList()
-                layerList[0].setSelected(True)
-                layerList[0].setCachedUpToHere(True)
-
-
-            except Exception:
-                pass
-                print "Channel " + chanName + " could not be cached"
 
         mari.history.stopMacro()
 
 
-    def uncache_selection(self,currentChannels):
+    def uncache_selection(self,currentChannels,UncacheOptions):
         " UnCaches selection"
-
-
-        mari.history.startMacro('Uncache Selected Channels')
 
         Channels_to_cache = currentChannels
 
-        for Channel in Channels_to_cache:
-
-            geo = Channel.geoEntity()
-            chanName = Channel.name()
-
-            try:
-                currentLayer = Channel.currentLayer()
-                currentLayer.setSelected(False)
-                layerList = Channel.layerList()
-                layerList[0].setSelected(True)
-                layerList[0].setCachedUpToHere(False)
+        mari.history.startMacro('Uncache Selected Channels')
 
 
-            except Exception:
-                pass
-                print "Channel " + chanName + " could not be uncached"
+      # Checking if any options are enabled, if none just run caching normally
+        customOptionsOff = True
+        for key,value in list(UncacheOptions.items()):
+            if value:
+                customOptionsOff = False
+
+        if customOptionsOff:
+
+            for Channel in Channels_to_cache:
+                geo = Channel.geoEntity()
+                chanName = Channel.name()
+
+                try:
+                    currentLayer = Channel.currentLayer()
+                    currentLayer.setSelected(False)
+                    layerList = Channel.layerList()
+                    layerList[0].setSelected(True)
+                    layerList[0].setCachedUpToHere(False)
+
+                except Exception:
+                    pass
+                    print "Channel " + chanName + " could not be uncached"
 
         mari.history.stopMacro()
 
 # ------------------------------------------------------------------------------
+
+# ----------------------------------------------
+#  Checks Project State, Mari Version, Channel Count mininum
+# ----------------------------------------------
+
+
 
 def isProjectSuitable():
     "Checks project state."
@@ -420,15 +521,20 @@ def isProjectSuitable():
         return False
 
 # ------------------------------------------------------------------------------
+
+# ----------------------------------------------
+#  Convenience Function to call UI
+# ----------------------------------------------
+
 def cacheSelectedChannels():
     "Cache selected Channels."
     if not isProjectSuitable():
         return
 
-
     #Create dialog and execute accordingly
     cacheSelectedChannelsGUI().exec_()
 
+# ------------------------------------------------------------------------------
 
 
 # cacheSelectedChannels()
