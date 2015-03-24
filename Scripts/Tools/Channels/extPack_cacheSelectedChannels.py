@@ -71,17 +71,25 @@ class cacheSelectedChannelsGUI(QtGui.QDialog):
         super(cacheSelectedChannelsGUI, self).__init__(parent)
 
         #Set window title and create a main layout
-        self.setFixedSize(1000, 600)
+        self.setFixedSize(800, 600)
         # self.setSizePolicy(QSizePolicy:Expanding, QSizePolicy::Expanding)
         self.setWindowTitle("Cache Channel Selection")
+
+        #Create overall ui layout
         main_layout = QtGui.QVBoxLayout()
+
+        #Create layout for top section (channel selection)
+        top_layout = QtGui.QHBoxLayout()
+
+        #Create layout for bottom section (option selection)
+        checkbox_layout = QtGui.QHBoxLayout()
+
+        #Layout groups
         top_group = QtGui.QGroupBox()
         objectList_group = QtGui.QGroupBox()
-        middle_group = QtGui.QGroupBox()
+        checkbox_group = QtGui.QGroupBox()
         button_group = QtGui.QGroupBox()
 
-        #Create layout for middle section
-        top_layout = QtGui.QHBoxLayout()
 
         #Create Channel layout, label, and widget. Finally populate.
         Channel_layout = QtGui.QVBoxLayout()
@@ -155,45 +163,58 @@ class cacheSelectedChannelsGUI(QtGui.QDialog):
 
         # Add to top group
         top_group_layout = QtGui.QVBoxLayout()
-
         top_group_layout.addLayout(top_layout)
         top_group.setLayout(top_group_layout)
 
-
         #Add ObjectList layout and check boxes
         objectList_layout = QtGui.QGridLayout()
-
         displayAllObjBox = QtGui.QCheckBox('List all Objects')
         displayAllObjBox.clicked.connect(lambda: listAllObjects(self.channel_list,currentObjChannels,displayAllObjBox.isChecked()))
         objectList_layout.addWidget(displayAllObjBox)
         objectList_group.setLayout(objectList_layout)
 
-        #Add middle group layout and check boxes
-        middle_group_layout = QtGui.QGridLayout()
 
+        # Cache Checkbox Options Layout
+        CacheOpt_layout = QtGui.QGridLayout()
         self.Cache_ignoreSharedLayers_box = QtGui.QCheckBox('Cache Shared Layers individually')
         self.Cache_ignoreSharedLayers_box.setChecked(True)
-        middle_group_layout.addWidget(self.Cache_ignoreSharedLayers_box,0,0)
+        CacheOpt_layout.addWidget(self.Cache_ignoreSharedLayers_box,0,0)
+
+        self.Cache_ignoreSharedChannels_box = QtGui.QCheckBox('Skip Shared Channels')
+        self.Cache_ignoreSharedChannels_box.setChecked(True)
+        CacheOpt_layout.addWidget(self.Cache_ignoreSharedChannels_box,1,0)
 
         self.Cache_ignoreCachedLayers_box = QtGui.QCheckBox('Skip existing Cached Layers')
         self.Cache_ignoreCachedLayers_box.setChecked(True)
-        middle_group_layout.addWidget(self.Cache_ignoreCachedLayers_box,0,1)
+        CacheOpt_layout.addWidget(self.Cache_ignoreCachedLayers_box,2,0)
 
-        self.Cache_ignoreSharedChannels_box = QtGui.QCheckBox('Skip caching of Shared Channels')
-        self.Cache_ignoreSharedChannels_box.setChecked(True)
-        middle_group_layout.addWidget(self.Cache_ignoreSharedChannels_box,0,2)
+        # Cache Options Surround labeled Group Box
+        cacheGroupBox = QtGui.QGroupBox("Cache Options")
+        cacheGroupBox.setLayout(CacheOpt_layout)
 
+        # UnCache Checkbox Options Layout
+        UncacheOpt_layout = QtGui.QGridLayout()
         self.Cache_deepUncaching_box = QtGui.QCheckBox('Deep uncache nested caches')
         self.Cache_deepUncaching_box.setChecked(True)
-        middle_group_layout.addWidget(self.Cache_deepUncaching_box,0,3)
+        UncacheOpt_layout.addWidget(self.Cache_deepUncaching_box,0,2)
 
-        middle_group.setLayout(middle_group_layout)
+        # UnCache Options Surrounding labeled Group Box
+        uncacheGroupBox = QtGui.QGroupBox("Uncache Options")
+        uncacheGroupBox.setLayout(UncacheOpt_layout)
 
+
+        # Cache/Uncache labeled GroupBox Layout added to groupbox
+        groupbox_layout = QtGui.QGridLayout()
+        groupbox_layout.addWidget(cacheGroupBox,0,0)
+        groupbox_layout.addWidget(uncacheGroupBox,0,1)
+
+        checkbox_group.setLayout(groupbox_layout)
 
         #Add widget groups to main layout
         main_layout.addWidget(top_group)
         main_layout.addWidget(objectList_group)
-        main_layout.addWidget(middle_group)
+        main_layout.addWidget(checkbox_group)
+
 
         #Add Button group layout and check boxes
         button_group_layout = QtGui.QHBoxLayout()
@@ -429,7 +450,7 @@ class cacheUncache():
         mari.history.startMacro('Cache Selected Channels')
 
       # Checking if any options are enabled, if none just run caching normally
-      customOptionsOff = True
+        customOptionsOff = True
         for key,value in list(CacheOptions.items()):
             if value:
                 customOptionsOff = False
