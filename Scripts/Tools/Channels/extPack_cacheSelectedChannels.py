@@ -77,10 +77,8 @@ class cacheSelectedChannelsGUI(QtGui.QDialog):
 
         #Create overall ui layout
         main_layout = QtGui.QVBoxLayout()
-
         #Create layout for top section (channel selection)
         top_layout = QtGui.QHBoxLayout()
-
         #Create layout for bottom section (option selection)
         checkbox_layout = QtGui.QHBoxLayout()
 
@@ -89,7 +87,6 @@ class cacheSelectedChannelsGUI(QtGui.QDialog):
         objectList_group = QtGui.QGroupBox()
         checkbox_group = QtGui.QGroupBox()
         button_group = QtGui.QGroupBox()
-
 
         #Create Channel layout, label, and widget. Finally populate.
         Channel_layout = QtGui.QVBoxLayout()
@@ -169,6 +166,7 @@ class cacheSelectedChannelsGUI(QtGui.QDialog):
         #Add ObjectList layout and check boxes
         objectList_layout = QtGui.QGridLayout()
         displayAllObjBox = QtGui.QCheckBox('List all Objects')
+        displayAllObjBox.setToolTip('Show all Channels for All Objects in Project')
         displayAllObjBox.clicked.connect(lambda: listAllObjects(self.channel_list,currentObjChannels,displayAllObjBox.isChecked()))
         objectList_layout.addWidget(displayAllObjBox)
         objectList_group.setLayout(objectList_layout)
@@ -178,13 +176,21 @@ class cacheSelectedChannelsGUI(QtGui.QDialog):
         CacheOpt_layout = QtGui.QGridLayout()
         self.Cache_ignoreSharedLayers_box = QtGui.QCheckBox('Cache Shared Layers individually')
         self.Cache_ignoreSharedLayers_box.setChecked(True)
+        self.Cache_ignoreSharedLayers_box.setToolTip('If a shared layer is encountered, \
+it will be cached on its own to make uncaching the layer easier from any of its shared locations ')
         CacheOpt_layout.addWidget(self.Cache_ignoreSharedLayers_box,0,0)
 
-        self.Cache_ignoreSharedChannels_box = QtGui.QCheckBox('Skip Shared Channels')
+        self.Cache_ignoreSharedChannels_box = QtGui.QCheckBox('Skip Channel Layers')
+        self.Cache_ignoreSharedChannels_box.setToolTip('When ON, \
+the contents of the channel layer won''t be cached. Caching will be done \
+above and below the channel layer')
         self.Cache_ignoreSharedChannels_box.setChecked(True)
         CacheOpt_layout.addWidget(self.Cache_ignoreSharedChannels_box,1,0)
 
-        self.Cache_ignoreCachedLayers_box = QtGui.QCheckBox('Skip existing Cached Layers')
+        self.Cache_ignoreCachedLayers_box = QtGui.QCheckBox('Skip existing cached Layers')
+        self.Cache_ignoreCachedLayers_box.setToolTip('When ON, \
+existing caches in the stack won''t be nested into a new cache. Caching will be done \
+above and below the existing cache')
         self.Cache_ignoreCachedLayers_box.setChecked(True)
         CacheOpt_layout.addWidget(self.Cache_ignoreCachedLayers_box,2,0)
 
@@ -194,9 +200,21 @@ class cacheSelectedChannelsGUI(QtGui.QDialog):
 
         # UnCache Checkbox Options Layout
         UncacheOpt_layout = QtGui.QGridLayout()
-        self.Cache_deepUncaching_box = QtGui.QCheckBox('Deep uncache nested caches')
-        self.Cache_deepUncaching_box.setChecked(True)
-        UncacheOpt_layout.addWidget(self.Cache_deepUncaching_box,0,2)
+        self.Cache_deepUncaching_box = QtGui.QCheckBox('Uncache nested caches')
+        self.Cache_deepUncaching_box.setToolTip('When ON, \
+if another cache is found within the primary cache that will be uncached as well until the layer is live again')
+        self.Cache_deepUncaching_box.setChecked(False)
+        self.Cache_deepUncaching_box.clicked.connect(lambda: self._toggleSkipSharedLayersBox(self.Cache_deepUncaching_box.isChecked()))
+
+        UncacheOpt_layout.addWidget(self.Cache_deepUncaching_box,0,1)
+
+        self.Cache_UncacheSharedLayers_box = QtGui.QCheckBox('Skip shared Layers')
+        self.Cache_UncacheSharedLayers_box.setToolTip('When ON, \
+nested caches are ignored on shared layers. Requires ''Uncache nested caches'' to be on')
+        self.Cache_UncacheSharedLayers_box.setChecked(True)
+        self.Cache_UncacheSharedLayers_box.setEnabled(False)
+
+        UncacheOpt_layout.addWidget(self.Cache_UncacheSharedLayers_box,1,1)
 
         # UnCache Options Surrounding labeled Group Box
         uncacheGroupBox = QtGui.QGroupBox("Uncache Options")
@@ -236,8 +254,18 @@ class cacheSelectedChannelsGUI(QtGui.QDialog):
 
         self.setLayout(main_layout)
 
+        top_group.isFlat()
+        objectList_group.isFlat()
+        checkbox_group.isFlat()
+        button_group.isFlat()
+
         #calling once to cull the object list, whole thing doesn't really make for a snappy interface appearance
         listAllObjects(self.channel_list,currentObjChannels,displayAllObjBox.isChecked())
+
+    #Toggle Uncache-SkipSharedLayers Checkbox Active/Disabled state
+    def _toggleSkipSharedLayersBox(self,state):
+            self.Cache_UncacheSharedLayers_box.setEnabled(state)
+
 
 
     #Add Channels to UI Channel List
@@ -558,4 +586,4 @@ def cacheSelectedChannels():
 # ------------------------------------------------------------------------------
 
 
-# cacheSelectedChannels()
+cacheSelectedChannels()
