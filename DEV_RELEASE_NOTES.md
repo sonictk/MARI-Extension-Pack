@@ -62,6 +62,9 @@ into a mask stack and adding the channel mask or in case of existing mask stacks
 
 'Mask from Selection' now works with layeredShaders
 
+'Mask from Selection' now works with multiple layer selection, adding one
+mask per layer
+
 'Mask from Selection' now respects existing masks or mask stacks  on creation by converting simple masks
 into a mask stack and adding the channel mask or in case of existing mask stacks adding to it.
 
@@ -132,7 +135,7 @@ Copyright (c) 2015 www.mari.ideascale.com. All Rights Reserved.
 #####ENVIRONMENT PROCEDURALS
 
 ######Texture Scatter UV
-A UV based Texture Bombing Node capable of creating tileable textures on a standard 
+A UV based Texture Bombing Node capable of creating tileable textures on a standard
 Maya Plane. Windows Users please refer to "Known Issues & Workarounds" at the bottom of this page
 for important information to avoid display driver instability during baking.
 
@@ -156,7 +159,7 @@ A complex procedural for creating veins, cracks, crumbled paper looks etc.
 #####BASIC PROCEDURALS
 
 ######Black/White/Grey Constants
-Ever realized how many times you create a constant, then set it to black, white or grey ? 
+Ever realized how many times you create a constant, then set it to black, white or grey ?
 If the answer is : "A lot" then this simple addition of the 3 preconfigured constants will come in handy.
 Press TAB and type !
 
@@ -248,7 +251,7 @@ A new option was added to automatically screenshot all Channels in your project
 
 ######Color Range to Mask
 
-- "Color Range to Mask" now has a basic Grade Module for selected colors. Due to the size + expense 
+- "Color Range to Mask" now has a basic Grade Module for selected colors. Due to the size + expense
   of the node baking or caching is recommended in bigger layer stacks.
 
 - "Enhance Selection" Mode in Color Range to Mask was improved
