@@ -1,3 +1,23 @@
+#Release Notes for MARI EXTENSION PACK 2.2
+Copyright (c) 2015 www.mari.ideascale.com. All Rights Reserved.
+
+##New Features:
+
+######NODEGRAPH:
+
+######Transition Node
+A node to add detail to mask edges
+
+######Procedurals ready for Nodegraph
+
+MARI EXTENSION PACK procedurals have been cleaned for the Nodegraph
+
+A number of MARI EXTENSION PACK procedurals had their paramenters
+exposed as Node Handles to allow node-driven paramenters (Octaves driven
+by another Noise etc.).
+While Node Handles are unmapped, Node Sliders are used.
+While Node Handles are mapped, Node Sliders are ignored.
+
 #Release Notes for MARI EXTENSION PACK 2.1
 Copyright (c) 2015 www.mari.ideascale.com. All Rights Reserved.
 
