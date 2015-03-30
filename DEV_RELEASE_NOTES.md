@@ -16,6 +16,17 @@ update each time.
 
 ##Feature Improvements:
 
+#####ADJUSTMENT LAYERS
+
+######Set Range
+
+The OldMin/OldMax and NewMin/NewMax Options have been converted from the previous range-locked sliders to textboxes to allow for easy input of values
+below 0.0 and over 1.0.
+
+The previous behavior of being able to control values per color channel
+have been removed and replaced with per channel checkboxes.
+
+
 #####ENVIRONMENT PROCEDURALS
 
 ######Axis Projection
