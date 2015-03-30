@@ -52,7 +52,7 @@
         <Input Name="Transition"></Input>
     </Inputs>
     <Attributes>
-     <Attribute Name="Trans_Type" PrettyName="Transition" Type="stringlist">B over A by WhiteToBlack,B over A by Transition,B over A by Pattern,B over A by (Transition*Pattern),B over A by WhiteToBlack,PatternToBlack by Transition,WhiteToPattern by Transition</Attribute>
+     <Attribute Name="Trans_Type" PrettyName="Transition" Type="stringlist">B over A by (PatternToBlack by Transition),B over A by (Transition),B over A by (Pattern),B over A by (Transition*Pattern),B over A by (WhiteToBlack),B over A by (PatternToBlack by Transition),B over A by (WhiteToPattern by Transition)</Attribute>
      <Attribute Name="BlendMode"       PrettyName="Mode"        Group=""         Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
     <Attribute Name="Contrast"  PrettyName="Contrast B" Type="double" Min="0.0" Max="10.0">3.0</Attribute>
 </Attributes>
