@@ -11,7 +11,7 @@
 == Web: www.mari.ideascale.com
 == Email: MariIdeas@campi3d.com
 ================================================================================
-== Modified Date: June, 15 2014
+== Modified Date: March, 29 2015
 ================================================================================
 == Redistribution and use in source and binary forms, with or without
 == modification, are permitted provided that the following conditions are met:
@@ -46,7 +46,12 @@
     <DefaultName>FBM+</DefaultName>
     <Category>Procedural/Custom/FBM/</Category>
     <Inputs>
-        <Input Name="Input"/>
+        <Input Name="Size" ></Input>
+        <Input Name="Octaves" ></Input>
+        <Input Name="Lacunarity" ></Input>
+        <Input Name="Offset" ></Input>
+        <Input Name="Amplitude" ></Input>
+        <Input Name="Gain" ></Input>
     </Inputs>
     <Attributes>
         <!--===============================================================================================================-->
@@ -54,13 +59,13 @@
         <Attribute Name="colorB" PrettyName="Color B" Group="Color" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(0,0,0,1)</Attribute>
         <!--===============================================================================================================-->
         <Attribute Name="Size" Group="Size" Type="double" Min="0" Max="2" Description="The general feature size">0.5</Attribute>
-        <Attribute Name="octaves" Group="Size" Type="float" Min="0" Max="8" Description="Visual complexitity of noise">3</Attribute>
-        <Attribute Name="lacunarity" Group="Size" Type="double" Min="0" Max="8" Description="Frequency spacing between successive octaves">4</Attribute>
-        <Attribute Name="FOffset" PrettyName="Offset" Group="Size" Type="double" Min="0.0001" Max="1" Description="Frequency Offset">0.5</Attribute>
+        <Attribute Name="Octaves" Group="Size" Type="float" Min="0" Max="8" Description="Visual complexitity of noise">3</Attribute>
+        <Attribute Name="Lacunarity" Group="Size" Type="double" Min="0" Max="8" Description="Frequency spacing between successive octaves">4</Attribute>
+        <Attribute Name="Offset" PrettyName="Offset" Group="Size" Type="double" Min="0.0001" Max="1" Description="Frequency Offset">0.5</Attribute>
         <Attribute Name="Seed" PrettyName="Seed" Group="Size" Type="double" Min="1" Max="100000" Logarithmic="1" Description="frequency">1</Attribute>
         <!--===============================================================================================================-->
-        <Attribute Name="Amp" PrettyName="amplitude" Group="Modifiers" Type="double" Min="0.0001" Max="1" Description="Scaling factor between successive octaves" >1</Attribute>
-        <Attribute Name="gain" Group="Modifiers" Type="double" Min="0" Max="1" Description="The Contrast of the Noise">1.0</Attribute>
+        <Attribute Name="Amplitude" PrettyName="amplitude" Group="Modifiers" Type="double" Min="0.0001" Max="1" Description="Scaling factor between successive octaves" >1</Attribute>
+        <Attribute Name="Gain" Group="Modifiers" Type="double" Min="0" Max="1" Description="The Contrast of the Noise">1.0</Attribute>
         <Attribute Name="Baseline" Group="Modifiers" Type="double" Min="0" Max="1" Description="After each Noise Routine the Noise gets reprocessed (noise*Baseline+Baseline) to a new Baseline,0 turns this behavior off" >0.5</Attribute>
         <Attribute Name="Absolut" PrettyName="Absolute Values" Group="Modifiers" Type="bool" Min="false" Max="true" Description="By default positive and negative noise values will all be treated as positive making for a denser noise. This will remove any negative noise values">false</Attribute>
         <Attribute Name="Invert" PrettyName="Invert" Group="Modifiers" Type="bool" Min="false" Max="true" Description="Inverts the Noise result before ColorA+B are applied" >false</Attribute>
@@ -92,25 +97,50 @@
     <Contexts>
         <Context Type="NodeGraphView">
             <Inputs>
-                <Input Name="Input"><Pos>0,-50</Pos></Input>
+                <Input Name="Size" ><Pos>-200,-50</Pos></Input>
+                <Input Name="Octaves" ><Pos>-120,-70</Pos></Input>
+                <Input Name="Lacunarity"><Pos>-30,-90</Pos></Input>
+                <Input Name="Offset"><Pos>50,-110</Pos></Input>
+                <Input Name="Amplitude"><Pos>120,-70</Pos></Input>
+                <Input Name="Gain"><Pos>200,-50</Pos></Input>
             </Inputs>
         </Context>
         <Context Type="GLSL">
             <Shader ShaderType='Fragment'>
                 <Inputs>
-                    <Input Name="Input"> <Default>State.Position</Default> </Input>
+                <Input Name="Size" ><Default>vec4(9999.0)</Default></Input>
+                <Input Name="Octaves" ><Default>vec4(9999.0)</Default></Input>
+                <Input Name="Lacunarity" ><Default>vec4(9999.0)</Default></Input>
+                <Input Name="Offset" ><Default>vec4(9999.0)</Default></Input>
+                <Input Name="Amplitude" ><Default>vec4(9999.0)</Default></Input>
+                <Input Name="Gain" ><Default>vec4(9999.0)</Default></Input>
                 </Inputs>
             </Shader>
             <Shader ShaderType='TessEvaluation'>
                 <Inputs>
-                    <Input Name="Input"> <Default>State.Position</Default> </Input>
+                <Input Name="Size" ><Default>vec4(9999.0)</Default></Input>
+                <Input Name="Octaves" ><Default>vec4(9999.0)</Default></Input>
+                <Input Name="Lacunarity" ><Default>vec4(9999.0)</Default></Input>
+                <Input Name="Offset" ><Default>vec4(9999.0)</Default></Input>
+                <Input Name="Amplitude" ><Default>vec4(9999.0)</Default></Input>
+                <Input Name="Gain" ><Default>vec4(9999.0)</Default></Input>
                 </Inputs>
             </Shader>
             <Shader>
                 <Body><![CDATA[
 
+
+                // chechking if Nodegraph Handles are mapped
+                float Size = ( #Size == vec4(9999.0) ) ? $Size : #Size.r ;
+                float Octaves = ( #Octaves == vec4(9999.0) ) ? $Octaves : #Octaves.r ;
+                float Lacunarity = ( #Lacunarity == vec4(9999.0) ) ? $Lacunarity : #Lacunarity.r ;
+                float Offset = ( #Offset == vec4(9999.0) ) ? $Offset : #Offset.r ;
+                float Amplitude =( #Amplitude == vec4(9999.0) ) ? $Amplitude : #Amplitude.r ;
+                float Gain = ( #Gain == vec4(9999.0) ) ? $Gain : #Gain.r ;
+
+
                 // compensate for scene size by applying eponential growth
-                float size_pow = (pow(10000.0,$Size*$Size)-1.0) + 0.0001;
+                float size_pow = (pow(10000.0,Size*Size)-1.0) + 0.0001;
 
                 // 3d space surface position
                 // build the needed vector attributes for position transform, offset max growths exponentially
@@ -133,7 +163,7 @@
                 P = mix(P,vec3(InputScaleUV,1.0),float($uv));
 
                 vec3 scaled_P = P / size_pow;
-                float noise_val = smoothfBm(scaled_P,$octaves,$lacunarity,$gain,$Amp,$FOffset);
+                float noise_val = smoothfBm(scaled_P,Octaves,Lacunarity,Gain,Amplitude,Offset);
                 noise_val = mix(noise_val,abs(noise_val),float($Absolut));
                 float Baseline = 1.0 - $Baseline;
 
