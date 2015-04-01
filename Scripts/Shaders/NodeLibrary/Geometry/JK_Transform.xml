@@ -79,7 +79,7 @@
         <Context Type="GLSL">
             <Shader ShaderType='Fragment'>
                 <Inputs>
-                <Input Name="Coordinates" ><Default>vec4(9999.0)</Default></Input>
+                <Input Name="Coordinates" ><Default>vec4(1234567891.0)</Default></Input>
                 <Input Name="Scale" ><Default>vec4(9999.0)</Default></Input>
                 <Input Name="Rotate" ><Default>vec4(9999.0)</Default></Input>
                 <Input Name="Translate" ><Default>vec4(9999.0)</Default></Input>
@@ -87,7 +87,7 @@
             </Shader>
             <Shader ShaderType='TessEvaluation'>
                 <Inputs>
-                <Input Name="Coordinates" ><Default>vec4(9999.0)</Default></Input>
+                <Input Name="Coordinates" ><Default>vec4(1234567891.0)</Default></Input>
                 <Input Name="Scale" ><Default>vec4(9999.0)</Default></Input>
                 <Input Name="Rotate" ><Default>vec4(9999.0)</Default></Input>
                 <Input Name="Translate" ><Default>vec4(9999.0)</Default></Input>
@@ -99,7 +99,7 @@
     vec4 Scale = ( #Scale == vec4(9999.0) ) ? vec4( vec3($scaleX,$scaleY,$scaleZ)*vec3($WorldScale),1.0) : #Scale;
     vec4 Rotate = ( #Rotate == vec4(9999.0) ) ? vec4($rotateX,$rotateY,$rotateZ,1.0) : #Rotate;
     vec4 Translate = ( #Translate == vec4(9999.0) ) ? vec4($transX,$transY,$transZ,1.0) : #Translate;
-    vec4 coord = ( #Coordinates == vec4(9999.0) ) ? vec4(State.Position,1.0) : #Coordinates;
+    vec4 coord = ( #Coordinates == vec4(1234567891.0) ) ? vec4(State.Position,1.0) : #Coordinates;
 
     Output =  vec4( positionTransform(coord.xyz,Translate.xyz,Rotate.xyz,Scale.xyz),1.0);
 
