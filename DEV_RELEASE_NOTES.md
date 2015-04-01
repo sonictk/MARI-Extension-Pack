@@ -3,12 +3,18 @@ Copyright (c) 2015 www.mari.ideascale.com. All Rights Reserved.
 
 ##New Features:
 
-######NODEGRAPH:
+#####NODEGRAPH:
 
 ######Transition Node
 A node to add detail to mask edges
 
-######Procedurals ready for Nodegraph
+######Transform Coordinates
+A node to transform object coordinates and normals
+Many Extension Pack Procedurals have this built in but this node
+can be used as a central control hub to modify multiple nodes at once.
+
+
+######Procedurals ready for Nodegraph _WIP
 
 MARI EXTENSION PACK procedurals have been cleaned for the Nodegraph
 
