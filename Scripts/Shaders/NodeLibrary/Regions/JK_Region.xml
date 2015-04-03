@@ -1,0 +1,197 @@
+<!--
+================================================================================
+== Mari Ideascale Procedural Library
+== Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
+================================================================================
+== File: JK_Region.xml
+== Description: Material Region to modulate values throughout the flow of the graph
+================================================================================
+== Author: Jens Kafitz | Mari Ideascale
+== Web: www.campi3d.com
+== Web: www.mari.ideascale.com
+== Email: MariIdeas@campi3d.com
+================================================================================
+== Modified Date: April, 3 2015
+================================================================================
+== Redistribution and use in source and binary forms, with or without
+== modification, are permitted provided that the following conditions are met:
+==
+== 1. Redistributions of source code must retain the above copyright
+== notice, this list of conditions and the following disclaimer.
+==
+== 2. Redistributions in binary form must reproduce the above copyright
+== notice, this list of conditions and the following disclaimer in the
+== documentation and/or other materials provided with the distribution.
+==
+== 3. Neither the name of the copyright holder nor the names of its
+== contributors may be used to endorse or promote products derived from
+== this software without specific prior written permission.
+==
+== THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+== IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+== THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+== PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+== CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+== EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+== PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+== OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+== WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+== OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+== ADVISED OF HE POSSIBILITY OF SUCH DAMAGE.
+================================================================================
+-->
+
+<Node>
+    <ID>JK_Region</ID>
+    <DefaultName>Material Region</DefaultName>
+    <Category>Layer/Custom/</Category>
+    <Inputs>
+        <Input Name="IN_A" PreferredInput='1'/>
+        <Input Name="IN_B" PreferredInput='2'/>
+        <Input Name="IN_C" PreferredInput='3'/>
+        <Input Name="IN_D" PreferredInput='4'/>
+        <Input Name="IN_E" PreferredInput='4'/>
+        <Input Name="RegionMask" />
+        <Input Name="diffuse" />
+        <Input Name="specRough"/>
+        <Input Name="specRefl"/>
+        <Input Name="Disp"/>
+        <Input Name="Bump"/>
+        <Input Name="Add_A"/>
+        <Input Name="Add_B" />
+    </Inputs>
+    <Outputs>
+        <Output Name="OUT_A" />
+        <Output Name="OUT_B" />
+        <Output Name="OUT_C" />
+        <Output Name="OUT_D" />
+        <Output Name="OUT_E" />
+    </Outputs>
+    <Attributes>
+    <!--===============================================================================================================-->
+    <Attribute Name="A_Use" PrettyName="On/Off" Group="Handle Diffuse (RGBA)" Type="bool" Min="false" Max="true">false</Attribute>
+    <Attribute Name="A_color" PrettyName="Color" Group="Handle Diffuse (RGBA)" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(1,1,1,1)</Attribute>
+    <Attribute Name="A_float" PrettyName="Float" Group="Handle Diffuse (RGBA)" Type="double">1.0</Attribute>
+    <Attribute Name="A_mix" PrettyName="Mix" Group="Handle Diffuse (RGBA)" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
+    <Attribute Name="A_BlendMode" PrettyName="Mode" Group="Handle Diffuse (RGBA)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
+    <Attribute Name="A_clamp" PrettyName="Clamp" Group="Handle Diffuse (RGBA)" Type="bool" Min="false" Max="true">true</Attribute>
+     <!--===============================================================================================================-->
+    <Attribute Name="B_Use" PrettyName="On/Off" Group="Handle Roughness (float)" Type="bool" Min="false" Max="true">false</Attribute>
+    <Attribute Name="B_color" PrettyName="Color" Group="Handle Roughness (float)" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(1,1,1,1)</Attribute>
+    <Attribute Name="B_float" PrettyName="Float" Group="Handle Roughness (float)" Type="double">1.0</Attribute>
+    <Attribute Name="B_mix" PrettyName="Mix" Group="Handle Roughness (float)" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
+    <Attribute Name="B_BlendMode" PrettyName="Mode" Group="Handle Roughness (float)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
+    <Attribute Name="B_clamp" PrettyName="Clamp" Group="Handle Roughness (float)" Type="bool" Min="false" Max="true">true</Attribute>
+    <!--===============================================================================================================-->
+    <Attribute Name="C_Use" PrettyName="On/Off" Group="Handle Reflectance (float)" Type="bool" Min="false" Max="true">false</Attribute>
+    <Attribute Name="C_color" PrettyName="Color" Group="Handle Reflectance (float)" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(1,1,1,1)</Attribute>
+    <Attribute Name="C_float" PrettyName="Float" Group="Handle Reflectance (float)" Type="double">1.0</Attribute>
+    <Attribute Name="C_mix" PrettyName="Mix" Group="Handle Reflectance (float)" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
+    <Attribute Name="C_BlendMode" PrettyName="Mode" Group="Handle Reflectance (float)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
+    <Attribute Name="C_clamp" PrettyName="Clamp" Group="Handle Reflectance (float)" Type="bool" Min="false" Max="true">true</Attribute>
+    <!--===============================================================================================================-->
+    <Attribute Name="D_Use" PrettyName="On/Off" Group="Handle Displacement (float)" Type="bool" Min="false" Max="true">false</Attribute>
+    <Attribute Name="D_color" PrettyName="Color" Group="Handle Displacement (float)" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(1,1,1,1)</Attribute>
+    <Attribute Name="D_float" PrettyName="Float" Group="Handle Displacement (float)" Type="double">1.0</Attribute>
+    <Attribute Name="D_mix" PrettyName="Mix" Group="Handle Displacement (float)" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
+    <Attribute Name="D_BlendMode" PrettyName="Mode" Group="Handle Displacement (float)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
+    <Attribute Name="D_clamp" PrettyName="Clamp" Group="Handle Displacement (float)" Type="bool" Min="false" Max="true">true</Attribute>
+    <!--===============================================================================================================-->
+    <Attribute Name="E_Use" PrettyName="On/Off" Group="Handle Bump/Normal (RGBA)" Type="bool" Min="false" Max="true">false</Attribute>
+    <Attribute Name="E_color" PrettyName="Color" Group="Handle Bump/Normal (RGBA)" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(1,1,1,1)</Attribute>
+    <Attribute Name="E_float" PrettyName="Float" Group="Handle Bump/Normal (RGBA)" Type="double">1.0</Attribute>
+    <Attribute Name="E_mix" PrettyName="Mix" Group="Handle Bump/Normal (RGBA)" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
+    <Attribute Name="E_BlendMode" PrettyName="Mode" Group="Handle Bump/Normal (RGBA)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
+    <Attribute Name="E_clamp" PrettyName="Clamp" Group="Handle Bump/Normal (RGBA)" Type="bool" Min="false" Max="true">true</Attribute>
+    <!--===============================================================================================================-->
+    <Attribute Name="F_Use" PrettyName="On/Off" Group="Handle Additional A (RGBA/float)" Type="bool" Min="false" Max="true">false</Attribute>
+    <Attribute Name="F_color" PrettyName="Color" Group="Handle Additional A (RGBA/float)" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(1,1,1,1)</Attribute>
+    <Attribute Name="F_float" PrettyName="Float" Group="Handle Additional A (RGBA/float)" Type="double">1.0</Attribute>
+    <Attribute Name="F_mix" PrettyName="Mix" Group="Handle Additional A (RGBA/float)" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
+    <Attribute Name="F_BlendMode" PrettyName="Mode" Group="Handle Additional A (RGBA/float)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
+    <Attribute Name="F_Affect" PrettyName="Map to" Group="Handle Additional A (RGBA/float)" Type="stringlist">New,New,Diffuse,Roughness,Reflectance,Displacement,Bump/Normal</Attribute>
+    <Attribute Name="F_clamp" PrettyName="Clamp" Group="Handle Additional A (RGBA/float)" Type="bool" Min="false" Max="true">true</Attribute>
+    <!--===============================================================================================================-->
+    <Attribute Name="G_Use" PrettyName="On/Off" Group="Handle Additional B (RGBA/float)" Type="bool" Min="false" Max="true">false</Attribute>
+    <Attribute Name="G_color" PrettyName="Color" Group="Handle Additional B (RGBA/float)" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(1,1,1,1)</Attribute>
+    <Attribute Name="G_float" PrettyName="Float" Group="Handle Additional B (RGBA/float)" Type="double">1.0</Attribute>
+    <Attribute Name="G_mix" PrettyName="Mix" Group="Handle Additional B (RGBA/float)" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
+    <Attribute Name="G_BlendMode" PrettyName="Mode" Group="Handle Additional B (RGBA/float)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
+    <Attribute Name="G_Affect" PrettyName="Map to" Group="Handle Additional B (RGBA/float)" Type="stringlist">New,New,Diffuse,Roughness,Reflectance,Displacement,Bump/Normal,Additional A</Attribute>
+    <Attribute Name="G_clamp" PrettyName="Clamp" Group="Handle Additional B (RGBA/float)" Type="bool" Min="false" Max="true">true</Attribute>
+    <!--===============================================================================================================-->
+</Attributes>
+
+ <Contexts>
+        <Context Type="NodeGraphView">
+            <Inputs>
+                <Input Name="IN_A"><Pos>-100,-50</Pos></Input>
+                <Input Name="IN_B"><Pos>-50,-90</Pos></Input>
+                <Input Name="IN_C"><Pos>0,-110</Pos></Input>
+                <Input Name="IN_D"><Pos>50,-90</Pos></Input>
+                <Input Name="IN_E"><Pos>100,-50</Pos></Input>
+                <Input Name="RegionMask"><Pos>250,0</Pos></Input>
+
+                <Input Name="diffuse"><Pos>-500,-40</Pos></Input>
+                <Input Name="specRough"><Pos>-500,-20</Pos></Input>
+                <Input Name="specRefl"><Pos>-500,0</Pos></Input>
+                <Input Name="Disp"><Pos>-500,20</Pos></Input>
+                <Input Name="Bump"><Pos>-500,40</Pos></Input>
+                <Input Name="Add_A"><Pos>-500,60</Pos></Input>
+                <Input Name="Add_B"><Pos>-500,80</Pos></Input>
+            </Inputs>
+
+            <Outputs>
+                <Output Name="OUT_A"><Pos>-100,150</Pos></Output>
+                <Output Name="OUT_B"><Pos>-50,90</Pos></Output>
+                <Output Name="OUT_C"><Pos>50,90</Pos></Output>
+                <Output Name="OUT_D"><Pos>100,50</Pos></Output>
+                <Output Name="OUT_E"><Pos>100,50</Pos></Output>
+            </Outputs>
+
+        </Context>
+        <Context Type="GLSL">
+            <Shader ShaderType='Fragment'>
+                <Inputs>
+                <Input Name="IN_A"><Default>vec4(0.0)</Default></Input>
+                <Input Name="IN_B"><Default>vec4(0.0)</Default></Input>
+                <Input Name="IN_C"><Default>vec4(0.0)</Default></Input>
+                <Input Name="IN_D"><Default>vec4(0.0)</Default></Input>
+                <Input Name="IN_E"><Default>vec4(0.0)</Default></Input>
+                <Input Name="RegionMask"><Default>vec4(1.0)</Default></Input>
+                </Inputs>
+
+            </Shader>
+            <Shader ShaderType='TessEvaluation'>
+            </Shader>
+            <Shader>
+                <Body><![CDATA[
+
+            float regionmask = clamp(#RegionMask.r,0.0,1.0);
+
+            vec4 diffuse = $A_BlendMode(#IN_A,#diffuse,regionmask*$A_mix);
+
+            vec4 Roughness = vec4(#IN_B.r,#IN_B.r,#IN_B.r,1.0);
+                 Roughness = $B_BlendMode(Roughness,#specRough,regionmask*$B_mix);
+
+            vec4 Reflectance = vec4(#IN_B.g,#IN_B.g,#IN_B.g,1.0);
+                 Reflectance = $C_BlendMode(Reflectance,#specRefl,regionmask*$C_mix);
+
+            vec4 Disp = vec4(#IN_B.b,#IN_B.b,#IN_B.b,1.0);
+                 Disp = $D_BlendMode(Disp,#Disp,regionmask*$D_mix);
+
+
+            OUT_A = diffuse;
+            OUT_B = vec4(Roughness.r,Reflectance.r,Disp.r,1.0);
+            OUT_C = #IN_C;
+            OUT_D = #IN_D;
+            OUT_E = #IN_E;
+
+
+
+                ]]></Body>
+            </Shader>
+        </Context>
+    </Contexts>
+</Node>
+
