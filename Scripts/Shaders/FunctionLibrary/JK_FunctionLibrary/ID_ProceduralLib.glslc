@@ -137,7 +137,10 @@ vec4 remap(vec4 value, vec4 oldMin, vec4 oldMax, vec4 newMin, vec4 newMax, vec4 
 {
     vec4 old = (value - oldMin) / (oldMax - oldMin);
     vec4 new = ((newMax - newMin) * old) + newMin ;
-    vec4 scale = vec4(new * multiplier);
+    vec4 scale = vec4(
+                        vec3(new * multiplier),
+                        new
+                     );
     return scale;
 }
 
