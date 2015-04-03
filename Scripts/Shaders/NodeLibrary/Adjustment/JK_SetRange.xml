@@ -64,7 +64,7 @@
         <Attribute Name="Red" Type="bool" Group="Channels" Min="true" Max="false">true</Attribute>
         <Attribute Name="Green" Type="bool" Group="Channels" Min="true" Max="false">true</Attribute>
         <Attribute Name="Blue" Type="bool" Group="Channels" Min="true" Max="false">true</Attribute>
-        <Attribute Name="Alpha" Type="bool" Group="Channels" Min="true" Max="false">true</Attribute>
+        <Attribute Name="Alpha" Type="bool" Group="Channels" Min="true" Max="false">false</Attribute>
         <!--===============================================================================================================-->
     </Attributes>
     <Contexts>
