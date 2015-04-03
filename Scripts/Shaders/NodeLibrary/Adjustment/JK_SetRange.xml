@@ -53,13 +53,18 @@
     </Inputs>
     <Attributes>
         <!--===============================================================================================================-->
-        <Attribute Name="oMin" PrettyName="OldMin" Group="" Type="Vector4f" Min="(-1.0,-1.0,-1.0,0.0)" Max="(1.0,1.0,1.0,1.0)" Logarithmic="1">(0.0,0.0,0.0,0.0)</Attribute>
-        <Attribute Name="oMax" PrettyName="OldMax" Group="" Type="Vector4f" Min="(-1.0,-1.0,-1.0,0.0)" Max="(1.0,1.0,1.0,1.0)" Logarithmic="1">(1.0,1.0,1.0,1.0)</Attribute>
-        <Attribute Name="nMin" PrettyName="NewMin" Group="" Type="Vector4f" Min="(-1.0,-1.0,-1.0,0.0)" Max="(1.0,1.0,1.0,1.0)" Logarithmic="1">(0.0,0.0,0.0,0.0)</Attribute>
-        <Attribute Name="nMax" PrettyName="NewMax" Group="" Type="Vector4f" Min="(-1.0,-1.0,-1.0,0.0)" Max="(1.0,1.0,1.0,1.0)" Logarithmic="1">(1.0,1.0,1.0,1.0)</Attribute>
+        <Attribute Name="oMin" PrettyName="OldMin" Group="" Type="float" >0.0</Attribute>
+        <Attribute Name="oMax" PrettyName="OldMax" Group="" Type="float" >1.0</Attribute>
+        <Attribute Name="nMin" PrettyName="NewMin" Group="" Type="float" >0.0</Attribute>
+        <Attribute Name="nMax" PrettyName="NewMax" Group="" Type="float" >1.0</Attribute>
         <!--===============================================================================================================-->
-        <Attribute Name="sMult" PrettyName="MultiplyScale" Group="Extra Attributes" Type="Vector4f" Min="(-25.0,-25.0,-25.0,0.0)" Max="(25.0,25.0,25.0,1.0)" Logarithmic="1">(1.0,1.0,1.0,1.0)</Attribute>
+        <Attribute Name="sMult" PrettyName="MultiplyScale" Group="Extra Attributes" Type="float" >1.0</Attribute>
         <Attribute Name="useClamp" PrettyName="Clamp Values" Group="Extra Attributes" Type="bool" Min="false" Max="true">true</Attribute>
+        <!--===============================================================================================================-->
+        <Attribute Name="Red" Type="bool" Group="Channels" Min="true" Max="false">true</Attribute>
+        <Attribute Name="Green" Type="bool" Group="Channels" Min="true" Max="false">true</Attribute>
+        <Attribute Name="Blue" Type="bool" Group="Channels" Min="true" Max="false">true</Attribute>
+        <Attribute Name="Alpha" Type="bool" Group="Channels" Min="true" Max="false">false</Attribute>
         <!--===============================================================================================================-->
     </Attributes>
     <Contexts>
@@ -75,16 +80,32 @@
                 </Inputs>
                 <Body><![CDATA[
 
-                vec4 old = (#Input.rgba - $oMin) / ($oMax - $oMin);
-                vec4 new = (($nMax - $nMin) * old.rgba) + $nMin ;
-                vec4 scale = vec4(new * $sMult);
+
+
+                vec4 old = (#Input.rgba - vec4($oMin)) / (vec4($oMax) - vec4($oMin));
+                vec4 new = ((vec4($nMax) - vec4($nMin)) * old.rgba) + vec4($nMin) ;
+                vec4 scale = vec4(new * vec4($sMult));
 
                 if ($useClamp == true)
-                {
-                    Output = clamp(scale,vec4(0,0,0,0),vec4(1,1,1,1));
-                }else{
-                    Output = scale;
+                    {
+                    Output = vec4(
+                                  $Red   ? clamp(scale.r,0.0,1.0) : #Input.r,
+                                  $Green ? clamp(scale.g,0.0,1.0) : #Input.g,
+                                  $Blue  ? clamp(scale.b,0.0,1.0) : #Input.b,
+                                  $Alpha ? clamp(scale.a,0.0,1.0) : #Input.a
+                                  );
+
                 }
+
+                else
+                    {
+                    Output = vec4(
+                                  $Red   ? scale.r : #Input.r,
+                                  $Green ? scale.g : #Input.g,
+                                  $Blue  ? scale.b : #Input.b,
+                                  $Alpha ? scale.a : #Input.a
+                                 );
+                    }
 
                 ]]></Body>
             </Shader>
