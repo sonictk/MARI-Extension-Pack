@@ -1,0 +1,163 @@
+<!--
+================================================================================
+== Mari Ideascale Procedural Library
+== Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
+================================================================================
+== File: JK_Region_Base.xml
+== Description: Material Region Base to set start values for Material Region Chain
+================================================================================
+== Author: Jens Kafitz | Mari Ideascale
+== Web: www.campi3d.com
+== Web: www.mari.ideascale.com
+== Email: MariIdeas@campi3d.com
+================================================================================
+== Modified Date: April, 3 2015
+================================================================================
+== Redistribution and use in source and binary forms, with or without
+== modification, are permitted provided that the following conditions are met:
+==
+== 1. Redistributions of source code must retain the above copyright
+== notice, this list of conditions and the following disclaimer.
+==
+== 2. Redistributions in binary form must reproduce the above copyright
+== notice, this list of conditions and the following disclaimer in the
+== documentation and/or other materials provided with the distribution.
+==
+== 3. Neither the name of the copyright holder nor the names of its
+== contributors may be used to endorse or promote products derived from
+== this software without specific prior written permission.
+==
+== THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+== IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+== THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+== PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+== CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+== EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+== PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+== OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+== WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+== OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+== ADVISED OF HE POSSIBILITY OF SUCH DAMAGE.
+================================================================================
+-->
+
+<Node>
+    <ID>JK_Region_Base</ID>
+    <DefaultName>Material Region Base</DefaultName>
+    <Category>Layer/Custom/</Category>
+    <Inputs>
+        <Input Name="diffuse" />
+        <Input Name="specRough"/>
+        <Input Name="specRefl"/>
+        <Input Name="Disp"/>
+        <Input Name="Normal"/>
+        <Input Name="RGBA"/>
+        <Input Name="FLOAT" />
+    </Inputs>
+    <Outputs>
+        <Output Name="OUT_A" />
+        <Output Name="OUT_B" />
+        <Output Name="OUT_C" />
+        <Output Name="OUT_D" />
+    </Outputs>
+    <Attributes>
+    <!--===============================================================================================================-->
+    <Attribute Name="A_color" PrettyName="Color" Group="Handle Diffuse (RGBA)" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(0.0,0.0,0.0,1.0)</Attribute>
+    <Attribute Name="A_float" PrettyName="Float" Group="Handle Diffuse (RGBA)" Type="double">1.0</Attribute>
+    <Attribute Name="A_clamp" PrettyName="Clamp Input" Group="Handle Diffuse (RGBA)" Type="bool" Min="false" Max="true">true</Attribute>
+     <!--===============================================================================================================-->
+    <Attribute Name="B_float" PrettyName="Float" Group="Handle Roughness (float)" Type="double">0.1</Attribute>
+    <Attribute Name="B_clamp" PrettyName="Clamp Input" Group="Handle Roughness (float)" Type="bool" Min="false" Max="true">false</Attribute>
+    <!--===============================================================================================================-->
+    <Attribute Name="C_float" PrettyName="Float" Group="Handle Reflectance (float)" Type="double">0.1</Attribute>
+    <Attribute Name="C_clamp" PrettyName="Clamp Input" Group="Handle Reflectance (float)" Type="bool" Min="false" Max="true">false</Attribute>
+    <!--===============================================================================================================-->
+    <Attribute Name="D_float" PrettyName="Float" Group="Handle Displacement/Bump (float)" Type="double">0.50</Attribute>
+    <Attribute Name="D_clamp" PrettyName="Clamp Input" Group="Handle Displacement/Bump (float)" Type="bool" Min="false" Max="true">false</Attribute>
+    <!--===============================================================================================================-->
+    <Attribute Name="E_color" PrettyName="Color" Group="Handle Normal (RGBA)" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(0.5,0.5,1.0,1.0)</Attribute>
+    <Attribute Name="E_float" PrettyName="Float" Group="Handle Normal (RGBA)" Type="double">1.0</Attribute>
+    <Attribute Name="E_clamp" PrettyName="Clamp Input" Group="Handle Normal (RGBA)" Type="bool" Min="false" Max="true">true</Attribute>
+    <!--===============================================================================================================-->
+    <Attribute Name="F_color" PrettyName="Color" Group="Handle Additional Color (RGBA)" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(1,1,1,1)</Attribute>
+    <Attribute Name="F_float" PrettyName="Float" Group="Handle Additional Color (RGBA)" Type="double">1.0</Attribute>
+    <Attribute Name="F_clamp" PrettyName="Clamp Input" Group="Handle Additional Color (RGBA)" Type="bool" Min="false" Max="true">true</Attribute>
+    <!--===============================================================================================================-->
+    <Attribute Name="G_float" PrettyName="Float" Group="Handle Additional Float (float)" Type="double">1.0</Attribute>
+    <Attribute Name="G_clamp" PrettyName="Clamp Input" Group="Handle Additional Float (float)" Type="bool" Min="false" Max="true">false</Attribute>
+    <!--===============================================================================================================-->
+</Attributes>
+ <Groups>
+     <Group Name="Handle Diffuse (RGBA)" Expanded="true"></Group>
+     <Group Name="Handle Roughness (float)" Expanded="true"></Group>
+     <Group Name="Handle Reflectance (float)" Expanded="true"></Group>
+     <Group Name="Handle Displacement/Bump (float)" Expanded="true"></Group>
+     <Group Name="Handle Normal (RGBA)" Expanded="true"></Group>
+     <Group Name="Handle Additional Color (RGBA)" Expanded="true"></Group>
+     <Group Name="Handle Additional Float (float)" Expanded="true"></Group>
+ </Groups>
+ <Contexts>
+        <Context Type="NodeGraphView">
+            <Inputs>
+                <Input Name="diffuse"><Pos>-500,-40</Pos></Input>
+                <Input Name="specRough"><Pos>-500,-20</Pos></Input>
+                <Input Name="specRefl"><Pos>-500,0</Pos></Input>
+                <Input Name="Disp"><Pos>-500,20</Pos></Input>
+                <Input Name="Normal"><Pos>-500,40</Pos></Input>
+                <Input Name="RGBA"><Pos>-500,60</Pos></Input>
+                <Input Name="FLOAT"><Pos>-500,80</Pos></Input>
+            </Inputs>
+
+        </Context>
+        <Context Type="GLSL">
+            <Shader ShaderType='Fragment'>
+                <Inputs>
+                <Input Name="diffuse"><Default>vec4(9999.99)</Default></Input>
+                <Input Name="specRough"><Default>vec4(9999.99)</Default></Input>
+                <Input Name="specRefl"><Default>vec4(9999.99)</Default></Input>
+                <Input Name="Disp"><Default>vec4(9999.99)</Default></Input>
+                <Input Name="Normal"><Default>vec4(9999.99)</Default></Input>
+                <Input Name="RGBA"><Default>vec4(9999.99)</Default></Input>
+                <Input Name="FLOAT"><Default>vec4(9999.99)</Default></Input>
+                </Inputs>
+            </Shader>
+            <Shader>
+                <Body><![CDATA[
+
+            // Checking if input handles are mapped, if not use color/floats from region
+            vec4 diffuse_handle = ( #diffuse == vec4(9999.99) ) ? $A_color*vec4($A_float,$A_float,$A_float,1.0) : #diffuse ;
+            vec4 specRough_handle = ( #specRough == vec4(9999.99) ) ? vec4($B_float,$B_float,$B_float,1.0) : #specRough ;
+            vec4 specRefl_handle = ( #specRefl == vec4(9999.99) ) ? vec4($C_float,$C_float,$C_float,1.0) : #specRefl ;
+            vec4 Disp_handle = ( #Disp == vec4(9999.99) ) ? vec4($D_float,$D_float,$D_float,1.0) : #Disp ;
+            vec4 Normal_handle = ( #Normal == vec4(9999.99) ) ? $E_color*vec4($E_float,$E_float,$E_float,1.0) : #Normal ;
+            vec4 AddColor_handle = ( #RGBA == vec4(9999.99) ) ? $F_color*vec4($F_float,$F_float,$F_float,1.0) : #RGBA ;
+            vec4 AddFloat_handle = ( #FLOAT == vec4(9999.99) ) ? vec4($G_float,$G_float,$G_float,1.0) : #FLOAT ;
+
+
+            // Blending between clamped and unclamped.
+            // CLamping here is only done directly on the region input (diffuse, specRough etc.)
+            // not on any values coming from another region
+            vec4 diffuse = mix(diffuse_handle,clamp(diffuse_handle,vec4(0.0),vec4(1.0)),float($A_clamp));
+            vec4 Roughness = mix(specRough_handle,clamp(specRough_handle,vec4(0.0),vec4(1.0)),float($B_clamp));
+            vec4 Reflectance = mix(specRefl_handle,clamp(specRefl_handle,vec4(0.0),vec4(1.0)),float($C_clamp));
+            vec4 Disp = mix(Disp_handle,clamp(Disp_handle,vec4(0.0),vec4(1.0)),float($D_clamp));
+            vec4 Normal = mix(Normal_handle,clamp(Normal_handle,vec4(0.0),vec4(1.0)),float($E_clamp));
+            vec4 RGBA = mix(AddColor_handle,clamp(AddColor_handle,vec4(0.0),vec4(1.0)),float($F_clamp));
+            vec4 FLOAT = mix(AddFloat_handle,clamp(AddFloat_handle,vec4(0.0),vec4(1.0)),float($G_clamp));
+
+
+
+            // Output to Handles. Roughness,reflectance & disp are carried on signle variable
+            OUT_A = diffuse;
+            OUT_B = vec4(Roughness.r,Reflectance.r,Disp.r,FLOAT.r);
+            OUT_C = Normal;
+            OUT_D = RGBA;
+
+
+
+                ]]></Body>
+            </Shader>
+        </Context>
+    </Contexts>
+</Node>
+

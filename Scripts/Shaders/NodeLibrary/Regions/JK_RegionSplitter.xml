@@ -52,7 +52,9 @@
         <Input Name="IN_D" PreferredInput='4'/>
     </Inputs>
     <Attributes>
-<Attribute Name="Value" PrettyName="Region Value" Group="" Type="stringlist">None,None,Diffuse,SpecRoughness,SpecReflectance,Displacement,Bump/Normal,Additional Color,Addtional Float</Attribute>
+    <Attribute Name="Value" PrettyName="Region Value" Group="" Type="stringlist">Please Select,Please Select,Diffuse (RGBA),SpecRoughness (Float),SpecReflectance (Float),Displacement/Bump (Float),Normal (RGBA),Additional Color (RGBA),Addtional Float (Float)</Attribute>
+    <Attribute Name="Aclamp" PrettyName="Clamp Attribute Output" Type="bool" Min="false" Max="true">true</Attribute>
+
     </Attributes>
 
  <Contexts>
@@ -80,6 +82,9 @@
                 <Body><![CDATA[
 
             vec4 result;
+            float clampMixer = float($Aclamp);
+            vec4 one = vec4(1.0);
+            vec4 zero = vec4(0.0);
 
             if($Value==0)
             {
@@ -87,31 +92,37 @@
             }
             else if($Value==1)
             {
-              result = #IN_A;
+              result = mix(#IN_A,clamp(#IN_A,zero,one),clampMixer);
             }
             else if($Value==2)
             {
               result = vec4(#IN_B.r,#IN_B.r,#IN_B.r,1.0);
+              result = mix(result,clamp(result,zero,one),clampMixer);
             }
             else if($Value==3)
             {
               result = vec4(#IN_B.g,#IN_B.g,#IN_B.g,1.0);
+              result = mix(result,clamp(result,zero,one),clampMixer);
             }
             else if($Value==4)
             {
               result = vec4(#IN_B.b,#IN_B.b,#IN_B.b,1.0);
+              result = mix(result,clamp(result,zero,one),clampMixer);
             }
             else if($Value==5)
             {
               result = #IN_C;
+              result = mix(result,clamp(result,zero,one),clampMixer);
             }
             else if($Value==6)
             {
               result = #IN_D;
+              result = mix(result,clamp(result,zero,one),clampMixer);
             }
             else if($Value==7)
             {
-              result = result = vec4(#IN_B.a,#IN_B.a,#IN_B.a,1.0);
+              result = vec4(#IN_B.a,#IN_B.a,#IN_B.a,1.0);
+              result = mix(result,clamp(result,zero,one),clampMixer);
             }
 
             Output = result;

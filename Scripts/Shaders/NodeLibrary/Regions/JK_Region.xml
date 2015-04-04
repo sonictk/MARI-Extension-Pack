@@ -97,7 +97,7 @@
     <Attribute Name="E_float" PrettyName="Float" Group="Handle Normal (RGBA)" Type="double">1.0</Attribute>
     <Attribute Name="E_mix" PrettyName="Mix" Group="Handle Normal (RGBA)" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
     <Attribute Name="E_BlendMode" PrettyName="Mode" Group="Handle Normal (RGBA)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
-    <Attribute Name="E_clamp" PrettyName="Clamp Input" Group="Handle Normal (RGBA)" Type="bool" Min="false" Max="true">false</Attribute>
+    <Attribute Name="E_clamp" PrettyName="Clamp Input" Group="Handle Normal (RGBA)" Type="bool" Min="false" Max="true">true</Attribute>
     <!--===============================================================================================================-->
     <Attribute Name="F_Use" PrettyName="On/Off" Group="Handle Additional Color (RGBA)" Type="bool" Min="false" Max="true">false</Attribute>
     <Attribute Name="F_color" PrettyName="Color" Group="Handle Additional Color (RGBA)" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(1,1,1,1)</Attribute>
@@ -105,7 +105,7 @@
     <Attribute Name="F_mix" PrettyName="Mix" Group="Handle Additional Color (RGBA)" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
     <Attribute Name="F_BlendMode" PrettyName="Mode" Group="Handle Additional Color (RGBA)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
     <Attribute Name="F_Affect" PrettyName="Map to" Group="Handle Additional Color (RGBA)" Type="stringlist">New,New,Diffuse,Normal</Attribute>
-    <Attribute Name="F_clamp" PrettyName="Clamp Input" Group="Handle Additional Color (RGBA)" Type="bool" Min="false" Max="true">false</Attribute>
+    <Attribute Name="F_clamp" PrettyName="Clamp Input" Group="Handle Additional Color (RGBA)" Type="bool" Min="false" Max="true">true</Attribute>
     <!--===============================================================================================================-->
     <Attribute Name="G_Use" PrettyName="On/Off" Group="Handle Additional Float (float)" Type="bool" Min="false" Max="true">false</Attribute>
     <Attribute Name="G_float" PrettyName="Float" Group="Handle Additional Float (float)" Type="double">1.0</Attribute>
