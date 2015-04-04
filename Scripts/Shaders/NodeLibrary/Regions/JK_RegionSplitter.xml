@@ -50,10 +50,9 @@
         <Input Name="IN_B" PreferredInput='2'/>
         <Input Name="IN_C" PreferredInput='3'/>
         <Input Name="IN_D" PreferredInput='4'/>
-        <Input Name="IN_E" PreferredInput='4'/>
     </Inputs>
     <Attributes>
-<Attribute Name="Value" PrettyName="Region Value" Group="" Type="stringlist">None,None,Diffuse,SpecRoughness,SpecReflectance,Displacement,Bump/Normal,Additional A,Addtional B</Attribute>
+<Attribute Name="Value" PrettyName="Region Value" Group="" Type="stringlist">None,None,Diffuse,SpecRoughness,SpecReflectance,Displacement,Bump/Normal,Additional Color,Addtional Float</Attribute>
     </Attributes>
 
  <Contexts>
@@ -61,9 +60,8 @@
             <Inputs>
                 <Input Name="IN_A"><Pos>-100,-50</Pos></Input>
                 <Input Name="IN_B"><Pos>-50,-90</Pos></Input>
-                <Input Name="IN_C"><Pos>0,-110</Pos></Input>
-                <Input Name="IN_D"><Pos>50,-90</Pos></Input>
-                <Input Name="IN_E"><Pos>100,-50</Pos></Input>
+                <Input Name="IN_C"><Pos>50,-110</Pos></Input>
+                <Input Name="IN_D"><Pos>100,-50</Pos></Input>
             </Inputs>
         </Context>
         <Context Type="GLSL">
@@ -73,7 +71,6 @@
                 <Input Name="IN_B"><Default>vec4(1.0)</Default></Input>
                 <Input Name="IN_C"><Default>vec4(1.0)</Default></Input>
                 <Input Name="IN_D"><Default>vec4(1.0)</Default></Input>
-                <Input Name="IN_E"><Default>vec4(1.0)</Default></Input>
                 </Inputs>
 
             </Shader>
@@ -114,7 +111,7 @@
             }
             else if($Value==7)
             {
-              result = #IN_E;
+              result = result = vec4(#IN_B.a,#IN_B.a,#IN_B.a,1.0);
             }
 
             Output = result;

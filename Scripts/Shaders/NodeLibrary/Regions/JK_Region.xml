@@ -50,22 +50,20 @@
         <Input Name="IN_B" PreferredInput='2'/>
         <Input Name="IN_C" PreferredInput='3'/>
         <Input Name="IN_D" PreferredInput='4'/>
-        <Input Name="IN_E" PreferredInput='4'/>
         <Input Name="RegionMask" />
         <Input Name="diffuse" />
         <Input Name="specRough"/>
         <Input Name="specRefl"/>
         <Input Name="Disp"/>
-        <Input Name="Bump"/>
-        <Input Name="Add_A"/>
-        <Input Name="Add_B" />
+        <Input Name="Normal"/>
+        <Input Name="RGBA"/>
+        <Input Name="FLOAT" />
     </Inputs>
     <Outputs>
         <Output Name="OUT_A" />
         <Output Name="OUT_B" />
         <Output Name="OUT_C" />
         <Output Name="OUT_D" />
-        <Output Name="OUT_E" />
     </Outputs>
     <Attributes>
     <!--===============================================================================================================-->
@@ -88,62 +86,60 @@
     <Attribute Name="C_BlendMode" PrettyName="Mode" Group="Handle Reflectance (float)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
     <Attribute Name="C_clamp" PrettyName="Clamp Input" Group="Handle Reflectance (float)" Type="bool" Min="false" Max="true">false</Attribute>
     <!--===============================================================================================================-->
-    <Attribute Name="D_Use" PrettyName="On/Off" Group="Handle Displacement (float)" Type="bool" Min="false" Max="true">false</Attribute>
-    <Attribute Name="D_float" PrettyName="Float" Group="Handle Displacement (float)" Type="double">1.0</Attribute>
-    <Attribute Name="D_mix" PrettyName="Mix" Group="Handle Displacement (float)" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
-    <Attribute Name="D_BlendMode" PrettyName="Mode" Group="Handle Displacement (float)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
-    <Attribute Name="D_clamp" PrettyName="Clamp Input" Group="Handle Displacement (float)" Type="bool" Min="false" Max="true">false</Attribute>
+    <Attribute Name="D_Use" PrettyName="On/Off" Group="Handle Displacement/Bump (float)" Type="bool" Min="false" Max="true">false</Attribute>
+    <Attribute Name="D_float" PrettyName="Float" Group="Handle Displacement/Bump (float)" Type="double">1.0</Attribute>
+    <Attribute Name="D_mix" PrettyName="Mix" Group="Handle Displacement/Bump (float)" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
+    <Attribute Name="D_BlendMode" PrettyName="Mode" Group="Handle Displacement/Bump (float)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
+    <Attribute Name="D_clamp" PrettyName="Clamp Input" Group="Handle Displacement/Bump (float)" Type="bool" Min="false" Max="true">false</Attribute>
     <!--===============================================================================================================-->
-    <Attribute Name="E_Use" PrettyName="On/Off" Group="Handle Bump/Normal (RGBA)" Type="bool" Min="false" Max="true">false</Attribute>
-    <Attribute Name="E_color" PrettyName="Color" Group="Handle Bump/Normal (RGBA)" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(1,1,1,1)</Attribute>
-    <Attribute Name="E_float" PrettyName="Float" Group="Handle Bump/Normal (RGBA)" Type="double">1.0</Attribute>
-    <Attribute Name="E_mix" PrettyName="Mix" Group="Handle Bump/Normal (RGBA)" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
-    <Attribute Name="E_BlendMode" PrettyName="Mode" Group="Handle Bump/Normal (RGBA)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
-    <Attribute Name="E_clamp" PrettyName="Clamp Input" Group="Handle Bump/Normal (RGBA)" Type="bool" Min="false" Max="true">false</Attribute>
+    <Attribute Name="E_Use" PrettyName="On/Off" Group="Handle Normal (RGBA)" Type="bool" Min="false" Max="true">false</Attribute>
+    <Attribute Name="E_color" PrettyName="Color" Group="Handle Normal (RGBA)" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(1,1,1,1)</Attribute>
+    <Attribute Name="E_float" PrettyName="Float" Group="Handle Normal (RGBA)" Type="double">1.0</Attribute>
+    <Attribute Name="E_mix" PrettyName="Mix" Group="Handle Normal (RGBA)" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
+    <Attribute Name="E_BlendMode" PrettyName="Mode" Group="Handle Normal (RGBA)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
+    <Attribute Name="E_clamp" PrettyName="Clamp Input" Group="Handle Normal (RGBA)" Type="bool" Min="false" Max="true">false</Attribute>
     <!--===============================================================================================================-->
-    <Attribute Name="F_Use" PrettyName="On/Off" Group="Handle Additional A (RGBA/float)" Type="bool" Min="false" Max="true">false</Attribute>
-    <Attribute Name="F_color" PrettyName="Color" Group="Handle Additional A (RGBA/float)" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(1,1,1,1)</Attribute>
-    <Attribute Name="F_float" PrettyName="Float" Group="Handle Additional A (RGBA/float)" Type="double">1.0</Attribute>
-    <Attribute Name="F_mix" PrettyName="Mix" Group="Handle Additional A (RGBA/float)" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
-    <Attribute Name="F_BlendMode" PrettyName="Mode" Group="Handle Additional A (RGBA/float)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
-    <Attribute Name="F_Affect" PrettyName="Map to" Group="Handle Additional A (RGBA/float)" Type="stringlist">New,New,Diffuse,Roughness,Reflectance,Displacement,Bump/Normal</Attribute>
-    <Attribute Name="F_clamp" PrettyName="Clamp Input" Group="Handle Additional A (RGBA/float)" Type="bool" Min="false" Max="true">false</Attribute>
+    <Attribute Name="F_Use" PrettyName="On/Off" Group="Handle Additional Color (RGBA)" Type="bool" Min="false" Max="true">false</Attribute>
+    <Attribute Name="F_color" PrettyName="Color" Group="Handle Additional Color (RGBA)" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(1,1,1,1)</Attribute>
+    <Attribute Name="F_float" PrettyName="Float" Group="Handle Additional Color (RGBA)" Type="double">1.0</Attribute>
+    <Attribute Name="F_mix" PrettyName="Mix" Group="Handle Additional Color (RGBA)" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
+    <Attribute Name="F_BlendMode" PrettyName="Mode" Group="Handle Additional Color (RGBA)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
+    <Attribute Name="F_Affect" PrettyName="Map to" Group="Handle Additional Color (RGBA)" Type="stringlist">New,New,Diffuse,Normal</Attribute>
+    <Attribute Name="F_clamp" PrettyName="Clamp Input" Group="Handle Additional Color (RGBA)" Type="bool" Min="false" Max="true">false</Attribute>
     <!--===============================================================================================================-->
-    <Attribute Name="G_Use" PrettyName="On/Off" Group="Handle Additional B (RGBA/float)" Type="bool" Min="false" Max="true">false</Attribute>
-    <Attribute Name="G_color" PrettyName="Color" Group="Handle Additional B (RGBA/float)" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(1,1,1,1)</Attribute>
-    <Attribute Name="G_float" PrettyName="Float" Group="Handle Additional B (RGBA/float)" Type="double">1.0</Attribute>
-    <Attribute Name="G_mix" PrettyName="Mix" Group="Handle Additional B (RGBA/float)" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
-    <Attribute Name="G_BlendMode" PrettyName="Mode" Group="Handle Additional B (RGBA/float)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
-    <Attribute Name="G_Affect" PrettyName="Map to" Group="Handle Additional B (RGBA/float)" Type="stringlist">New,New,Diffuse,Roughness,Reflectance,Displacement,Bump/Normal,Additional A</Attribute>
-    <Attribute Name="G_clamp" PrettyName="Clamp Input" Group="Handle Additional B (RGBA/float)" Type="bool" Min="false" Max="true">false</Attribute>
+    <Attribute Name="G_Use" PrettyName="On/Off" Group="Handle Additional Float (float)" Type="bool" Min="false" Max="true">false</Attribute>
+    <Attribute Name="G_float" PrettyName="Float" Group="Handle Additional Float (float)" Type="double">1.0</Attribute>
+    <Attribute Name="G_mix" PrettyName="Mix" Group="Handle Additional Float (float)" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
+    <Attribute Name="G_BlendMode" PrettyName="Mode" Group="Handle Additional Float (float)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
+    <Attribute Name="G_Affect" PrettyName="Map to" Group="Handle Additional Float (float)" Type="stringlist">New,New,Roughness,Reflectance,Displacement</Attribute>
+    <Attribute Name="G_clamp" PrettyName="Clamp Input" Group="Handle Additional Float (float)" Type="bool" Min="false" Max="true">false</Attribute>
     <!--===============================================================================================================-->
 </Attributes>
  <Groups>
      <Group Name="Handle Diffuse (RGBA)" Expanded="false"></Group>
      <Group Name="Handle Roughness (float)" Expanded="false"></Group>
      <Group Name="Handle Reflectance (float)" Expanded="false"></Group>
-     <Group Name="Handle Displacement (float)" Expanded="false"></Group>
-     <Group Name="Handle Bump/Normal (RGBA)" Expanded="false"></Group>
-     <Group Name="Handle Additional A (RGBA/float)" Expanded="false"></Group>
-     <Group Name="Handle Additional B (RGBA/float)" Expanded="false"></Group>
+     <Group Name="Handle Displacement/Bump (float)" Expanded="false"></Group>
+     <Group Name="Handle Normal (RGBA)" Expanded="false"></Group>
+     <Group Name="Handle Additional Color (RGBA)" Expanded="false"></Group>
+     <Group Name="Handle Additional Float (float)" Expanded="false"></Group>
  </Groups>
  <Contexts>
         <Context Type="NodeGraphView">
             <Inputs>
                 <Input Name="IN_A"><Pos>-100,-50</Pos></Input>
                 <Input Name="IN_B"><Pos>-50,-90</Pos></Input>
-                <Input Name="IN_C"><Pos>0,-110</Pos></Input>
-                <Input Name="IN_D"><Pos>50,-90</Pos></Input>
-                <Input Name="IN_E"><Pos>100,-50</Pos></Input>
+                <Input Name="IN_C"><Pos>50,-110</Pos></Input>
+                <Input Name="IN_D"><Pos>100,-50</Pos></Input>
                 <Input Name="RegionMask"><Pos>250,0</Pos></Input>
 
                 <Input Name="diffuse"><Pos>-500,-40</Pos></Input>
                 <Input Name="specRough"><Pos>-500,-20</Pos></Input>
                 <Input Name="specRefl"><Pos>-500,0</Pos></Input>
                 <Input Name="Disp"><Pos>-500,20</Pos></Input>
-                <Input Name="Bump"><Pos>-500,40</Pos></Input>
-                <Input Name="Add_A"><Pos>-500,60</Pos></Input>
-                <Input Name="Add_B"><Pos>-500,80</Pos></Input>
+                <Input Name="Normal"><Pos>-500,40</Pos></Input>
+                <Input Name="RGBA"><Pos>-500,60</Pos></Input>
+                <Input Name="FLOAT"><Pos>-500,80</Pos></Input>
             </Inputs>
 
         </Context>
@@ -154,15 +150,14 @@
                 <Input Name="specRough"><Default>vec4(9999.99)</Default></Input>
                 <Input Name="specRefl"><Default>vec4(9999.99)</Default></Input>
                 <Input Name="Disp"><Default>vec4(9999.99)</Default></Input>
-                <Input Name="Bump"><Default>vec4(9999.99)</Default></Input>
-                <Input Name="Add_A"><Default>vec4(9999.99)</Default></Input>
-                <Input Name="Add_B"><Default>vec4(9999.99)</Default></Input>
+                <Input Name="Normal"><Default>vec4(9999.99)</Default></Input>
+                <Input Name="RGBA"><Default>vec4(9999.99)</Default></Input>
+                <Input Name="FLOAT"><Default>vec4(9999.99)</Default></Input>
 
                 <Input Name="IN_A"><Default>vec4(0.0)</Default></Input>
                 <Input Name="IN_B"><Default>vec4(0.0)</Default></Input>
                 <Input Name="IN_C"><Default>vec4(0.0)</Default></Input>
                 <Input Name="IN_D"><Default>vec4(0.0)</Default></Input>
-                <Input Name="IN_E"><Default>vec4(0.0)</Default></Input>
                 <Input Name="RegionMask"><Default>vec4(1.0)</Default></Input>
                 </Inputs>
             </Shader>
@@ -174,9 +169,9 @@
             vec4 specRough_handle = ( #specRough == vec4(9999.99) ) ? vec4($B_float,$B_float,$B_float,1.0) : #specRough ;
             vec4 specRefl_handle = ( #specRefl == vec4(9999.99) ) ? vec4($C_float,$C_float,$C_float,1.0) : #specRefl ;
             vec4 Disp_handle = ( #Disp == vec4(9999.99) ) ? vec4($D_float,$D_float,$D_float,1.0) : #Disp ;
-            vec4 Bump_handle = ( #Bump == vec4(9999.99) ) ? $E_color*vec4($E_float,$E_float,$E_float,1.0) : #Bump ;
-            vec4 AddA_handle = ( #Add_A == vec4(9999.99) ) ? $F_color*vec4($F_float,$F_float,$F_float,1.0) : #Add_A ;
-            vec4 AddB_handle = ( #Add_B == vec4(9999.99) ) ? $G_color*vec4($G_float,$G_float,$G_float,1.0) : #Add_B ;
+            vec4 Normal_handle = ( #Normal == vec4(9999.99) ) ? $E_color*vec4($E_float,$E_float,$E_float,1.0) : #Normal ;
+            vec4 AddColor_handle = ( #RGBA == vec4(9999.99) ) ? $F_color*vec4($F_float,$F_float,$F_float,1.0) : #RGBA ;
+            vec4 AddFloat_handle = ( #FLOAT == vec4(9999.99) ) ? vec4($G_float,$G_float,$G_float,1.0) : #FLOAT ;
 
 
             // Blending between clamped and unclamped.
@@ -186,9 +181,9 @@
             vec4 specRough_clamp = mix(specRough_handle,clamp(specRough_handle,vec4(0.0),vec4(1.0)),float($B_clamp));
             vec4 specRefl_clamp = mix(specRefl_handle,clamp(specRefl_handle,vec4(0.0),vec4(1.0)),float($C_clamp));
             vec4 disp_clamp = mix(Disp_handle,clamp(Disp_handle,vec4(0.0),vec4(1.0)),float($D_clamp));
-            vec4 Bump_clamp = mix(Bump_handle,clamp(Bump_handle,vec4(0.0),vec4(1.0)),float($E_clamp));
-            vec4 AddA_clamp = mix(AddA_handle,clamp(AddA_handle,vec4(0.0),vec4(1.0)),float($F_clamp));
-            vec4 AddB_clamp = mix(AddB_handle,clamp(AddB_handle,vec4(0.0),vec4(1.0)),float($G_clamp));
+            vec4 Normal_clamp = mix(Normal_handle,clamp(Normal_handle,vec4(0.0),vec4(1.0)),float($E_clamp));
+            vec4 AddColor_clamp = mix(AddColor_handle,clamp(AddColor_handle,vec4(0.0),vec4(1.0)),float($F_clamp));
+            vec4 AddFloat_clamp = mix(AddFloat_handle,clamp(AddFloat_handle,vec4(0.0),vec4(1.0)),float($G_clamp));
             float regionmask = clamp(#RegionMask.r,0.0,1.0);
 
 
@@ -210,114 +205,109 @@
             vec4 Reflectance = $C_BlendMode(Reflectance_Handle,specRefl_clamp,C_mix);
             vec4 Disp_Handle = vec4(#IN_B.b,#IN_B.b,#IN_B.b,1.0);
             vec4 Disp = $D_BlendMode(Disp_Handle,disp_clamp,D_mix);
-            vec4 Bump = $E_BlendMode(#IN_C,Bump_clamp,E_mix);
+            vec4 Normal = $E_BlendMode(#IN_C,Normal_clamp,E_mix);
+            vec4 NewFloat_Handle = vec4(#IN_B.a,#IN_B.a,#IN_B.a,1.0);
 
 
-            // Blending additional values based on map target for Additional A & B
+            // Blending additional values based on map target for Additional Color
             // If mapping to existing value some calculation has to be rerun to avoid premult issues.
             // Mapping is executed differently based on if corresponding channel is turned on in same region
-           vec4 Add_A,Add_B;
+           vec4 RGBA;
 
-            if ($F_Affect == 0 && $F_Use == true) //Additional A as new value
+            if ($F_Affect == 0 && $F_Use == true) //Additional Color as new value
                 {
-                    Add_A = $F_BlendMode(#IN_D,AddA_clamp,F_mix);
+                    RGBA = $F_BlendMode(#IN_D,AddColor_clamp,F_mix);
                 }
 
             else if ($F_Affect == 1 && $F_Use == true) // Affect  DIffuse
                 {
                     if ($A_Use == true)
                         {
-                            diffuse = $F_BlendMode(diffuse_clamp,AddA_clamp,$F_mix);
+                            diffuse = $F_BlendMode(diffuse_clamp,AddColor_clamp,$F_mix);
                             diffuse = $A_BlendMode(#IN_A,diffuse,A_mix);
                         }
 
                     else
                         {
-                            diffuse = $F_BlendMode(#IN_A,AddA_clamp,$F_mix);
+                            diffuse = $F_BlendMode(#IN_A,AddColor_clamp,$F_mix);
                         }
                 }
 
-            else if ($F_Affect == 2 && $F_Use == true) // Affect  SpecRough
+            else if ($F_Affect == 2 && $F_Use == true) // Affect Normal
+                {
+                    if ($E_Use == true)
+                        {
+                            Normal = $F_BlendMode(Normal_clamp,AddColor_clamp,$F_mix);
+                            Normal = $E_BlendMode(#IN_C,Normal,E_mix);
+                        }
+
+                    else
+                        {
+                            Normal = $F_BlendMode(#IN_C,AddColor_clamp,$F_mix);
+                        }
+                }
+
+
+
+            // Blending additional values based on map target for Additional Float
+            // If mapping to existing value some calculation has to be rerun to avoid premult issues.
+            // Mapping is executed differently based on if corresponding channel is turned on in same region
+           vec4 FLOAT;
+
+            if ($G_Affect == 0 && $G_Use == true) //Additional Float as new value
+                {
+                    FLOAT = $G_BlendMode(NewFloat_Handle,AddFloat_clamp,G_mix);
+                }
+
+            else if ($G_Affect == 1 && $G_Use == true) // Affect  SpecRough
                 {
                     if($B_Use == true)
                          {
-                            Roughness = $F_BlendMode(specRough_clamp,AddA_clamp,$F_mix);
+                            Roughness = $G_BlendMode(specRough_clamp,AddFloat_clamp,$G_mix);
                             Roughness = $B_BlendMode(Roughness_Handle,Roughness,B_mix);
                          }
 
                     else
                         {
-                            Roughness = $F_BlendMode(Roughness_Handle,AddA_clamp,$F_mix);
+                            Roughness = $G_BlendMode(Roughness_Handle,AddFloat_clamp,$G_mix);
                         }
                 }
 
-            else if ($F_Affect == 3 && $F_Use == true) // Affect SpecRefl
+            else if ($G_Affect == 2 && $G_Use == true) // Affect SpecRefl
                 {
                     if($C_Use == true)
                          {
-                            Reflectance = $F_BlendMode(specRefl_clamp,AddA_clamp,$F_mix);
+                            Reflectance = $G_BlendMode(specRefl_clamp,AddFloat_clamp,$G_mix);
                             Reflectance = $C_BlendMode(Reflectance_Handle,Reflectance,C_mix);
                          }
 
                     else
                         {
-                            Reflectance = $F_BlendMode(Reflectance_Handle,AddA_clamp,$F_mix);
+                            Reflectance = $G_BlendMode(Reflectance_Handle,AddFloat_clamp,$G_mix);
                         }
                 }
 
-            else if ($F_Affect == 4 && $F_Use == true) // Affect Disp
+            else if ($G_Affect == 3 && $G_Use == true) // Affect Disp
                 {
                     if($D_Use == true)
                          {
-                            Disp = $F_BlendMode(disp_clamp,AddA_clamp,$F_mix);
+                            Disp = $G_BlendMode(disp_clamp,AddFloat_clamp,$G_mix);
                             Disp = $D_BlendMode(Disp_Handle,Disp,D_mix);
                          }
 
                     else
                         {
-                            Disp = $F_BlendMode(Disp_Handle,AddA_clamp,$F_mix);
+                            Disp = $G_BlendMode(Disp_Handle,AddFloat_clamp,$G_mix);
                         }
                 }
 
-            else if ($F_Affect == 5 && $F_Use == true) // Affect Bump or Normal
-                {
-                    if ($E_Use == true)
-                        {
-                            Bump = $F_BlendMode(Bump_clamp,AddA_clamp,$F_mix);
-                            Bump = $E_BlendMode(#IN_C,Bump,E_mix);
-                        }
-
-                    else
-                        {
-                            Bump = $F_BlendMode(#IN_C,AddA_clamp,$F_mix);
-                        }
-                }
-
-
-
-
-            if ($G_Affect == 0 && $G_Use == true)
-                { Add_B = $G_BlendMode(#IN_D,AddB_clamp,G_mix); }
-            else if ($G_Affect == 1 && $G_Use == true)
-                { diffuse = $G_BlendMode(diffuse,AddB_clamp,G_mix); }
-            else if ($G_Affect == 2 && $G_Use == true)
-                { Roughness = $G_BlendMode(Roughness,AddB_clamp,G_mix); }
-            else if ($G_Affect == 3 && $G_Use == true)
-                { Reflectance = $G_BlendMode(Reflectance,AddB_clamp,G_mix); }
-            else if ($G_Affect == 4 && $G_Use == true)
-                { Disp = $G_BlendMode(Disp,AddB_clamp,G_mix); }
-            else if ($G_Affect == 5 && $G_Use == true)
-                { Bump = $G_BlendMode(Bump,AddB_clamp,G_mix); }
-            else if ($G_Affect == 6 && $G_Use == true)
-                { Add_A = $G_BlendMode(Add_A,AddB_clamp,G_mix); }
 
 
             // Output to Handles. Roughness,reflectance & disp are carried on signle variable
             OUT_A = diffuse;
-            OUT_B = vec4(Roughness.r,Reflectance.r,Disp.r,1.0);
-            OUT_C = Bump;
-            OUT_D = Add_A;
-            OUT_E = Add_B;
+            OUT_B = vec4(Roughness.r,Reflectance.r,Disp.r,FLOAT.r);
+            OUT_C = Normal;
+            OUT_D = RGBA;
 
 
 
