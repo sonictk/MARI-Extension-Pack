@@ -79,10 +79,11 @@
                 </Inputs>
 
             </Shader>
-            <Shader ShaderType='TessEvaluation'>
-            </Shader>
             <Shader>
                 <Body><![CDATA[
+
+
+
 
             vec4 result;
             float clampMixer = float($Aclamp);
