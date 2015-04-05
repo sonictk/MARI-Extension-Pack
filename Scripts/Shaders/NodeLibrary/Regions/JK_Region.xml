@@ -69,6 +69,7 @@
         <Output Name="OUT_E" />
     </Outputs>
     <Attributes>
+    <Attribute Name="useRegion" PrettyName="Activate Region" Type="bool" Min="false" Max="true">true</Attribute>
     <!--===============================================================================================================-->
     <Attribute Name="diffuse_Use" PrettyName="On/Off" Group="Handle Diffuse (RGBA)" Type="bool" Min="false" Max="true">false</Attribute>
     <Attribute Name="diffuse_color" PrettyName="Color" Group="Handle Diffuse (RGBA)" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(1,1,1,1)</Attribute>
@@ -179,171 +180,190 @@
             <Shader>
                 <Body><![CDATA[
 
-            // Checking if input handles are mapped, if not use color/floats from region
-            vec4 diffuse_handle = ( #diffuse == vec4(9999.99) ) ? $diffuse_color*vec4($diffuse_float,$diffuse_float,$diffuse_float,1.0) : #diffuse ;
-            vec4 specRough_handle = ( #specRough == vec4(9999.99) ) ? vec4($roughness_float,$roughness_float,$roughness_float,1.0) : #specRough ;
-            vec4 specRefl_handle = ( #specRefl == vec4(9999.99) ) ? vec4($refletance_float,$refletance_float,$refletance_float,1.0) : #specRefl ;
-            vec4 specCol_handle = ( #specCol == vec4(9999.99) ) ? $specCol_color*vec4($specCol_float,$specCol_float,$specCol_float,1.0) : #specCol ;
-            vec4 disp_handle = ( #Disp == vec4(9999.99) ) ? vec4($disp_float,$disp_float,$disp_float,1.0) : #Disp ;
-            vec4 normal_handle = ( #Normal == vec4(9999.99) ) ? $normal_color*vec4($normal_float,$normal_float,$normal_float,1.0) : #Normal ;
-            vec4 addColor_handle = ( #RGBA == vec4(9999.99) ) ? $addColor_color*vec4($addColor_float,$addColor_float,$addColor_float,1.0) : #RGBA ;
-            vec4 addFloat_handle = ( #FLOAT == vec4(9999.99) ) ? vec4($addFloat_float,$addFloat_float,$addFloat_float,1.0) : #FLOAT ;
 
+            if ($useRegion)
 
-            // Blending between clamped and unclamped.
-            // CLamping here is only done directly on the region input (diffuse, specRough etc.)
-            // not on any values coming from another region
-            vec4 diffuse_clamp = mix(diffuse_handle,clamp(diffuse_handle,vec4(0.0),vec4(1.0)),float($diffuse_clamp));
-            vec4 specRough_clamp = mix(specRough_handle,clamp(specRough_handle,vec4(0.0),vec4(1.0)),float($roughness_clamp));
-            vec4 specRefl_clamp = mix(specRefl_handle,clamp(specRefl_handle,vec4(0.0),vec4(1.0)),float($refletance_clamp));
-            vec4 specCol_clamp = mix(specCol_handle,clamp(specCol_handle,vec4(0.0),vec4(1.0)),float($specCol_clamp));
-            vec4 disp_clamp = mix(disp_handle,clamp(disp_handle,vec4(0.0),vec4(1.0)),float($disp_clamp));
-            vec4 normal_clamp = mix(normal_handle,clamp(normal_handle,vec4(0.0),vec4(1.0)),float($normal_clamp));
-            vec4 addColor_clamp = mix(addColor_handle,clamp(addColor_handle,vec4(0.0),vec4(1.0)),float($addColor_clamp));
-            vec4 addFloat_clamp = mix(addFloat_handle,clamp(addFloat_handle,vec4(0.0),vec4(1.0)),float($addFloat_clamp));
-            float regionmask = clamp(#RegionMask.r,0.0,1.0);
-
-
-            // setting regionmask to 0 for values that are turned Off
-            float diffuse_mix = (regionmask*$diffuse_mix) * float($diffuse_Use);
-            float roughness_mix = (regionmask*$roughness_mix) * float($roughness_Use);
-            float refletance_mix = (regionmask*$refletance_mix) * float($refletance_Use);
-            float specCol_mix = (regionmask*$specCol_mix) * float($specCol_Use);
-            float disp_mix = (regionmask*$disp_mix) * float($disp_Use);
-            float normal_mix = (regionmask*$normal_mix) * float($normal_Use);
-            float addColor_mix = (regionmask*$addColor_mix) * float($addColor_Use);
-            float addFloat_mix = (regionmask*$addFloat_mix) * float($addFloat_Use);
-
-
-            // Blending Values within the Region (RegionInput from other region and each Attribute)
-            vec4 diffuse = $diffuse_BlendMode(#IN_A,diffuse_clamp,diffuse_mix);
-            vec4 roughness_Handle = vec4(#IN_B.r,#IN_B.r,#IN_B.r,1.0);
-            vec4 Roughness = $roughness_BlendMode(roughness_Handle,specRough_clamp,roughness_mix);
-            vec4 Reflectance_Handle = vec4(#IN_B.g,#IN_B.g,#IN_B.g,1.0);
-            vec4 Reflectance = $refletance_BlendMode(Reflectance_Handle,specRefl_clamp,refletance_mix);
-            vec4 specCol = $specCol_BlendMode(#IN_E,specCol_clamp,specCol_mix);
-            vec4 disp_Handle = vec4(#IN_B.b,#IN_B.b,#IN_B.b,1.0);
-            vec4 Disp = $disp_BlendMode(disp_Handle,disp_clamp,disp_mix);
-            vec4 Normal = $normal_BlendMode(#IN_C,normal_clamp,normal_mix);
-            vec4 NewFloat_Handle = vec4(#IN_B.a,#IN_B.a,#IN_B.a,1.0);
-
-
-            // Blending additional values based on map target for Additional Color
-            // If mapping to existing value some calculation has to be rerun to avoid premult issues.
-            // Mapping is executed differently based on if corresponding channel is turned on in same region
-           vec4 RGBA;
-
-            if ($addColor_Affect == 0 && $addColor_Use == true) //Additional Color as new value
                 {
-                    RGBA = $addColor_BlendMode(#IN_D,addColor_clamp,addColor_mix);
+
+                // Checking if input handles are mapped, if not use color/floats from region
+                vec4 diffuse_handle = ( #diffuse == vec4(9999.99) ) ? $diffuse_color*vec4($diffuse_float,$diffuse_float,$diffuse_float,1.0) : #diffuse ;
+                vec4 specRough_handle = ( #specRough == vec4(9999.99) ) ? vec4($roughness_float,$roughness_float,$roughness_float,1.0) : #specRough ;
+                vec4 specRefl_handle = ( #specRefl == vec4(9999.99) ) ? vec4($refletance_float,$refletance_float,$refletance_float,1.0) : #specRefl ;
+                vec4 specCol_handle = ( #specCol == vec4(9999.99) ) ? $specCol_color*vec4($specCol_float,$specCol_float,$specCol_float,1.0) : #specCol ;
+                vec4 disp_handle = ( #Disp == vec4(9999.99) ) ? vec4($disp_float,$disp_float,$disp_float,1.0) : #Disp ;
+                vec4 normal_handle = ( #Normal == vec4(9999.99) ) ? $normal_color*vec4($normal_float,$normal_float,$normal_float,1.0) : #Normal ;
+                vec4 addColor_handle = ( #RGBA == vec4(9999.99) ) ? $addColor_color*vec4($addColor_float,$addColor_float,$addColor_float,1.0) : #RGBA ;
+                vec4 addFloat_handle = ( #FLOAT == vec4(9999.99) ) ? vec4($addFloat_float,$addFloat_float,$addFloat_float,1.0) : #FLOAT ;
+
+
+                // Blending between clamped and unclamped.
+                // CLamping here is only done directly on the region input (diffuse, specRough etc.)
+                // not on any values coming from another region
+                vec4 diffuse_clamp = mix(diffuse_handle,clamp(diffuse_handle,vec4(0.0),vec4(1.0)),float($diffuse_clamp));
+                vec4 specRough_clamp = mix(specRough_handle,clamp(specRough_handle,vec4(0.0),vec4(1.0)),float($roughness_clamp));
+                vec4 specRefl_clamp = mix(specRefl_handle,clamp(specRefl_handle,vec4(0.0),vec4(1.0)),float($refletance_clamp));
+                vec4 specCol_clamp = mix(specCol_handle,clamp(specCol_handle,vec4(0.0),vec4(1.0)),float($specCol_clamp));
+                vec4 disp_clamp = mix(disp_handle,clamp(disp_handle,vec4(0.0),vec4(1.0)),float($disp_clamp));
+                vec4 normal_clamp = mix(normal_handle,clamp(normal_handle,vec4(0.0),vec4(1.0)),float($normal_clamp));
+                vec4 addColor_clamp = mix(addColor_handle,clamp(addColor_handle,vec4(0.0),vec4(1.0)),float($addColor_clamp));
+                vec4 addFloat_clamp = mix(addFloat_handle,clamp(addFloat_handle,vec4(0.0),vec4(1.0)),float($addFloat_clamp));
+                float regionmask = clamp(#RegionMask.r,0.0,1.0);
+
+
+                // setting regionmask to 0 for values that are turned Off
+                float diffuse_mix = (regionmask*$diffuse_mix) * float($diffuse_Use);
+                float roughness_mix = (regionmask*$roughness_mix) * float($roughness_Use);
+                float refletance_mix = (regionmask*$refletance_mix) * float($refletance_Use);
+                float specCol_mix = (regionmask*$specCol_mix) * float($specCol_Use);
+                float disp_mix = (regionmask*$disp_mix) * float($disp_Use);
+                float normal_mix = (regionmask*$normal_mix) * float($normal_Use);
+                float addColor_mix = (regionmask*$addColor_mix) * float($addColor_Use);
+                float addFloat_mix = (regionmask*$addFloat_mix) * float($addFloat_Use);
+
+
+                // Blending Values within the Region (RegionInput from other region and each Attribute)
+                vec4 diffuse = $diffuse_BlendMode(#IN_A,diffuse_clamp,diffuse_mix);
+                vec4 roughness_Handle = vec4(#IN_B.r,#IN_B.r,#IN_B.r,1.0);
+                vec4 Roughness = $roughness_BlendMode(roughness_Handle,specRough_clamp,roughness_mix);
+                vec4 Reflectance_Handle = vec4(#IN_B.g,#IN_B.g,#IN_B.g,1.0);
+                vec4 Reflectance = $refletance_BlendMode(Reflectance_Handle,specRefl_clamp,refletance_mix);
+                vec4 specCol = $specCol_BlendMode(#IN_E,specCol_clamp,specCol_mix);
+                vec4 disp_Handle = vec4(#IN_B.b,#IN_B.b,#IN_B.b,1.0);
+                vec4 Disp = $disp_BlendMode(disp_Handle,disp_clamp,disp_mix);
+                vec4 Normal = $normal_BlendMode(#IN_C,normal_clamp,normal_mix);
+                vec4 NewFloat_Handle = vec4(#IN_B.a,#IN_B.a,#IN_B.a,1.0);
+
+
+                // Blending additional values based on map target for Additional Color
+                // If mapping to existing value some calculation has to be rerun to avoid premult issues.
+                // Mapping is executed differently based on if corresponding channel is turned on in same region
+                vec4 RGBA;
+
+                if ($addColor_Affect == 0 && $addColor_Use == true) //Additional Color as new value
+                    {
+                        RGBA = $addColor_BlendMode(#IN_D,addColor_clamp,addColor_mix);
+                    }
+
+                else if ($addColor_Affect == 1 && $addColor_Use == true) // Affect  DIffuse
+                    {
+                        if ($diffuse_Use == true)
+                            {
+                                diffuse = $addColor_BlendMode(diffuse_clamp,addColor_clamp,$addColor_mix);
+                                diffuse = $diffuse_BlendMode(#IN_A,diffuse,diffuse_mix);
+                            }
+
+                        else
+                            {
+                                diffuse = $addColor_BlendMode(#IN_A,addColor_clamp,$addColor_mix);
+                            }
+                    }
+
+                else if ($addColor_Affect == 2 && $specCol_Use == true) // Affect SpecColor
+                    {
+                        if ($specCol_Use == true)
+                            {
+                                specCol = $addColor_BlendMode(specCol_clamp,addColor_clamp,$addColor_mix);
+                                specCol = $specCol_BlendMode(#IN_E,specCol,specCol_mix);
+                            }
+
+                        else
+                            {
+                                specCol = $addColor_BlendMode(#IN_E,addColor_clamp,$addColor_mix);
+                            }
+                    }
+
+
+                else if ($addColor_Affect == 3 && $addColor_Use == true) // Affect Normal
+                    {
+                        if ($normal_Use == true)
+                            {
+                                Normal = $addColor_BlendMode(normal_clamp,addColor_clamp,$addColor_mix);
+                                Normal = $normal_BlendMode(#IN_C,Normal,normal_mix);
+                            }
+
+                        else
+                            {
+                                Normal = $addColor_BlendMode(#IN_C,addColor_clamp,$addColor_mix);
+                            }
+                    }
+
+
+
+                // Blending additional values based on map target for Additional Float
+                // If mapping to existing value some calculation has to be rerun to avoid premult issues.
+                // Mapping is executed differently based on if corresponding channel is turned on in same region
+               vec4 FLOAT;
+
+                if ($addFloat_Affect == 0 && $addFloat_Use == true) //Additional Float as new value
+                    {
+                        FLOAT = $addFloat_BlendMode(NewFloat_Handle,addFloat_clamp,addFloat_mix);
+                    }
+
+                else if ($addFloat_Affect == 1 && $addFloat_Use == true) // Affect  SpecRough
+                    {
+                        if($roughness_Use == true)
+                             {
+                                Roughness = $addFloat_BlendMode(specRough_clamp,addFloat_clamp,$addFloat_mix);
+                                Roughness = $roughness_BlendMode(roughness_Handle,Roughness,roughness_mix);
+                             }
+
+                        else
+                            {
+                                Roughness = $addFloat_BlendMode(roughness_Handle,addFloat_clamp,$addFloat_mix);
+                            }
+                    }
+
+                else if ($addFloat_Affect == 2 && $addFloat_Use == true) // Affect SpecRefl
+                    {
+                        if($refletance_Use == true)
+                             {
+                                Reflectance = $addFloat_BlendMode(specRefl_clamp,addFloat_clamp,$addFloat_mix);
+                                Reflectance = $refletance_BlendMode(Reflectance_Handle,Reflectance,refletance_mix);
+                             }
+
+                        else
+                            {
+                                Reflectance = $addFloat_BlendMode(Reflectance_Handle,addFloat_clamp,$addFloat_mix);
+                            }
+                    }
+
+                else if ($addFloat_Affect == 3 && $addFloat_Use == true) // Affect Disp
+                    {
+                        if($disp_Use == true)
+                             {
+                                Disp = $addFloat_BlendMode(disp_clamp,addFloat_clamp,$addFloat_mix);
+                                Disp = $disp_BlendMode(disp_Handle,Disp,disp_mix);
+                             }
+
+                        else
+                            {
+                                Disp = $addFloat_BlendMode(disp_Handle,addFloat_clamp,$addFloat_mix);
+                            }
+                    }
+
+
+
+                // Output to Handles. Roughness,reflectance & disp are carried on signle variable
+                OUT_A = diffuse;
+                OUT_B = vec4(Roughness.r,Reflectance.r,Disp.r,FLOAT.r);
+                OUT_C = Normal;
+                OUT_D = RGBA;
+                OUT_E = specCol;
+
+
                 }
 
-            else if ($addColor_Affect == 1 && $addColor_Use == true) // Affect  DIffuse
+            else
+
                 {
-                    if ($diffuse_Use == true)
-                        {
-                            diffuse = $addColor_BlendMode(diffuse_clamp,addColor_clamp,$addColor_mix);
-                            diffuse = $diffuse_BlendMode(#IN_A,diffuse,diffuse_mix);
-                        }
 
-                    else
-                        {
-                            diffuse = $addColor_BlendMode(#IN_A,addColor_clamp,$addColor_mix);
-                        }
+                OUT_A = #IN_A;
+                OUT_B = #IN_B;
+                OUT_C = #IN_C;
+                OUT_D = #IN_D;
+                OUT_E = #IN_E;
+
                 }
-
-            else if ($addColor_Affect == 2 && $specCol_Use == true) // Affect SpecColor
-                {
-                    if ($specCol_Use == true)
-                        {
-                            specCol = $addColor_BlendMode(specCol_clamp,addColor_clamp,$addColor_mix);
-                            specCol = $specCol_BlendMode(#IN_E,specCol,specCol_mix);
-                        }
-
-                    else
-                        {
-                            specCol = $addColor_BlendMode(#IN_E,addColor_clamp,$addColor_mix);
-                        }
-                }
-
-
-            else if ($addColor_Affect == 3 && $addColor_Use == true) // Affect Normal
-                {
-                    if ($normal_Use == true)
-                        {
-                            Normal = $addColor_BlendMode(normal_clamp,addColor_clamp,$addColor_mix);
-                            Normal = $normal_BlendMode(#IN_C,Normal,normal_mix);
-                        }
-
-                    else
-                        {
-                            Normal = $addColor_BlendMode(#IN_C,addColor_clamp,$addColor_mix);
-                        }
-                }
-
-
-
-            // Blending additional values based on map target for Additional Float
-            // If mapping to existing value some calculation has to be rerun to avoid premult issues.
-            // Mapping is executed differently based on if corresponding channel is turned on in same region
-           vec4 FLOAT;
-
-            if ($addFloat_Affect == 0 && $addFloat_Use == true) //Additional Float as new value
-                {
-                    FLOAT = $addFloat_BlendMode(NewFloat_Handle,addFloat_clamp,addFloat_mix);
-                }
-
-            else if ($addFloat_Affect == 1 && $addFloat_Use == true) // Affect  SpecRough
-                {
-                    if($roughness_Use == true)
-                         {
-                            Roughness = $addFloat_BlendMode(specRough_clamp,addFloat_clamp,$addFloat_mix);
-                            Roughness = $roughness_BlendMode(roughness_Handle,Roughness,roughness_mix);
-                         }
-
-                    else
-                        {
-                            Roughness = $addFloat_BlendMode(roughness_Handle,addFloat_clamp,$addFloat_mix);
-                        }
-                }
-
-            else if ($addFloat_Affect == 2 && $addFloat_Use == true) // Affect SpecRefl
-                {
-                    if($refletance_Use == true)
-                         {
-                            Reflectance = $addFloat_BlendMode(specRefl_clamp,addFloat_clamp,$addFloat_mix);
-                            Reflectance = $refletance_BlendMode(Reflectance_Handle,Reflectance,refletance_mix);
-                         }
-
-                    else
-                        {
-                            Reflectance = $addFloat_BlendMode(Reflectance_Handle,addFloat_clamp,$addFloat_mix);
-                        }
-                }
-
-            else if ($addFloat_Affect == 3 && $addFloat_Use == true) // Affect Disp
-                {
-                    if($disp_Use == true)
-                         {
-                            Disp = $addFloat_BlendMode(disp_clamp,addFloat_clamp,$addFloat_mix);
-                            Disp = $disp_BlendMode(disp_Handle,Disp,disp_mix);
-                         }
-
-                    else
-                        {
-                            Disp = $addFloat_BlendMode(disp_Handle,addFloat_clamp,$addFloat_mix);
-                        }
-                }
-
-
-
-            // Output to Handles. Roughness,reflectance & disp are carried on signle variable
-            OUT_A = diffuse;
-            OUT_B = vec4(Roughness.r,Reflectance.r,Disp.r,FLOAT.r);
-            OUT_C = Normal;
-            OUT_D = RGBA;
-            OUT_E = specCol;
-
 
 
                 ]]></Body>
