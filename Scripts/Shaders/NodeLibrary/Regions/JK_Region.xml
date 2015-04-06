@@ -67,9 +67,11 @@
         <Output Name="OUT_C" />
         <Output Name="OUT_D" />
         <Output Name="OUT_E" />
+        <Output Name="DEBUG" />
     </Outputs>
     <Attributes>
     <Attribute Name="useRegion" PrettyName="Activate Region" Type="bool" Min="false" Max="true">true</Attribute>
+    <Attribute Name="debugmode" PrettyName="Debug Output" Group="" Type="userenum">diffuse,diffuse,Roughness,Reflectance,specCol,Disp,Normal,RGBA,FLOAT,Diffuse,Spec Roughness,Spec Reflectance,Spec Color,Displacement,Normal,RGBA,FLOAT</Attribute>
     <!--===============================================================================================================-->
     <Attribute Name="diffuse_Use" PrettyName="On/Off" Group="Handle Diffuse (RGBA)" Type="bool" Min="false" Max="true">false</Attribute>
     <Attribute Name="diffuse_color" PrettyName="Color" Group="Handle Diffuse (RGBA)" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(1,1,1,1)</Attribute>
@@ -349,6 +351,7 @@
                 OUT_C = Normal;
                 OUT_D = RGBA;
                 OUT_E = specCol;
+                DEBUG = $debugmode;
 
 
                 }
@@ -362,6 +365,7 @@
                 OUT_C = #IN_C;
                 OUT_D = #IN_D;
                 OUT_E = #IN_E;
+                DEBUG = vec4(0.0);
 
                 }
 
