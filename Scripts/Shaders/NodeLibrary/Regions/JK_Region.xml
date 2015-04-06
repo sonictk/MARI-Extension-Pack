@@ -239,7 +239,7 @@
                 // Blending additional values based on map target for Additional Color
                 // If mapping to existing value some calculation has to be rerun to avoid premult issues.
                 // Mapping is executed differently based on if corresponding channel is turned on in same region
-                vec4 RGBA;
+                vec4 RGBA = #IN_D;
 
                 if ($addColor_Affect == 0 && $addColor_Use == true) //Additional Color as new value
                     {
@@ -294,7 +294,7 @@
                 // Blending additional values based on map target for Additional Float
                 // If mapping to existing value some calculation has to be rerun to avoid premult issues.
                 // Mapping is executed differently based on if corresponding channel is turned on in same region
-               vec4 FLOAT;
+               vec4 FLOAT = NewFloat_Handle;
 
                 if ($addFloat_Affect == 0 && $addFloat_Use == true) //Additional Float as new value
                     {
