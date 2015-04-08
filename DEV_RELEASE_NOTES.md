@@ -13,6 +13,16 @@ A node to transform object coordinates and normals
 Many Extension Pack Procedurals have this built in but this node
 can be used as a central control hub to modify multiple nodes at once.
 
+######Material Regions
+
+Four new nodes were added as part of the implementation of 'Material Regions'.
+Material Region Base, Material Region, Material Region Pass Through and
+Material Region Value Selector.
+
+Material Regions are a powerful way to layer different materials on top of each other, provide a logical grouping in the Nodegraph and giving the user maximum control over each part of the material. Other than Layered Shaders
+performance is kept high by only passing a 'finished' channel to one shader
+instead of layereing multiple shaders on top of each other.
+
 
 ######Procedurals ready for Nodegraph _WIP
 
