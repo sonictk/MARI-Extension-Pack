@@ -14,6 +14,13 @@ do be done at significantly increased speed without having to wait for a viewpor
 update each time.
 
 
+#####ADJUSTMENT LAYERS
+
+######SV Lookup
+
+Remap Saturation and Value along a Curve
+
+
 ##Feature Improvements:
 
 #####ADJUSTMENT LAYERS
