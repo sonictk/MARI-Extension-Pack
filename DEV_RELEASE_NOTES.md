@@ -24,6 +24,14 @@ performance is kept high by only passing a 'finished' channel to one shader
 instead of layereing multiple shaders on top of each other.
 
 
+######Polysurface Curvature
+
+The Polysurface Curvature Node now has an additional 'Normal Map Mix'.
+When a Normal Map (for example a 'Normal Map' Channel) is attached to the
+handle in the Nodegraph you are able to mix or add edges from a normalmap
+into the final calculation of the curvature
+
+
 ######Procedurals ready for Nodegraph _WIP
 
 MARI EXTENSION PACK procedurals have been cleaned for the Nodegraph

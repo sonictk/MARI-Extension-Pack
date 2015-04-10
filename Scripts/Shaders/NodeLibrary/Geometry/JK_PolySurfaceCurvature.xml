@@ -46,14 +46,19 @@
     <DefaultName>PolySurface Curvature</DefaultName>
     <Category>Geometry/Custom/</Category>
     <Inputs>
+        <Input Name="NormalMap"></Input>
         <Input Name="Curvature"></Input>
         <Input Name="Intensity"></Input>
     </Inputs>
     <Attributes>
         <!--===============================================================================================================-->
-        <Attribute Name="Adjust" PrettyName="Curvature" Group="" Type="double" Logarithmic="1" Min="0" Max="1">0.1</Attribute>
-        <Attribute Name="Size" PrettyName="Intensity" Group="" Type="double" Logarithmic="1" Min="0" Max="2">0.1</Attribute>
+        <Attribute Name="Adjust" PrettyName="Curvature" Group="" Type="double" Logarithmic="1" Min="0.0" Max="1.0">0.1</Attribute>
+        <Attribute Name="Size" PrettyName="Intensity" Group="" Type="double" Logarithmic="1" Min="0.0" Max="2.0">0.1</Attribute>
         <Attribute Name="Invert" PrettyName="Invert" Group="" Type="bool" Min="false" Max="true">false</Attribute>
+        <!--===============================================================================================================-->
+        <Attribute Name="MixNrm" PrettyName="Mix Normal Map" Group="Normal Map (Nodegraph Only)" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
+        <Attribute Name="Mode" PrettyName="Mode" Group="Normal Map (Nodegraph Only)" Type="userenum">Comp_MixRGBEncodedNormals,Comp_MixRGBEncodedNormals,Comp_AddRGBEncodedNormals,Comp_ReorientedNormalMappingRGBEncodedNormals,Mix Normals,Add Normals,Mix Reoriented Normals</Attribute>
+        <!--===============================================================================================================-->
         <Attribute Name="absolute" PrettyName="Hard Edged" Group="Extra Attributes" Type="bool" Min="false" Max="true">false</Attribute>
         <Attribute Name="AO" PrettyName="Attenuate with AmbientOcclusion" Group="Extra Attributes" Type="bool" Min="false" Max="true">false</Attribute>
         <!--===============================================================================================================-->
@@ -64,17 +69,21 @@
             <Inputs>
                 <Input Name="Curvature"><Pos>-100,-50</Pos></Input>
                 <Input Name="Intensity"><Pos>100,-50</Pos></Input>
+                <Input Name="NormalMap"><Pos>-250,0</Pos></Input>
             </Inputs>
         </Context>
         <Context Type="GLSL">
             <Shader ShaderType='Fragment'>
                 <Inputs>
+                <Input Name="NormalMap"><Default>vec4(9999.0)</Default></Input>
                 <Input Name="Curvature"><Default>vec4(9999.0)</Default></Input>
                 <Input Name="Intensity"><Default>vec4(9999.0)</Default></Input>
                 </Inputs>
             </Shader>
             <Shader ShaderType='TessEvaluation'>
                 <Inputs>
+
+                <Input Name="NormalMap"><Default>vec4(9999.0)</Default></Input>
                 <Input Name="Curvature"><Default>vec4(9999.0)</Default></Input>
                 <Input Name="Intensity"><Default>vec4(9999.0)</Default></Input>
                 </Inputs>
@@ -85,17 +94,22 @@
 
                 #if defined MRI_SHADER_FRAGMENT || defined MRI_SHADER_TESS_EVALUATION
 
-                vec3 N = State.Normal;
-                vec3 P = State.Position;
-                float AO = mix(1.0,State.AmbientOcclusion,float($AO));
-
                 float Curvature = #Curvature.r;
                 float Intensity = #Intensity.r;
+                float MixNormMip =  $MixNrm;
+
+                vec4 N_4 = vec4(State.Normal,1.0);
+                vec4 mix_nrm = $Mode(N_4,#NormalMap,MixNormMip);
 
                 // Checking if anything is attached to Nodegraph Handles
+                vec3 N = ( #NormalMap == vec4(9999.0) ) ? N_4.rgb : mix_nrm.rgb ;
                 float Adj = ( Curvature == 9999.0 ) ? $Adjust : Curvature ;
                 float Si = ( Intensity == 9999.0 ) ? $Size : Intensity;
 
+
+                // vec3 N = State.Normal;
+                vec3 P = State.Position;
+                float AO = mix(1.0,State.AmbientOcclusion,float($AO));
                 float hardEdge = float($absolute);
 
 
