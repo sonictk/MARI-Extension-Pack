@@ -4,7 +4,7 @@ Copyright (c) 2015 www.mari.ideascale.com. All Rights Reserved.
 
 ##New Features:
 
-######SHADING MENU & LIGHTING TOOLBAR
+#####SHADING MENU & LIGHTING TOOLBAR
 
 ######Pause Viewport Update
 
@@ -32,6 +32,10 @@ below 0.0 and over 1.0.
 
 The previous behavior of being able to control values per color channel
 have been removed and replaced with per channel checkboxes.
+
+######Illegal Value Warning
+
+Illegal Value Warning now differentiates its color warning between values that are above the upper limit and ones that are below the lower limit
 
 
 #####ENVIRONMENT PROCEDURALS
