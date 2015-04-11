@@ -20,6 +20,15 @@ update each time.
 
 Remap Saturation and Value along a Curve
 
+######Edge from Normal Map
+
+Similar to the 'Polysurface Curvature' Node this node will run an edge/curvature detection.
+Other than 'Polysurface Curvature' this nodes takes into account the underlying layers (Normal Map)
+instead of running the detection on your objects normals.
+Due to Maris lack of filtering this node needs to be converted to a paintable one after use (by merging or using 'CLone & Merge')
+and should get a gaussian blur applied for best use.
+
+
 
 ##Feature Improvements:
 

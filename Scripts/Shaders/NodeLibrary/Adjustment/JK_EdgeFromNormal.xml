@@ -3,15 +3,15 @@
 == Mari Ideascale Procedural Library
 == Copyright (c) 2013 Jens Kafitz. All Rights Reserved.
 ================================================================================
-== File: JK_SetRange.xml
-== Description: Simple remap node with optional components like rgba remapping.
+== File: JK_EdgeFromNormal.xml
+== Description: Curvature Detection from a Normal Map.
 ================================================================================
 == Author: Jens Kafitz | Mari Ideascale
 == Web: www.campi3d.com
 == Web: www.mari.ideascale.com
 == Email: MariIdeas@campi3d.com
 ================================================================================
-== Modified Date: June, 16 2014
+== Modified Date: April 12, 2015
 ================================================================================
 == Redistribution and use in source and binary forms, with or without
 == modification, are permitted provided that the following conditions are met:
@@ -42,8 +42,8 @@
 -->
 
 <Node>
-    <ID>Set Range</ID>
-    <DefaultName>Set Range</DefaultName>
+    <ID>JK_EdgeFromNormal</ID>
+    <DefaultName>Edge from Normal Map</DefaultName>
     <Category>/Custom/</Category>
     <Tags>
         <Tag>_adjustment</Tag>
@@ -53,59 +53,77 @@
     </Inputs>
     <Attributes>
         <!--===============================================================================================================-->
-        <Attribute Name="oMin" PrettyName="OldMin" Group="" Type="float" >0.0</Attribute>
-        <Attribute Name="oMax" PrettyName="OldMax" Group="" Type="float" >1.0</Attribute>
-        <Attribute Name="nMin" PrettyName="NewMin" Group="" Type="float" >0.0</Attribute>
-        <Attribute Name="nMax" PrettyName="NewMax" Group="" Type="float" >1.0</Attribute>
+        <Attribute Name="Adjust" PrettyName="Curvature" Group="" Type="double" Logarithmic="1" Min="0" Max="1">1.0</Attribute>
+        <Attribute Name="MinVar" PrettyName="Min Curvature Variation" Group="" Type="double" Logarithmic="1" Min="0" Max="1">0.05</Attribute>
+        <Attribute Name="Size" PrettyName="Intensity" Group="" Type="double" Logarithmic="1" Min="0" Max="2">0.25</Attribute>
+        <Attribute Name="Invert" PrettyName="Invert" Group="" Type="bool" Min="false" Max="true">false</Attribute>
+        <Attribute Name="absolute" PrettyName="Hard Edged" Group="Extra Attributes" Type="bool" Min="false" Max="true">false</Attribute>
+        <Attribute Name="AO" PrettyName="Attenuate with AmbientOcclusion" Group="Extra Attributes" Type="bool" Min="false" Max="true">false</Attribute>
         <!--===============================================================================================================-->
-        <Attribute Name="sMult" PrettyName="MultiplyScale" Group="Extra Attributes" Type="float" >1.0</Attribute>
-        <Attribute Name="useClamp" PrettyName="Clamp Values" Group="Extra Attributes" Type="bool" Min="false" Max="true">false</Attribute>
-        <!--===============================================================================================================-->
-        <Attribute Name="Red" Type="bool" Group="Channels" Min="true" Max="false">true</Attribute>
-        <Attribute Name="Green" Type="bool" Group="Channels" Min="true" Max="false">true</Attribute>
-        <Attribute Name="Blue" Type="bool" Group="Channels" Min="true" Max="false">true</Attribute>
-        <Attribute Name="Alpha" Type="bool" Group="Channels" Min="true" Max="false">false</Attribute>
-        <!--===============================================================================================================-->
+
     </Attributes>
     <Contexts>
         <Context Type="NodeGraphView">
             <Inputs>
-                <Input Name="Input"><Pos>0,-50</Pos></Input>
+                <Input Name="Input"><Pos>100,+20</Pos></Input>
             </Inputs>
         </Context>
         <Context Type="GLSL">
-            <Shader>
+            <Shader ShaderType='Fragment'>
                 <Inputs>
-                    <Input Name="Input"><Default>vec4(1,1,1,1)</Default></Input>
+                    <Input Name="Input"><Default>State.Normal</Default></Input>
                 </Inputs>
+            </Shader>
+            <Shader ShaderType='TessEvaluation'>
+                <Inputs>
+                    <Input Name="Input"><Default>State.Normal</Default></Input>
+                </Inputs>
+            </Shader>
+            <Shader>
                 <Body><![CDATA[
 
 
+                #if defined MRI_SHADER_FRAGMENT || defined MRI_SHADER_TESS_EVALUATION
 
-                vec4 old = (#Input.rgba - vec4($oMin)) / (vec4($oMax) - vec4($oMin));
-                vec4 new = ((vec4($nMax) - vec4($nMin)) * old.rgba) + vec4($nMin) ;
-                vec4 scale = vec4(new * vec4($sMult));
+                vec3 N = #Input.rgb;
+                vec3 P = State.Position;
+                float AO = mix(1.0,State.AmbientOcclusion,float($AO));
 
-                if ($useClamp == true)
-                    {
-                    Output = vec4(
-                                  $Red   ? clamp(scale.r,0.0,1.0) : #Input.r,
-                                  $Green ? clamp(scale.g,0.0,1.0) : #Input.g,
-                                  $Blue  ? clamp(scale.b,0.0,1.0) : #Input.b,
-                                  $Alpha ? clamp(scale.a,0.0,1.0) : #Input.a
-                                  );
 
-                }
+                float hardEdge = float($absolute);
 
-                else
-                    {
-                    Output = vec4(
-                                  $Red   ? scale.r : #Input.r,
-                                  $Green ? scale.g : #Input.g,
-                                  $Blue  ? scale.b : #Input.b,
-                                  $Alpha ? scale.a : #Input.a
-                                 );
-                    }
+
+                float Size = AO*$Size;
+                float Adjust = AO*$Adjust;
+
+
+                float size_pow = (pow(10000.0,Size*Size)-1.0) + 0.0001;
+
+
+                float curvN = 0.0;
+                float curvP = 0.0;
+
+
+                float tuneCurvature = (Adjust*size_pow);
+                curvN = length(fwidth(N)) ;
+                curvN = (curvN >=$MinVar) ? curvN : 0.0;
+                curvP = length(fwidth(P)) ;
+
+                float mixer = clamp(curvN,0.0,1.0) / curvP;
+
+                float curvature = clamp((mixer*tuneCurvature),0.0,1.0);
+                curvature = mix(curvature,(softThreshold(0.5,0.0,curvature)),hardEdge);
+                float inv_curv = 1.0 - curvature;
+
+
+                float result = mix(curvature,inv_curv,float($Invert));
+                result = clamp(result,0.0,1.0);
+
+
+                Output = vec4(result,result,result,1.0);
+
+                #endif
+
 
                 ]]></Body>
             </Shader>
