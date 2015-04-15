@@ -1,0 +1,280 @@
+<!--
+================================================================================
+== MARI Procedural Library
+== Copyright (c) 2015 Jens KAfitz. All Rights Reserved.
+================================================================================
+== File: JK_Standalone_BRDF_Metalness.xml
+== Description: Modification of default MARI BRDF to support Metalness/Roughness Workflow
+================================================================================
+== Author: The Foundry
+== Modified: Jens Kafitz
+== Web: www.campi3d.com
+== Email: MariIdeas@campi3d.com
+================================================================================
+== Modified Date: April, 17 2015
+================================================================================
+== Redistribution and use in source and binary forms, with or without
+== modification, are permitted provided that the following conditions are met:
+==
+== 1. Redistributions of source code must retain the above copyright
+== notice, this list of conditions and the following disclaimer.
+==
+== 2. Redistributions in binary form must reproduce the above copyright
+== notice, this list of conditions and the following disclaimer in the
+== documentation and/or other materials provided with the distribution.
+==
+== 3. Neither the name of the copyright holder nor the names of its
+== contributors may be used to endorse or promote products derived from
+== this software without specific prior written permission.
+==
+== THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+== IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+== THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+== PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+== CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+== EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+== PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+== OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+== WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+== OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+== ADVISED OF HE POSSIBILITY OF SUCH DAMAGE.
+================================================================================
+-->
+
+<Node>
+    <ID>JK_MARI_BRDF_METALNESS</ID>
+    <DefaultName>BRDF (Metalness-Roughness) </DefaultName>
+  <Inputs>
+    <Input Name="DiffuseColor" PrettyName="Diffuse Color" PreferredInput='1' />
+    <Input Name="Roughness" PrettyName="Roughness" />
+    <Input Name="Metalness" PrettyName="Metalness" />
+    <Input Name="AmbientOcclusion" PrettyName="Ambient Occlusion"></Input>
+    <Input Name="EmissiveColor" PrettyName="Emissive Color"></Input>
+    <Input Name="Normal" />
+  </Inputs>
+  <Attributes>
+      <Attribute Name="Roughness" Group="" Type="double" Min="0" Max="1">0.2</Attribute>
+      <Attribute Name="Metalness" Group="" Type="double" Min="0" Max="1">0.0</Attribute>
+      <Attribute Name="F0Specular" PrettyName="Specular Level" Group="" Description="Specular Level adjustments only work on non-metals to adjust F0 reflectance range of 0.0-0.08" Type="double" Min="0" Max="1">0.5</Attribute>
+      <Attribute Name="AmbientOcclusion" PrettyName="Ambient Occlusion" Group="" Type="double" Min="0" Max="2">1.0</Attribute>
+      <Attribute Name="Emissive" Group="" Type="double" Min="0" Max="100.0" Logarithmic="1">1.0</Attribute>
+     <!--===============================================================================================================-->
+     <Attribute Name="Warning" PrettyName="PBR Illegal Value Warning" Group="PBR Illegal Value Warning" Type="bool" Min="false" Max="true" Description="Runs the noise 2d uv based, use offset/scale x/y and rotate z" >false</Attribute>
+    <Attribute Name="colorUp" PrettyName="Diffuse too bright" Group="PBR Illegal Value Warning" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)" Description="Color A">(0,1,0.78,1)</Attribute>
+    <Attribute Name="colorDown" PrettyName="Diffuse too Dark" Group="PBR Illegal Value Warning" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)" Description="Color A">(2,0,0,1)</Attribute>
+    <Attribute Name="blink" Group="PBR Illegal Value Warning" PrettyName="Blink Interval (sec)" Description="Blink interval in seconds" Type="int" Min="0" Max="200">1</Attribute>
+    <Attribute Name="blinkFade" Group="PBR Illegal Value Warning" PrettyName="Blink Fadeout (msec)" Description="Blink fadeout in msec" Type="int" Min="0" Max="200">100</Attribute>
+
+
+ </Attributes>
+  <Tags>
+    <Tag>_notcacheable</Tag>
+    <Tag>_standalone</Tag>
+  </Tags>
+    <Contexts>
+        <Context Type="NodeGraphView">
+            <Inputs>
+                <Input Name="DiffuseColor"><Pos>0,-50</Pos></Input>
+                <Input Name="Normal"><Pos>30,-50</Pos></Input>
+            </Inputs>
+        </Context>
+        <Context Type="GLSL">
+            <Shader ShaderType='Fragment'>
+                <Inputs>
+                    <Input Name="DiffuseColor"><Default>vec4(0.0)</Default></Input>
+                    <Input Name="Roughness"><Default>vec4(9999.0)</Default></Input>
+                    <Input Name="Metalness"><Default>vec4(9999.0)</Default></Input>
+                    <Input Name="AmbientOcclusion"><Default>vec4(vec3(1.0-State.AmbientOcclusion),1.0)</Default></Input>
+                    <Input Name="EmissiveColor"><Default>vec4(0,0,0,0)</Default></Input>
+                    <Input Name="Normal"><Default>vec4(0,0,1,1)</Default></Input>
+                </Inputs>
+                <Body><![CDATA[
+    // View Direction
+    vec3 V = normalize(-State.ViewVectorInEyeSpaceFromViewCamera);
+    // Normal Direction
+    vec3 N = #Normal.xyz;
+
+    // Checking for Input Mapping
+    vec4 diffuse    = #DiffuseColor;
+    float metalness = ( #Metalness.r == 9999.0 ) ? $Metalness : #Metalness.r ;
+    float roughness = ( #Roughness.r == 9999.0 ) ? $Roughness : #Roughness.r ;
+
+
+    float F0Spec = 0.04 * $F0Specular;
+    float specLevel = mix(clamp($F0Specular*2.0,0.0,1.0),1.0,metalness);
+    vec4 reflVal = mriRgb2Hsv(diffuse);
+    float Reflectance = mix(F0Spec,reflVal.b,metalness);
+    vec4 specColor = mix(vec4(1.0),diffuse,metalness);
+    diffuse = mix(diffuse,vec4(0.0,0.0,0.0,1.0),metalness);
+
+    float NdotV = dot(N,V);
+    // On the wrong side of the face
+    if( NdotV <= 0.0)
+    {
+        N = -N;
+        NdotV = 1.0 - NdotV;
+    }
+
+    vec3 EnergyDiffuse = vec3(0.0);
+    vec3 EnergySpecular = vec3(0.0);
+
+    float _Roughness = 1.0 - roughness;
+    float _Reflectance = Reflectance;
+
+    float PI = 3.141;
+
+    float g = _Roughness;
+    float m = exp2( 13.0*g);
+    float a = 1.0 / sqrt( ((PI/4.0) * m) + (PI/2.0));
+    float r = _Reflectance;
+
+
+    for(int i=0;i<4;i++)
+    {
+        if( vec3( 0) == u_MriLightSources[i].DiffuseColor.rgb && vec3( 0) == u_MriLightSources[i].SpecularColor.rgb)
+        {
+            continue;
+        }
+
+        float lightVisibility = mriLightVisibility( i, State.Position);
+        if( lightVisibility <= 0.01)
+        {
+            continue;
+        }
+
+        // Light Direction
+        vec3 L = normalize(u_MriLightSources[i].Position.xyz - State.FragmentPositionInEyeSpaceFromViewCamera);
+        // Half Vector
+        vec3 H = normalize(L+V);
+
+        float NdotL = dot(L,N);
+        if( NdotL <= 0.0)
+        {
+            continue;
+        }
+
+        {
+            float NdotH = dot(N,H);
+            float LdotH = dot(L,H);
+
+            // Fresnel - Schlicks
+            float F = r + ((1-r) * pow( 1.0-LdotH, 5.0));
+
+            // Microfacet - Blinn-Phong
+            float D = 1.0 * ((m+2.0)/(8*PI)) * pow( NdotH, m);
+
+            // Geometric Visible - Schlick-Smith
+            float G = 1;
+            float V = 1.0 / (((1.0 - a )*NdotL) + a) * ((NdotV*(1.0-a))+ a);
+
+            float fs = (F * V * D);
+            float fd = 1.0;
+
+            EnergyDiffuse  += (lightVisibility * u_MriLightSources[i].DiffuseColor.rgb) * (fd * NdotL);
+            EnergySpecular += (lightVisibility * u_MriLightSources[i].SpecularColor.rgb) * (fs * NdotL);
+        }
+    }
+
+    if( true == mriEnvironmentLightOn())
+    {
+        {
+            // Env Light, Light Direction
+            EnergyDiffuse += mriEnvironmentLight( transpose(mat3(u_MriViewMatrix)) * N, 0.0);
+        }
+
+        {
+            // Env Reflection, Light Direction
+            //vec3 L = normalize(u_MriLightSources[i].Position.xyz - State.FragmentPositionInEyeSpaceFromViewCamera);
+            vec3 L = normalize( -reflect( V, N));
+            // Half Vector
+            vec3 H = normalize(L+V);
+
+            float NdotL = dot(L,N);
+            if( 0.0 < NdotL)
+            {
+                float lightVisibility = 1.0;
+
+                float LdotH = dot(L,H);
+
+                // Fresnel - Schlicks
+                float F = r + ((1-r) * pow( 1.0-LdotH, 5.0));
+
+                // Microfacet - Cubemaps render using glossy pow( )
+                float D = 1;
+
+                // Geometric Visible
+                float G = 1;
+                float V = 1.0 / (((1.0 - a )*NdotL) + a) * ((NdotV*(1.0-a))+ a);
+
+                float fs = (F * V * D);
+
+                vec3 LightColour = lightVisibility * mriEnvironmentLight( transpose(mat3(u_MriViewMatrix)) * L, _Roughness);
+                EnergySpecular += (fs * NdotL) * (LightColour);
+            }
+        }
+    }
+
+
+    //<!--===============================================PBR VALUE WARNING START=========================================-->//
+
+    vec3 WarningColorUp,WarningColorLow;
+    float WarnUp = 0.0;
+    float WarnDown = 0.0;
+    float Alpha = 0.0;
+
+     if ($Warning)
+
+        {
+            int blink = $blink * 1000;
+            int msec = $blinkFade * 10;
+            int SystemTimeRemainder = u_MriSystemTime % 110;
+            Alpha = 1.0 - float(u_MriSystemTime % blink) / float(msec);
+
+            WarningColorUp = vec3($colorUp.rgb);
+            WarningColorLow = vec3($colorDown.rgb);
+
+
+            vec4 albedo = mriRgb2Hsv(#DiffuseColor);
+
+            if (metalness >= 0.5 && albedo.b <= 0.6 )
+                { WarnDown = 1.0-(albedo.b/0.69); }
+            if (metalness <= 0.5 && albedo.b <= 0.117 )
+                { WarnDown =  1.0-(albedo.b/0.117);}
+            if (metalness <= 0.5 && albedo.b >= 0.941)
+                { WarnUp = (albedo.b-0.941)*17.0;}
+
+         }
+
+
+    //<!--===============================================PBR VALUE WARNING END=========================================-->//
+
+
+    vec4 result;
+
+    result.rgb  = u_MriLightingMode==0 ? diffuse.rgb : vec3((EnergyDiffuse.rgb)  * diffuse.rgb );
+    result.rgb += u_MriLightingMode!=2 ? vec3(0.0)         : vec3(specLevel * EnergySpecular.rgb * specColor.rgb);
+
+    result.rgb *= u_MriLightingMode>=1 ? vec3(1.0 - ($AmbientOcclusion * vec3(1.0-#AmbientOcclusion.rgb)) ) : vec3(1.0);
+
+
+    // Emissive not affected by AO
+    result.rgb += u_MriLightingMode==2 ? $Emissive * #EmissiveColor.rgb * #EmissiveColor.a : vec3(0.0);
+
+    if ($Warning)
+       {
+
+        vec4 highValWarning = mix(result, vec4(WarningColorUp,WarnUp), clamp(WarnUp*Alpha,0.0,1.0));
+        vec4 lowValWarning = mix(highValWarning, vec4(WarningColorLow,WarnDown), clamp(WarnDown*Alpha,0.0,1.0));
+        result = lowValWarning;
+
+        }
+
+    Output.rgb = result.rgb;
+    Output.a = diffuse.a;
+
+                ]]></Body>
+            </Shader>
+        </Context>
+    </Contexts>
+</Node>
+

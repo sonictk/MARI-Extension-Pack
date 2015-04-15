@@ -29,6 +29,15 @@ Due to Maris lack of filtering this node needs to be converted to a paintable on
 and should get a gaussian blur applied for best use.
 
 
+#####SHADERS
+
+######BRDF Metalness-Roughness
+
+A conversion of the Mari BRDF to support a Metalness/Roughness Workflow.
+Additional features include visual representation of diffuse/albedo values
+outside the recommended ranged as outlined in common PBR practices.
+
+
 
 ##Feature Improvements:
 
