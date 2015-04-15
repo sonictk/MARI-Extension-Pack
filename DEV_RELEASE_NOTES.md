@@ -32,6 +32,11 @@ handle in the Nodegraph you are able to mix or add edges from a normalmap
 into the final calculation of the curvature
 
 
+######RGB 2 HSV + HSV 2 RGB
+
+Two new nodes were added to convert values between HSV & RGB.
+
+
 ######Procedurals ready for Nodegraph _WIP
 
 MARI EXTENSION PACK procedurals have been cleaned for the Nodegraph
