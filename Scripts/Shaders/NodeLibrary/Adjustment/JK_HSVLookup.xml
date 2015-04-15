@@ -3,7 +3,7 @@
 == Mari Ideascale Procedural Library
 == Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
 ==============================================================================
-== File: JK_HSVLookup.xml
+== File: JK_SVLookup.xml
 == Description: Lookup & set Saturation and Value along a curve.
 ================================================================================
 == Author: Jens Kafitz | Mari Ideascale
@@ -43,7 +43,7 @@
 
 
 <Node>
-    <ID>JK_HSVLookup</ID>
+    <ID>JK_SVLookup</ID>
     <DefaultName>SV Lookup</DefaultName>
     <Category>/Custom/</Category>
   <Description>Explicity set the curve loopup for Hue, saturation and value</Description>
