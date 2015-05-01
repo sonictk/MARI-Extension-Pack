@@ -45,9 +45,10 @@
     <ID>JK_MARI_BRDF_METALNESS</ID>
     <DefaultName>BRDF (Metalness-Roughness) </DefaultName>
   <Inputs>
-    <Input Name="DiffuseColor" PrettyName="Diffuse Color" PreferredInput='1' />
+    <Input Name="Diffuse" />
     <Input Name="Roughness" PrettyName="Roughness" />
     <Input Name="Metalness" PrettyName="Metalness" />
+    <Input Name="SpecularLevel" />
     <Input Name="AmbientOcclusion" PrettyName="Ambient Occlusion"></Input>
     <Input Name="EmissiveColor" PrettyName="Emissive Color"></Input>
     <Input Name="Normal" />
@@ -55,15 +56,15 @@
   <Attributes>
       <Attribute Name="Roughness" Group="" Type="double" Min="0" Max="1">0.2</Attribute>
       <Attribute Name="Metalness" Group="" Type="double" Min="0" Max="1">0.0</Attribute>
-      <Attribute Name="F0Specular" PrettyName="Specular Level" Group="" Description="Specular Level adjustments only work on non-metals to adjust F0 reflectance range of 0.0-0.08" Type="double" Min="0" Max="1">0.5</Attribute>
+      <Attribute Name="F0Specular" PrettyName="SpecularLevel" Group="" Description="Specular Level adjustments only work on non-metals to adjust F0 reflectance range of 0.0-0.08" Type="double" Min="0" Max="1">0.5</Attribute>
       <Attribute Name="AmbientOcclusion" PrettyName="Ambient Occlusion" Group="" Type="double" Min="0" Max="2">1.0</Attribute>
       <Attribute Name="Emissive" Group="" Type="double" Min="0" Max="100.0" Logarithmic="1">1.0</Attribute>
      <!--===============================================================================================================-->
      <Attribute Name="Warning" PrettyName="PBR Illegal Value Warning" Group="PBR Illegal Value Warning" Type="bool" Min="false" Max="true" Description="Runs the noise 2d uv based, use offset/scale x/y and rotate z" >false</Attribute>
-    <Attribute Name="colorUp" PrettyName="Diffuse too bright" Group="PBR Illegal Value Warning" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)" Description="Color A">(0,1,0.78,1)</Attribute>
-    <Attribute Name="colorDown" PrettyName="Diffuse too Dark" Group="PBR Illegal Value Warning" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)" Description="Color A">(2,0,0,1)</Attribute>
-    <Attribute Name="blink" Group="PBR Illegal Value Warning" PrettyName="Blink Interval (sec)" Description="Blink interval in seconds" Type="int" Min="0" Max="200">1</Attribute>
-    <Attribute Name="blinkFade" Group="PBR Illegal Value Warning" PrettyName="Blink Fadeout (msec)" Description="Blink fadeout in msec" Type="int" Min="0" Max="200">100</Attribute>
+     <Attribute Name="colorUp" PrettyName="Diffuse too bright" Group="PBR Illegal Value Warning" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)" Description="Color A">(0,1,0.78,1)</Attribute>
+     <Attribute Name="colorDown" PrettyName="Diffuse too Dark" Group="PBR Illegal Value Warning" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)" Description="Color A">(2,0,0,1)</Attribute>
+     <Attribute Name="blink" Group="PBR Illegal Value Warning" PrettyName="Blink Interval (sec)" Description="Blink interval in seconds" Type="int" Min="0" Max="200">1</Attribute>
+     <Attribute Name="blinkFade" Group="PBR Illegal Value Warning" PrettyName="Blink Fadeout (msec)" Description="Blink fadeout in msec" Type="int" Min="0" Max="200">100</Attribute>
 
 
  </Attributes>
@@ -74,16 +75,16 @@
     <Contexts>
         <Context Type="NodeGraphView">
             <Inputs>
-                <Input Name="DiffuseColor"><Pos>0,-50</Pos></Input>
                 <Input Name="Normal"><Pos>30,-50</Pos></Input>
             </Inputs>
         </Context>
         <Context Type="GLSL">
             <Shader ShaderType='Fragment'>
                 <Inputs>
-                    <Input Name="DiffuseColor"><Default>vec4(0.0)</Default></Input>
+                    <Input Name="Diffuse"><Default>vec4(0.0,0.0,0.0,1.0)</Default></Input>
                     <Input Name="Roughness"><Default>vec4(9999.0)</Default></Input>
                     <Input Name="Metalness"><Default>vec4(9999.0)</Default></Input>
+                    <Input Name="SpecularLevel"><Default>vec4(9999.0)</Default></Input>
                     <Input Name="AmbientOcclusion"><Default>vec4(vec3(1.0-State.AmbientOcclusion),1.0)</Default></Input>
                     <Input Name="EmissiveColor"><Default>vec4(0,0,0,0)</Default></Input>
                     <Input Name="Normal"><Default>vec4(0,0,1,1)</Default></Input>
@@ -95,13 +96,13 @@
     vec3 N = #Normal.xyz;
 
     // Checking for Input Mapping
-    vec4 diffuse    = #DiffuseColor;
+    vec4 diffuse    = #Diffuse;
     float metalness = ( #Metalness.r == 9999.0 ) ? $Metalness : #Metalness.r ;
     float roughness = ( #Roughness.r == 9999.0 ) ? $Roughness : #Roughness.r ;
+    float specLevel = ( #SpecularLevel.r == 9999.0 ) ? $F0Specular : #SpecularLevel.r ;
 
-
-    float F0Spec = 0.04 * $F0Specular;
-    float specLevel = mix(clamp($F0Specular*2.0,0.0,1.0),1.0,metalness);
+    float F0Spec = 0.04 * specLevel;
+    specLevel = mix(clamp(specLevel*2.0,0.0,1.0),1.0,metalness);
     vec4 reflVal = mriRgb2Hsv(diffuse);
     float Reflectance = mix(F0Spec,reflVal.b,metalness);
     vec4 specColor = mix(vec4(1.0),diffuse,metalness);
@@ -234,14 +235,14 @@
             WarningColorLow = vec3($colorDown.rgb);
 
 
-            vec4 albedo = mriRgb2Hsv(#DiffuseColor);
+            vec4 albedo = mriRgb2Hsv(#Diffuse);
 
             if (metalness >= 0.1 && albedo.b <= (0.5*metalness))
                 { WarnDown = (1.0-(albedo.b/0.69) ) / metalness ; }
-            if (metalness <= 0.5 && albedo.b <= 0.117 )
-                { WarnDown =  1.0-(albedo.b/0.117);}
-            if (metalness <= 0.5 && albedo.b >= 0.941)
-                { WarnUp = (albedo.b-0.941)*17.0;}
+            if (metalness <= 0.5 && albedo.b <= 0.015 )
+                { WarnDown =  1.0-(albedo.b/0.015);}
+            if (metalness <= 0.5 && albedo.b >= 0.87)
+                { WarnUp = (albedo.b-0.87)*17.0;}
 
          }
 
@@ -252,10 +253,10 @@
     vec4 result;
 
     if (u_MriLightingMode==0)
-       { result.rgb = #DiffuseColor.rgb; }
+       { result.rgb = #Diffuse.rgb; }
 
     else if (u_MriLightingMode==1)
-       { result.rgb = vec3(EnergyDiffuse.rgb  * #DiffuseColor.rgb);
+       { result.rgb = vec3(EnergyDiffuse.rgb  * #Diffuse.rgb);
          result.rgb *= vec3(1.0 - ($AmbientOcclusion * vec3(1.0-#AmbientOcclusion.rgb)) );
        }
 
