@@ -60,11 +60,11 @@
       <Attribute Name="AmbientOcclusion" PrettyName="Ambient Occlusion" Group="" Type="double" Min="0" Max="2">1.0</Attribute>
       <Attribute Name="Emissive" Group="" Type="double" Min="0" Max="100.0" Logarithmic="1">1.0</Attribute>
      <!--===============================================================================================================-->
-     <Attribute Name="Warning" PrettyName="PBR Illegal Value Warning" Group="PBR Illegal Value Warning" Type="bool" Min="false" Max="true" Description="Runs the noise 2d uv based, use offset/scale x/y and rotate z" >false</Attribute>
-     <Attribute Name="colorUp" PrettyName="Diffuse too bright" Group="PBR Illegal Value Warning" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)" Description="Color A">(0,1,0.78,1)</Attribute>
-     <Attribute Name="colorDown" PrettyName="Diffuse too Dark" Group="PBR Illegal Value Warning" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)" Description="Color A">(2,0,0,1)</Attribute>
-     <Attribute Name="blink" Group="PBR Illegal Value Warning" PrettyName="Blink Interval (sec)" Description="Blink interval in seconds" Type="int" Min="0" Max="200">1</Attribute>
-     <Attribute Name="blinkFade" Group="PBR Illegal Value Warning" PrettyName="Blink Fadeout (msec)" Description="Blink fadeout in msec" Type="int" Min="0" Max="200">100</Attribute>
+     <Attribute Name="Warning" PrettyName="PBS Illegal Value Warning" Group="PBS Illegal Value Warning" Type="bool" Min="false" Max="true" Description="Runs the noise 2d uv based, use offset/scale x/y and rotate z" >false</Attribute>
+     <Attribute Name="colorUp" PrettyName="Diffuse too bright" Group="PBS Illegal Value Warning" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)" Description="Color A">(0,1,0.78,1)</Attribute>
+     <Attribute Name="colorDown" PrettyName="Diffuse too Dark" Group="PBS Illegal Value Warning" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)" Description="Color A">(2,0,0,1)</Attribute>
+     <Attribute Name="blink" Group="PBS Illegal Value Warning" PrettyName="Blink Interval (sec)" Description="Blink interval in seconds" Type="int" Min="0" Max="200">1</Attribute>
+     <Attribute Name="blinkFade" Group="PBS Illegal Value Warning" PrettyName="Blink Fadeout (msec)" Description="Blink fadeout in msec" Type="int" Min="0" Max="200">100</Attribute>
 
 
  </Attributes>
