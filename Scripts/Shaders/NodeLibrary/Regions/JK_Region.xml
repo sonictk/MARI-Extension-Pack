@@ -78,6 +78,7 @@
     <Attribute Name="diffuse_float" PrettyName="Float" Group="Handle Diffuse (RGBA)" Type="double">1.0</Attribute>
     <Attribute Name="diffuse_mix" PrettyName="Mix" Group="Handle Diffuse (RGBA)" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
     <Attribute Name="diffuse_BlendMode" PrettyName="Mode" Group="Handle Diffuse (RGBA)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
+    <Attribute Name="diffuse_sRGB" PrettyName="sRgb Input" Group="Handle Diffuse (RGBA)" Type="bool" Min="false" Max="true">true</Attribute>
     <Attribute Name="diffuse_clamp" PrettyName="Clamp Input" Group="Handle Diffuse (RGBA)" Type="bool" Min="false" Max="true">true</Attribute>
      <!--===============================================================================================================-->
     <Attribute Name="roughness_Use" PrettyName="On/Off" Group="Handle Roughness (float)" Type="bool" Min="false" Max="true">false</Attribute>
@@ -97,6 +98,7 @@
     <Attribute Name="specCol_float" PrettyName="Float" Group="Handle Specular Color (RGBA)" Type="double">1.0</Attribute>
     <Attribute Name="specCol_mix" PrettyName="Mix" Group="Handle Specular Color (RGBA)" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
     <Attribute Name="specCol_BlendMode" PrettyName="Mode" Group="Handle Specular Color (RGBA)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
+    <Attribute Name="specCol_sRGB" PrettyName="sRgb Input" Group="Handle Specular Color (RGBA)" Type="bool" Min="false" Max="true">true</Attribute>
     <Attribute Name="specCol_clamp" PrettyName="Clamp Input" Group="Handle Specular Color (RGBA)" Type="bool" Min="false" Max="true">true</Attribute>
     <!--===============================================================================================================-->
     <Attribute Name="disp_Use" PrettyName="On/Off" Group="Handle Displacement/Bump (float)" Type="bool" Min="false" Max="true">false</Attribute>
@@ -118,6 +120,7 @@
     <Attribute Name="addColor_mix" PrettyName="Mix" Group="Handle Additional Color (RGBA)" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
     <Attribute Name="addColor_BlendMode" PrettyName="Mode" Group="Handle Additional Color (RGBA)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
     <Attribute Name="addColor_Affect" PrettyName="Map to" Group="Handle Additional Color (RGBA)" Type="stringlist">New,New,Diffuse,Specular Color,Normal</Attribute>
+    <Attribute Name="addColor_sRGB" PrettyName="sRgb Input" Group="Handle Additional Color (RGBA)" Type="bool" Min="false" Max="true">true</Attribute>
     <Attribute Name="addColor_clamp" PrettyName="Clamp Input" Group="Handle Additional Color (RGBA)" Type="bool" Min="false" Max="true">true</Attribute>
     <!--===============================================================================================================-->
     <Attribute Name="addFloat_Use" PrettyName="On/Off" Group="Handle Additional Float (float)" Type="bool" Min="false" Max="true">false</Attribute>
@@ -158,6 +161,10 @@
                 <Input Name="FLOAT"><Pos>-500,80</Pos></Input>
             </Inputs>
 
+            <Outputs>
+                <Output Name="Debug"><Pos>400,0</Pos></Output>
+            </Outputs>
+
         </Context>
         <Context Type="GLSL">
             <Shader ShaderType='Fragment'>
@@ -178,6 +185,10 @@
                 <Input Name="IN_E"><Default>vec4(1.0)</Default></Input>
                 <Input Name="RegionMask"><Default>vec4(1.0)</Default></Input>
                 </Inputs>
+
+   <Outputs>
+                <Output Name="Debug"><Default>float(1.0)</Default></Output>
+  </Outputs>
             </Shader>
             <Shader>
                 <Body><![CDATA[
@@ -196,6 +207,35 @@
                 vec4 normal_handle = ( #Normal == vec4(9999.99) ) ? $normal_color*vec4($normal_float,$normal_float,$normal_float,1.0) : #Normal ;
                 vec4 addColor_handle = ( #RGBA == vec4(9999.99) ) ? $addColor_color*vec4($addColor_float,$addColor_float,$addColor_float,1.0) : #RGBA ;
                 vec4 addFloat_handle = ( #FLOAT == vec4(9999.99) ) ? vec4($addFloat_float,$addFloat_float,$addFloat_float,1.0) : #FLOAT ;
+
+
+                // sRGB2Linear Conversion where checked
+                if ($diffuse_sRGB)
+                    {
+                        vec4 diffuse_handle_conv;
+                        for (int i = 0; i != 3; ++i) {
+                                diffuse_handle_conv[i] = diffuse_handle[i] > 0.04045 ? pow((diffuse_handle[i]+0.055)/1.055, 2.4) : diffuse_handle[i] / 12.92;
+                        }
+                        diffuse_handle.rgb = diffuse_handle_conv.rgb;
+                    }
+
+                if ($specCol_sRGB)
+                    {
+                        vec4 specCol_handle_conv;
+                        for (int i = 0; i != 3; ++i) {
+                                specCol_handle_conv[i] = specCol_handle[i] > 0.04045 ? pow((specCol_handle[i]+0.055)/1.055, 2.4) : specCol_handle[i] / 12.92;
+                        }
+                        specCol_handle.rgb = specCol_handle_conv.rgb;
+                    }
+
+                if ($addColor_sRGB)
+                    {
+                        vec4 addColor_handle_conv;
+                        for (int i = 0; i != 3; ++i) {
+                                addColor_handle_conv[i] = addColor_handle[i] > 0.04045 ? pow((addColor_handle[i]+0.055)/1.055, 2.4) : addColor_handle[i] / 12.92;
+                        }
+                        addColor_handle.rgb = addColor_handle_conv.rgb;
+                    }
 
 
                 // Blending between clamped and unclamped.
