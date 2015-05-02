@@ -44,7 +44,7 @@
 <Node>
     <ID>JK_Region</ID>
     <DefaultName>Material Region</DefaultName>
-    <Category>Regions/Reflection-Roughness/</Category>
+    <Category>Regions/Reflectance-Roughness/</Category>
     <Inputs>
         <Input Name="IN_A" PreferredInput='1'/>
         <Input Name="IN_B" PreferredInput='2'/>

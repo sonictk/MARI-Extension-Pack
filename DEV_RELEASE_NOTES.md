@@ -24,13 +24,6 @@ performance is kept high by only passing a 'finished' channel to one shader
 instead of layereing multiple shaders on top of each other.
 
 
-######Polysurface Curvature
-
-The Polysurface Curvature Node now has an additional 'Normal Map Mix'.
-When a Normal Map (for example a 'Normal Map' Channel) is attached to the
-handle in the Nodegraph you are able to mix or add edges from a normalmap
-into the final calculation of the curvature
-
 
 ######RGB 2 HSV + HSV 2 RGB
 
@@ -46,6 +39,52 @@ exposed as Node Handles to allow node-driven paramenters (Octaves driven
 by another Noise etc.).
 While Node Handles are unmapped, Node Sliders are used.
 While Node Handles are mapped, Node Sliders are ignored.
+
+
+##Feature Improvements:
+
+
+######Polysurface Curvature
+
+The Polysurface Curvature Node now has an additional 'Normal Map Mix'.
+When a Normal Map (for example a 'Normal Map' Channel) is attached to the
+handle in the Nodegraph you are able to mix or add edges from a normalmap
+into the final calculation of the curvature
+
+######Paintable Gabor Noise
+
+Paintable Gabor Noise no longer appears under 'Adjustments' (finally)
+and has been moved to Procedurals/Custom/Gabor/
+
+
+######Adjustments - General
+
+Adjustments are now categorized in their 'custom' subfolder
+
+######Procedurals - General
+
+Procedurals in the MainWindow/Layers/ Menu no longer appear under a
+'CustomProcedurals' Folder but are merged into the main Procedurals,Geometry,
+Environment etc. Folders
+
+
+##Developer Notes:
+
+######New Category handling
+
+RegisterCustomShaders now uses the new mari.gl_render.registerCustomNodeFromXMLFile for
+adjustments and procedurals.
+As a result Categories in Adjustment & Procedural Node XML Files now need to be specified explicitely including
+their initial path (/Filters/, '/Procedurals/'). The path is no longer derrived from the <tags></tags>
+attribute such as _adjustment.
+Adjustments now need to be placed manually under adjustments by specifying
+the path <Category>/Filter/</Category>.
+This allows for placement of adjustment files in other locations as the
+Adjustment Layer Submenu.
+
+
+
+
 
 #Release Notes for MARI EXTENSION PACK 2.1
 Copyright (c) 2015 www.mari.ideascale.com. All Rights Reserved.
