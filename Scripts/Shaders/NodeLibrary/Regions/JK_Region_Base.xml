@@ -109,16 +109,28 @@
  <Contexts>
         <Context Type="NodeGraphView">
             <Inputs>
-                <Input Name="diffuse"><Pos>-500,-60</Pos></Input>
-                <Input Name="specRough"><Pos>-500,-40</Pos></Input>
-                <Input Name="specRefl"><Pos>-500,-20</Pos></Input>
-                <Input Name="specCol"><Pos>-500,0</Pos></Input>
-                <Input Name="Disp"><Pos>-500,20</Pos></Input>
-                <Input Name="Normal"><Pos>-500,40</Pos></Input>
-                <Input Name="RGBA"><Pos>-500,60</Pos></Input>
-                <Input Name="FLOAT"><Pos>-500,80</Pos></Input>
+
+                <Input Name="diffuse"><Pos>0,-150</Pos></Input>
+                <Input Name="specRough"><Pos>-60,-150</Pos></Input>
+                <Input Name="specRefl"><Pos>-150,-150</Pos></Input>
+                <Input Name="specCol"><Pos>-240,-150</Pos></Input>
+                <Input Name="Disp"><Pos>60,-150</Pos></Input>
+                <Input Name="Normal"><Pos>120,-150</Pos></Input>
+                <Input Name="RGBA"><Pos>180,-150</Pos></Input>
+                <Input Name="FLOAT"><Pos>240,-150</Pos></Input>
+
+
             </Inputs>
 
+            <Outputs>
+
+                <Output Name="OUT_E"><Pos>200,40</Pos></Output>
+                <Output Name="OUT_D"><Pos>200,20</Pos></Output>
+                <Output Name="OUT_C"><Pos>200,-20</Pos></Output>
+                <Output Name="OUT_B"><Pos>200,-40</Pos></Output>
+                <Output Name="OUT_A"><Pos>200,-60</Pos></Output>
+
+            </Outputs>
         </Context>
         <Context Type="GLSL">
             <Shader ShaderType='Fragment'>

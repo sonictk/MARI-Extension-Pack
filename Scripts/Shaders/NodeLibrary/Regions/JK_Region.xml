@@ -144,25 +144,32 @@
  <Contexts>
         <Context Type="NodeGraphView">
             <Inputs>
-                <Input Name="IN_A"><Pos>-110,-50</Pos></Input>
-                <Input Name="IN_B"><Pos>-55,-90</Pos></Input>
-                <Input Name="IN_C"><Pos>25,-110</Pos></Input>
-                <Input Name="IN_D"><Pos>90,-90</Pos></Input>
-                <Input Name="IN_E"><Pos>150,-50</Pos></Input>
-                <Input Name="RegionMask"><Pos>250,0</Pos></Input>
+                <Input Name="IN_A"><Pos>-200,-40</Pos></Input>
+                <Input Name="IN_B"><Pos>-200,-20</Pos></Input>
+                <Input Name="IN_C"><Pos>-200,0</Pos></Input>
+                <Input Name="IN_D"><Pos>-200,20</Pos></Input>
+                <Input Name="IN_E"><Pos>-200,40</Pos></Input>
+                <Input Name="RegionMask"><Pos>0,150</Pos></Input>
 
-                <Input Name="diffuse"><Pos>-500,-60</Pos></Input>
-                <Input Name="specRough"><Pos>-500,-40</Pos></Input>
-                <Input Name="specRefl"><Pos>-500,-20</Pos></Input>
-                <Input Name="specCol"><Pos>-500,0</Pos></Input>
-                <Input Name="Disp"><Pos>-500,20</Pos></Input>
-                <Input Name="Normal"><Pos>-500,40</Pos></Input>
-                <Input Name="RGBA"><Pos>-500,60</Pos></Input>
-                <Input Name="FLOAT"><Pos>-500,80</Pos></Input>
+                <Input Name="diffuse"><Pos>0,-150</Pos></Input>
+                <Input Name="specRough"><Pos>-60,-150</Pos></Input>
+                <Input Name="specRefl"><Pos>-150,-150</Pos></Input>
+                <Input Name="specCol"><Pos>-240,-150</Pos></Input>
+                <Input Name="Disp"><Pos>60,-150</Pos></Input>
+                <Input Name="Normal"><Pos>120,-150</Pos></Input>
+                <Input Name="RGBA"><Pos>180,-150</Pos></Input>
+                <Input Name="FLOAT"><Pos>240,-150</Pos></Input>
+
+
             </Inputs>
 
             <Outputs>
-                <Output Name="Debug"><Pos>400,0</Pos></Output>
+                <Output Name="OUT_E"><Pos>200,40</Pos></Output>
+                <Output Name="OUT_D"><Pos>200,20</Pos></Output>
+                <Output Name="OUT_C"><Pos>200,-20</Pos></Output>
+                <Output Name="OUT_B"><Pos>200,-40</Pos></Output>
+                <Output Name="OUT_A"><Pos>200,-60</Pos></Output>
+                <Output Name="DEBUG"><Pos>200,60</Pos></Output>
             </Outputs>
 
         </Context>
@@ -194,9 +201,6 @@
                 <Body><![CDATA[
 
 
-            if ($useRegion)
-
-                {
 
                 // Checking if input handles are mapped, if not use color/floats from region
                 vec4 diffuse_handle = ( #diffuse == vec4(9999.99) ) ? $diffuse_color*vec4($diffuse_float,$diffuse_float,$diffuse_float,1.0) : #diffuse ;
@@ -249,7 +253,7 @@
                 vec4 normal_clamp = mix(normal_handle,clamp(normal_handle,vec4(0.0),vec4(1.0)),float($normal_clamp));
                 vec4 addColor_clamp = mix(addColor_handle,clamp(addColor_handle,vec4(0.0),vec4(1.0)),float($addColor_clamp));
                 vec4 addFloat_clamp = mix(addFloat_handle,clamp(addFloat_handle,vec4(0.0),vec4(1.0)),float($addFloat_clamp));
-                float regionmask = clamp(#RegionMask.r,0.0,1.0);
+                float regionmask = clamp(#RegionMask.r,0.0,1.0) * float($useRegion);
 
 
                 // setting regionmask to 0 for values that are turned Off
@@ -396,18 +400,6 @@
 
                 }
 
-            else
-
-                {
-
-                OUT_A = #IN_A;
-                OUT_B = #IN_B;
-                OUT_C = #IN_C;
-                OUT_D = #IN_D;
-                OUT_E = #IN_E;
-                DEBUG = vec4(0.0);
-
-                }
 
 
                 ]]></Body>
