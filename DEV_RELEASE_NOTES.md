@@ -74,11 +74,14 @@ Environment etc. Folders
 
 RegisterCustomShaders now uses the new mari.gl_render.registerCustomNodeFromXMLFile for
 adjustments and procedurals.
-As a result Categories in Adjustment & Procedural Node XML Files now need to be specified explicitely including
-their initial path (/Filters/, '/Procedurals/'). The path is no longer derrived from the <tags></tags>
-attribute such as _adjustment.
+
+As a result categories in Adjustment & Procedural Node XML Files now need to be specified explicitely including
+their initial path (/Filters/, '/Procedurals/').
+The path is no longer derrived from the TAGS attribute such as _adjustment.
+
 Adjustments now need to be placed manually under adjustments by specifying
-the path <Category>/Filter/</Category>.
+the path '/Filter/' in the CATEGORY section of the xml file
+
 This allows for placement of adjustment files in other locations as the
 Adjustment Layer Submenu.
 
