@@ -152,7 +152,7 @@ def loadLibraries():
                 print 'Registered Library: %s' % libName
         except Exception as exc:
                 print 'Error Registering Library: %s : %s' % (libName, str(exc))
-                
+
 
 def loadShaders():
     '''Loads custom shaders'''
@@ -191,7 +191,7 @@ def loadShaders():
             print 'This can cause errors, please use <DEFAULTNAME> Tag'
             print '-----------------------------------------'
             print ''
-            
+
 
         # assume all default procedural type
         shaderType = 'Procedural'
@@ -259,7 +259,7 @@ def loadShaders():
         print '-----------------------------------------'
         for adjustments in nodeAd:
             try:
-                mari.gl_render.registerCustomAdjustmentLayerFromXMLFile(adjustments[2], adjustments[3])
+                mari.gl_render.registerCustomNodeFromXMLFile(adjustments[2], adjustments[3])
                 print 'Registered %s Node: %s' % (adjustments[0], adjustments[1])
             except Exception as exc:
                 print 'Error Registering %s Node : %s : %s' % (adjustments[0], adjustments[1], str(exc))
@@ -274,7 +274,7 @@ def loadShaders():
         print '-----------------------------------------'
         for procedurals in nodePs:
             try:
-                mari.gl_render.registerCustomProceduralLayerFromXMLFile(procedurals[2], procedurals[3])
+                mari.gl_render.registerCustomNodeFromXMLFile(procedurals[2], procedurals[3])
                 print 'Registered %s Node: %s' % (procedurals[0], procedurals[1])
             except Exception as exc:
                 print 'Error Registering %s Node : %s : %s' % (procedurals[0], procedurals[1], str(exc))
