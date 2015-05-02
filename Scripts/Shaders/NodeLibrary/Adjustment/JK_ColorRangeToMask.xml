@@ -44,7 +44,7 @@
 <Node>
     <ID>ColorRange to Mask</ID>
     <DefaultName>ColorRange to Mask</DefaultName>
-    <Category>Filter/Custom/</Category>
+    <Category>Filter/Custom/Color Correction/</Category>
     <Tags>
         <Tag>_adjustment</Tag>
     </Tags>

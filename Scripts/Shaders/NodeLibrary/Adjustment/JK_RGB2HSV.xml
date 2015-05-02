@@ -44,7 +44,7 @@
 <Node>
     <ID>JK_RGB2HSV</ID>
     <DefaultName>RGB to HSV</DefaultName>
-    <Category>Filter/Custom/</Category>
+    <Category>Filter/Custom/Utils/</Category>
     <Tags>
         <Tag>_adjustment</Tag>
     </Tags>

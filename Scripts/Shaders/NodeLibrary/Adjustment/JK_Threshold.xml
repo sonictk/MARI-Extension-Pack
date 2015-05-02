@@ -44,7 +44,7 @@
 <Node>
     <ID>Threshold</ID>
     <DefaultName>Threshold</DefaultName>
-    <Category>Filter/Custom/</Category>
+    <Category>Filter/Custom/Filter/</Category>
     <Tags>
         <Tag>_adjustment</Tag>
     </Tags>
