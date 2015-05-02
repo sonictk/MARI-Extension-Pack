@@ -44,7 +44,7 @@
 <Node>
     <ID>Grade+</ID>
     <DefaultName>Grade+</DefaultName>
-    <Category>/Custom/</Category>
+    <Category>Filter/Custom/</Category>
     <Tags>
         <Tag>_adjustment</Tag>
     </Tags>

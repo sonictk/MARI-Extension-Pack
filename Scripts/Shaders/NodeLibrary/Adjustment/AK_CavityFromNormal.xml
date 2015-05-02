@@ -42,7 +42,7 @@
 <Node>
     <ID>Cavity from Tangent Space Normal</ID>
     <DefaultName>Cavity from Tangent Space Normal</DefaultName>
-    <Category>/Custom/</Category>
+    <Category>Filter/Custom/</Category>
     <Tags>
         <Tag>_adjustment</Tag>
     </Tags>

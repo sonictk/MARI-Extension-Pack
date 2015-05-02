@@ -41,7 +41,7 @@
 <Node>
     <ID>Normal Map Intensity</ID>
     <DefaultName>Normal Map Intensity</DefaultName>
-    <Category>/Custom/</Category>
+    <Category>Filter/Custom/</Category>
     <Tags>
         <Tag>_adjustment</Tag>
     </Tags>

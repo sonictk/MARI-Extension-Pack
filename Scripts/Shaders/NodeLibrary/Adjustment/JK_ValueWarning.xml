@@ -47,7 +47,7 @@
 <Node>
   <ID>IllegalColorWarning</ID>
       <DefaultName>Illegal Value Warning</DefaultName>
-    <Category>/Custom/</Category>
+    <Category>Filter/Custom/</Category>
   <Inputs>
     <Input Name="Albedo"></Input>
   </Inputs>
@@ -86,7 +86,7 @@
                            #Albedo.r>$Upperbound || #Albedo.r<$Lowerbound
                         || #Albedo.g>$Upperbound || #Albedo.g<$Lowerbound
                         || #Albedo.b>$Upperbound || #Albedo.b<$Lowerbound
-                        ); 
+                        );
 
                 Output = mix(#Albedo, vec4(WarningColor,Warn), clamp(Warn*Alpha,0.0,1.0));
 
