@@ -3,6 +3,13 @@ Copyright (c) 2015 www.mari.ideascale.com. All Rights Reserved.
 
 ##New Features:
 
+#####ADJUSTMENTS:
+
+######RGB 2 HSV + HSV 2 RGB
+
+Two new nodes were added to convert values between HSV & RGB.
+
+
 #####NODEGRAPH:
 
 ######Transition Node
@@ -22,12 +29,6 @@ Material Region Value Selector.
 Material Regions are a powerful way to layer different materials on top of each other, provide a logical grouping in the Nodegraph and giving the user maximum control over each part of the material. Other than Layered Shaders
 performance is kept high by only passing a 'finished' channel to one shader
 instead of layereing multiple shaders on top of each other.
-
-
-
-######RGB 2 HSV + HSV 2 RGB
-
-Two new nodes were added to convert values between HSV & RGB.
 
 
 ######Procedurals ready for Nodegraph _WIP
