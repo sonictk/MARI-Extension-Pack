@@ -59,7 +59,7 @@
         <Attribute Name="nMax" PrettyName="NewMax" Group="" Type="float" >1.0</Attribute>
         <!--===============================================================================================================-->
         <Attribute Name="sMult" PrettyName="MultiplyScale" Group="Extra Attributes" Type="float" >1.0</Attribute>
-        <Attribute Name="useClamp" PrettyName="Clamp Values" Group="Extra Attributes" Type="bool" Min="false" Max="true">true</Attribute>
+        <Attribute Name="useClamp" PrettyName="Clamp Values" Group="Extra Attributes" Type="bool" Min="false" Max="true">false</Attribute>
         <!--===============================================================================================================-->
         <Attribute Name="Red" Type="bool" Group="Channels" Min="true" Max="false">true</Attribute>
         <Attribute Name="Green" Type="bool" Group="Channels" Min="true" Max="false">true</Attribute>
