@@ -46,7 +46,6 @@
     <DefaultName>Cylindrical Projection</DefaultName>
     <Category>Environment/Custom/</Category>
     <Inputs>
-        <Input Name="Input"/>
     </Inputs>
     <Attributes>
         <!--===============================================================================================================-->

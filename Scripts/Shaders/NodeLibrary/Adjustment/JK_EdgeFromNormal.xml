@@ -49,7 +49,7 @@
         <Tag>_adjustment</Tag>
     </Tags>
     <Inputs>
-        <Input Name="Input"></Input>
+        <Input Name="Input" PrettyName="Normal Map"></Input>
     </Inputs>
     <Attributes>
         <!--===============================================================================================================-->
@@ -64,10 +64,7 @@
     </Attributes>
     <Contexts>
         <Context Type="NodeGraphView">
-            <Inputs>
-                <Input Name="Input"><Pos>100,+20</Pos></Input>
-            </Inputs>
-        </Context>
+         </Context>
         <Context Type="GLSL">
             <Shader ShaderType='Fragment'>
                 <Inputs>
