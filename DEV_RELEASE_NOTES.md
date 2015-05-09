@@ -9,6 +9,14 @@ Copyright (c) 2015 www.mari.ideascale.com. All Rights Reserved.
 
 Two new nodes were added to convert values between HSV & RGB.
 
+#####GEOMETRY PROCEDURAL
+
+######SELECTION FILL
+
+A new node similar to Mari 3.0 'Selection Mask' Node but can be used with
+a custom fill color. The node needs to be converted to paintable since
+it is a live selection query
+
 
 #####NODEGRAPH:
 
