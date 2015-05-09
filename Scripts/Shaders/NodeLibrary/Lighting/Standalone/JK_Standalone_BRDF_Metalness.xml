@@ -81,10 +81,10 @@
         <Context Type="GLSL">
             <Shader ShaderType='Fragment'>
                 <Inputs>
-                    <Input Name="Diffuse"><Default>vec4(0.0,0.0,0.0,1.0)</Default></Input>
-                    <Input Name="Roughness"><Default>vec4(9999.0)</Default></Input>
-                    <Input Name="Metalness"><Default>vec4(9999.0)</Default></Input>
-                    <Input Name="SpecularLevel"><Default>vec4(9999.0)</Default></Input>
+                    <Input Name="Diffuse"><Default>vec4(1.0)</Default></Input>
+                    <Input Name="Roughness"><Default>vec4($Roughness)</Default></Input>
+                    <Input Name="Metalness"><Default>vec4($Metalness)</Default></Input>
+                    <Input Name="SpecularLevel"><Default>vec4($F0Specular)</Default></Input>
                     <Input Name="AmbientOcclusion"><Default>vec4(vec3(1.0-State.AmbientOcclusion),1.0)</Default></Input>
                     <Input Name="EmissiveColor"><Default>vec4(0,0,0,0)</Default></Input>
                     <Input Name="Normal"><Default>vec4(0,0,1,1)</Default></Input>
@@ -95,11 +95,13 @@
     // Normal Direction
     vec3 N = #Normal.xyz;
 
-    // Checking for Input Mapping
+   float INIT_FL = $Roughness; INIT_FL = $Metalness; INIT_FL = $F0Specular;
+
+
     vec4 diffuse    = #Diffuse;
-    float metalness = ( #Metalness.r == 9999.0 ) ? $Metalness : #Metalness.r ;
-    float roughness = ( #Roughness.r == 9999.0 ) ? $Roughness : #Roughness.r ;
-    float specLevel = ( #SpecularLevel.r == 9999.0 ) ? $F0Specular : #SpecularLevel.r ;
+    float metalness = #Metalness.r ;
+    float roughness = #Roughness.r ;
+    float specLevel = #SpecularLevel.r ;
 
     float F0Spec = 0.04 * specLevel;
     specLevel = mix(clamp(specLevel*2.0,0.0,1.0),1.0,metalness);
