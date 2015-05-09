@@ -44,7 +44,7 @@
 
 <Node>
     <ID>JK_Region_PassThrough</ID>
-    <DefaultName>Material Region Dot</DefaultName>
+    <DefaultName>Material Region Pass Through</DefaultName>
     <Category>Regions/Reflectance-Roughness/</Category>
     <Inputs>
         <Input Name="IN_A" PreferredInput='1'/>
@@ -67,11 +67,11 @@
  <Contexts>
         <Context Type="NodeGraphView">
             <Inputs>
-                <Input Name="IN_A"><Pos>-200,-60</Pos></Input>
-                <Input Name="IN_B"><Pos>-200,-40</Pos></Input>
-                <Input Name="IN_C"><Pos>-200,-20</Pos></Input>
-                <Input Name="IN_D"><Pos>-200,40</Pos></Input>
-                <Input Name="IN_E"><Pos>-200,60</Pos></Input>
+                <Input Name="IN_A"><Pos>-200,-40</Pos></Input>
+                <Input Name="IN_B"><Pos>-200,-20</Pos></Input>
+                <Input Name="IN_C"><Pos>-200,0</Pos></Input>
+                <Input Name="IN_D"><Pos>-200,20</Pos></Input>
+                <Input Name="IN_E"><Pos>-200,40</Pos></Input>
                 <Input Name="RegionMask"><Pos>0,150</Pos></Input>
 
             </Inputs>
