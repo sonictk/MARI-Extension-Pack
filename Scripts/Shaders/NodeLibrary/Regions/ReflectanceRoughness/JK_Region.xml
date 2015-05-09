@@ -144,11 +144,11 @@
  <Contexts>
         <Context Type="NodeGraphView">
             <Inputs>
-                <Input Name="IN_A"><Pos>-200,-40</Pos></Input>
-                <Input Name="IN_B"><Pos>-200,-20</Pos></Input>
-                <Input Name="IN_C"><Pos>-200,0</Pos></Input>
-                <Input Name="IN_D"><Pos>-200,20</Pos></Input>
-                <Input Name="IN_E"><Pos>-200,40</Pos></Input>
+                <Input Name="IN_A"><Pos>-200,-60</Pos></Input>
+                <Input Name="IN_B"><Pos>-200,-40</Pos></Input>
+                <Input Name="IN_C"><Pos>-200,-20</Pos></Input>
+                <Input Name="IN_D"><Pos>-200,40</Pos></Input>
+                <Input Name="IN_E"><Pos>-200,60</Pos></Input>
                 <Input Name="RegionMask"><Pos>0,150</Pos></Input>
 
                 <Input Name="diffuse"><Pos>0,-150</Pos></Input>
@@ -176,14 +176,14 @@
         <Context Type="GLSL">
             <Shader ShaderType='Fragment'>
                 <Inputs>
-                <Input Name="diffuse"><Default>vec4(9999.99)</Default></Input>
-                <Input Name="specRough"><Default>vec4(9999.99)</Default></Input>
-                <Input Name="specRefl"><Default>vec4(9999.99)</Default></Input>
-                <Input Name="specCol"><Default>vec4(9999.99)</Default></Input>
-                <Input Name="Disp"><Default>vec4(9999.99)</Default></Input>
-                <Input Name="Normal"><Default>vec4(9999.99)</Default></Input>
-                <Input Name="RGBA"><Default>vec4(9999.99)</Default></Input>
-                <Input Name="FLOAT"><Default>vec4(9999.99)</Default></Input>
+                <Input Name="diffuse"><Default>$diffuse_color*vec4($diffuse_float,$diffuse_float,$diffuse_float,1.0)</Default></Input>
+                <Input Name="specRough"><Default>vec4($roughness_float,$roughness_float,$roughness_float,1.0) </Default></Input>
+                <Input Name="specRefl"><Default>vec4($refletance_float,$refletance_float,$refletance_float,1.0)</Default></Input>
+                <Input Name="specCol"><Default>$specCol_color*vec4($specCol_float,$specCol_float,$specCol_float,1.0)</Default></Input>
+                <Input Name="Disp"><Default>vec4($disp_float,$disp_float,$disp_float,1.0)</Default></Input>
+                <Input Name="Normal"><Default>$normal_color*vec4($normal_float,$normal_float,$normal_float,1.0)</Default></Input>
+                <Input Name="RGBA"><Default>$addColor_color*vec4($addColor_float,$addColor_float,$addColor_float,1.0)</Default></Input>
+                <Input Name="FLOAT"><Default>vec4($addFloat_float,$addFloat_float,$addFloat_float,1.0)</Default></Input>
 
                 <Input Name="IN_A"><Default>vec4(0.0)</Default></Input>
                 <Input Name="IN_B"><Default>vec4(0.0)</Default></Input>
@@ -202,57 +202,46 @@
 
 
 
-                // Checking if input handles are mapped, if not use color/floats from region
-                vec4 diffuse_handle = ( #diffuse == vec4(9999.99) ) ? $diffuse_color*vec4($diffuse_float,$diffuse_float,$diffuse_float,1.0) : #diffuse ;
-                vec4 specRough_handle = ( #specRough == vec4(9999.99) ) ? vec4($roughness_float,$roughness_float,$roughness_float,1.0) : #specRough ;
-                vec4 specRefl_handle = ( #specRefl == vec4(9999.99) ) ? vec4($refletance_float,$refletance_float,$refletance_float,1.0) : #specRefl ;
-                vec4 specCol_handle = ( #specCol == vec4(9999.99) ) ? $specCol_color*vec4($specCol_float,$specCol_float,$specCol_float,1.0) : #specCol ;
-                vec4 disp_handle = ( #Disp == vec4(9999.99) ) ? vec4($disp_float,$disp_float,$disp_float,1.0) : #Disp ;
-                vec4 normal_handle = ( #Normal == vec4(9999.99) ) ? $normal_color*vec4($normal_float,$normal_float,$normal_float,1.0) : #Normal ;
-                vec4 addColor_handle = ( #RGBA == vec4(9999.99) ) ? $addColor_color*vec4($addColor_float,$addColor_float,$addColor_float,1.0) : #RGBA ;
-                vec4 addFloat_handle = ( #FLOAT == vec4(9999.99) ) ? vec4($addFloat_float,$addFloat_float,$addFloat_float,1.0) : #FLOAT ;
-
-
                 // sRGB2Linear Conversion where checked
                 if ($diffuse_sRGB)
                     {
                         vec4 diffuse_handle_conv;
                         for (int i = 0; i != 3; ++i) {
-                                diffuse_handle_conv[i] = diffuse_handle[i] > 0.04045 ? pow((diffuse_handle[i]+0.055)/1.055, 2.4) : diffuse_handle[i] / 12.92;
+                                diffuse_handle_conv[i] = #diffuse[i] > 0.04045 ? pow((#diffuse[i]+0.055)/1.055, 2.4) : #diffuse[i] / 12.92;
                         }
-                        diffuse_handle.rgb = diffuse_handle_conv.rgb;
+                        #diffuse.rgb = diffuse_handle_conv.rgb;
                     }
 
                 if ($specCol_sRGB)
                     {
                         vec4 specCol_handle_conv;
                         for (int i = 0; i != 3; ++i) {
-                                specCol_handle_conv[i] = specCol_handle[i] > 0.04045 ? pow((specCol_handle[i]+0.055)/1.055, 2.4) : specCol_handle[i] / 12.92;
+                                specCol_handle_conv[i] = #specCol[i] > 0.04045 ? pow((#specCol[i]+0.055)/1.055, 2.4) : #specCol[i] / 12.92;
                         }
-                        specCol_handle.rgb = specCol_handle_conv.rgb;
+                        #specCol.rgb = specCol_handle_conv.rgb;
                     }
 
                 if ($addColor_sRGB)
                     {
                         vec4 addColor_handle_conv;
                         for (int i = 0; i != 3; ++i) {
-                                addColor_handle_conv[i] = addColor_handle[i] > 0.04045 ? pow((addColor_handle[i]+0.055)/1.055, 2.4) : addColor_handle[i] / 12.92;
+                                addColor_handle_conv[i] = #RGBA[i] > 0.04045 ? pow((#RGBA[i]+0.055)/1.055, 2.4) : #RGBA[i] / 12.92;
                         }
-                        addColor_handle.rgb = addColor_handle_conv.rgb;
+                        #RGBA.rgb = addColor_handle_conv.rgb;
                     }
 
 
                 // Blending between clamped and unclamped.
                 // CLamping here is only done directly on the region input (diffuse, specRough etc.)
                 // not on any values coming from another region
-                vec4 diffuse_clamp = mix(diffuse_handle,clamp(diffuse_handle,vec4(0.0),vec4(1.0)),float($diffuse_clamp));
-                vec4 specRough_clamp = mix(specRough_handle,clamp(specRough_handle,vec4(0.0),vec4(1.0)),float($roughness_clamp));
-                vec4 specRefl_clamp = mix(specRefl_handle,clamp(specRefl_handle,vec4(0.0),vec4(1.0)),float($refletance_clamp));
-                vec4 specCol_clamp = mix(specCol_handle,clamp(specCol_handle,vec4(0.0),vec4(1.0)),float($specCol_clamp));
-                vec4 disp_clamp = mix(disp_handle,clamp(disp_handle,vec4(0.0),vec4(1.0)),float($disp_clamp));
-                vec4 normal_clamp = mix(normal_handle,clamp(normal_handle,vec4(0.0),vec4(1.0)),float($normal_clamp));
-                vec4 addColor_clamp = mix(addColor_handle,clamp(addColor_handle,vec4(0.0),vec4(1.0)),float($addColor_clamp));
-                vec4 addFloat_clamp = mix(addFloat_handle,clamp(addFloat_handle,vec4(0.0),vec4(1.0)),float($addFloat_clamp));
+                vec4 diffuse_clamp = mix(#diffuse,clamp(#diffuse,vec4(0.0),vec4(1.0)),float($diffuse_clamp));
+                vec4 specRough_clamp = mix(#specRough,clamp(#specRough,vec4(0.0),vec4(1.0)),float($roughness_clamp));
+                vec4 specRefl_clamp = mix(#specRefl,clamp(#specRefl,vec4(0.0),vec4(1.0)),float($refletance_clamp));
+                vec4 specCol_clamp = mix(#specCol,clamp(#specCol,vec4(0.0),vec4(1.0)),float($specCol_clamp));
+                vec4 disp_clamp = mix(#Disp,clamp(#Disp,vec4(0.0),vec4(1.0)),float($disp_clamp));
+                vec4 normal_clamp = mix(#Normal,clamp(#Normal,vec4(0.0),vec4(1.0)),float($normal_clamp));
+                vec4 addColor_clamp = mix(#RGBA,clamp(#RGBA,vec4(0.0),vec4(1.0)),float($addColor_clamp));
+                vec4 addFloat_clamp = mix(#FLOAT,clamp(#FLOAT,vec4(0.0),vec4(1.0)),float($addFloat_clamp));
                 float regionmask = clamp(#RegionMask.r,0.0,1.0) * float($useRegion);
 
 
@@ -274,8 +263,8 @@
                 vec4 Reflectance_Handle = vec4(#IN_B.g,#IN_B.g,#IN_B.g,1.0);
                 vec4 Reflectance = $refletance_BlendMode(Reflectance_Handle,specRefl_clamp,refletance_mix);
                 vec4 specCol = $specCol_BlendMode(#IN_E,specCol_clamp,specCol_mix);
-                vec4 disp_Handle = vec4(#IN_B.b,#IN_B.b,#IN_B.b,1.0);
-                vec4 Disp = $disp_BlendMode(disp_Handle,disp_clamp,disp_mix);
+                vec4 #Disp = vec4(#IN_B.b,#IN_B.b,#IN_B.b,1.0);
+                vec4 Disp = $disp_BlendMode(#Disp,disp_clamp,disp_mix);
                 vec4 Normal = $normal_BlendMode(#IN_C,normal_clamp,normal_mix);
                 vec4 NewFloat_Handle = vec4(#IN_B.a,#IN_B.a,#IN_B.a,1.0);
 
@@ -378,12 +367,12 @@
                         if($disp_Use == true)
                              {
                                 Disp = $addFloat_BlendMode(disp_clamp,addFloat_clamp,$addFloat_mix);
-                                Disp = $disp_BlendMode(disp_Handle,Disp,disp_mix);
+                                Disp = $disp_BlendMode(#Disp,Disp,disp_mix);
                              }
 
                         else
                             {
-                                Disp = $addFloat_BlendMode(disp_Handle,addFloat_clamp,$addFloat_mix);
+                                Disp = $addFloat_BlendMode(#Disp,addFloat_clamp,$addFloat_mix);
                             }
                     }
 
