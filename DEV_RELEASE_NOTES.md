@@ -9,14 +9,6 @@ Copyright (c) 2015 www.mari.ideascale.com. All Rights Reserved.
 
 Two new nodes were added to convert values between HSV & RGB.
 
-#####GEOMETRY PROCEDURAL
-
-######SELECTION FILL
-
-A new node similar to Mari 3.0 'Selection Mask' Node but can be used with
-a custom fill color. The node needs to be converted to paintable since
-it is a live selection query
-
 
 #####NODEGRAPH:
 
@@ -64,6 +56,11 @@ into the final calculation of the curvature
 
 Paintable Gabor Noise no longer appears under 'Adjustments' (finally)
 and has been moved to Procedurals/Custom/Gabor/
+
+
+######Custom Object Normal
+Custom Obect Normal has been renamed to Custom Surface Norma to be in line
+wit Maris Vocabulary.
 
 
 ######Adjustments - General

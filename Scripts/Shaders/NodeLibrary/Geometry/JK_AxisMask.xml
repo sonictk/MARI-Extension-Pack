@@ -46,7 +46,6 @@
     <DefaultName>Axis Mask</DefaultName>
     <Category>Geometry/Custom/</Category>
     <Inputs>
-        <Input Name="Input"/>
     </Inputs>
     <Attributes>
         <!--===============================================================================================================-->
@@ -73,18 +72,15 @@
     <Contexts>
         <Context Type="NodeGraphView">
             <Inputs>
-                <Input Name="Input"><Pos>0,-50</Pos></Input>
             </Inputs>
         </Context>
         <Context Type="GLSL">
             <Shader ShaderType='Fragment'>
                 <Inputs>
-                    <Input Name="Input"> <Default>vec4(State.Normal,1.0)</Default> </Input>
                 </Inputs>
             </Shader>
                 <Shader ShaderType='TessEvaluation'>
                     <Inputs>
-                        <Input Name="Input"> <Default>vec4(State.Normal.xyz,1.0)</Default> </Input>
                     </Inputs>
                 </Shader>
                 <Shader>
