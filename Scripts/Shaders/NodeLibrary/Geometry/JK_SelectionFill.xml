@@ -50,7 +50,6 @@
     <CostDescription>Trivial operation</CostDescription>
     <Tags>
         <Tag>_noPropagateBoundary</Tag>
-        <Tag>_adjustment</Tag>
     </Tags>
     <Inputs>
         <Input Name="Input"></Input>
@@ -71,7 +70,8 @@
                 </Inputs>
                 <Body><![CDATA[
 #if defined MRI_SHADER_FRAGMENT
-        Output = mix(#Input,$color,float(_State.Selected));
+        Output = $color;
+        Output.a *= float(_State.Selected);
 #endif
                 ]]></Body>
             </Shader>
