@@ -14,6 +14,15 @@ do be done at significantly increased speed without having to wait for a viewpor
 update each time.
 
 
+#####GEOMETRY PROCEDURALS
+
+######Selection Fill
+
+A new node that will fill the current selection (object, patches, faces) with the
+color specified. The node needs to be converted to a paintable layer after use
+since it will update the selection based on the current.
+
+
 #####ADJUSTMENT LAYERS
 
 ######SV Lookup
