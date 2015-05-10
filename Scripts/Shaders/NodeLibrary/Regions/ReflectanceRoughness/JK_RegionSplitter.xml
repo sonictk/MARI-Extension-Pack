@@ -42,8 +42,8 @@
 -->
 
 <Node>
-    <ID>JK_RegionSplitter</ID>
-    <DefaultName>Material Region Value Selector</DefaultName>
+    <ID>JK_RegionSplitter_RR</ID>
+    <DefaultName>Material Region Value Selector (R-R)</DefaultName>
     <Category>Regions/Reflectance-Roughness/</Category>
     <Inputs>
         <Input Name="IN_A" PreferredInput='1'/>

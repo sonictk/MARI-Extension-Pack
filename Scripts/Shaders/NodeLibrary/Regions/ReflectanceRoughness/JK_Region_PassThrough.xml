@@ -45,8 +45,8 @@
 
 
 <Node>
-    <ID>JK_Region_PassThrough</ID>
-    <DefaultName>Material Region Dot</DefaultName>
+    <ID>JK_Region_PassThrough_RR</ID>
+    <DefaultName>Material Region Dot (R-R)</DefaultName>
     <Category>Regions/Reflectance-Roughness/</Category>
     <Inputs>
         <Input Name="IN_A" PreferredInput='1'/>
