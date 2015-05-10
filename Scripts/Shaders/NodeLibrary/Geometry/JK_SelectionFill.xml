@@ -52,7 +52,6 @@
         <Tag>_noPropagateBoundary</Tag>
     </Tags>
     <Inputs>
-        <Input Name="Input"></Input>
     </Inputs>
   <Attributes>
         <Attribute Name="color" PrettyName="Color" Group="" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(1,1,1,1)</Attribute>
@@ -60,14 +59,10 @@
       <Contexts>
         <Context Type="NodeGraphView">
             <Inputs>
-                <Input Name="Input"><Pos>0,-50</Pos></Input>
             </Inputs>
         </Context>
         <Context Type="GLSL">
             <Shader>
-                <Inputs>
-                    <Input Name="Input"><Default>vec4(1,1,1,1)</Default></Input>
-                </Inputs>
                 <Body><![CDATA[
 #if defined MRI_SHADER_FRAGMENT
         Output = $color;

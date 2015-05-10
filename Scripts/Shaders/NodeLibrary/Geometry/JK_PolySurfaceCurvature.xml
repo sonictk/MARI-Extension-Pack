@@ -48,11 +48,13 @@
     <Inputs>
         <Input Name="NormalMap"></Input>
         <Input Name="Curvature"></Input>
+        <Input Name="MinVar" PrettyName="Min Curvature"></Input>
         <Input Name="Intensity"></Input>
     </Inputs>
     <Attributes>
         <!--===============================================================================================================-->
         <Attribute Name="Adjust" PrettyName="Curvature" Group="" Type="double" Logarithmic="1" Min="0.0" Max="1.0">0.1</Attribute>
+        <Attribute Name="MinVar" PrettyName="Min Curvature Variation" Group="" Type="double" Logarithmic="1" Min="0" Max="1">0.00</Attribute>
         <Attribute Name="Size" PrettyName="Intensity" Group="" Type="double" Logarithmic="1" Min="0.0" Max="2.0">0.1</Attribute>
         <Attribute Name="Invert" PrettyName="Invert" Group="" Type="bool" Min="false" Max="true">false</Attribute>
         <!--===============================================================================================================-->
@@ -67,25 +69,27 @@
     <Contexts>
         <Context Type="NodeGraphView">
             <Inputs>
-                <Input Name="Curvature"><Pos>-100,-50</Pos></Input>
-                <Input Name="Intensity"><Pos>100,-50</Pos></Input>
-                <Input Name="NormalMap"><Pos>-250,0</Pos></Input>
+                <Input Name="Curvature"><Pos>-70,-50</Pos></Input>
+                <Input Name="MinVar"><Pos>0,-70</Pos></Input>
+                <Input Name="Intensity"><Pos>70,-50</Pos></Input>
+                <Input Name="NormalMap"><Pos>-120,0</Pos></Input>
             </Inputs>
         </Context>
         <Context Type="GLSL">
             <Shader ShaderType='Fragment'>
                 <Inputs>
                 <Input Name="NormalMap"><Default>vec4(9999.0)</Default></Input>
-                <Input Name="Curvature"><Default>vec4(9999.0)</Default></Input>
-                <Input Name="Intensity"><Default>vec4(9999.0)</Default></Input>
+                <Input Name="Curvature"><Default>vec4($Adjust)</Default></Input>
+                <Input Name="MinVar"><Default>vec4($MinVar)</Default></Input>
+                <Input Name="Intensity"><Default>vec4($Size)</Default></Input>
                 </Inputs>
             </Shader>
             <Shader ShaderType='TessEvaluation'>
                 <Inputs>
-
                 <Input Name="NormalMap"><Default>vec4(9999.0)</Default></Input>
-                <Input Name="Curvature"><Default>vec4(9999.0)</Default></Input>
-                <Input Name="Intensity"><Default>vec4(9999.0)</Default></Input>
+                <Input Name="Curvature"><Default>vec4($Adjust)</Default></Input>
+                <Input Name="MinVar"><Default>vec4($MinVar)</Default></Input>
+                <Input Name="Intensity"><Default>vec4($Size)</Default></Input>
                 </Inputs>
             </Shader>
             <Shader>
@@ -94,20 +98,21 @@
 
                 #if defined MRI_SHADER_FRAGMENT || defined MRI_SHADER_TESS_EVALUATION
 
-                float Curvature = #Curvature.r;
-                float Intensity = #Intensity.r;
-                float MixNormMip =  $MixNrm;
 
+                // Initialize Attributes
+                float INIT = $Adjust; INIT = $MinVar; INIT = $Size;
+
+                float MixNormMip =  $MixNrm;
                 vec4 N_4 = vec4(State.Normal,1.0);
                 vec4 mix_nrm = $Mode(N_4,#NormalMap,MixNormMip);
 
+                float Adj = #Curvature.r;
+                float Si = #Intensity.r;
+
                 // Checking if anything is attached to Nodegraph Handles
                 vec3 N = ( #NormalMap == vec4(9999.0) ) ? N_4.rgb : mix_nrm.rgb ;
-                float Adj = ( Curvature == 9999.0 ) ? $Adjust : Curvature ;
-                float Si = ( Intensity == 9999.0 ) ? $Size : Intensity;
 
 
-                // vec3 N = State.Normal;
                 vec3 P = State.Position;
                 float AO = mix(1.0,State.AmbientOcclusion,float($AO));
                 float hardEdge = float($absolute);
@@ -126,6 +131,7 @@
 
                 float tuneCurvature = (Adjust*size_pow);
                 curvN = length(fwidth(N)) ;
+                curvN = (curvN >=$MinVar) ? curvN : 0.0;
                 curvP = length(fwidth(P)) ;
 
 
@@ -138,7 +144,6 @@
 
                 float result = mix(curvature,inv_curv,float($Invert));
                 result = clamp(result,0.0,1.0);
-
 
                 Output = vec4(result,result,result,1.0);
 
