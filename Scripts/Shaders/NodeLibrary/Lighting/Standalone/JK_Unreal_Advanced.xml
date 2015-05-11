@@ -1,0 +1,248 @@
+<Node>
+    <ID>JK_UNREAL_ADVANCED</ID>
+    <DefaultName>Unreal Advanced</DefaultName>
+  <Inputs>
+    <Input Name="BaseColor" PrettyName="Base Color" PreferredInput='1' />
+    <Input Name="Roughness" PrettyName="Roughness" />
+    <Input Name="Metallic" PrettyName="Metallic" />
+    <Input Name="Specular" PrettyName="Specular" />
+    <Input Name="AmbientOcclusion" PrettyName="Occlusion"></Input>
+    <Input Name="EmissiveColor" PrettyName="Emissive"></Input>
+    <Input Name="Normal" />
+  </Inputs>
+  <Attributes>
+      <Attribute Name="Roughness" Group="" Type="double" Min="0" Max="1">0.2</Attribute>
+      <Attribute Name="Metallic" Group="" Type="double" Min="0" Max="1">0.0</Attribute>
+      <Attribute Name="Specular" Group="" Description="Specular Level adjustments only work on non-metals to adjust F0 reflectance range of 0.0-0.08" Type="double" Min="0" Max="1">0.5</Attribute>
+      <Attribute Name="AmbientOcclusion" PrettyName="Ambient Occlusion" Group="" Type="double" Min="0" Max="2">1.0</Attribute>
+      <Attribute Name="Emissive" Group="" Type="double" Min="0" Max="100.0" Logarithmic="1">1.0</Attribute>
+     <!--===============================================================================================================-->
+     <Attribute Name="Warning" PrettyName="PBS Illegal Value Warning" Group="PBS Illegal Value Warning" Type="bool" Min="false" Max="true" Description="Runs the noise 2d uv based, use offset/scale x/y and rotate z" >true</Attribute>
+     <Attribute Name="colorUp" PrettyName="Diffuse too bright" Group="PBS Illegal Value Warning" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)" Description="Color A">(0,1,0.78,1)</Attribute>
+     <Attribute Name="colorDown" PrettyName="Diffuse too Dark" Group="PBS Illegal Value Warning" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)" Description="Color A">(2,0,0,1)</Attribute>
+     <Attribute Name="blink" Group="PBS Illegal Value Warning" PrettyName="Blink Interval (sec)" Description="Blink interval in seconds" Type="int" Min="0" Max="200">1</Attribute>
+     <Attribute Name="blinkFade" Group="PBS Illegal Value Warning" PrettyName="Blink Fadeout (msec)" Description="Blink fadeout in msec" Type="int" Min="0" Max="200">100</Attribute>
+ </Attributes>
+  <Tags>
+    <Tag>_notcacheable</Tag>
+    <Tag>_standalone</Tag>
+  </Tags>
+    <Contexts>
+        <Context Type="NodeGraphView">
+            <Inputs>
+                <Input Name="BaseColor"><Pos>0,-100</Pos></Input>
+                <Input Name="Roughness"><Pos>-80,-100</Pos></Input>
+                <Input Name="Metallic"><Pos>-170,-100</Pos></Input>
+                <Input Name="Specular"><Pos>-220,-80</Pos></Input>
+                <Input Name="AmbientOcclusion"><Pos>170,-100</Pos></Input>
+                <Input Name="EmissiveColor"><Pos>220,-80</Pos></Input>
+                <Input Name="Normal"><Pos>80,-100</Pos></Input>
+            </Inputs>
+        </Context>
+        <Context Type="GLSL">
+            <Shader ShaderType='Fragment'>
+                <Inputs>
+                    <Input Name="BaseColor"><Default>vec4(0,0,0,0)</Default></Input>
+                    <Input Name="Roughness"><Default>vec4($Roughness,$Roughness,$Roughness,1.0)</Default></Input>
+                    <Input Name="Metallic"><Default>vec4($Metallic,$Metallic,$Metallic,1.0)</Default></Input>
+                    <Input Name="Specular"><Default>vec4($Specular,$Specular,$Specular,1.0)</Default></Input>
+                    <Input Name="AmbientOcclusion"><Default>vec4(vec3(1.0-State.AmbientOcclusion),1.0)</Default></Input>
+                    <Input Name="EmmissiveColor"><Default>vec4(0,0,0,1)</Default></Input>
+                    <Input Name="Normal"><Default>vec4(0,0,1,1)</Default></Input>
+                </Inputs>
+                <Body><![CDATA[
+
+    float INIT_FL = $Roughness; INIT_FL = $Metallic; INIT_FL = $Specular; INIT_FL = $AmbientOcclusion;
+
+    // View Direction
+    vec3 V = normalize(-State.ViewVectorInEyeSpaceFromViewCamera);
+    // Normal Direction
+    vec3 N = #Normal.xyz;
+
+    float NdotV = dot(N,V);
+    // On the wrong side of the face
+    if( NdotV <= 0.0)
+    {
+        N = -N;
+        NdotV = 1.0 - NdotV;
+    }
+
+    vec3 EnergyDiffuse = vec3(0.0);
+    vec3 EnergySpecular = vec3(0.0);
+
+    float PI = 3.141;
+
+    float Roughness = #Roughness.r ;
+    vec3 DiffuseColor = #BaseColor.rgb - #BaseColor.rgb * #Metallic.r;
+    vec3 SpecularColor = mix(0.08 * #Specular.xxx, #BaseColor.rgb, #Metallic.xxx);
+
+    for(int i=0;i<4;i++)
+    {
+        if( vec3( 0) == u_MriLightSources[i].DiffuseColor.rgb && vec3( 0) == u_MriLightSources[i].SpecularColor.rgb)
+        {
+            continue;
+        }
+
+        float lightVisibility = mriLightVisibility( i, State.Position);
+        if( lightVisibility <= 0.01)
+        {
+            continue;
+        }
+
+        // Light Direction
+        vec3 L = normalize(u_MriLightSources[i].Position.xyz - State.FragmentPositionInEyeSpaceFromViewCamera);
+        // Half Vector
+        vec3 H = normalize(L+V);
+
+        float NdotL = dot(L,N);
+        if( NdotL <= 0.0)
+        {
+            continue;
+        }
+
+        {
+            float NdotH = dot(N,H);
+            float LdotH = dot(L,H);
+            float VdotH = dot(V,H);
+
+            // F_Schilick
+            float Fc = pow( 1 - VdotH, 5 );
+            // Anything less than 2% is physically impossible and is instead considered to be shadowing
+            vec3 F = clamp( 50.0 * SpecularColor.g, 0.0, 1.0 ) * Fc + (1 - Fc) * SpecularColor;
+
+            // D_GGX
+            float m = Roughness * Roughness;
+            float m2 = m * m;
+            float d = ( NdotH * m2 - NdotH ) * NdotH + 1;
+            float D = m2 / ( PI*d*d );
+
+            // Vis_SmithJointApprox
+            float a = Roughness * Roughness;
+            float Vis_SmithV = NdotL * ( NdotV * ( 1 - a ) + a );
+            float Vis_SmithL = NdotV * ( NdotL * ( 1 - a ) + a );
+            float V = 0.5 * ( 1.0 / ( Vis_SmithV + Vis_SmithL ) );
+
+            vec3 fs = (F * V * D);
+            float fd = 1.0 / PI;
+
+            EnergyDiffuse  += (lightVisibility * u_MriLightSources[i].DiffuseColor.rgb) * (fd * NdotL);
+            EnergySpecular += (lightVisibility * u_MriLightSources[i].SpecularColor.rgb) * (fs * NdotL);
+        }
+    }
+
+    if( true == mriEnvironmentLightOn())
+    {
+        {
+            // Env Light, Light Direction
+            EnergyDiffuse += mriEnvironmentLight( transpose(mat3(u_MriViewMatrix)) * N, 0.0);
+        }
+
+        {
+            // Env Reflection, Light Direction
+            //vec3 L = normalize(u_MriLightSources[i].Position.xyz - State.FragmentPositionInEyeSpaceFromViewCamera);
+            vec3 L = normalize( -reflect( V, N));
+            // Half Vector
+            vec3 H = normalize(L+V);
+
+            float NdotL = dot(L,N);
+            if( 0.0 < NdotL)
+            {
+                float lightVisibility = 1.0;
+
+                float LdotH = dot(L,H);
+                float VdotH = dot(V,H);
+
+                // F_Schilick
+                float Fc = pow( 1 - VdotH, 5 );
+                // Anything less than 2% is physically impossible and is instead considered to be shadowing
+                vec3 F = clamp( 50.0 * SpecularColor.g, 0.0, 1.0 ) * Fc + (1 - Fc) * SpecularColor;
+
+                // Microfacet - Cubemaps render using glossy pow( )
+                float D = 1;
+
+                // Vis_SmithJointApprox
+                float a = Roughness * Roughness;
+                float Vis_SmithV = NdotL * ( NdotV * ( 1 - a ) + a );
+                float Vis_SmithL = NdotV * ( NdotL * ( 1 - a ) + a );
+                float V = 0.5 * ( 1.0 / ( Vis_SmithV + Vis_SmithL ) );
+
+                vec3 fs = (F * V * D);
+
+                vec3 LightColour = lightVisibility * mriEnvironmentLight( transpose(mat3(u_MriViewMatrix)) * L, 1.0-Roughness);
+                EnergySpecular += (fs * NdotL) * (LightColour);
+            }
+        }
+    }
+
+
+    //<!--===============================================PBS VALUE WARNING START=========================================-->//
+
+    vec3 WarningColorUp,WarningColorLow;
+    float WarnUp = 0.0;
+    float WarnDown = 0.0;
+    float Alpha = 0.0;
+
+     if ($Warning)
+
+        {
+            int blink = $blink * 1000;
+            int msec = $blinkFade * 10;
+            int SystemTimeRemainder = u_MriSystemTime % 110;
+            Alpha = 1.0 - float(u_MriSystemTime % blink) / float(msec);
+
+            WarningColorUp = vec3($colorUp.rgb);
+            WarningColorLow = vec3($colorDown.rgb);
+
+
+            vec4 albedo = mriRgb2Hsv(#BaseColor);
+
+            if (#Metallic.r >= 0.1 && albedo.b <= (0.5*#Metallic.r))
+                { WarnDown = (1.0-(albedo.b/0.69) ) / #Metallic.r ; }
+            if (#Metallic.r <= 0.5 && albedo.b <= 0.015 )
+                { WarnDown =  1.0-(albedo.b/0.015);}
+            if (#Metallic.r <= 0.5 && albedo.b >= 0.87)
+                { WarnUp = (albedo.b-0.87)*17.0;}
+
+         }
+
+
+    //<!--===============================================PBS VALUE WARNING END=========================================-->//
+
+
+    vec4 result;
+
+    if (u_MriLightingMode==0)
+       { result.rgb = #BaseColor.rgb; }
+
+    else if (u_MriLightingMode==1)
+       { result.rgb = vec3(EnergyDiffuse.rgb  * #BaseColor.rgb);
+         result.rgb *= vec3(1.0 - ($AmbientOcclusion * vec3(1.0-#AmbientOcclusion.rgb)) );
+       }
+
+    else if (u_MriLightingMode==2)
+       { result.rgb = vec3(EnergyDiffuse.rgb  * DiffuseColor.rgb);
+         result.rgb += EnergySpecular.rgb;
+         result.rgb *= vec3(1.0 - ($AmbientOcclusion * vec3(1.0-#AmbientOcclusion.rgb)) );
+       }
+
+    // Emissive not affected by AO
+    result.rgb += u_MriLightingMode==2 ? $Emissive * #EmissiveColor.rgb * #EmissiveColor.a : vec3(0.0);
+
+    if ($Warning)
+       {
+
+        vec4 highValWarning = mix(result, vec4(WarningColorUp,WarnUp), clamp(WarnUp*Alpha,0.0,1.0));
+        vec4 lowValWarning = mix(highValWarning, vec4(WarningColorLow,WarnDown), clamp(WarnDown*Alpha,0.0,1.0));
+        result = lowValWarning;
+
+        }
+
+    Output.rgb = result.rgb;
+    Output.a = #BaseColor.a;
+
+                ]]></Body>
+            </Shader>
+        </Context>
+    </Contexts>
+</Node>
+

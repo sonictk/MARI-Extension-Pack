@@ -46,6 +46,16 @@ A conversion of the Mari BRDF to support a Metalness/Roughness Workflow.
 Additional features include visual representation of diffuse/albedo values
 outside the recommended ranged as outlined in common PBR practices.
 
+######UNREAL Advanced
+
+BRDF compatible with Unreal Engine. Some additional features over Mari's
+Unreal Engine Shader include:
+
+- PBS Warnings when painting illegal values
+- Sliders for Values (will be overwritten when value slot is mapped)
+- Emmissive Color
+- Flat+Basic Lighting Modes will return BaseColor instead of black when metallic is 1
+
 
 
 ##Feature Improvements:
