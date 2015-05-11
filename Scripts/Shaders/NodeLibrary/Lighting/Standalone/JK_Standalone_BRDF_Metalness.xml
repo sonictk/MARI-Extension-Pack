@@ -57,8 +57,8 @@
       <Attribute Name="Roughness" Group="" Type="double" Min="0" Max="1">0.2</Attribute>
       <Attribute Name="Metalness" Group="" Type="double" Min="0" Max="1">0.0</Attribute>
       <Attribute Name="F0Specular" PrettyName="SpecularLevel" Group="" Description="Specular Level adjustments only work on non-metals to adjust F0 reflectance range of 0.0-0.08" Type="double" Min="0" Max="1">0.5</Attribute>
-      <Attribute Name="AmbientOcclusion" PrettyName="Ambient Occlusion" Group="" Type="double" Min="0" Max="2">1.0</Attribute>
-      <Attribute Name="Emissive" Group="" Type="double" Min="0" Max="100.0" Logarithmic="1">1.0</Attribute>
+      <Attribute Name="AmbientOcclusion" PrettyName="Occlusion" Group="" Type="double" Min="0" Max="2">1.0</Attribute>
+      <Attribute Name="Emissive" Group="" Type="double" Min="0" Max="100.0" Logarithmic="1">5.0</Attribute>
      <!--===============================================================================================================-->
      <Attribute Name="Warning" PrettyName="PBS Illegal Value Warning" Group="PBS Illegal Value Warning" Type="bool" Min="false" Max="true" Description="Runs the noise 2d uv based, use offset/scale x/y and rotate z" >true</Attribute>
      <Attribute Name="colorUp" PrettyName="Diffuse too bright" Group="PBS Illegal Value Warning" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)" Description="Color A">(0,1,0.78,1)</Attribute>
@@ -75,7 +75,13 @@
     <Contexts>
         <Context Type="NodeGraphView">
             <Inputs>
-                <Input Name="Normal"><Pos>30,-50</Pos></Input>
+                <Input Name="Diffuse"><Pos>0,-100</Pos></Input>
+                <Input Name="Roughness"><Pos>-80,-100</Pos></Input>
+                <Input Name="Metalness"><Pos>-170,-100</Pos></Input>
+                <Input Name="SpecularLevel"><Pos>-220,-80</Pos></Input>
+                <Input Name="AmbientOcclusion"><Pos>170,-100</Pos></Input>
+                <Input Name="EmissiveColor"><Pos>220,-80</Pos></Input>
+                <Input Name="Normal"><Pos>80,-100</Pos></Input>
             </Inputs>
         </Context>
         <Context Type="GLSL">
@@ -253,6 +259,9 @@
 
 
     vec4 result;
+    vec3 Emissive =  $Emissive * #EmissiveColor.rgb * #EmissiveColor.a;
+    vec4 EmissiveVal = mriRgb2Hsv(vec4(Emissive,1.0));
+
 
     if (u_MriLightingMode==0)
        { result.rgb = #Diffuse.rgb; }
@@ -264,12 +273,12 @@
 
     else if (u_MriLightingMode==2)
        { result.rgb = vec3(EnergyDiffuse.rgb  * diffuse.rgb);
-         result.rgb += vec3(specLevel * EnergySpecular.rgb * specColor.rgb);
+         result.rgb += mix((specLevel * EnergySpecular.rgb*specColor.rgb),vec3(0.0),clamp(EmissiveVal.b,0.0,1.0));
          result.rgb *= vec3(1.0 - ($AmbientOcclusion * vec3(1.0-#AmbientOcclusion.rgb)) );
        }
 
     // Emissive not affected by AO
-    result.rgb += u_MriLightingMode==2 ? $Emissive * #EmissiveColor.rgb * #EmissiveColor.a : vec3(0.0);
+    result.rgb += u_MriLightingMode==2 ? Emissive : vec3(0.0);
 
     if ($Warning)
        {
