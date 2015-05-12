@@ -47,9 +47,9 @@
     <Inputs>
         <Input Name="Transform" PrettyName="Transform Coordinates"></Input>
         <Input Name="Frequency"></Input>
-        <Input Name="Octaves"></Input>
+        <Input Name="Threshold"></Input>
         <Input Name="Lacunarity"></Input>
-        <Input Name="Gain"></Input>
+        <Input Name="Gain" PrettyName="Octave Gain"></Input>
     </Inputs>
     <Attributes>
         <!--===============================================================================================================-->
@@ -91,7 +91,7 @@
             <Inputs>
                 <Input Name="Transform" ><Pos>0,-50</Pos></Input>
                 <Input Name="Frequency" ><Pos>-120,10</Pos></Input>
-                <Input Name="Octaves" ><Pos>-120,-10</Pos></Input>
+                <Input Name="Threshold" ><Pos>-120,-10</Pos></Input>
                 <Input Name="Lacunarity"><Pos>120,10</Pos></Input>
                 <Input Name="Gain"><Pos>120,-10</Pos></Input>
             </Inputs>
@@ -101,7 +101,7 @@
                 <Inputs>
                 <Input Name="Transform" ><Default>vec4(State.Position,1.0)</Default></Input>
                 <Input Name="Frequency" ><Default>vec4($frequency)</Default></Input>
-                <Input Name="Octaves" ><Default>vec4($octaves)</Default></Input>
+                <Input Name="Threshold" ><Default>vec4($threshold)</Default></Input>
                 <Input Name="Lacunarity"><Default>vec4($lacunarity)</Default></Input>
                 <Input Name="Gain"><Default>vec4($gain)</Default></Input>
                 </Inputs>
@@ -111,7 +111,7 @@
 
 
                 //Initalize UI Sliders. Need to call slider attributes once in order for them to be activated in UI
-                float INIT = $frequency; INIT = $octaves ; INIT = $lacunarity; INIT = $gain;
+                float INIT = $frequency; INIT = $threshold ; INIT = $lacunarity; INIT = $gain;
 
                 // compensate for scene size by applying eponential growth
                 float freq_pow = (pow(#Frequency.r,#Frequency.r)-1.0) + 0.01;
@@ -137,7 +137,7 @@
                 P = mix(P,vec3(InputScaleUV,1.0),float($uv));
 
                 // brownian fraction motion noise function
-                Output = DT3D_fBmNoise(P,$colorA,$colorB,#Frequency.r,int(#Octaves.r),#Lacunarity.r,1.0-#Gain,$threshold,$invert);
+                Output = DT3D_fBmNoise(P,$colorA,$colorB,#Frequency.r,$octaves,#Lacunarity.r,1.0-#Gain.r,#Threshold.r,$invert);
 
                 ]]></Body>
             </Shader>

@@ -62,6 +62,10 @@ and has been moved to Procedurals/Custom/Gabor/
 Custom Obect Normal has been renamed to Custom Surface Norma to be in line
 wit Maris Vocabulary.
 
+######FBM+
+FBM+ now uses a different algorithm, giving more predicatable results with less
+overall 'flowing' of features across the surface when changing sliders
+
 
 ######Adjustments - General
 
