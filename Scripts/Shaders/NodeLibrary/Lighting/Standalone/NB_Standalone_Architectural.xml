@@ -91,9 +91,26 @@
         <Contexts>
             <Context Type="NodeGraphView">
                 <Inputs>
-                    <Input Name="DiffuseColor"><Pos>0,-50</Pos></Input>
-                    <Input Name="Normal"><Pos>30,-50</Pos></Input>
-                    <Input Name="Vector"><Pos>-30,-50</Pos></Input>
+                <Input Name="DiffuseColor"><Pos>30,-190</Pos></Input>
+                <Input Name="DiffuseWeight"><Pos>100,-210</Pos></Input>
+                <Input Name="DiffuseRoughness"><Pos>140,-185</Pos></Input>
+
+
+                <Input Name="ReflectionColor"><Pos>-200,-90</Pos></Input>
+                <Input Name="ReflectionWeight"><Pos>-150,-20</Pos></Input>
+                <Input Name="ReflectionRoughness"><Pos>-170,-40</Pos></Input>
+
+                <Input Name="RefractionWeight"><Pos>-40,-170</Pos></Input>
+                <Input Name="RefractionColor"><Pos>-80,-140</Pos></Input>
+                <Input Name="IOR"><Pos>-40,-220</Pos></Input>
+                <Input Name="RefractionRoughness"><Pos>-180,-160</Pos></Input>
+
+                <Input Name="Anisotropy"><Pos>150,-140</Pos></Input>
+                <Input Name="AnisotropyRotation"><Pos>150,-110</Pos></Input>
+
+                <Input Name="AmbientOcclusion"><Pos>180,-75</Pos></Input>
+                <Input Name="Normal"><Pos>150,-20</Pos></Input>
+                <Input Name="Vector"><Pos>150,0</Pos></Input>
                 </Inputs>
             </Context>
         <Context Type="GLSL">
