@@ -15,8 +15,13 @@ Two new nodes were added to convert values between HSV & RGB.
 ######Transition Node
 A node to add detail to mask edges
 
-######Transform Coordinates
-A node to transform object coordinates and normals
+######Transform Coordinates 3D
+A node to transform object coordinates such as Position + Normal.
+Many Extension Pack Procedurals have this built in but this node
+can be used as a central control hub to modify multiple nodes at once.
+
+######Transform Coordinates UV
+A node to transform object UV Coordinates.
 Many Extension Pack Procedurals have this built in but this node
 can be used as a central control hub to modify multiple nodes at once.
 

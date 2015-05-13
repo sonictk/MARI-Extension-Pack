@@ -3,15 +3,15 @@
 == Mari Ideascale Procedural Library
 == Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
 ================================================================================
-== File: JK_Transform.xml
-== Description: Transform Input Values used for coordinates
+== File: JK_Transform_3D.xml
+== Description: Transform Input Values used for coordinates such as Normal or Position
 ================================================================================
 == Author: Jens Kafitz | Mari Ideascale
 == Web: www.campi3d.com
 == Web: www.mari.ideascale.com
 == Email: MariIdeas@campi3d.com
 ===============================================================================
-== Modified Date: March, 28 2015
+== Modified Date: May, 13 2015
 ================================================================================
 == Redistribution and use in source and binary forms, with or without
 == modification, are permitted provided that the following conditions are met:
@@ -42,11 +42,11 @@
 -->
 
 <Node>
-    <ID>JK_Transform</ID>
-    <DefaultName>Transform Coordinates</DefaultName>
+    <ID>JK_Transform3D</ID>
+    <DefaultName>Transform Coordinates (3D)</DefaultName>
     <Category>Geometry/Custom/</Category>
     <Inputs>
-        <Input Name="Coordinates" ></Input>
+        <Input Name="Coordinates" PrettyName="3D Coordinates"></Input>
         <Input Name="Scale" ></Input>
         <Input Name="Rotate" ></Input>
         <Input Name="Translate" ></Input>

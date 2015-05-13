@@ -1,0 +1,114 @@
+<!--
+================================================================================
+== Mari Ideascale Procedural Library
+== Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
+================================================================================
+== File: JK_Transform_2D.xml
+== Description: Transform Input Values used for coordinates such as UVs
+================================================================================
+== Author: Jens Kafitz | Mari Ideascale
+== Web: www.campi3d.com
+== Web: www.mari.ideascale.com
+== Email: MariIdeas@campi3d.com
+===============================================================================
+== Modified Date: May, 13 2015
+================================================================================
+== Redistribution and use in source and binary forms, with or without
+== modification, are permitted provided that the following conditions are met:
+==
+== 1. Redistributions of source code must retain the above copyright
+== notice, this list of conditions and the following disclaimer.
+==
+== 2. Redistributions in binary form must reproduce the above copyright
+== notice, this list of conditions and the following disclaimer in the
+== documentation and/or other materials provided with the distribution.
+==
+== 3. Neither the name of the copyright holder nor the names of its
+== contributors may be used to endorse or promote products derived from
+== this software without specific prior written permission.
+==
+== THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+== IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+== THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+== PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+== CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+== EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+== PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+== OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+== WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+== OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+== ADVISED OF HE POSSIBILITY OF SUCH DAMAGE.
+================================================================================
+-->
+
+<Node>
+    <ID>JK_Transform2D</ID>
+    <DefaultName>Transform Coordinates (UV)</DefaultName>
+    <Category>Geometry/Custom/</Category>
+    <Inputs>
+        <Input Name="Coordinates" PrettyName="2D Coordinates"></Input>
+        <Input Name="Scale" ></Input>
+        <Input Name="Rotate" ></Input>
+        <Input Name="Translate" ></Input>
+    </Inputs>
+    <Attributes>
+        <!--===============================================================================================================-->
+        <Attribute Name="WorldScale" PrettyName="Scale UV" Group="Transform Scale" Type="float">1</Attribute>
+        <Attribute Name="scaleX" PrettyName="Scale U" Group="Transform Scale" Type="float" Min="0" Max="100" Logarithmic="1">1</Attribute>
+        <Attribute Name="scaleY" PrettyName="Scale V" Group="Transform Scale" Type="float" Min="0" Max="100" Logarithmic="1">1</Attribute>
+        <!--===============================================================================================================-->
+        <Attribute Name="rotateZ" PrettyName="Rotate" Group="Transform Rotate" Type="float" Min="0" Max="360">0</Attribute>
+        <!--===============================================================================================================-->
+        <Attribute Name="transX" PrettyName="Translate U" Group="Transform Translate" Type="float" Min="0" Max="100" Logarithmic="1">0</Attribute>
+        <Attribute Name="transY" PrettyName="Translate V" Group="Transform Translate" Type="float" Min="0" Max="100" Logarithmic="1">0</Attribute>
+        <!--===============================================================================================================-->
+</Attributes>
+ <Contexts>
+        <Context Type="NodeGraphView">
+            <Inputs>
+                <Input Name="Coordinates" ><Pos>0,-50</Pos></Input>
+                <Input Name="Scale" ><Pos>-100,30</Pos></Input>
+                <Input Name="Rotate" ><Pos>-100,0</Pos></Input>
+                <Input Name="Translate" ><Pos>-100,-30</Pos></Input>
+            </Inputs>
+        </Context>
+        <Context Type="GLSL">
+            <Shader ShaderType='Fragment'>
+                <Inputs>
+                <Input Name="Coordinates" ><Default>vec4(State.Position,1.0)</Default></Input>
+                <Input Name="Scale" ><Default>vec4( vec3($scaleX,$scaleY,1.0)*vec3($WorldScale),1.0)</Default></Input>
+                <Input Name="Rotate" ><Default>vec4($rotateZ,1.0,1.0,1.0)</Default></Input>
+                <Input Name="Translate" ><Default>vec4($transX,$transY,1.0,1.0)</Default></Input>
+                </Inputs>
+            </Shader>
+            <Shader ShaderType='TessEvaluation'>
+                <Inputs>
+                <Input Name="Coordinates" ><Default>vec4(State.Position,1.0)</Default></Input>
+                <Input Name="Scale" ><Default>vec4( vec3($scaleX,$scaleY,1.0)*vec3($WorldScale),1.0)</Default></Input>
+                <Input Name="Rotate" ><Default>vec4($rotateZ,1.0,1.0,1.0)</Default></Input>
+                <Input Name="Translate" ><Default>vec4($transX,$transY,1.0,1.0)</Default></Input>
+                </Inputs>
+            </Shader>
+            <Shader>
+                <Body><![CDATA[
+
+    // Initialize Sliders
+    float INIT = $scaleX; INIT = $scaleY; INIT = $WorldScale;
+    INIT = $rotateZ; INIT = $transX; INIT = $transY;
+
+    // 2d uv space surface position
+    // build the needed vector attributes for position transform, offset max growths exponentially
+    vec2 UVOffset = vec2(#Translate.x,#Translate.y);
+    vec2 UVScale = vec2(#Scale.x,#Scale.y);
+
+    // transform the position to translate,rotate,scale the position
+    vec2 InputScaleUV = relUVTransform(State.UV,$rotateZ,UVOffset,UVScale,0.5,0.5);
+
+    Output =  vec4(InputScaleUV,0.0,1.0);
+
+                ]]></Body>
+            </Shader>
+        </Context>
+    </Contexts>
+</Node>
+
