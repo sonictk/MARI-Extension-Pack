@@ -46,7 +46,14 @@
     <DefaultName>Vec FBM</DefaultName>
     <Category>Procedural/Custom/FBM/</Category>
     <Inputs>
-        <Input Name="Input"/>
+        <Input Name="Transform" PrettyName="Transform Coordinates"></Input>
+        <Input Name="Size" ></Input>
+        <Input Name="Octaves" ></Input>
+        <Input Name="Lacunarity" ></Input>
+        <Input Name="OffsetScale" PrettyName="Offset Scale" ></Input>
+        <Input Name="Offset" ></Input>
+        <Input Name="Amplitude" ></Input>
+        <Input Name="Threshold" ></Input>
     </Inputs>
     <Attributes>
         <!--===============================================================================================================-->
@@ -93,22 +100,46 @@
     <Contexts>
         <Context Type="NodeGraphView">
             <Inputs>
-                <Input Name="Input"><Pos>0,-50</Pos></Input>
+                <Input Name="Transform" ><Pos>0,-50</Pos></Input>
+                <Input Name="Size" ><Pos>-120,15</Pos></Input>
+                <Input Name="Lacunarity"><Pos>-120,0</Pos></Input>
+                <Input Name="Octaves" ><Pos>-120,-15</Pos></Input>
+                <Input Name="Amplitude"><Pos>120,-30</Pos></Input>
+                <Input Name="OffsetScale" ><Pos>120,-15</Pos></Input>
+                <Input Name="Offset" ><Pos>120,-0</Pos></Input>
+                <Input Name="Threshold"><Pos>120,15</Pos></Input>
             </Inputs>
         </Context>
         <Context Type="GLSL">
             <Shader ShaderType='Fragment'>
                 <Inputs>
-                    <Input Name="Input"> <Default>State.Position</Default> </Input>
+                <Input Name="Transform" ><Default>vec4(State.Position,1.0)</Default></Input>
+                <Input Name="Size" ><Default>vec4($Size)</Default></Input>
+                <Input Name="Octaves" ><Default>vec4($octaves)</Default></Input>
+                <Input Name="Lacunarity" ><Default>vec4($lacunarity)</Default></Input>
+                <Input Name="OffsetScale" ><Default>vec4($Scale)</Default></Input>
+                <Input Name="Offset" ><Default>vec4($FOffset)</Default></Input>
+                <Input Name="Amplitude" ><Default>vec4($Amp)</Default></Input>
+                <Input Name="Threshold" ><Default>vec4($Threshold)</Default></Input>
                 </Inputs>
             </Shader>
             <Shader ShaderType='TessEvaluation'>
                 <Inputs>
-                    <Input Name="Input"> <Default>State.Position</Default> </Input>
+                <Input Name="Transform" ><Default>vec4(State.Position,1.0)</Default></Input>
+                <Input Name="Size" ><Default>vec4($Size)</Default></Input>
+                <Input Name="Octaves" ><Default>vec4($octaves)</Default></Input>
+                <Input Name="Lacunarity" ><Default>vec4($lacunarity)</Default></Input>
+                <Input Name="OffsetScale" ><Default>vec4($Scale)</Default></Input>
+                <Input Name="Offset" ><Default>vec4($FOffset)</Default></Input>
+                <Input Name="Amplitude" ><Default>vec4($Amp)</Default></Input>
+                <Input Name="Threshold" ><Default>vec4($Threshold)</Default></Input>
                 </Inputs>
             </Shader>
             <Shader>
                 <Body><![CDATA[
+
+                //Initalize UI Sliders. Need to call slider attributes once in order for them to be activated in UI
+                float INIT = $Size; INIT = $octaves ; INIT = $lacunarity; INIT = $FOffset; INIT = $Amp; INIT = $Threshold; INIT = $Scale;
 
                 // compensate for scene size by applying eponential growth
                 float size_pow = (pow(10000.0,$Size*$Size)-1.0) + 0.0001;
@@ -120,7 +151,7 @@
                 vec3 scale = vec3($XScale,$YScale,$ZScale);
 
                 // transform the position to translate,rotate,scale the position
-                vec3 P = positionTransform(State.Position,trans,rotate,scale);
+                vec3 P = positionTransform(#Transform.rgb,trans,rotate,scale);
 
                 // 2d uv space surface position
                 // build the needed vector attributes for position transform, offset max growths exponentially
@@ -134,14 +165,14 @@
                 P = mix(P,vec3(InputScaleUV,1.0),float($uv));
 
                 vec3 scaled_seed = P / size_pow;
-                float noise_val = smoothVfBm(scaled_seed,$octaves,$lacunarity,$gain,$Amp,$Scale,$FOffset);
+                float noise_val = smoothVfBm(scaled_seed,#Octaves.r,#Lacunarity.r,$gain,#Amplitude.r,#OffsetScale.r,#Offset.r);
                 noise_val = mix(noise_val,abs(noise_val),float($Absolut));
                 float Baseline = 1.0 - $Baseline;
 
                 if ($Baseline==0.0){noise_val = noise_val;}
                 else { noise_val = noise_val*Baseline + Baseline;}
 
-                float result = softThreshold($Threshold, $Clip, noise_val);
+                float result = softThreshold(#Threshold.r, $Clip, noise_val);
 
                 float _invertResult = float($Invert);
 

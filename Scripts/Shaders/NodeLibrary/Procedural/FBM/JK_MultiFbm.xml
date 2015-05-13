@@ -46,7 +46,6 @@
     <DefaultName>Multi FBM</DefaultName>
     <Category>Procedural/Custom/FBM/</Category>
     <Inputs>
-        <Input Name="Input"/>
     </Inputs>
     <Attributes>
         <!--===============================================================================================================-->
@@ -119,18 +118,15 @@
     <Contexts>
         <Context Type="NodeGraphView">
             <Inputs>
-                <Input Name="Input"><Pos>0,-50</Pos></Input>
             </Inputs>
         </Context>
         <Context Type="GLSL">
             <Shader ShaderType='Fragment'>
                 <Inputs>
-                    <Input Name="Input"> <Default>vec4(1,1,1,1)</Default> </Input>
                 </Inputs>
             </Shader>
             <Shader ShaderType='TessEvaluation'>
                 <Inputs>
-                    <Input Name="Input"> <Default>vec4(1,1,1,1)</Default> </Input>
                 </Inputs>
             </Shader>
             <Shader>
