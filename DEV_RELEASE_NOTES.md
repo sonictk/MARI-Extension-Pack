@@ -71,6 +71,11 @@ wit Maris Vocabulary.
 FBM+ now uses a different algorithm, giving more predicatable results with less
 overall 'flowing' of features across the surface when changing sliders
 
+######Spotify
+
+The 'Gain' Attribute of the Spotify Procedural has been re-ranged from 0.0 - 1.0 (from 0.0 - 10.0)
+to help with mapping in the nodegraph
+
 
 ######Adjustments - General
 
