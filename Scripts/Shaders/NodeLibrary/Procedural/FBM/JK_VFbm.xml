@@ -142,7 +142,7 @@
                 float INIT = $Size; INIT = $octaves ; INIT = $lacunarity; INIT = $FOffset; INIT = $Amp; INIT = $Threshold; INIT = $Scale;
 
                 // compensate for scene size by applying eponential growth
-                float size_pow = (pow(10000.0,$Size*$Size)-1.0) + 0.0001;
+                float size_pow = (pow(10000.0,#Size.r*#Size.r)-1.0) + 0.0001;
 
                 // 3d space surface position
                 // build the needed vector attributes for position transform, offset max growths exponentially

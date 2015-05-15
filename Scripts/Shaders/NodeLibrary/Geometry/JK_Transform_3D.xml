@@ -80,7 +80,7 @@
             <Shader ShaderType='Fragment'>
                 <Inputs>
                 <Input Name="Coordinates" ><Default>vec4(State.Position,1.0)</Default></Input>
-                <Input Name="Scale" ><Default>vec4( vec3($scaleX,$scaleY,$scaleZ)*vec3($WorldScale),1.0)</Default></Input>
+                <Input Name="Scale" ><Default>vec4( vec3($scaleX,$scaleY,$scaleZ)/vec3($WorldScale),1.0)</Default></Input>
                 <Input Name="Rotate" ><Default>vec4($rotateX,$rotateY,$rotateZ,1.0)</Default></Input>
                 <Input Name="Translate" ><Default>vec4($transX,$transY,$transZ,1.0)</Default></Input>
                 </Inputs>
@@ -88,7 +88,7 @@
             <Shader ShaderType='TessEvaluation'>
                 <Inputs>
                 <Input Name="Coordinates" ><Default>vec4(State.Position,1.0)</Default></Input>
-                <Input Name="Scale" ><Default>vec4( vec3($scaleX,$scaleY,$scaleZ)*vec3($WorldScale),1.0)</Default></Input>
+                <Input Name="Scale" ><Default>vec4( vec3($scaleX,$scaleY,$scaleZ)/vec3($WorldScale),1.0)</Default></Input>
                 <Input Name="Rotate" ><Default>vec4($rotateX,$rotateY,$rotateZ,1.0)</Default></Input>
                 <Input Name="Translate" ><Default>vec4($transX,$transY,$transZ,1.0)</Default></Input>
                 </Inputs>
