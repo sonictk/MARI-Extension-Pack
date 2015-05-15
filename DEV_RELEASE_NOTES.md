@@ -3,33 +3,44 @@ Copyright (c) 2015 www.mari.ideascale.com. All Rights Reserved.
 
 ##New Features:
 
-#####ADJUSTMENTS:
+#####Adjustments:
 
-######RGB 2 HSV + HSV 2 RGB
+######RGB to HSV + HSV to RGB
 
-Two new nodes were added to convert values between HSV & RGB.
+Two new nodes were added to Layerstakc & Nodegraph to convert values between HSV & RGB.
 
 
 #####NODEGRAPH:
 
 ######Transition Node
-A node to add detail to mask edges
+A node to add detail to mask edges.
+This Node is only available in the Nodegraph.
 
 ######Transform Coordinates 3D
 A node to transform object coordinates such as Position + Normal.
-Many Extension Pack Procedurals have this built in but this node
-can be used as a central control hub to modify multiple nodes at once.
+All Extension Pack Procedurals now have a 'Transform Coordinate' Handle
+in the Nodegraph to attach this to.
+
+Many Extension Pack Procedurals already have Scale/offset/Rotatuion options
+built in but this can be used as a central control hub to modify multiple nodes at once.
 
 ######Transform Coordinates UV
 A node to transform object UV Coordinates.
-Many Extension Pack Procedurals have this built in but this node
-can be used as a central control hub to modify multiple nodes at once.
+All Extension Pack Procedurals now have a 'Transform Coordinate' Handle
+in the Nodegraph to attach this to.
+
+Many Extension Pack Procedurals already have Scale/offset/Rotatuion options
+built in but this can be used as a central control hub to modify multiple nodes at once.
+Attaching this Node to a procedural will give the same effect as activating 'UV Space' in
+the Procedural Options.
 
 ######Material Regions
 
-Four new nodes were added as part of the implementation of 'Material Regions'.
+New nodes were added as part of the implementation of 'Material Regions'.
 Material Region Base, Material Region, Material Region Pass Through and
 Material Region Value Selector.
+
+Different Material Region Presets for different workflows (Roughness/Reflectance, Metallness/Roughness, Glossiness) are available.
 
 Material Regions are a powerful way to layer different materials on top of each other, provide a logical grouping in the Nodegraph and giving the user maximum control over each part of the material. Other than Layered Shaders
 performance is kept high by only passing a 'finished' channel to one shader
@@ -38,11 +49,9 @@ instead of layereing multiple shaders on top of each other.
 
 ######Procedurals ready for Nodegraph _WIP
 
-MARI EXTENSION PACK procedurals have been cleaned for the Nodegraph
-
-A number of MARI EXTENSION PACK procedurals had their paramenters
-exposed as Node Handles to allow node-driven paramenters (Octaves driven
-by another Noise etc.).
+MARI Extension Pack Nodes have been reworked for best experience in the Nodegraph.
+Nodes now have their most useful paramenters exposed as Node Handles to allow node-driven paramenters
+(Octaves driven by another Noise etc.).
 While Node Handles are unmapped, Node Sliders are used.
 While Node Handles are mapped, Node Sliders are ignored.
 
@@ -52,19 +61,23 @@ While Node Handles are mapped, Node Sliders are ignored.
 
 ######Polysurface Curvature
 
+Polysurface Curvature now has a 'Min Curvature' Attribute
+
 The Polysurface Curvature Node now has an additional 'Normal Map Mix'.
 When a Normal Map (for example a 'Normal Map' Channel) is attached to the
 handle in the Nodegraph you are able to mix or add edges from a normalmap
-into the final calculation of the curvature
+into the final calculation of the curvature.
+
 
 ######Paintable Gabor Noise
 
-Paintable Gabor Noise no longer appears under 'Adjustments' (finally)
+Paintable Gabor Noise no longer appears under 'Adjustments'
 and has been moved to Procedurals/Custom/Gabor/
 
 
 ######Custom Object Normal
-Custom Obect Normal has been renamed to Custom Surface Norma to be in line
+
+Custom Obect Normal has been renamed to Custom Surface Normal to be in line
 wit Maris Vocabulary.
 
 ######FBM+
@@ -79,7 +92,7 @@ to help with mapping in the nodegraph
 
 ######Adjustments - General
 
-Adjustments are now categorized in their 'custom' subfolder
+Adjustments are now categorized in subfolders (Color Correction, Utilities etc.)
 
 ######Procedurals - General
 
