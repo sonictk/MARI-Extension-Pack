@@ -45,7 +45,12 @@
     <DefaultName>Ridged Multi Noise</DefaultName>
     <Category>Procedural/Custom/MultiFractal/</Category>
     <Inputs>
-        <Input Name="Input"></Input>
+        <Input Name="Transform" PrettyName="Transform Coordinates"></Input>
+        <Input Name="Frequency"></Input>
+        <Input Name="Threshold"></Input>
+        <Input Name="Lacunarity"></Input>
+        <Input Name="Gain" PrettyName="Octave Gain"></Input>
+        <Input Name="Offset"></Input>
     </Inputs>
     <Attributes>
         <!--===============================================================================================================-->
@@ -58,7 +63,7 @@
         <Attribute Name="octaves" PrettyName="Octaves" Group="Modifiers" Type="int" Min="1" Max="10" Logarithmic="1">6</Attribute>
         <Attribute Name="lacunarity" PrettyName="Lacunarity" Group="Modifiers" Type="float" Min="0" Max="10" >1.5</Attribute>
         <Attribute Name="gain" PrettyName="Gain" Group="Modifiers" Type="float" Min="0" Max="1" >0.2</Attribute>
-        <Attribute Name="offset" PrettyName="Offset" Group="Modifiers" Type="float" Min="0" Max="1" >0.8</Attribute>
+        <Attribute Name="foffset" PrettyName="Offset" Group="Modifiers" Type="float" Min="0" Max="1" >0.8</Attribute>
         <Attribute Name="threshold" PrettyName="Threshold" Group="Modifiers" Type="float" Min="0" Max="1" >0.5</Attribute>
         <Attribute Name="invert" PrettyName="Invert" Group="Modifiers" Type="bool" Min="false" Max="true">false</Attribute>
         <!--===============================================================================================================-->
@@ -84,12 +89,33 @@
         <Group Name="Transform Translate" Expanded="false"></Group>
     </Groups>
     <Contexts>
+        <Context Type="NodeGraphView">
+            <Inputs>
+                <Input Name="Transform" ><Pos>0,-50</Pos></Input>
+                <Input Name="Frequency" ><Pos>-120,15</Pos></Input>
+                <Input Name="Threshold" ><Pos>-120,-15</Pos></Input>
+                <Input Name="Lacunarity"><Pos>120,15</Pos></Input>
+                <Input Name="Gain"><Pos>120,-0</Pos></Input>
+                <Input Name="Offset"><Pos>120,-15</Pos></Input>
+            </Inputs>
+        </Context>
         <Context Type="GLSL">
-            <Shader>
+            <Shader ShaderType='Fragment'>
                 <Inputs>
-                    <Input Name="Input"><Default>vec4(1,1,1,1)</Default></Input>
+                <Input Name="Transform" ><Default>vec4(State.Position,1.0)</Default></Input>
+                <Input Name="Frequency" ><Default>vec4($frequency)</Default></Input>
+                <Input Name="Threshold" ><Default>vec4($threshold)</Default></Input>
+                <Input Name="Lacunarity"><Default>vec4($lacunarity)</Default></Input>
+                <Input Name="Gain"><Default>vec4($gain)</Default></Input>
+                <Input Name="Offset"><Default>vec4($foffset)</Default></Input>
                 </Inputs>
+            </Shader>
+            <Shader>
                 <Body><![CDATA[
+
+                //Initalize UI Sliders. Need to call slider attributes once in order for them to be activated in UI
+                  float INIT = $frequency; INIT = $threshold ; INIT = $lacunarity; INIT = $gain; INIT = $foffset;
+
 
                 // compensate for scene size by applying eponential growth
                 float freq_pow = (pow($frequency,$frequency)-1.0) + 0.01;
@@ -101,7 +127,7 @@
                 vec3 scale = vec3($scaleX,$scaleY,$scaleZ);
 
                 // transform the position to translate,rotate,scale the position
-                vec3 P = positionTransform(State.Position,trans,rotate,scale) / freq_pow;
+                vec3 P = positionTransform(#Transform.rgb,trans,rotate,scale) / freq_pow;
 
                 // 2d uv space surface position
                 // build the needed vector attributes for position transform, offset max growths exponentially
@@ -115,7 +141,7 @@
                 P = mix(P,vec3(InputScaleUV,1.0),float($uv));
 
                 // ridged noise function
-                Output = DT3D_RidgedNoise(P,$colorA,$colorB,$frequency,$octaves,$lacunarity,1.0-$gain,$offset,$threshold,$invert);
+                Output = DT3D_RidgedNoise(P,$colorA,$colorB,#Frequency.r,$octaves,#Lacunarity.r,1.0-#Gain.r,#Offset.r,#Threshold.r,$invert);
 
                 ]]></Body>
             </Shader>

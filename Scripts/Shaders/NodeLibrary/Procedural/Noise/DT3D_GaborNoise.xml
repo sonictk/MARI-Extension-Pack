@@ -51,7 +51,12 @@
         <Tag>_adjustment</Tag>
     </Tags>
     <Inputs>
-        <Input Name="Input" PreferredInput='1'/>
+        <Input Name="Input" PrettyName="Painted Flow" PreferredInput='1'/>
+        <Input Name="Transform" PrettyName="Transform Coordinates" />
+        <Input Name="Frequency" />
+        <Input Name="Bandwidth" />
+        <Input Name="Truncate" />
+
     </Inputs>
     <Attributes>
         <!--===============================================================================================================-->
@@ -92,18 +97,45 @@
         <Group Name="Transform Rotate" Expanded="false"></Group>
         <Group Name="Transform Translate" Expanded="false"></Group>
     </Groups>
-    <Contexts>
+       <Contexts>
+        <Context Type="NodeGraphView">
+            <Inputs>
+                <Input Name="Input" ><Pos>70,-50</Pos></Input>
+                <Input Name="Transform" ><Pos>-70,-50</Pos></Input>
+                <Input Name="Frequency" ><Pos>-120,10</Pos></Input>
+                <Input Name="Bandwidth" ><Pos>120,10</Pos></Input>
+                <Input Name="Truncate"><Pos>120,-10</Pos></Input>
+            </Inputs>
+        </Context>
         <Context Type="GLSL">
-            <Shader>
+            <Shader ShaderType='Fragment'>
                 <Inputs>
                     <Input Name="Input"><Default>vec4(1,1,1,1)</Default></Input>
+                    <Input Name="Transform" ><Default>vec4(State.Position,1.0)</Default></Input>
+                    <Input Name="Frequency" ><Default>vec4($frequency)</Default></Input>
+                    <Input Name="Bandwidth" ><Default>vec4($bandwidth)</Default></Input>
+                    <Input Name="Truncate"><Default>vec4($truncate)</Default></Input>
                 </Inputs>
+            </Shader>
+            <Shader ShaderType='TessEvaluation'>
+                <Inputs>
+                    <Input Name="Input"><Default>vec4(1,1,1,1)</Default></Input>
+                    <Input Name="Transform" ><Default>vec4(State.Position,1.0)</Default></Input>
+                    <Input Name="Frequency" ><Default>vec4($frequency)</Default></Input>
+                    <Input Name="Bandwidth" ><Default>vec4($bandwidth)</Default></Input>
+                    <Input Name="Truncate"><Default>vec4($truncate)</Default></Input>
+                </Inputs>
+            </Shader>
+            <Shader>
                 <Body><![CDATA[
 
                 #if defined MRI_SHADER_FRAGMENT || defined MRI_SHADER_TESS_EVALUATION
 
+                //Initalize UI Sliders. Need to call slider attributes once in order for them to be activated in UI
+                float INIT = $frequency; INIT = $impulses ; INIT = $bandwidth; INIT = $truncate;
+
                 // compensate for scene size by applying eponential growth
-                float freq_pow = (pow($frequency,$frequency)-1.0) + 0.01;
+                float freq_pow = (pow(#Frequency.r,#Frequency.r)-1.0) + 0.01;
 
                 // 3d space surface position
                 // build the needed vector attributes for position transform, offset max growths exponentially
@@ -112,7 +144,7 @@
                 vec3 scale = vec3($scaleX,$scaleY,$scaleZ);
 
                 // transform the position to translate,rotate,scale the position
-                vec3 P = positionTransform(State.Position,trans,rotate,scale) / freq_pow;
+                vec3 P = positionTransform(#Transform.rgb,trans,rotate,scale) / freq_pow;
 
                 // 2d uv space surface position
                 // build the needed vector attributes for position transform, offset max growths exponentially
@@ -135,7 +167,7 @@
                 vec3 direction = mix(D,flow,float($UseFlow));
 
                 // gabor noise function
-                Output = DT3D_GaborNoise(P,$colorA,$colorB,$frequency,direction,$bandwidth,$truncate,$impulses,1245,$noiseType);
+                Output = DT3D_GaborNoise(P,$colorA,$colorB,#Frequency.r,direction,#Bandwidth.r,#Truncate.r,$impulses,1245,$noiseType);
                 #endif
 
                 ]]></Body>
