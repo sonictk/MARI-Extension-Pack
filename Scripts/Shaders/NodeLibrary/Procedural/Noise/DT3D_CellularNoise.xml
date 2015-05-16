@@ -45,7 +45,11 @@
     <DefaultName>Cellular Noise</DefaultName>
     <Category>Procedural/Custom/Voronoi/</Category>
     <Inputs>
-        <Input Name="Input"></Input>
+        <Input Name="Transform" PrettyName="Transform Coordinates"></Input>
+        <Input Name="Frequency"></Input>
+        <Input Name="Jitter"></Input>
+        <Input Name="stepSize" PrettyName="Outline Size"></Input>
+        <Input Name="Threshold"></Input>
     </Inputs>
     <Attributes>
         <!--===============================================================================================================-->
@@ -88,15 +92,42 @@
         <Group Name="Transform Translate" Expanded="false"></Group>
     </Groups>
     <Contexts>
+        <Context Type="NodeGraphView">
+            <Inputs>
+                <Input Name="Transform" ><Pos>0,-50</Pos></Input>
+                <Input Name="Frequency" ><Pos>-120,-10</Pos></Input>
+                <Input Name="Jitter" ><Pos>-120,10</Pos></Input>
+                <Input Name="stepSize" ><Pos>120,-10</Pos></Input>
+                <Input Name="Threshold" ><Pos>120,10</Pos></Input>
+            </Inputs>
+        </Context>
         <Context Type="GLSL">
-            <Shader>
+            <Shader ShaderType='Fragment'>
                 <Inputs>
-                    <Input Name="Input"><Default>vec4(1,1,1,1)</Default></Input>
+                <Input Name="Transform" ><Default>vec4(State.Position,1.0)</Default></Input>
+                <Input Name="Frequency" ><Default>vec4($frequency)</Default></Input>
+                <Input Name="Jitter" ><Default>vec4($jitter)</Default></Input>
+                <Input Name="stepSize" ><Default>vec4($stepSize)</Default></Input>
+                <Input Name="Threshold" ><Default>vec4($threshold)</Default></Input>
                 </Inputs>
+            </Shader>
+            <Shader ShaderType='TessEvaluation'>
+                <Inputs>
+                <Input Name="Transform" ><Default>vec4(State.Position,1.0)</Default></Input>
+                <Input Name="Frequency" ><Default>vec4($frequency)</Default></Input>
+                <Input Name="Jitter" ><Default>vec4($jitter)</Default></Input>
+                <Input Name="stepSize" ><Default>vec4($stepSize)</Default></Input>
+                <Input Name="Threshold" ><Default>vec4($threshold)</Default></Input>
+                </Inputs>
+            </Shader>
+            <Shader>
                 <Body><![CDATA[
 
+                //Initalize UI Sliders. Need to call slider attributes once in order for them to be activated in UI
+                float INIT = $frequency; INIT = $jitter; INIT = $stepSize; INIT = $threshold;
+
                 // compensate for scene size by applying eponential growth
-                float freq_pow = (pow($frequency,$frequency)-1.0) + 0.01;
+                float freq_pow = (pow(#Frequency.r,#Frequency.r)-1.0) + 0.01;
 
                 // 3d space surface position
                 // build the needed vector attributes for position transform, offset max growths exponentially
@@ -105,7 +136,7 @@
                 vec3 scale = vec3($scaleX,$scaleY,$scaleZ);
 
                 // transform the position to translate,rotate,scale the position
-                vec3 P = positionTransform(State.Position,trans,rotate,scale) / freq_pow;
+                vec3 P = positionTransform(#Transform.rgb,trans,rotate,scale) / freq_pow;
 
                 // 2d uv space surface position
                 // build the needed vector attributes for position transform, offset max growths exponentially
@@ -119,7 +150,7 @@
                 P = mix(P,vec3(InputScaleUV,1.0),float($uv));
 
                 // cellular noise function
-                Output = DT3D_CellularNoise(P,$colorA,$colorB,$frequency,$jitter,$stepSize,$threshold,$invert,$outSet,$distSet,$modSet);
+                Output = DT3D_CellularNoise(P,$colorA,$colorB,#Frequency.r,#Jitter.r,#stepSize.r,#Threshold.r,$invert,$outSet,$distSet,$modSet);
 
                 ]]></Body>
             </Shader>
