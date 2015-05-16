@@ -62,7 +62,7 @@
         <!--===============================================================================================================-->
         <Attribute Name="octaves" PrettyName="Octaves" Group="Modifiers" Type="int" Min="1" Max="10" Logarithmic="1">6</Attribute>
         <Attribute Name="lacunarity" PrettyName="Lacunarity" Group="Modifiers" Type="float" Min="0" Max="10" >1.5</Attribute>
-        <Attribute Name="gain" PrettyName="Gain" Group="Modifiers" Type="float" Min="0" Max="1" >0.2</Attribute>
+        <Attribute Name="gain" PrettyName="Gain" Group="Modifiers" Type="float" Min="0" Max="1" >0.6</Attribute>
         <Attribute Name="foffset" PrettyName="Offset" Group="Modifiers" Type="float" Min="0" Max="1" >0.8</Attribute>
         <Attribute Name="threshold" PrettyName="Threshold" Group="Modifiers" Type="float" Min="0" Max="1" >0.5</Attribute>
         <Attribute Name="invert" PrettyName="Invert" Group="Modifiers" Type="bool" Min="false" Max="true">false</Attribute>
