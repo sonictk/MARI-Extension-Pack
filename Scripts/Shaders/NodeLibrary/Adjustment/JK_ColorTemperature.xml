@@ -1,6 +1,7 @@
 <!--
 ================================================================================
 == Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
+== Based on original Algorithm by Tanner Helland.
 ================================================================================
 == File: JK_ColorTemperature.xml
 == Description: Adjustment Layer to modify color temperature
