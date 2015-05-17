@@ -37,6 +37,10 @@ instead of running the detection on your objects normals.
 Due to Maris lack of filtering this node needs to be converted to a paintable one after use (by merging or using 'CLone & Merge')
 and should get a gaussian blur applied for best use.
 
+######Color Temperature
+
+Adjustment Layer to change the color temperature in familiar way using Kelvin
+
 
 #####SHADERS
 
@@ -177,6 +181,36 @@ Channels that are not selected in the Channel Palette but accessible in the inte
 
 'Convert to Paintable' now works correctly with pinned, floating or docked
 Channels that are not selected in the Channel Palette but accessible in the interface
+
+
+
+
+##Dev Notes:
+
+######New functions to document:
+
+// Kelvin to RGB
+vec3 Kelvin2Rgb(float Kelvin);
+
+
+//Luminance
+// Returns Luminance of Image
+float Luminance(vec3 color);
+
+
+// sRgb to Linear Conversion
+// vec3 + vec4 functions to convert to sRgb to linear
+vec4 sRgb2Linear(vec4 Color);
+vec3 sRgb2Linear(vec3 Color);
+
+
+// Linear to sRGB conversion
+// vec3 + vec4 functions to convert to linear to sRGB
+vec4 linear2sRgb(vec4 Color)
+vec3 linear2sRgb(vec3 Color)
+
+
+
 
 
 
