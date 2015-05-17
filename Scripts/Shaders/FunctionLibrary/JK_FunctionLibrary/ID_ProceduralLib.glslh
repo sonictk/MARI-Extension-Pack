@@ -99,3 +99,28 @@ vec2 patchRotate(vec2 uvCoord, float angle, float pivotU, float pivotV);
 // relUVTransform
 // performs all uv transformation based on a pivot defined per udim
 vec2 relUVTransform(vec2 uvCoord, float RotationAngle, vec2 Offset, vec2 Repeat, float pivotU, float pivotV);
+
+
+
+// Kelvin to RGB
+// Ported from original code from Tanner Helland
+// http://www.tannerhelland.com/4435/convert-temperature-rgb-algorithm-code/
+// and implementation by Renaud Bédard (@renaudbedard)
+vec3 Kelvin2Rgb(float Kelvin);
+
+
+//Luminance
+// Returns Luminance of Image
+float Luminance(vec3 color);
+
+
+// sRgb to Linear Conversion
+// vec3 + vec4 functions to convert to sRgb to linear
+vec4 sRgb2Linear(vec4 Color);
+vec3 sRgb2Linear(vec3 Color);
+
+
+// Linear to sRGB conversion
+// vec3 + vec4 functions to convert to linear to sRGB
+vec4 linear2sRgb(vec4 Color)
+vec3 linear2sRgb(vec3 Color)

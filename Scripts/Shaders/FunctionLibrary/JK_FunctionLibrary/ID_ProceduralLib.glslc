@@ -337,3 +337,105 @@ vec2 relUVTransform(vec2 uvCoord, float RotationAngle, vec2 Offset, vec2 Repeat,
     return relativeUVTransform;
 }
 
+
+
+
+
+// Kelvin to RGB
+// Ported from original code from Tanner Helland
+// http://www.tannerhelland.com/4435/convert-temperature-rgb-algorithm-code/
+// and implementation by Renaud Bédard (@renaudbedard)
+
+
+// maxSat Values
+float maxSat(float v) { return clamp(v, 0.0,       1.0);       }
+vec2  maxSat(vec2  v) { return clamp(v, vec2(0.0), vec2(1.0)); }
+vec3  maxSat(vec3  v) { return clamp(v, vec3(0.0), vec3(1.0)); }
+vec4  maxSat(vec4  v) { return clamp(v, vec4(0.0), vec4(1.0)); }
+
+
+vec3 Kelvin2Rgb(float Kelvin)
+{
+
+    vec3 returnRGB;
+    Kelvin = clamp(Kelvin,1000.0,40000.0) / 100.0;
+
+    if (Kelvin <= 66.0)
+    {
+        returnRGB.r = 1.0;
+        returnRGB.g = maxSat(0.39008157876901960784 * log(Kelvin) - 0.63184144378862745098);
+    }
+    else
+    {
+        float t = Kelvin - 60.0;
+        returnRGB.r = maxSat(1.29293618606274509804 * pow(t, -0.1332047592));
+        returnRGB.g = maxSat(1.12989086089529411765 * pow(t, -0.0755148492));
+    }
+
+    if (Kelvin >= 66.0)
+        returnRGB.b = 1.0;
+    else if(Kelvin <= 19.0)
+        returnRGB.b = 0.0;
+    else
+        returnRGB.b = maxSat(0.54320678911019607843 * log(Kelvin - 10.0) - 1.19625408914);
+
+    return returnRGB;
+
+
+}
+
+
+
+//Luminance
+//return Luminance of Color
+float Luminance(vec3 color)
+{
+    float fmin = min(min(color.r, color.g), color.b);
+    float fmax = max(max(color.r, color.g), color.b);
+    return (fmax + fmin) / 2.0;
+}
+
+
+
+
+// sRgb to Linear Conversion
+// vec3 + vec4 functions to convert to sRgb to linear
+
+vec4 sRgb2Linear(vec4 Color)
+{
+    vec4 outCol;
+    for (int i = 0; i != 3; ++i) {
+        outCol[i] = Color[i] > 0.04045 ? pow((Color[i]+0.055)/1.055, 2.4) : Color[i] / 12.92; }
+
+    return outCol;  }
+
+
+vec3 sRgb2Linear(vec3 Color)
+{
+    vec3 outCol;
+    for (int i = 0; i != 3; ++i) {
+        outCol[i] = Color[i] > 0.04045 ? pow((Color[i]+0.055)/1.055, 2.4) : Color[i] / 12.92; }
+
+    return outCol;  }
+
+
+// Linear to sRGB conversion
+// vec3 + vec4 functions to convert to linear to sRGB
+
+
+vec4 linear2sRgb(vec4 Color)
+{
+    vec4 outCol;
+    for (int i = 0; i != 3; ++i) {
+            outCol[i] = Color[i] > 0.0031308 ? 1.055*pow(Color[i], 1/2.4)-0.055 : Color[i]*12.92;
+
+    return outCol;  }
+
+
+vec3 linear2sRgb(vec3 Color)
+{
+    vec3 outCol;
+    for (int i = 0; i != 3; ++i) {
+            outCol[i] = Color[i] > 0.0031308 ? 1.055*pow(Color[i], 1/2.4)-0.055 : Color[i]*12.92;
+
+    return outCol;  }
