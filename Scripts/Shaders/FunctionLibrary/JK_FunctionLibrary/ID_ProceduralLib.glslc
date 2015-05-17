@@ -427,7 +427,7 @@ vec4 linear2sRgb(vec4 Color)
 {
     vec4 outCol;
     for (int i = 0; i != 3; ++i) {
-            outCol[i] = Color[i] > 0.0031308 ? 1.055*pow(Color[i], 1/2.4)-0.055 : Color[i]*12.92;
+            outCol[i] = Color[i] > 0.0031308 ? 1.055*pow(Color[i], 1/2.4)-0.055 : Color[i]*12.92; }
 
     return outCol;  }
 
@@ -436,6 +436,6 @@ vec3 linear2sRgb(vec3 Color)
 {
     vec3 outCol;
     for (int i = 0; i != 3; ++i) {
-            outCol[i] = Color[i] > 0.0031308 ? 1.055*pow(Color[i], 1/2.4)-0.055 : Color[i]*12.92;
+            outCol[i] = Color[i] > 0.0031308 ? 1.055*pow(Color[i], 1/2.4)-0.055 : Color[i]*12.92; }
 
     return outCol;  }
