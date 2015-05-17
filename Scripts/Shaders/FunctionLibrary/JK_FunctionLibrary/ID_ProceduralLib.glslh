@@ -121,5 +121,5 @@ vec3 sRgb2Linear(vec3 Color);
 
 // Linear to sRGB conversion
 // vec3 + vec4 functions to convert to linear to sRGB
-vec4 linear2sRgb(vec4 Color)
-vec3 linear2sRgb(vec3 Color)
+vec4 linear2sRgb(vec4 Color);
+vec3 linear2sRgb(vec3 Color);
