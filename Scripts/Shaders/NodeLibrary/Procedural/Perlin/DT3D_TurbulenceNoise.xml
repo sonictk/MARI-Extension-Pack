@@ -1,16 +1,20 @@
 <!--
 ================================================================================
-== DigiTecK3D Procedural Shader Library
-== Copyright (c) 2013 DigiTecK3D. All Rights Reserved.
+== Turbulence Noise
+== Copyright (c) 2015 Miguel A Santiago Jr.. All Rights Reserved.
 ================================================================================
-== File: DT3D_PerlinNoise.xml
+== File: DT3D_TurbulenceNoise.xml
 == Description: Turbulence procedural noise node.
 ================================================================================
 == Author: Miguel A Santiago Jr.
 == Web: www.digiteck3d.com
 == Email: miguel@digiteck3d.com
 ================================================================================
-== Modified Date: June, 15 2014
+== Modifications + Maintenance: Jens Kafitz
+== Web: www.campi3d.com
+== Email: MariIdeas@campi3d.com
+================================================================================
+== Modified Date: May, 18 2015
 ================================================================================
 == Redistribution and use in source and binary forms, with or without
 == modification, are permitted provided that the following conditions are met:

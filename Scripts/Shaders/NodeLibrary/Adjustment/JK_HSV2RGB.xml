@@ -1,14 +1,13 @@
 <!--
 ================================================================================
-== Mari Ideascale Procedural Library
+== HSV to RGB
 == Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
 ================================================================================
 == File: JK_HSV2RGB.xml
 == Description: Converts a vec4 HSV,A to a vec4 RGB,A
 ================================================================================
-== Author: Jens Kafitz | Mari Ideascale
+== Author: Jens Kafitz
 == Web: www.campi3d.com
-== Web: www.mari.ideascale.com
 == Email: MariIdeas@campi3d.com
 ================================================================================
 == Modified Date: April, 16 2015

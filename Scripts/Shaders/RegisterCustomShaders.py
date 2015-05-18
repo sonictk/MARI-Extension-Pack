@@ -1,6 +1,6 @@
 # ------------------------------------------------------------------------------
 # Mari Shader Library Registration Master
-# Copyright (c) 2013 Mari Ideascale. All Rights Reserved.
+# Copyright (c) 2015 Mari Ideascale. All Rights Reserved.
 # ------------------------------------------------------------------------------
 # File: RegisterCustomShaders.py
 # Description: Our shader register script to auto-load our library into Mari.

@@ -1,16 +1,20 @@
 <!--
 ================================================================================
-== Nicholas Breslow Mari Procedural Shader Library
+== Stripes
 == Copyright (c) 2015 Nicholas Breslow. All Rights Reserved.
 ================================================================================
-== File: NB_Weave.xml
+== File: NB_Stripes.xml
 == Description: 2D Stripes procedural pattern node.
 ================================================================================
 == Author: Nicholas Breslow
 == Web: www.nbreslow.com
 == Email: nick@nbreslow.com
 ================================================================================
-== Modified Date: June, 15 2014
+== Modifications + Maintenance: Jens Kafitz
+== Web: www.campi3d.com
+== Email: MariIdeas@campi3d.com
+================================================================================
+== Modified Date: May, 18 2015
 ================================================================================
 == Redistribution and use in source and binary forms, with or without
 == modification, are permitted provided that the following conditions are met:

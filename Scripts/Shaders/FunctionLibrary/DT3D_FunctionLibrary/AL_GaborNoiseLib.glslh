@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
-// DigiTecK3D Procedural Shader Library
-// Copyright (c) 2013 DigiTecK3D. All Rights Reserved.
+// Miguel A Santiago Jr. Procedural Shader Library
+// Copyright (c) 2015 Miguel A Santiago Jr.. All Rights Reserved.
 ////////////////////////////////////////////////////////////////////////////////
 // File: AL_GaborNoiseLib.glslh
 // Description: Modified port from Anders Langlands Gabor noise function.

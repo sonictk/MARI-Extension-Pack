@@ -5,14 +5,12 @@
 ================================================================================
 == File: JK_VoronoiPopcorn.xml
 == Description: A Voronoi Based Fractal, with several Noises as offsets. Useful for Veins and other organic features.
-== Heavily optimized for displacements.
 ================================================================================
-== Author: Jens Kafitz | Mari Ideascale
+== Author: Jens Kafitz
 == Web: www.campi3d.com
-== Web: www.mari.ideascale.com
 == Email: MariIdeas@campi3d.com
 ================================================================================
-== Modified Date: January, 17 2015
+== Modified Date: May, 18 2015
 ================================================================================
 == Redistribution and use in source and binary forms, with or without
 == modification, are permitted provided that the following conditions are met:

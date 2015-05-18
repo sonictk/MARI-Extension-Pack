@@ -1,5 +1,6 @@
 <!--
 ================================================================================
+== Color Temperature
 == Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
 == Based on original Algorithm by Tanner Helland.
 ================================================================================
@@ -7,9 +8,8 @@
 == Description: Adjustment Layer to modify color temperature
 ================================================================================
 == Original Code Implementation: Renaud Bédard
-== MARI Implementation: Jens Kafitz | Mari Ideascale
+== MARI Implementation: Jens Kafitz
 == Web: www.campi3d.com
-== Web: www.mari.ideascale.com
 == Email: MariIdeas@campi3d.com
 ================================================================================
 == Modified Date: May, 17 2015

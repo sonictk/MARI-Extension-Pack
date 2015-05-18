@@ -7,9 +7,8 @@
 // File: JK_VoronoiSuite.glslc
 // Description: Multiple Voronoi Based Functions
 ////////////////////////////////////////////////////////////////////////////////
-// Author: Jens Kafitz | Mari Ideascale
+// Author: Jens Kafitz
 // Web: www.campi3d.com
-// Web: www.mari.ideascale.com
 // Email: MariIdeas@campi3d.com
 ////////////////////////////////////////////////////////////////////////////////
 // Modified Date: August 12, 2014
@@ -75,15 +74,15 @@ vec4 voronoi_popcorn(
 	{
 
 
-		
+
 		float Offset_X, Offset_Y, Offset_Z;
 
 
-		{ 
+		{
 
 
 		  vec3 pos_offset_big = position / vec3(lrg_Shp_Scale);
-		
+
 		  Offset_X = lrg_Shp_Amp * smoothVfBm(pos_offset_big,lrg_Shp_Itr,4.0,0.2,1.0,0.2,0.2);
 
 		  pos_offset_big = translate(pos_offset_big,vec3(-1 * (1000/3)));
@@ -93,13 +92,13 @@ vec4 voronoi_popcorn(
 		  Offset_Z = lrg_Shp_Amp * smoothVfBm(pos_offset_big,lrg_Shp_Itr,4.0,0.2,1.0,0.2,0.2);
 
 		}
-    
 
-	
-		{ 
+
+
+		{
 
 		  vec3 pos_offset_little = position / vec3(sml_Shp_Scale);
-		
+
 		  Offset_X += sml_Shp_Amp * smoothVfBm(pos_offset_little,sml_Shp_Itr,4.0,0.2,1.0,0.2,0.2);
 
 		  pos_offset_little = translate(pos_offset_little,vec3(-1 * (1000/3)));
@@ -112,14 +111,14 @@ vec4 voronoi_popcorn(
 
 		vec3 VeinOffsetPoint = position + vec3(Offset_X,Offset_Y,Offset_Z);
 
-		
+
 
 	    // cell function outputs
 	    float jitter = 1.0;
 	    float f1,f2; vec3 cellout, cellmod;
 	    vec3 pos1,pos2,f1cell,f2cell;
 	    float stepSize = 0.4;
-	   
+
 	    // cellular function
 	    voronoi(VeinOffsetPoint,jitter,distSet,f1,f2,pos1,pos2,f1cell,f2cell);
 
@@ -132,9 +131,9 @@ vec4 voronoi_popcorn(
 
 	    vec4 result = vec4(lines_thin_A,lines_thin_B,lines_thin_C,lines_thin_D);
 
-	    
 
-	    return result;	
+
+	    return result;
 
     }
 

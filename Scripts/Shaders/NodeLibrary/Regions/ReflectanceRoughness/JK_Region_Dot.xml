@@ -1,15 +1,14 @@
 <!--
 ===============================================================================
-== Mari Ideascale Procedural Library
+== Material Region Dot Reflectance-Roughness
 == Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
 ================================================================================
-== File: JK_Region_PassThrough.xml
+== File: JK_Region_Dot.xml
 == Description: A Region compatible node similar to a 'dot' that allows you to branch from this node
 ==              It can be used as a convenience connector before separating out values into channels
 ================================================================================
-== Author: Jens Kafitz | Mari Ideascale
+== Author: Jens Kafitz
 == Web: www.campi3d.com
-== Web: www.mari.ideascale.com
 == Email: MariIdeas@campi3d.com
 ================================================================================
 == Modified Date: April, 3 2015

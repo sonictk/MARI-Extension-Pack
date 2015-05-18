@@ -1,17 +1,16 @@
 <!--
 ================================================================================
-== Texture Scatter UV Tile
+== Texture Scatter UV (Tile)
 == Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
 ================================================================================
 == File: JK_TextureScatter_UV.xml
 == Description: A UV Based Texture Bomber capable of creating tileable textures on a plane
 ================================================================================
-== Author: Jens Kafitz | Mari Ideascale
+== Author: Jens Kafitz
 == Web: www.campi3d.com
-== Web: www.mari.ideascale.com
 == Email: MariIdeas@campi3d.com
 ================================================================================
-== Modified Date: January, 14 2015
+== Modified Date: May, 18 2015
 ================================================================================
 == Redistribution and use in source and binary forms, with or without
 == modification, are permitted provided that the following conditions are met:

@@ -1,14 +1,13 @@
 <!--
 ===============================================================================
-== Mari Ideascale Procedural Library
+== Material Region Reflectance-Roughness
 == Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
 ================================================================================
 == File: JK_Region.xml
 == Description: Material Region to modulate values throughout the flow of the graph
 ================================================================================
-== Author: Jens Kafitz | Mari Ideascale
+== Author: Jens Kafitz
 == Web: www.campi3d.com
-== Web: www.mari.ideascale.com
 == Email: MariIdeas@campi3d.com
 ================================================================================
 == Modified Date: April, 3 2015
