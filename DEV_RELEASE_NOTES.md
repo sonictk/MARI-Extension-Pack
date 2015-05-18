@@ -46,8 +46,10 @@ Material Regions are a powerful way to layer different materials on top of each 
 performance is kept high by only passing a 'finished' channel to one shader
 instead of layereing multiple shaders on top of each other.
 
+Material Regions are only available in the Nodegraph.
 
-######Procedurals ready for Nodegraph _WIP
+
+######Procedurals ready for Nodegraph
 
 MARI Extension Pack Nodes have been reworked for best experience in the Nodegraph.
 Nodes now have their most useful paramenters exposed as Node Handles to allow node-driven paramenters
