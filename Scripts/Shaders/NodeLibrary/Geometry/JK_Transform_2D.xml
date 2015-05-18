@@ -102,7 +102,7 @@
     vec2 UVScale = vec2(#Scale.x,#Scale.y);
 
     // transform the position to translate,rotate,scale the position
-    vec2 InputScaleUV = relUVTransform(State.UV,$rotateZ,UVOffset,UVScale,0.5,0.5);
+    vec2 InputScaleUV = relUVTransform(State.UV,#Rotate.r,UVOffset,UVScale,0.5,0.5);
 
     Output =  vec4(InputScaleUV,0.0,1.0);
 
