@@ -98,6 +98,13 @@ Adjustments are now categorized in subfolders (Color Correction, Utilities etc.)
 
 ######Procedurals - General
 
+ATTENTION: Some of the following changes will change the look of existing procedurals when converting Projects
+           that use the old ones.
+
+The 'Transform Scale' Settings (Scale X,Y,Z) have been refactored so that larger numbers now mean larger scale.
+Previously procedurals would scale up in size the closer the value got to 0.0.
+At default setting of 1.0 the result is identical as before.
+
 Procedurals in the MainWindow/Layers/ Menu no longer appear under a
 'CustomProcedurals' Folder but are merged into the main Procedurals,Geometry,
 Environment etc. Folders
