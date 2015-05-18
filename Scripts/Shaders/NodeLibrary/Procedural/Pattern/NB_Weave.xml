@@ -44,6 +44,13 @@
     <ID>Weave 2D</ID>
     <DefaultName>Weave 2D</DefaultName>
     <Category>Procedural/Custom/Pattern/</Category>
+    <Inputs>
+        <Input Name="Transform" PrettyName="Transform Coordinates (UV)"></Input>
+        <Input Name="Width" ></Input>
+        <Input Name="Contrast" ></Input>
+        <Input Name="FalloffStart" PrettyName="Gradient Start" ></Input>
+        <Input Name="FalloffEnd" PrettyName="Gradient End" ></Input>
+    </Inputs>
     <Attributes>
         <!--===============================================================================================================-->
         <Attribute Name="Repeat" PrettyName="Repeat" Group="" Type="double" Min="0.0" Max="200.0">40.0</Attribute>
@@ -65,15 +72,45 @@
         <!--===============================================================================================================-->
     </Attributes>
     <Contexts>
-        <Context Type="GLSL">
-            <Shader>
+        <Context Type="NodeGraphView">
             <Inputs>
-                <Input Name="Input"><Default>vec4(1.0,1.0,1.0,1.0)</Default></Input>
+                <Input Name="Transform"><Pos>0,-50</Pos></Input>
+                <Input Name="Width"><Pos>-100,-10</Pos></Input>
+                <Input Name="Contrast"><Pos>-100,10</Pos></Input>
+                <Input Name="FalloffStart"><Pos>120,10</Pos></Input>
+                <Input Name="FalloffEnd"><Pos>120,-10</Pos></Input>
             </Inputs>
+        </Context>
+        <Context Type="GLSL">
+            <Shader ShaderType='Fragment'>
+                <Inputs>
+                <Input Name="Transform" ><Default>vec4(State.UV,0.0,1.0)</Default></Input>
+                <Input Name="Width" ><Default>vec4($Width)</Default></Input>
+                <Input Name="Contrast" ><Default>vec4($Contrast)</Default></Input>
+                <Input Name="FalloffStart" ><Default>vec4($Start)</Default></Input>
+                <Input Name="FalloffEnd" ><Default>vec4($End)</Default></Input>
+                </Inputs>
+            </Shader>
+            <Shader ShaderType='TessEvaluation'>
+                <Inputs>
+                <Input Name="Transform" ><Default>vec4(State.UV,0.0,1.0)</Default></Input>
+                <Input Name="Width" ><Default>vec4($Width)</Default></Input>
+                <Input Name="FalloffStart" ><Default>vec4($Start)</Default></Input>
+                <Input Name="FalloffEnd" ><Default>vec4($End)</Default></Input>
+                </Inputs>
+            </Shader>
+            <Shader>
                 <Body><![CDATA[
 
+                // Initializing UI Sliders. Need to be called once directly in order to activate
+                float INIT = $Width; INIT = $Start; INIT = $End; INIT = $Contrast;
+
+                float fstart = clamp(#FalloffStart.r,0.0,#FalloffStart.r);
+                float fend = clamp(#FalloffEnd.r,0.0,#FalloffEnd.r);
+                float contrast = clamp(#Contrast.r,0.0,#Contrast.r);
+
                 // Separate each UV tile into it's own square
-                vec2 uv = fract(State.UV);
+                vec2 uv = fract(#Transform.rg);
 
                 // UV Rotation
                 mat2 rotationMatrix = nb_uvRotation($Rotation);
@@ -87,11 +124,11 @@
 
                 // Weave Pattern
                 float d0,d1,f0,f1;
-                nb_superWeave2D(uv,$Contrast,d0,d1,f0,f1);
+                nb_superWeave2D(uv,contrast,d0,d1,f0,f1);
 
-                float Width = $Width*.005;
+                float Width = #Width.r*.005;
                 float Result = (f0 < Width) ? d1 : ((f1 < Width) ? d0 : 0);
-                Result = (Result-$Start)/($End-$Start);
+                Result = (Result-fstart)/(fend-fstart);
 
                 // Color
                 float shape_mix = mriCurveLookup($Falloff,Result);
