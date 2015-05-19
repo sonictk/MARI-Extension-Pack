@@ -67,7 +67,7 @@
         <Attribute Name="lacunarity" PrettyName="Lacunarity" Group="Modifiers" Type="float" Min="0" Max="1" >0.15</Attribute>
         <Attribute Name="gain" PrettyName="Gain" Group="Modifiers" Type="float" Min="0" Max="1" >0.75</Attribute>
         <Attribute Name="threshold" PrettyName="Threshold" Group="Modifiers" Type="float" Min="0" Max="1" >0</Attribute>
-        <Attribute Name="clamp" PrettyName="Clamp Output" Group="Modifiers" Type="bool" Min="false" Max="true" >false</Attribute>
+        <Attribute Name="clamp" PrettyName="Clamp Output" Group="Modifiers" Type="bool" Min="false" Max="true" >true</Attribute>
         <Attribute Name="invert" PrettyName="Invert" Group="Modifiers" Type="bool" Min="false" Max="true">false</Attribute>
         <!--===============================================================================================================-->
         <Attribute Name="uv" PrettyName="UV Space" Group="Space" Type="bool" Min="false" Max="true" Description="Runs the noise 2d uv based, use offset/scale x/y and rotate z" >false</Attribute>
@@ -144,8 +144,7 @@
                 P = mix(P,vec3(InputScaleUV,1.0),float($uv));
 
                 // brownian fraction motion noise function
-                Output = DT3D_fBmNoise(P,$colorA,$colorB,#Frequency.r,$octaves,lacunarity,1.0-#Gain.r,#Threshold.r,$invert);
-                Output = mix(Output,clamp(Output,vec4(0.0),vec4(1.0)),float($clamp));
+                Output = DT3D_fBmNoise(P,$colorA,$colorB,#Frequency.r,$octaves,lacunarity,1.0-#Gain.r,#Threshold.r,$invert,$clamp);
 
                 ]]></Body>
             </Shader>
