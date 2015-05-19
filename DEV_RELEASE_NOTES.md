@@ -86,11 +86,6 @@ wit Maris Vocabulary.
 FBM+ now uses a different algorithm, giving more predicatable results with less
 overall 'flowing' of features across the surface when changing sliders
 
-######Spotify
-
-The 'Gain' Attribute of the Spotify Procedural has been re-ranged from 0.0 - 1.0 (from 0.0 - 10.0)
-to help with mapping in the nodegraph
-
 
 ######Adjustments - General
 
@@ -104,6 +99,13 @@ ATTENTION: Some of the following changes will change the look of existing proced
 The 'Transform Scale' Settings (Scale X,Y,Z) have been refactored so that larger numbers now mean larger scale.
 Previously procedurals would scale up in size the closer the value got to 0.0.
 At default setting of 1.0 the result is identical as before.
+
+Clamping options have been added to various procedurals where they were missing.
+Clamping is now generaly performed on the result of the noise computation but before applying Color A / B.
+This ensures that color mixing behaves relieably but it is still possible to set color values outside of 0-1 range.
+
+Various Slider ranges have been refactored to a 0-1 range to make it easier to map attributes in the nodegraph with
+paintable nodes or other procedurals.
 
 Procedurals in the MainWindow/Layers/ Menu no longer appear under a
 'CustomProcedurals' Folder but are merged into the main Procedurals,Geometry,
@@ -126,6 +128,10 @@ the path '/Filter/' in the CATEGORY section of the xml file
 
 This allows for placement of adjustment files in other locations as the
 Adjustment Layer Submenu.
+
+######New Functions
+
+DT3D Noise Functions have been amended with clamping variable. Doc needs updating
 
 
 
