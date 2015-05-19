@@ -58,6 +58,7 @@
         <Attribute Name="Type" Group="Size" Type="stringlist">F1,F1,F2,F2-F1</Attribute>
         <Attribute Name="Distance"  PrettyName="Distance Method" Group="Size" Type="stringlist">Euclidian,Manhattan,Euclidian,Chebyshev,0.5</Attribute>
         <Attribute Name="Seed"  Group="Size" PrettyName="Seed" Type="double" Min="1" Max="100000" Logarithmic="1">1</Attribute>
+        <Attribute Name="clamp" PrettyName="Clamp Output" Group="Size" Type="bool" Min="false" Max="true" >true</Attribute>
         <Attribute Name="Invert" PrettyName="Invert"  Group="Size"  Type="bool"  Min="false" Max="true" Description="Inverts the Noise result before ColorA+B are applied" >false</Attribute>
         <!--===============================================================================================================-->
         <Attribute Name="uv" PrettyName="UV Space" Group="Space" Type="bool" Min="false" Max="true" Description="Runs the noise 2d uv based, use offset/scale x/y and rotate z" >false</Attribute>
@@ -138,6 +139,7 @@
 
                 // cellular noise
                 Output = mix(mix($colorB,$colorA,noise_val),mix($colorA,$colorB,noise_val),_invertResult);
+                Output = mix(Output,clamp(Output,vec4(0.0),vec4(1.0)),float($clamp));
 
                 ]]></Body>
             </Shader>
