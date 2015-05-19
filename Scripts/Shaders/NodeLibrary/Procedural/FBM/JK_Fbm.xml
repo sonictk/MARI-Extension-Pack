@@ -68,7 +68,7 @@
         <Attribute Name="Gain" Group="Modifiers" Type="double" Min="0" Max="1" Description="The Contrast of the Noise">1.0</Attribute>
         <Attribute Name="Baseline" Group="Modifiers" Type="double" Min="0" Max="1" Description="After each Noise Routine the Noise gets reprocessed (noise*Baseline+Baseline) to a new Baseline,0 turns this behavior off" >0.5</Attribute>
         <Attribute Name="Absolut" PrettyName="Absolute Values" Group="Modifiers" Type="bool" Min="false" Max="true" Description="By default positive and negative noise values will all be treated as positive making for a denser noise. This will remove any negative noise values">false</Attribute>
-        <Attribute Name="clamp" PrettyName="Clamp Output" Group="Modifiers" Type="bool" Min="false" Max="true" >false</Attribute>
+        <Attribute Name="clamp" PrettyName="Clamp Output" Group="Modifiers" Type="bool" Min="false" Max="true" >true</Attribute>
         <Attribute Name="Invert" PrettyName="Invert" Group="Modifiers" Type="bool" Min="false" Max="true" Description="Inverts the Noise result before ColorA+B are applied" >false</Attribute>
         <!--===============================================================================================================-->
         <Attribute Name="Threshold" PrettyName="Threshold" Group="Threshold" Type="double" Min="0" Max="1" Description="Threshold of final result" >0.5</Attribute>
@@ -172,13 +172,14 @@
                 if ($Baseline==0.0){noise_val = noise_val;}
                 else { noise_val = noise_val*Baseline + Baseline;}
 
+                noise_val = mix(noise_val,clamp(noise_val,0.0,1.0),float($clamp));
                 float result = softThreshold(#Threshold.r, $Clip, noise_val);
 
                 float _invertResult = float($Invert);
 
                 vec4 fractal = mix(mix($colorB,$colorA,result),mix($colorA,$colorB,result),_invertResult);
 
-                Output = mix(fractal,clamp(fractal,vec4(0.0),vec4(1.0)),float($clamp));
+                Output = fractal;
 
                 ]]></Body>
             </Shader>

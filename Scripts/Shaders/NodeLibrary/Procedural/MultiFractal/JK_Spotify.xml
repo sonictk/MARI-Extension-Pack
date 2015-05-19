@@ -59,9 +59,9 @@
         <Attribute Name="colorA" PrettyName="Color A" Group="Color" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(0,0,0,1)</Attribute>
         <Attribute Name="colorB" PrettyName="Color B" Group="Color" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(1,1,1,1)</Attribute>
         <!--===============================================================================================================-->
-        <Attribute Name="DimA" PrettyName="DimensionA" Group="Size" Type="double" Min="0.01" Max="100">50</Attribute>
-        <Attribute Name="DimB" PrettyName="DimensionB" Group="Size" Type="double" Min="0.01" Max="10">5</Attribute>
-        <Attribute Name="ABOffset" PrettyName="Lacunarity" Group="Size" Type="double" Min="0.001" Max="2">1.0</Attribute>
+        <Attribute Name="DimA" PrettyName="DimensionA" Group="Size" Type="double" Min="0.001" Max="1.0">0.5</Attribute>
+        <Attribute Name="DimB" PrettyName="DimensionB" Group="Size" Type="double" Min="0.001" Max="1.0">0.5</Attribute>
+        <Attribute Name="ABOffset" PrettyName="Lacunarity" Group="Size" Type="double" Min="0.001" Max="1">0.5</Attribute>
         <Attribute Name="Seed" PrettyName="Seed" Group="Size" Type="double" Min="1" Max="100000" Logarithmic="1">1</Attribute>
         <!--===============================================================================================================-->
         <Attribute Name="FillSpots" PrettyName="Fill Spots" Group="Modifiers" Type="double" Min="0.001" Max="1">0.5</Attribute>
@@ -172,10 +172,10 @@
                 float gSpot = $gSpot;
                 float Gain = #Gain.r * 10.0;
                 float gGain = $gGain;
-                float ABOffset = #Lacunarity.r;
+                float ABOffset = #Lacunarity.r * 2.0;
                 float Organic = #Organicness.r;
-                float DimA = #DimA.r;
-                float DimB = #DimB.r;
+                float DimA = #DimA.r * 10.0;
+                float DimB = #DimB.r * 10.0;
                 float gSizeA = $gSizeA;
                 float gSizeB = $gSizeB;
                 float invertR = float($invertR);
@@ -263,14 +263,14 @@
                     result += signal * exponentArray[i];
                 }
 
-                float resultClamp = clamp(result,0.0,1.0);
+                result =  mix(result,clamp(result,vec4(0.0),vec4(1.0)),float($useClamp));
                 float Threshold = softThreshold(#Threshold.r,$thresholdBound,result);
                 float resultInv = (1.0 - Threshold);
                 result = mix(resultInv,Threshold,float($invertR));
 
                 // spotify noise
                 Output = mix($colorA,$colorB,result);
-                Output = mix(Output,clamp(Output,vec4(0.0),vec4(1.0)),float($useClamp));
+
 
                 ]]></Body>
             </Shader>

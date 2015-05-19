@@ -56,7 +56,7 @@
         <!--===============================================================================================================-->
         <Attribute Name="Size" Group="Size" Type="double" Min="0" Max="2">0.5</Attribute>
         <Attribute Name="Seed" Group="Size" PrettyName="Seed" Type="double" Min="1" Max="100000" Logarithmic="1">1</Attribute>
-        <Attribute Name="clamp" PrettyName="Clamp Output" Group="Size" Type="bool" Min="false" Max="true" >true</Attribute>
+        <Attribute Name="clamp" PrettyName="Clamp Output" Group="Size" Type="bool" Min="false" Max="true">true</Attribute>
         <Attribute Name="Invert" PrettyName="Invert" Group="Size" Type="bool" Min="false" Max="true" Description="Inverts the Noise result before ColorA+B are applied" >false</Attribute>
         <!--===============================================================================================================-->
         <Attribute Name="uv" PrettyName="UV Space" Group="Space" Type="bool" Min="false" Max="true" Description="Runs the noise 2d uv based, use offset/scale x/y and rotate z" >false</Attribute>
@@ -132,13 +132,14 @@
                 vec3 scaled_seed = P / size_pow;
                 float noise_val = noise(scaled_seed);
                 noise_val = noise_val*0.5 + 0.5;
+                noise_val = mix(noise_val,clamp(noise_val,vec4(0.0),vec4(1.0)),float($clamp));
+
 
                 // invert result
                 float _invertResult = float($Invert);
 
                 // perlin noise
                 Output = mix(mix($colorB,$colorA,noise_val),mix($colorA,$colorB,noise_val),_invertResult);
-                Output = mix(Output,clamp(Output,vec4(0.0),vec4(1.0)),float($clamp));
 
                 ]]></Body>
             </Shader>

@@ -253,14 +253,14 @@
 
                 }
 
+                vor_channel = mix(vor_channel,clamp(vor_channel,0.0,1.0),float($clamp));
 
                 // thresholding of result, clamping afterwards. This is for maximum displacement softness.
                 float blend = softThreshold(Threshold,softClip,vor_channel);
-                blend = mix(blend,clamp(blend,0.0,1.0),float($clamp));
 
                 vec4 result = mix(colorA,colorB,blend);
 
-                Output  = mix(result,clamp(result,vec4(0.0),vec4(1.0)),float($clamp));
+                Output  = result;
 
 
                 ]]></Body>

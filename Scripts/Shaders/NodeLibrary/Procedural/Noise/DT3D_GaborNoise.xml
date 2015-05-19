@@ -66,7 +66,7 @@
         <!--===============================================================================================================-->
         <Attribute Name="frequency" PrettyName="Frequency" Group="Size" Type="float" Min="1" Max="10" Logarithmic="1">2</Attribute>
         <Attribute Name="Seed" PrettyName="Seed" Group="Size" Type="double" Min="1" Max="100000" Logarithmic="1">1</Attribute>
-        <Attribute Name="clamp" PrettyName="Clamp Output" Group="Size" Type="bool" Min="false" Max="true" >true</Attribute>
+        <Attribute Name="clamp" PrettyName="Clamp Output" Group="Size" Type="bool" Min="false" Max="true" >false</Attribute>
         <!--===============================================================================================================-->
         <Attribute Name="UseFlow" PrettyName="Use Painted Flow" Group="Direction" Type="bool" Min="false" Max="true" Description="When on you can use Mari's Vector Brushes to paint direction" >false</Attribute>
         <Attribute Name="dirX" PrettyName="Direction X" Group="Direction" Type="float" Min="0" Max="200">1</Attribute>

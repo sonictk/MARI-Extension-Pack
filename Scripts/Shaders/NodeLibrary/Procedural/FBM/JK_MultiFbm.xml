@@ -63,7 +63,7 @@
         <Attribute Name="Threshold" PrettyName="Threshold" Group="Base" Type="double" Min="0" Max="1" Description="Threshold of final result" >0.1</Attribute>
         <Attribute Name="Clip" PrettyName="Soft Clip Result" Group="Base" Type="double" Min="0.001" Max="1" Description="extends the threshold box by a fixed value up and down">0.6</Attribute>
         <Attribute Name="Absolut" PrettyName="Absolute Values" Group="Base" Type="bool" Min="false" Max="true" Description="By default positive and negative noise values will all be treated as positive making for a denser noise. This will remove any negative noise values">false</Attribute>
-        <Attribute Name="clamp" PrettyName="Clamp Output" Group="Base" Type="bool" Min="false" Max="true" >True</Attribute>
+        <Attribute Name="clamp" PrettyName="Clamp Output" Group="Base" Type="bool" Min="false" Max="true" >true</Attribute>
         <Attribute Name="Invert" PrettyName="Invert" Group="Base" Type="bool" Min="false" Max="true" Description="Inverts the Noise result before ColorA+B are applied" >false</Attribute>
         <!--===============================================================================================================-->
         <Attribute Name="PreviewA" PrettyName="Preview Handle A" Group="Handle A" Type="bool" Min="false" Max="true" Description="Shows you the Result from the Fractal in Handle A" >false</Attribute>
@@ -443,6 +443,7 @@
                 // thresholding of result
                 float finalValueA= mix(0.0,1.0,noise_val);
                 float resultA = softThreshold($Threshold, $Clip*2, finalValueA);
+                resultA = mix(resultA,clamp(resultA,0.0,1.0),float($clamp));
 
                 float _invertResult = float($Invert);
 
@@ -460,7 +461,7 @@
                 }
 
                 // output
-                Output =  mix(fractal,clamp(fractal,vec4(0.0),vec4(1.0)),float($clamp));
+                Output =  fractal;
 
 
                 ]]></Body>
