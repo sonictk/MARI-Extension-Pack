@@ -65,10 +65,11 @@
         <Attribute Name="Seed" PrettyName="Seed" Group="Size" Type="double" Min="1" Max="100000" Logarithmic="1">1</Attribute>
         <!--===============================================================================================================-->
         <Attribute Name="octaves" PrettyName="Octaves" Group="Modifiers" Type="int" Min="1" Max="10" Logarithmic="1">6</Attribute>
-        <Attribute Name="lacunarity" PrettyName="Lacunarity" Group="Modifiers" Type="float" Min="0" Max="10" >1.5</Attribute>
+        <Attribute Name="lacunarity" PrettyName="Lacunarity" Group="Modifiers" Type="float" Min="0" Max="1" >0.15</Attribute>
         <Attribute Name="gain" PrettyName="Gain" Group="Modifiers" Type="float" Min="0" Max="1" >0.6</Attribute>
         <Attribute Name="foffset" PrettyName="Offset" Group="Modifiers" Type="float" Min="0" Max="1" >0.8</Attribute>
         <Attribute Name="threshold" PrettyName="Threshold" Group="Modifiers" Type="float" Min="0" Max="1" >0.5</Attribute>
+        <Attribute Name="clamp" PrettyName="Clamp Output" Group="Modifiers" Type="bool" Min="false" Max="true" >true</Attribute>
         <Attribute Name="invert" PrettyName="Invert" Group="Modifiers" Type="bool" Min="false" Max="true">false</Attribute>
         <!--===============================================================================================================-->
         <Attribute Name="uv" PrettyName="UV Space" Group="Space" Type="bool" Min="false" Max="true" Description="Runs the noise 2d uv based, use offset/scale x/y and rotate z" >false</Attribute>
@@ -120,6 +121,7 @@
                 //Initalize UI Sliders. Need to call slider attributes once in order for them to be activated in UI
                   float INIT = $frequency; INIT = $threshold ; INIT = $lacunarity; INIT = $gain; INIT = $foffset;
 
+                float lacunarity = #Lacunarity.r * 10.0;
 
                 // compensate for scene size by applying eponential growth
                 float freq_pow = (pow($frequency,$frequency)-1.0) + 0.01;
@@ -145,7 +147,8 @@
                 P = mix(P,vec3(InputScaleUV,1.0),float($uv));
 
                 // ridged noise function
-                Output = DT3D_RidgedNoise(P,$colorA,$colorB,#Frequency.r,$octaves,#Lacunarity.r,1.0-#Gain.r,#Offset.r,#Threshold.r,$invert);
+                Output = DT3D_RidgedNoise(P,$colorA,$colorB,#Frequency.r,$octaves,lacunarity,1.0-#Gain.r,#Offset.r,#Threshold.r,$invert);
+                Output = mix(Output,clamp(Output,vec4(0.0),vec4(1.0)),float($clamp));
 
                 ]]></Body>
             </Shader>

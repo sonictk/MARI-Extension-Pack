@@ -66,6 +66,7 @@
         <!--===============================================================================================================-->
         <Attribute Name="frequency" PrettyName="Frequency" Group="Size" Type="float" Min="1" Max="10" Logarithmic="1">2</Attribute>
         <Attribute Name="Seed" PrettyName="Seed" Group="Size" Type="double" Min="1" Max="100000" Logarithmic="1">1</Attribute>
+        <Attribute Name="clamp" PrettyName="Clamp Output" Group="Size" Type="bool" Min="false" Max="true" >true</Attribute>
         <!--===============================================================================================================-->
         <Attribute Name="UseFlow" PrettyName="Use Painted Flow" Group="Direction" Type="bool" Min="false" Max="true" Description="When on you can use Mari's Vector Brushes to paint direction" >false</Attribute>
         <Attribute Name="dirX" PrettyName="Direction X" Group="Direction" Type="float" Min="0" Max="200">1</Attribute>
@@ -74,7 +75,7 @@
         <!--===============================================================================================================-->
         <Attribute Name="noiseType" PrettyName="Noise Type" Group="Modifiers" Type="stringlist">Isotropic,Anisotropic,Isotropic,Hybrid</Attribute>
         <Attribute Name="impulses" PrettyName="Impulses" Group="Modifiers" Type="float" Min="1.0" Max="60">32.0</Attribute>
-        <Attribute Name="bandwidth" PrettyName="Bandwidth" Group="Modifiers" Type="float" Min="0.01" Max="10.0">2.0</Attribute>
+        <Attribute Name="bandwidth" PrettyName="Bandwidth" Group="Modifiers" Type="float" Min="0.01" Max="2.0">0.4</Attribute>
         <Attribute Name="truncate" PrettyName="Truncate" Group="Modifiers" Type="float" Min="0.001" Max="0.9">0.01</Attribute>
         <!--===============================================================================================================-->
         <Attribute Name="uv" PrettyName="UV Space" Group="Space" Type="bool" Min="false" Max="true" Description="Runs the noise 2d uv based, use offset/scale x/y and rotate z" >false</Attribute>
@@ -135,6 +136,9 @@
                 //Initalize UI Sliders. Need to call slider attributes once in order for them to be activated in UI
                 float INIT = $frequency; INIT = $impulses ; INIT = $bandwidth; INIT = $truncate;
 
+
+                float bandwidth = #Bandwidth*5.0;
+
                 // compensate for scene size by applying eponential growth
                 float freq_pow = (pow(#Frequency.r,#Frequency.r)-1.0) + 0.01;
 
@@ -168,7 +172,8 @@
                 vec3 direction = mix(D,flow,float($UseFlow));
 
                 // gabor noise function
-                Output = DT3D_GaborNoise(P,$colorA,$colorB,#Frequency.r,direction,#Bandwidth.r,#Truncate.r,$impulses,1245,$noiseType);
+                Output = DT3D_GaborNoise(P,$colorA,$colorB,#Frequency.r,direction,bandwidth,#Truncate.r,$impulses,1245,$noiseType);
+                Output = mix(Output,clamp(Output,vec4(0.0),vec4(1.0)),float($clamp));
                 #endif
 
                 ]]></Body>

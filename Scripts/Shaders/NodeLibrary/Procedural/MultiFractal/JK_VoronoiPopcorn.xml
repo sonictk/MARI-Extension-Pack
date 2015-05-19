@@ -260,7 +260,7 @@
 
                 vec4 result = mix(colorA,colorB,blend);
 
-                Output  = result;
+                Output  = mix(result,clamp(result,vec4(0.0),vec4(1.0)),float($clamp));
 
 
                 ]]></Body>

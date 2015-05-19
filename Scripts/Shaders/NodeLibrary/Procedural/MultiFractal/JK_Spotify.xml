@@ -264,12 +264,13 @@
                 }
 
                 float resultClamp = clamp(result,0.0,1.0);
-                float Threshold = softThreshold(#Threshold.r,$thresholdBound,mix(result,resultClamp,float(useClamp)));
+                float Threshold = softThreshold(#Threshold.r,$thresholdBound,result);
                 float resultInv = (1.0 - Threshold);
                 result = mix(resultInv,Threshold,float($invertR));
 
                 // spotify noise
                 Output = mix($colorA,$colorB,result);
+                Output = mix(Output,clamp(Output,vec4(0.0),vec4(1.0)),float($useClamp));
 
                 ]]></Body>
             </Shader>
