@@ -142,8 +142,8 @@
                 float INIT = $Size; INIT = $octaves ; INIT = $lacunarity; INIT = $FOffset; INIT = $Amp; INIT = $Threshold; INIT = $Scale;
 
 
-                float lacunarity = clamp(#Lacunarity.r*8.0,0.001,#Lacunarity.r*8.0);
-                float offset = clamp(#Offset.r-0.001,0.0,1.0);
+                float lacunarity = #Lacunarity.r*8.0;
+                float offset = clamp(#Offset.r-0.001,0.0,#Offset);
 
                 // compensate for scene size by applying eponential growth
                 float size_pow = (pow(10000.0,#Size.r*#Size.r)-1.0) + 0.0001;
