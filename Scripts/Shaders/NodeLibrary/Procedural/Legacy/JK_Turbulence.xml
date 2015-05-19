@@ -56,8 +56,9 @@
         <Attribute Name="colorB" PrettyName="Color B" Group="Color" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(0,0,0,1)</Attribute>
         <!--===============================================================================================================-->
         <Attribute Name="Size" Group="Size" Type="double" Min="0" Max="2">0.5</Attribute>
-        <Attribute Name="Roughness" Group="Size" Type="double" Min="0" Max="2">1.0</Attribute>
+        <Attribute Name="Roughness" Group="Size" Type="double" Min="0" Max="1">0.5</Attribute>
         <Attribute Name="Seed" PrettyName="Seed" Group="Size" Type="double" Min="1" Max="100000" Logarithmic="1">1</Attribute>
+        <Attribute Name="clamp" PrettyName="Clamp Output" Group="Size" Type="bool" Min="false" Max="true" >true</Attribute>
         <Attribute Name="Invert" Group="Size" PrettyName="Invert"    Type="bool"  Min="false" Max="true" Description="Inverts the Noise result before ColorA+B are applied" >false</Attribute>
         <!--===============================================================================================================-->
         <Attribute Name="uv" PrettyName="UV Space" Group="Space" Type="bool" Min="false" Max="true" Description="Runs the noise 2d uv based, use offset/scale x/y and rotate z" >false</Attribute>
@@ -113,6 +114,8 @@
                 // compensate for scene size by applying eponential growth
                 float size_pow = (pow(10000.0,#Size.r*#Size.r)-1.0) + 0.0001;
 
+                float roughness = #Roughness.r * 2.0;
+
                 // 3d space surface position
                 // build the needed vector attributes for position transform, offset max growths exponentially
                 vec3 trans = (vec3($XOffset,$YOffset,$ZOffset)*size_pow) + vec3($Seed);
@@ -135,7 +138,7 @@
 
                 // noise variables
                 float noise_val = 0.0;
-                float sharpness = log2(1.0+99.0*#Roughness.r)/log2(100.0);
+                float sharpness = log2(1.0+99.0*roughness)/log2(100.0);
 
                 // noise multi loop
                 for(int i=0;i<10;i++)
@@ -149,6 +152,7 @@
 
                 // turbulence noise
                 Output = mix(mix($colorB,$colorA,noise_val),mix($colorA,$colorB,noise_val),_invertResult);
+                Output = mix(Output,clamp(Output,vec4(0.0),vec4(1.0)),float($clamp));
 
                 ]]></Body>
             </Shader>
