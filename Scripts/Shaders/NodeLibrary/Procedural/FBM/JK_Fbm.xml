@@ -60,7 +60,7 @@
         <!--===============================================================================================================-->
         <Attribute Name="Size" Group="Size" Type="double" Min="0" Max="2" Description="The general feature size">0.5</Attribute>
         <Attribute Name="Octaves" Group="Size" Type="float" Min="0" Max="8" Description="Visual complexitity of noise">3</Attribute>
-        <Attribute Name="Lacunarity" Group="Size" Type="double" Min="0" Max="8" Description="Frequency spacing between successive octaves">4</Attribute>
+        <Attribute Name="Lacunarity" Group="Size" Type="double" Min="0.001" Max="1.0" Description="Frequency spacing between successive octaves">0.5</Attribute>
         <Attribute Name="Offset" PrettyName="Offset" Group="Size" Type="double" Min="0.0001" Max="1" Description="Frequency Offset">0.5</Attribute>
         <Attribute Name="Seed" PrettyName="Seed" Group="Size" Type="double" Min="1" Max="100000" Logarithmic="1" Description="frequency">1</Attribute>
         <!--===============================================================================================================-->
@@ -68,6 +68,7 @@
         <Attribute Name="Gain" Group="Modifiers" Type="double" Min="0" Max="1" Description="The Contrast of the Noise">1.0</Attribute>
         <Attribute Name="Baseline" Group="Modifiers" Type="double" Min="0" Max="1" Description="After each Noise Routine the Noise gets reprocessed (noise*Baseline+Baseline) to a new Baseline,0 turns this behavior off" >0.5</Attribute>
         <Attribute Name="Absolut" PrettyName="Absolute Values" Group="Modifiers" Type="bool" Min="false" Max="true" Description="By default positive and negative noise values will all be treated as positive making for a denser noise. This will remove any negative noise values">false</Attribute>
+        <Attribute Name="clamp" PrettyName="Clamp Output" Group="Modifiers" Type="bool" Min="false" Max="true" >false</Attribute>
         <Attribute Name="Invert" PrettyName="Invert" Group="Modifiers" Type="bool" Min="false" Max="true" Description="Inverts the Noise result before ColorA+B are applied" >false</Attribute>
         <!--===============================================================================================================-->
         <Attribute Name="Threshold" PrettyName="Threshold" Group="Threshold" Type="double" Min="0" Max="1" Description="Threshold of final result" >0.5</Attribute>
@@ -136,6 +137,10 @@
                 //Initalize UI Sliders. Need to call slider attributes once in order for them to be activated in UI
                 float INIT = $Size; INIT = $Octaves ; INIT = $Lacunarity; INIT = $Offset; INIT = $Amplitude; INIT = $Threshold;
 
+
+                float lacunarity = clamp(#Lacunarity.r*8.0,0.001,#Lacunarity.r*8.0);
+                float offset = clamp(#Offset.r-0.001,0.0,1.0);
+
                 // compensate for scene size by applying eponential growth
                 float size_pow = (pow(10000.0,#Size.r*#Size.r)-1.0) + 0.0001;
 
@@ -160,7 +165,7 @@
                 P = mix(P,vec3(InputScaleUV,1.0),float($uv));
 
                 vec3 scaled_P = P / size_pow;
-                float noise_val = rmfBm(scaled_P,#Octaves.r,#Lacunarity.r,$Gain,#Amplitude.r,#Offset.r);
+                float noise_val = rmfBm(scaled_P,#Octaves.r,lacunarity,$Gain,#Amplitude.r,offset);
                 noise_val = mix(noise_val,abs(noise_val),float($Absolut));
                 float Baseline = 1.0 - $Baseline;
 
@@ -173,7 +178,7 @@
 
                 vec4 fractal = mix(mix($colorB,$colorA,result),mix($colorA,$colorB,result),_invertResult);
 
-                Output = fractal;
+                Output = mix(fractal,clamp(fractal,vec4(0.0),vec4(1.0)),float($clamp));
 
                 ]]></Body>
             </Shader>

@@ -54,7 +54,7 @@
         <!--===============================================================================================================-->
         <Attribute Name="Size" Group="Base" Type="double" Min="0" Max="1" Description="The general feature size" >0.4</Attribute>
         <Attribute Name="octaves" Group="Base" Type="float" Min="0" Max="8" Description="Visual complexitity of noise" >3</Attribute>
-        <Attribute Name="lacunarity" Group="Base" Type="double" Min="0" Max="8" Description="Frequency spacing between successive octaves" >4</Attribute>
+        <Attribute Name="lacunarity" Group="Base" Type="double" Min="0.001" Max="8" Description="Frequency spacing between successive octaves" >4</Attribute>
         <Attribute Name="Amp" PrettyName="amplitude" Group="Base" Type="double" Min="0.0001" Max="1" Description="Each successive octave gets multiplied gain*amplitude, smaller values result in less contrast between frequencies" >0.5</Attribute>
         <Attribute Name="FreqOffset" PrettyName="Offset" Group="Base" Type="double" Min="0.0001" Max="1" Description="Frequency Offset" >0.5</Attribute>
         <Attribute Name="SeedBase" PrettyName="Seed" Group="Base" Type="double" Min="1" Max="100000" Logarithmic="1" Description="frequency">1</Attribute>
@@ -63,6 +63,7 @@
         <Attribute Name="Threshold" PrettyName="Threshold" Group="Base" Type="double" Min="0" Max="1" Description="Threshold of final result" >0.1</Attribute>
         <Attribute Name="Clip" PrettyName="Soft Clip Result" Group="Base" Type="double" Min="0.001" Max="1" Description="extends the threshold box by a fixed value up and down">0.6</Attribute>
         <Attribute Name="Absolut" PrettyName="Absolute Values" Group="Base" Type="bool" Min="false" Max="true" Description="By default positive and negative noise values will all be treated as positive making for a denser noise. This will remove any negative noise values">false</Attribute>
+        <Attribute Name="clamp" PrettyName="Clamp Output" Group="Base" Type="bool" Min="false" Max="true" >false</Attribute>
         <Attribute Name="Invert" PrettyName="Invert" Group="Base" Type="bool" Min="false" Max="true" Description="Inverts the Noise result before ColorA+B are applied" >false</Attribute>
         <!--===============================================================================================================-->
         <Attribute Name="PreviewA" PrettyName="Preview Handle A" Group="Handle A" Type="bool" Min="false" Max="true" Description="Shows you the Result from the Fractal in Handle A" >false</Attribute>
@@ -459,7 +460,7 @@
                 }
 
                 // output
-                Output = fractal;
+                Output =  mix(fractal,clamp(fractal,vec4(0.0),vec4(1.0)),float($clamp));
 
                 ]]></Body>
             </Shader>
