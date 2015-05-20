@@ -70,7 +70,7 @@
     </Outputs>
     <Attributes>
     <Attribute Name="useRegion" PrettyName="Activate Region" Type="bool" Min="false" Max="true">true</Attribute>
-    <Attribute Name="debugmode" PrettyName="Debug Output" Group="" Type="userenum">diffuse,diffuse,Roughness,Reflectance,specCol,Disp,Normal,RGBA,FLOAT,Diffuse,Spec Roughness,Spec Reflectance,Spec Color,Displacement,Normal,RGBA,FLOAT</Attribute>
+    <Attribute Name="debugmode" PrettyName="Debug Output" Group="" Type="userenum">diffuse,diffuse,Roughness,Reflectance,specCol,Disp,Normal,RGBA,FLOAT,id_mask,Diffuse,Spec Roughness,Spec Reflectance,Spec Color,Displacement,Normal,RGBA,FLOAT,Mask over ID</Attribute>
     <!--===============================================================================================================-->
     <Attribute Name="diffuse_Use" PrettyName="On/Off" Group="Handle Diffuse (RGBA)" Type="bool" Min="false" Max="true">false</Attribute>
     <Attribute Name="diffuse_color" PrettyName="Color" Group="Handle Diffuse (RGBA)" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(1,1,1,1)</Attribute>
@@ -243,6 +243,7 @@
                 vec4 addColor_clamp = mix(addColor_handle,clamp(addColor_handle,vec4(0.0),vec4(1.0)),float($addColor_clamp));
                 vec4 addFloat_clamp = mix(addFloat_handle,clamp(addFloat_handle,vec4(0.0),vec4(1.0)),float($addFloat_clamp));
                 float regionmask = $idPick ? col2Mask(#RegionMask,idColor_handle,$idError) : #RegionMask.r ;
+                vec4 id_mask = mix(#RegionMask,vec4(regionmask),regionmask*float($idPick));
                 regionmask = clamp(regionmask,0.0,1.0) * float($useRegion);
 
 
