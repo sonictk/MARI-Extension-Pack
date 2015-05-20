@@ -119,3 +119,6 @@ vec3 sRgb2Linear(vec3 Color);
 // vec3 + vec4 functions to convert to linear to sRGB
 vec4 linear2sRgb(vec4 Color);
 vec3 linear2sRgb(vec3 Color);
+
+// Returns black and white mask from source based on clipcolor
+float col2Mask(vec4 Source,vec4 ClipColor, float MaxError);

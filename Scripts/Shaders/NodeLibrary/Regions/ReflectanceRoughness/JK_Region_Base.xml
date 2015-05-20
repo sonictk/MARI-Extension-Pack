@@ -167,32 +167,9 @@
 
 
             // sRGB2Linear Conversion where checked
-            if ($diffuse_sRGB)
-                {
-                    vec4 diffuse_handle_conv;
-                    for (int i = 0; i != 3; ++i) {
-                            diffuse_handle_conv[i] = diffuse_handle[i] > 0.04045 ? pow((diffuse_handle[i]+0.055)/1.055, 2.4) : diffuse_handle[i] / 12.92;
-                    }
-                    diffuse_handle.rgb = diffuse_handle_conv.rgb;
-                }
-
-            if ($specCol_sRGB)
-                {
-                    vec4 specCol_handle_conv;
-                    for (int i = 0; i != 3; ++i) {
-                            specCol_handle_conv[i] = specCol_handle[i] > 0.04045 ? pow((specCol_handle[i]+0.055)/1.055, 2.4) : specCol_handle[i] / 12.92;
-                    }
-                    specCol_handle.rgb = specCol_handle_conv.rgb;
-                }
-
-            if ($addColor_sRGB)
-                {
-                    vec4 addColor_handle_conv;
-                    for (int i = 0; i != 3; ++i) {
-                            addColor_handle_conv[i] = addColor_handle[i] > 0.04045 ? pow((addColor_handle[i]+0.055)/1.055, 2.4) : addColor_handle[i] / 12.92;
-                    }
-                    addColor_handle.rgb = addColor_handle_conv.rgb;
-                    }
+            if ($diffuse_sRGB) {diffuse_handle.rgb = sRgb2Linear(diffuse_handle.rgb); }
+            if ($specCol_sRGB) {specCol_handle.rgb = sRgb2Linear(specCol_handle.rgb); }
+            if ($addColor_sRGB) {addColor_handle.rgb = sRgb2Linear(addColor_handle.rgb);}
 
 
             // Blending between clamped and unclamped.

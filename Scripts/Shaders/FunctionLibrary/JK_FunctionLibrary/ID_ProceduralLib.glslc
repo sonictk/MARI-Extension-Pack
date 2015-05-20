@@ -438,3 +438,14 @@ vec3 linear2sRgb(vec3 Color)
             outCol[i] = Color[i] > 0.0031308 ? 1.055*pow(Color[i], 1/2.4)-0.055 : Color[i]*12.92; }
 
     return outCol;  }
+
+
+// Returns black and white mask from source based on clipcolor
+float col2Mask(vec4 Source,vec4 ClipColor, float MaxError)
+{
+
+    float Distance = length( Source.rgb - ClipColor.rgb);
+    // Saturate the 0-0.5 range and ramps 0.-1.0 down
+    float Mask = clamp( 2 * (1- (Distance / MaxError)), 0.0, 1.0);
+    return Mask;
+}
