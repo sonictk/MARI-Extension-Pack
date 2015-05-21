@@ -316,6 +316,8 @@ def flattenSelectedChannels():
     if not isProjectSuitable():
         return
 
+    deactivateViewportToggle = mari.actions.find('/Mari/Canvas/Toggle Shader Compiling')
+    deactivateViewportToggle.trigger()
     mari.history.startMacro('Duplicate & Flatten Channels')
 
     #Create dialog and execute accordingly
@@ -332,6 +334,7 @@ def flattenSelectedChannels():
             flatten_channel.setName(orig_name)
 
     mari.history.stopMacro()
+    deactivateViewportToggle.trigger()
 
 # ------------------------------------------------------------------------------
 

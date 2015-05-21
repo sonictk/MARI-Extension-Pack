@@ -458,6 +458,8 @@ class InfoUI(QtGui.QMessageBox):
 
 # ------------------------------------------------------------------------------
 def _exportChannels(args_dict):
+    deactivateViewportToggle = mari.actions.find('/Mari/Canvas/Toggle Shader Compiling')
+    deactivateViewportToggle.trigger()
     save_options = 0
     if args_dict['full_patch_bleed']:
         save_options = save_options|2
@@ -504,11 +506,14 @@ def _exportChannels(args_dict):
             channel.setMetadata('OnlyModifiedTextures', True)
             channel.setMetadataEnabled('OnlyModifiedTextures', False)
     #If successful let the user know
+    deactivateViewportToggle.trigger()
     mari.utils.message("Export Successful")
 
 # ------------------------------------------------------------------------------
 def _exportEverything(args_dict):
     """Export everything, all geo and all channels"""
+    deactivateViewportToggle = mari.actions.find('/Mari/Canvas/Toggle Shader Compiling')
+    deactivateViewportToggle.trigger()
     geo_list = mari.geo.list()
     channels = []
     for geo in geo_list:
@@ -559,6 +564,7 @@ def _exportEverything(args_dict):
             channel.setMetadata('OnlyModifiedTextures', True)
             channel.setMetadataEnabled('OnlyModifiedTextures', False)
     #If successful let the user know
+    deactivateViewportToggle.trigger()
     mari.utils.message("Export Successful")
 
 # ------------------------------------------------------------------------------

@@ -56,7 +56,7 @@ def _isProjectSuitable():
     """Checks project state."""
     MARI_2_5V2_VERSION_NUMBER = 20502300    # see below
     if mari.app.version().number() >= MARI_2_5V2_VERSION_NUMBER:
-    
+
         if mari.projects.current() is None:
             mari.utils.message("Please open a project before running.")
             return False, False
@@ -65,7 +65,7 @@ def _isProjectSuitable():
             return True, True
 
         return True, False
-    
+
     else:
         mari.utils.message("You can only run this script in Mari 2.6v3 or newer.")
         return False, False
@@ -93,6 +93,8 @@ def setChannelFromTemplate():
     suitable = _isProjectSuitable()
     if not suitable[0]:
           return
+    deactivateViewportToggle = mari.actions.find('/Mari/Canvas/Toggle Shader Compiling')
+    deactivateViewportToggle.trigger()
     mari.history.startMacro('Load Channel Resolution')
     geo = mari.geo.current()
     if not geo_dict.has_key(geo):
@@ -107,12 +109,15 @@ def setChannelFromTemplate():
         except Exception, e:
             print(e)
     mari.history.stopMacro()
+    deactivateViewportToggle.trigger()
 # ------------------------------------------------------------------------------
 def createChannelFromTemplate():
     "Create a channel from a template."
     suitable = _isProjectSuitable()
     if not suitable[0]:
           return
+    deactivateViewportToggle = mari.actions.find('/Mari/Canvas/Toggle Shader Compiling')
+    deactivateViewportToggle.trigger()
     mari.history.startMacro('Create Channel from Saved Resolution')
     geo = mari.geo.current()
     if not geo_dict.has_key(geo):
@@ -133,5 +138,6 @@ def createChannelFromTemplate():
         except Exception, e:
             print(e)
     mari.history.stopMacro()
+    deactivateViewportToggle.trigger()
 
 # ------------------------------------------------------------------------------

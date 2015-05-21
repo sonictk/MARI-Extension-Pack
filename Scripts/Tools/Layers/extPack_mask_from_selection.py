@@ -43,7 +43,7 @@ def _isProjectSuitable():
     """Checks project state."""
     MARI_2_0V1_VERSION_NUMBER = 20001300    # see below
     if mari.app.version().number() >= MARI_2_0V1_VERSION_NUMBER:
-    
+
         if mari.projects.current() is None:
             mari.utils.message("Please open a project before running.")
             return False, False
@@ -52,7 +52,7 @@ def _isProjectSuitable():
             return True, True
 
         return True, False
-        
+
     else:
         mari.utils.message("You can only run this script in Mari 2.6v3 or newer.")
         return False, False
@@ -60,10 +60,10 @@ def _isProjectSuitable():
 
 # -------------------------------------------------------------------
 
-# ------------------------------------------------------------------------------    
+# ------------------------------------------------------------------------------
 # The following are used to find multi selections no matter where in the Mari Interface:
 # returnTru(),getLayerList(),findLayerSelection()
-# 
+#
 # This is to support a) Layered Shader Stacks b) deeply nested stacks (maskstack,adjustment stacks),
 # as well as cases where users are working in pinned or docked channels without it being the current channel
 
@@ -72,7 +72,7 @@ def _isProjectSuitable():
 def returnTrue(layer):
     """Returns True for any object passed to it."""
     return True
-    
+
 # ------------------------------------------------------------------------------
 def getLayerList(layer_list, criterionFn):
     """Returns a list of all of the layers in the stack that match the given criterion function, including substacks."""
@@ -86,13 +86,13 @@ def getLayerList(layer_list, criterionFn):
             matching.extend(getLayerList(layer.maskStack().layerList(), criterionFn))
         if hasattr(layer, 'hasAdjustmentStack') and layer.hasAdjustmentStack():
             matching.extend(getLayerList(layer.adjustmentStack().layerList(), criterionFn))
-        
+
     return matching
 # ------------------------------------------------------------------------------
 
 def findLayerSelection():
     """Searches for the current selection if mari.current.layer is not the same as layer.isSelected"""
-    
+
     curGeo = mari.geo.current()
     curChannel = curGeo.currentChannel()
     channels = curGeo.channelList()
@@ -100,37 +100,37 @@ def findLayerSelection():
     layers = ()
     layerSelList = []
     chn_layerList = ()
-    
+
     layerSelect = False
-     
+
     if curLayer.isSelected():
-   
+
         chn_layerList = curChannel.layerList()
         layers = getLayerList(chn_layerList,returnTrue)
-        
+
         for layer in layers:
-    
+
             if layer.isSelected():
 
                 layerSelList.append(layer)
-                layerSelect = True       
+                layerSelect = True
 
     else:
-    
+
         for channel in channels:
-            
+
             chn_layerList = channel.layerList()
             layers = getLayerList(chn_layerList,returnTrue)
-        
+
             for layer in layers:
-    
+
                 if layer.isSelected():
                     curLayer = layer
                     curChannel = channel
                     layerSelList.append(layer)
                     layerSelect = True
 
-    
+
     if not layerSelect:
         mari.utils.message('No Layer Selection found. \n \n Please select at least one Layer.')
 
@@ -145,6 +145,7 @@ def selectionMask(invert):
  	if not suitable[0]:
  	      return
 
+
 	mari.history.startMacro('Create Mask from Selection')
 
 	geo_data = findLayerSelection()
@@ -153,7 +154,7 @@ def selectionMask(invert):
 	currentSelection = geo_data[3]
 	selectedPatches = currentObj.selectedPatches()
 
-	
+
 	for layer in currentSelection:
 
 		currentLayer = layer
@@ -174,7 +175,7 @@ def selectionMask(invert):
 			if currentLayer.hasMaskStack():
 				layerMaskStack = currentLayer.maskStack()
 				newMask = layerMaskStack.createPaintableLayer('MaskFromSelection')
-				newMaskImageSet = newMask.imageSet()		
+				newMaskImageSet = newMask.imageSet()
 
 			elif currentLayer.hasMask():
 				layerMaskStack = currentLayer.makeMaskStack()
@@ -183,14 +184,14 @@ def selectionMask(invert):
 			else:
 				newMask = currentLayer.makeMask()
 				newMaskImageSet = newMask
-	
-	
+
+
 		for image in newMaskImageSet.imageList():
 			if invert == False:
 				image.fill(mari.Color(0.0, 0.0, 0.0, 1.0))
 			else:
 				image.fill(mari.Color(1.0, 1.0, 1.0, 1.0))
-		
+
 		for patch in selectedPatches:
 			selectedImage = currentObj.patchImage(patch, newMaskImageSet)
 			if invert == False:
@@ -199,4 +200,5 @@ def selectionMask(invert):
 				selectedImage.fill(mari.Color(0.0, 0.0, 0.0, 1.0))
 
 	mari.history.stopMacro()
+
 

@@ -40,10 +40,10 @@
 
 import mari
 
-# ------------------------------------------------------------------------------    
+# ------------------------------------------------------------------------------
 # The following are used to find selections no matter where in the Mari Interface:
 # returnTru(),getLayerList(),findLayerSelection()
-# 
+#
 # This is to support a) Layered Shader Stacks b) deeply nested stacks (maskstack,adjustment stacks),
 # as well as cases where users are working in pinned or docked channels without it being the current channel
 
@@ -52,7 +52,7 @@ import mari
 def returnTrue(layer):
     """Returns True for any object passed to it."""
     return True
-    
+
 # ------------------------------------------------------------------------------
 def getLayerList(layer_list, criterionFn):
     """Returns a list of all of the layers in the stack that match the given criterion function, including substacks."""
@@ -66,13 +66,13 @@ def getLayerList(layer_list, criterionFn):
             matching.extend(getLayerList(layer.maskStack().layerList(), criterionFn))
         if hasattr(layer, 'hasAdjustmentStack') and layer.hasAdjustmentStack():
             matching.extend(getLayerList(layer.adjustmentStack().layerList(), criterionFn))
-        
+
     return matching
 # ------------------------------------------------------------------------------
 
 def findLayerSelection():
     """Searches for the current selection if mari.current.layer is not the same as layer.isSelected"""
-    
+
     curGeo = mari.geo.current()
     curChannel = curGeo.currentChannel()
     channels = curGeo.channelList()
@@ -81,30 +81,30 @@ def findLayerSelection():
     layerList = ()
     chn_layerList = ()
     layerSelect = False
-     
+
     if curLayer.isSelected():
 
-        layerSelect = True 
+        layerSelect = True
         # Stepping through all substacks of current channel so it works in maskstacks etc.
         layerList = curChannel.layerList()
         layers = getLayerList(layerList,returnTrue)
         chn_layerList = layers
 
     else:
-    
+
         for channel in channels:
-            
+
             layerList = channel.layerList()
             layers = getLayerList(layerList,returnTrue)
-        
+
             for layer in layers:
-    
+
                 if layer.isSelected():
                     chn_layerList = layers
                     curChannel = channel
                     layerSelect = True
 
-    
+
     if not layerSelect:
         mari.utils.message('No Layer Selection found. \n \n Please select at least one Layer.')
 
@@ -119,7 +119,7 @@ def getLayersInGroup(group):
 
     groupStack = group.layerStack()
     layerList = groupStack.layerList()
-    
+
     return layerList
 
 def layerData():
@@ -132,20 +132,20 @@ def layerData():
     if not mari.projects.current():
         mari.utils.message('No project currently open')
         return -1
-    
+
     geo_data = findLayerSelection()
-    layerList = list (geo_data[1])    
-    
+    layerList = list (geo_data[1])
+
     layers = [ layer for layer in layerList if not layer.isGroupLayer() ]
     selLayers = [ layer for layer in layers if layer.isSelected() ]
     unSelLayers = [ layer for layer in layers if not layer.isSelected() ]
-    
+
     groups = [ layer for layer in layerList if layer.isGroupLayer() ]
     selGroups = [ group for group in groups if group.isSelected() ]
     unSelGroups = [ group for group in groups if not group.isSelected() ]
 
     if len(unSelGroups) != 0:
-        
+
         for unSelGroup in unSelGroups:
             layersInGroup = list (getLayersInGroup(unSelGroup))
 
@@ -164,7 +164,8 @@ def layerData():
 
 def toggleSelVisibility():
     ''' Toggles the visibility of the selected layers '''
-    
+
+
     if layerData() != -1:
         mari.history.startMacro('Toggle Selected Layer Visibility')
         mari.app.setWaitCursor()
@@ -173,15 +174,17 @@ def toggleSelVisibility():
             layer.setVisibility(not layer.isVisible())
         for group in selGroups:
             group.setVisibility(not group.isVisible())
-        
+
         mari.app.restoreCursor()
         mari.history.stopMacro()
-    
+
+
     return
 
 def toggleUnselVisibility():
     ''' Toggles the visibility of the un selected layers '''
-    
+
+
     if layerData() != -1:
         mari.history.startMacro('Toggle Unselected Layer Visibility')
         mari.app.setWaitCursor()
@@ -191,12 +194,14 @@ def toggleUnselVisibility():
 
         mari.app.restoreCursor()
         mari.history.stopMacro()
-    
+
+
     return
 
 def toggleSelLock():
     ''' Toggles the lock status of the selected layers '''
-    
+
+
     if layerData() != -1:
         mari.history.startMacro('Toggle Selected Layer Lock')
         mari.app.setWaitCursor()
@@ -205,15 +210,17 @@ def toggleSelLock():
             layer.setLocked(not layer.isLocked())
         for group in selGroups:
             group.setLocked(not group.isLocked())
-        
+
         mari.app.restoreCursor()
         mari.history.stopMacro()
-    
+
+
     return
 
 def toggleUnselLock():
     ''' Toggles the lock status of the Unselected layers '''
-    
+
+
     if layerData() != -1:
         mari.history.startMacro('Toggle Unselected Layer Lock')
         mari.app.setWaitCursor()
@@ -226,7 +233,8 @@ def toggleUnselLock():
 
         mari.app.restoreCursor()
         mari.history.stopMacro()
-    
+
+
     return
-    
+
 

@@ -51,10 +51,10 @@ import mari
 version = "0.01"
 
 
-# ------------------------------------------------------------------------------    
+# ------------------------------------------------------------------------------
 # The following are used to find multi selections no matter where in the Mari Interface:
 # returnTru(),getLayerList(),findLayerSelection()
-# 
+#
 # This is to support a) Layered Shader Stacks b) deeply nested stacks (maskstack,adjustment stacks),
 # as well as cases where users are working in pinned or docked channels without it being the current channel
 
@@ -63,7 +63,7 @@ version = "0.01"
 def returnTrue(layer):
     """Returns True for any object passed to it."""
     return True
-    
+
 # ------------------------------------------------------------------------------
 def getLayerList(layer_list, criterionFn):
     """Returns a list of all of the layers in the stack that match the given criterion function, including substacks."""
@@ -77,13 +77,13 @@ def getLayerList(layer_list, criterionFn):
             matching.extend(getLayerList(layer.maskStack().layerList(), criterionFn))
         if hasattr(layer, 'hasAdjustmentStack') and layer.hasAdjustmentStack():
             matching.extend(getLayerList(layer.adjustmentStack().layerList(), criterionFn))
-        
+
     return matching
 # ------------------------------------------------------------------------------
 
 def findLayerSelection():
     """Searches for the current selection if mari.current.layer is not the same as layer.isSelected"""
-    
+
     curGeo = mari.geo.current()
     curChannel = curGeo.currentChannel()
     channels = curGeo.channelList()
@@ -91,37 +91,37 @@ def findLayerSelection():
     layers = ()
     layerSelList = []
     chn_layerList = ()
-    
+
     layerSelect = False
-     
+
     if curLayer.isSelected():
-   
+
         chn_layerList = curChannel.layerList()
         layers = getLayerList(chn_layerList,returnTrue)
-        
+
         for layer in layers:
-    
+
             if layer.isSelected():
 
                 layerSelList.append(layer)
-                layerSelect = True       
+                layerSelect = True
 
     else:
-    
+
         for channel in channels:
-            
+
             chn_layerList = channel.layerList()
             layers = getLayerList(chn_layerList,returnTrue)
-        
+
             for layer in layers:
-    
+
                 if layer.isSelected():
                     curLayer = layer
                     curChannel = channel
                     layerSelList.append(layer)
                     layerSelect = True
 
-    
+
     if not layerSelect:
         mari.utils.message('No Layer Selection found. \n \n Please select at least one Layer.')
 
@@ -134,42 +134,47 @@ def convertToPaintable():
     "Convert selected layers to paintable layers."
     if not isProjectSuitable(): #Check if project is suitable
         return False
-    
+
+    deactivateViewportToggle = mari.actions.find('/Mari/Canvas/Toggle Shader Compiling')
+    deactivateViewportToggle.trigger()
+
     geo_data = findLayerSelection()
     selected = geo_data[3]
-        
+
     for layer in selected:
         layer.makeCurrent()
         convertToPaintable = mari.actions.get('/Mari/Layers/Convert To Paintable')
         convertToPaintable.trigger()
-                
-    
+
+    deactivateViewportToggle.trigger()
+
+
 # ------------------------------------------------------------------------------
 def isProjectSuitable():
     "Checks project state and Mari version."
     MARI_2_0V1_VERSION_NUMBER = 20001300    # see below
     if mari.app.version().number() >= MARI_2_0V1_VERSION_NUMBER:
-        
+
         if mari.projects.current() is None:
             mari.utils.message("Please open a project before running.")
             return False
-            
+
         geo = mari.geo.current()
         if geo is None:
             mari.utils.message("Please select an object to run.")
             return False
-        
+
         chan = geo.currentChannel()
         if chan is None:
             mari.utils.message("Please select a channel to run.")
             return False
-            
+
         if len(chan.layerList()) == 0:
             mari.utils.message("Please select a layer to run.")
             return False
 
         return True
-        
+
     else:
         mari.utils.message("You can only run this script in Mari 2.6v3 or newer.")
         return False

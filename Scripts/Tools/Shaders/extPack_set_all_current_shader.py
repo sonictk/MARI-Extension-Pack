@@ -50,14 +50,17 @@ version = "0.01"
 def setAllCurrentShader():
     "Set all geometry shaders to selected shader"
     if not isProjectSuitable(): #Check if project is suitable
-        return False        
-        
+        return False
+
+    deactivateViewportToggle = mari.actions.find('/Mari/Canvas/Toggle Shader Compiling')
+    deactivateViewportToggle.trigger()
+
     geo = mari.geo.current()
     geo_list = mari.geo.list()
     shader = geo.currentShader()
     shader_list = list(geo.shaderList())
     sIndex = shader_list.index(shader)
-        
+
     for geo in geo_list:
         if len(geo.shaderList()) == len(shader_list):
             geo_shader_list = geo.shaderList()
@@ -67,17 +70,19 @@ def setAllCurrentShader():
             geo_shader_list = geo.shaderList()
             geo_shader = geo_shader_list[sIndex]
             geo.setCurrentShader(geo_shader)
-    
+
+    deactivateViewportToggle.trigger()
+
 # ------------------------------------------------------------------------------
 def isProjectSuitable():
     "Checks project state and Mari version."
     MARI_2_0V1_VERSION_NUMBER = 20001300    # see below
     if mari.app.version().number() >= MARI_2_0V1_VERSION_NUMBER:
-       
+
         if mari.projects.current() is None:
             mari.utils.message("Please open a project before running.")
             return False
-            
+
         geo = mari.geo.current()
         if geo is None:
             mari.utils.message("Please select an object to set shader from.")
@@ -89,10 +94,10 @@ def isProjectSuitable():
             return False
 
         return True
-        
+
     else:
         mari.utils.message("You can only run this script in Mari 2.0v1 or newer.")
-        return False   
+        return False
 
 
 

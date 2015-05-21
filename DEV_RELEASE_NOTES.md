@@ -112,6 +112,29 @@ Procedurals in the MainWindow/Layers/ Menu no longer appear under a
 Environment etc. Folders
 
 
+######Tools - General
+
+The performance of various tools such as ConvertToPaintable, ExportSelectedChannels, Duplicate-Flatten etc.
+has been improved by surpressing viewport updates during their runtime.
+This can lead to speed improvements of 40-50% in some cases.
+
+######Patch Bake to Image Manager
+
+'Patch Bake to Image Manager' now use Mari 3s new OCIO color management when loading images into the image manager.
+The colorspace to load images in are determined by the selected channel when executing the tool.
+
+
+######Unproject to Image Manager, Patch Bake to Image Manager
+
+'Unproject Channel to Image Manager' and 'Unproject Layer to Image Manager'
+now use Mari 3s new OCIO color management when loading images into the image manager.
+The colorspace to load images in are determined by the selected channel when executing the tool.
+
+Due to Mari 3s lack of Color Management on Projectors you still might be required to set
+the colorspace on the projector images in the image manager manually to achieve correct
+paintThrough colores.
+
+
 ##Developer Notes:
 
 ######New Category handling
