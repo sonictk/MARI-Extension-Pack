@@ -165,6 +165,8 @@ Channels that are not selected in the Channel Palette but accessible in the inte
 ######Toggle Visibility / Toggle Lock
 Toggling Layer Visibility or Lock for multiple selections previously did not work in mask & adjustment stacks
 
+Toggle Unselected Visibility previously ignored groups
+
 Toggling Layer Visibility or Lock now works correctly with pinned, floating or docked
 Channels that are not selected in the Channel Palette but accessible in the interface
 
