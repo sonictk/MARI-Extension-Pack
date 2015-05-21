@@ -191,6 +191,8 @@ def toggleUnselVisibility():
 
         for layer in unSelLayers:
             layer.setVisibility(not layer.isVisible())
+        for group in unSelGroups:
+            group.setVisibility(not group.isVisible())
 
         mari.app.restoreCursor()
         mari.history.stopMacro()
