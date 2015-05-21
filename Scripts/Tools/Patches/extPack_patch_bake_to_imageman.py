@@ -40,75 +40,83 @@ import os
 
 
 def patchBake():
-	'''Bake the selected patches to image manager'''
-	
-	if not mari.projects.current():
-		mari.utils.message('No project currently open', title = 'Error')
-		return
+    '''Bakes selected Patches to Image Manager'''
 
-	curGeo = mari.geo.current()
-	patchList = list (curGeo.patchList() )
-	selPatchList = [patch for patch in patchList if patch.isSelected() ]
-	
-	if len(selPatchList) == 0:
-		mari.utils.meesage('Select atleast one patch', title = 'Error')
-		return
-	
-	if mari.app.version().isWindows():
-		path = str(mari.resources.path("MARI_USER_PATH")).replace("\\", "/")
-	else:
-		path = str( mari.resources.path("MARI_USER_PATH") )	
+    if not mari.projects.current():
+        mari.utils.message('No project currently open', title = 'Error')
+        return
 
-	curChan = curGeo.currentChannel()
-	curChanName = str(curChan.name())
-	
-	layers = curChan.layerList()
-	
-	mari.history.startMacro('Patch Bake to Image Manager')
-	mari.app.setWaitCursor()
-	
-	for layer in layers:
-		layer.setSelected(True)
-	
-	copyAction = mari.actions.find('/Mari/Layers/Copy')
-	copyAction.trigger()
-	
-	pasteAction = mari.actions.find('/Mari/Layers/Paste')
-	pasteAction.trigger()
-	
-	curChan.mergeLayers()
+    curGeo = mari.geo.current()
+    patchList = list (curGeo.patchList() )
+    selPatchList = [patch for patch in patchList if patch.isSelected() ]
 
-	curLayer = curChan.currentLayer()
-	curImgSet = curLayer.imageSet()
+    if len(selPatchList) == 0:
+        mari.utils.message('Select at least one patch', title = 'Error')
+        return
 
-	for patch in selPatchList:
-		try: 
-		
-			uv = patch.uvIndex()
-			
-			curPatchIndex = str(patch.udim())
-			savePath = path + curChanName + '.' + curPatchIndex + '.tif'
-			
-			patchImg = curImgSet.image(uv, -1)
-			patchImg.saveAs(savePath)
-		
-			mari.images.load(savePath)
-			os.remove(savePath)
+    deactivateViewportToggle = mari.actions.find('/Mari/Canvas/Toggle Shader Compiling')
+    deactivateViewportToggle.trigger()
 
-		except Exception:
-			
-			pass
-	
-	
-	curLayer.setName('BakeToImageManager')
-	curChan.removeLayers()
-	
-	mari.history.stopMacro()
-	mari.app.restoreCursor()
+    if mari.app.version().isWindows():
+        path = str(mari.resources.path("MARI_USER_PATH")).replace("\\", "/")
+    else:
+        path = str( mari.resources.path("MARI_USER_PATH") )
+
+
+    curChan = curGeo.currentChannel()
+
+    curChanName = str(curChan.name())
+    layers = curChan.layerList()
+
+
+    mari.history.startMacro('Patch Bake to Image Manager')
+    mari.app.setWaitCursor()
+
+    for layer in layers:
+        layer.setSelected(True)
+
+    copyAction = mari.actions.find('/Mari/Layers/Copy')
+    copyAction.trigger()
+
+    pasteAction = mari.actions.find('/Mari/Layers/Paste')
+    pasteAction.trigger()
+
+    curChan.mergeLayers()
+
+    curLayer = curChan.currentLayer()
+    curLayer.setName('BakeToImageManager')
+    curImgSet = curLayer.imageSet()
+
+
+    for patch in selPatchList:
+        try:
+
+            uv = patch.uvIndex()
+
+            curPatchIndex = str(patch.udim())
+            savePath = path + curChanName + '.' + curPatchIndex + '.tif'
+
+            patchImg = curImgSet.image(uv, -1)
+            patchImg.saveAs(savePath)
+
+            mari.images.load(savePath)
+            os.remove(savePath)
+
+        except Exception:
+            mari.history.stopMacro()
+            mari.app.restoreCursor()
+            pass
+
+
+    curLayer.close()
+
+    mari.history.stopMacro()
+    mari.app.restoreCursor()
+    deactivateViewportToggle.trigger()
 
 
 def patch_bake_to_imageman():
+    patchBake()
 
-	patchBake()
 
 
