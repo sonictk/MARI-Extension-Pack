@@ -3,18 +3,25 @@ Copyright (c) 2015 www.mari.ideascale.com. All Rights Reserved.
 
 ##New Features:
 
-#####Adjustments:
+###Nodes & Shaders:
+
+#####General:
+
+######Nodes ready for Nodegraph
+
+MARI Extension Pack Nodes have been reworked for best experience in the Nodegraph.
+Nodes now have their most useful paramenters exposed as Node Handles to allow node-driven paramenters
+(Octaves driven by another Noise etc.).
+While Node Handles are unmapped, Node Sliders are used.
+While Node Handles are mapped, Node Sliders are ignored.
+
+#####Adjustment Layers:
 
 ######RGB to HSV + HSV to RGB
 
-Two new nodes were added to Layerstakc & Nodegraph to convert values between HSV & RGB.
+Two new nodes were added to Layerstack & Nodegraph to convert values between HSV & RGB.
 
-
-#####NODEGRAPH:
-
-######Transition Node
-A node to add detail to mask edges.
-This Node is only available in the Nodegraph.
+#####Geometry Procedurals:
 
 ######Transform Coordinates 3D
 A node to transform object coordinates such as Position + Normal.
@@ -34,6 +41,16 @@ built in but this can be used as a central control hub to modify multiple nodes 
 Attaching this Node to a procedural will give the same effect as activating 'UV Space' in
 the Procedural Options.
 
+
+#####Layer Nodes (Nodegraph only):
+
+######Transition Node
+A node to add detail to mask edges.
+This Node is only available in the Nodegraph.
+
+
+#####Material Nodes (Nodegraph only):
+
 ######Material Regions
 
 New nodes were added as part of the implementation of 'Material Regions'.
@@ -49,16 +66,43 @@ instead of layereing multiple shaders on top of each other.
 Material Regions are only available in the Nodegraph.
 
 
-######Procedurals ready for Nodegraph
+###Tools:
 
-MARI Extension Pack Nodes have been reworked for best experience in the Nodegraph.
-Nodes now have their most useful paramenters exposed as Node Handles to allow node-driven paramenters
-(Octaves driven by another Noise etc.).
-While Node Handles are unmapped, Node Sliders are used.
-While Node Handles are mapped, Node Sliders are ignored.
+#####Selection Groups:
+
+######Material ID from Selection Group
+
+A new tool was added to the 'Selection Group' Palette that will allow you to easily create a materialID channel from your selection groups
 
 
 ##Feature Improvements:
+
+###Nodes & Shaders:
+
+
+######Adjustments - General
+
+Adjustments are now categorized in subfolders (Color Correction, Utilities etc.)
+
+######Procedurals - General
+
+ATTENTION: Some of the following changes will change the look of existing procedurals when converting Projects
+           that use the old ones.
+
+The 'Transform Scale' Settings (Scale X,Y,Z) have been refactored so that larger numbers now mean larger scale.
+Previously procedurals would scale up in size the closer the value got to 0.0.
+At default setting of 1.0 the result is identical as before.
+
+Clamping options have been added to various procedurals where they were missing.
+Clamping is now generaly performed on the result of the noise computation but before applying Color A / B.
+This ensures that color mixing behaves relieably but it is still possible to set color values outside of 0-1 range.
+
+Various Slider ranges have been refactored to a 0-1 range to make it easier to map attributes in the nodegraph with
+paintable nodes or other procedurals.
+
+Procedurals in the MainWindow/Layers/ Menu no longer appear under a
+'CustomProcedurals' Folder but are merged into the main Procedurals,Geometry,
+Environment etc. Folders
 
 
 ######Polysurface Curvature
@@ -87,29 +131,7 @@ FBM+ now uses a different algorithm, giving more predicatable results with less
 overall 'flowing' of features across the surface when changing sliders
 
 
-######Adjustments - General
-
-Adjustments are now categorized in subfolders (Color Correction, Utilities etc.)
-
-######Procedurals - General
-
-ATTENTION: Some of the following changes will change the look of existing procedurals when converting Projects
-           that use the old ones.
-
-The 'Transform Scale' Settings (Scale X,Y,Z) have been refactored so that larger numbers now mean larger scale.
-Previously procedurals would scale up in size the closer the value got to 0.0.
-At default setting of 1.0 the result is identical as before.
-
-Clamping options have been added to various procedurals where they were missing.
-Clamping is now generaly performed on the result of the noise computation but before applying Color A / B.
-This ensures that color mixing behaves relieably but it is still possible to set color values outside of 0-1 range.
-
-Various Slider ranges have been refactored to a 0-1 range to make it easier to map attributes in the nodegraph with
-paintable nodes or other procedurals.
-
-Procedurals in the MainWindow/Layers/ Menu no longer appear under a
-'CustomProcedurals' Folder but are merged into the main Procedurals,Geometry,
-Environment etc. Folders
+###Tools:
 
 
 ######Tools - General
