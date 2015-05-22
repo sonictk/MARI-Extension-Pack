@@ -128,6 +128,7 @@ def makeChannelLayer(sourceChannel, mode, invert):
 
                 layerName = layer.name()
                 currentLayer = layer
+                existingLayer = ()
 
                 ## New Layer Mask Stack.
                 ## If mask exists convert, if stack exists keep, else make new stack
@@ -137,7 +138,7 @@ def makeChannelLayer(sourceChannel, mode, invert):
                     layerMaskStack = currentLayer.makeMaskStack()
                 else:
                     layerMaskStack = currentLayer.makeMaskStack()
-                    layerMaskStack.removeLayers(layerMaskStack.layerList())
+                    existingLayer = layerMaskStack.layerList()
 
                 ## Create Mask Channel Layer
 
@@ -146,6 +147,7 @@ def makeChannelLayer(sourceChannel, mode, invert):
                     channelLayerName = channel.name()
                     maskChannelLayerName = '%s(Shared Channel)' % channelLayerName
                     layerMaskStack.createChannelLayer(maskChannelLayerName, channel)
+                    layerMaskStack.removeLayers(existingLayer)
 
                 if invert == 1:
                     layerMaskStack.createAdjustmentLayer("Invert","Filter/Invert")
