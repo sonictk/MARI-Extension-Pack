@@ -7,11 +7,8 @@
 # ------------------------------------------------------------------------------
 # coding: utf-8
 # ------------------------------------------------------------------------------
-# Written by Jorel Latraille, 2014
-# ------------------------------------------------------------------------------
-# http://mari.ideascale.com
-# http://www.jorel-latraille.com/
-# http://www.thefoundry.co.uk
+# Original Author: Jorel Latraille, 2014
+# Rewrite: Jens Kafitz, 2015
 # ------------------------------------------------------------------------------
 # DISCLAIMER & TERMS OF USE:
 #
@@ -131,6 +128,138 @@ def findLayerSelection():
 
     return curGeo,curLayer,curChannel,layerSelList
 
+# ------------------------------------------------------------------------------
+
+def convertChannelLayer(layerselection,layername,channelselection):
+    "Convert selected Channel Layer to paintable Layer."
+
+
+    layer = layerselection
+    selected_channel = channelselection
+
+
+    _hasMaskStack = False
+    _hasMask = False
+    _hasAdjStack = False
+
+    layer_maskStack = ()
+    layer_mask = ()
+    layer_adjStack = ()
+    channelLayer_name = layer
+    selected_channel.clearSelection(1)
+    selected_channel.clearSelection(2)
+    selected_channel.clearSelection(4)
+    channelLayer_name.setSelected(True)
+
+
+    if layer.hasMask() and not layer.hasMaskStack():
+        # Creating a templayer and assigning the mask from the channellayer
+        # to keep it through the merge process. In the end reassigning the maskStack
+        # and closing layer
+        _hasMaskStack = False
+        _hasMask = True
+        layer_mask = layer.maskImageSet()
+        masksave = selected_channel.createPaintableLayer("channelLayer_maskstack", layer, flags=1)
+        masksave.setMaskImageSet(layer_mask)
+
+    if layer.hasMaskStack():
+        # Creating a templayer and assigning the maskstqck from the channellayer
+        # to keep it through the merge process. In the end reassigning the maskStack
+        # and closing layer
+        _hasMaskStack = True
+        _hasMask = False
+        layer_maskStack = layer.maskStack()
+        masksave = selected_channel.createPaintableLayer("channelLayer_maskstack", layer, flags=1)
+        masksave.setMaskStack(layer_maskStack)
+
+
+    if layer.hasAdjustmentStack():
+        # Creating a templayer and assigning the adjstack from the channellayer
+        # to keep it through the merge process. In the end reassigning the adjstack
+        # and closing layer
+        _hasAdjStack = True
+
+        # finding the layerstack and contents of the layerstack that make up the adjustment stack on the channel layer
+        source_adj_stack = layer.adjustmentStack()
+        adjustments_in_src_stack = source_adj_stack.layerList()
+        # reversing so that it is recreated in right order
+        adjustments_inSrc_stack = reversed(adjustments_in_src_stack)
+
+        # creating a new paintable layer to backup the adjustments to
+        adjstack_save = selected_channel.createPaintableLayer("channelLayer_adjustment", layer)
+
+        # Creating adjustment stack on temp layer and saving name of layerStack, then moving everything from channel layer to temp adjustment stack
+        adjstack_save.makeAdjustmentStack()
+        target_adj_stack = adjstack_save.adjustmentStack()
+        for adjustment in adjustments_inSrc_stack:
+            target_adj_stack.moveLayer(adjustment)
+
+
+
+
+    # Saving any layer options on the channel layer to set it to the merged layer afterwards
+    advBlend = layer.getAdvancedBlendComponent()
+    layerBelow = layer.getLayerBelowBlendLut()
+    thisLayer = layer.getThisLayerBlendLut()
+    blendAmount = layer.blendAmount()
+    blendAmountEnabled = layer.blendAmountEnabled()
+    blendMode = layer.blendMode()
+    blendType = layer.blendType()
+    visibility =layer.isVisible()
+    colorTag = layer.colorTag()
+    swizzle_r = layer.swizzle(0)
+    swizzle_g = layer.swizzle(1)
+    swizzle_b = layer.swizzle(2)
+    swizzle_a = layer.swizzle(3)
+
+
+    # 'Convert to paintable' Channel Layer Style
+    mergeLayer = mari.actions.get('/Mari/Layers/Merge Layers')
+    mergeLayer.trigger()
+
+
+    # resetting attributes from channel layer onto new layer
+    new_layer = findLayerSelection()[3][0]
+    new_layer.setAdvancedBlendComponent(advBlend)
+    new_layer.setLayerBelowBlendLut(layerBelow)
+    new_layer.setThisLayerBlendLut(thisLayer)
+    new_layer.setBlendAmount(blendAmount)
+    new_layer.setBlendAmountEnabled(blendAmountEnabled)
+    new_layer.setBlendMode(blendMode)
+    new_layer.setBlendType(blendType)
+    new_layer.setVisibility(visibility)
+    new_layer.setColorTag(colorTag)
+    new_layer.setSwizzle(0,swizzle_r)
+    new_layer.setSwizzle(1,swizzle_g)
+    new_layer.setSwizzle(2,swizzle_b)
+    new_layer.setSwizzle(3,swizzle_a)
+    new_layer.setName(layername)
+
+    # if channel layer has mask stack, mask or adjustment stack reassign it from out templayer and close out templayer
+    if _hasMaskStack:
+        new_layer.setMaskStack(layer_maskStack)
+        masksave.close()
+    if _hasMask:
+        new_layer.setMaskImageSet(layer_mask)
+        masksave.close()
+    if _hasAdjStack:
+        # moving adjustments into new stack from backup stack
+
+        # finding the adjustments in the temporary adjustment stack that has been created on the templayer
+        adjustments_in_trgt_stack = target_adj_stack.layerList()
+        # reversing so that it is recreated in right order
+        adjustments_inTrgt_stack = reversed(adjustments_in_trgt_stack)
+
+        # Creating adjustment stack on newly converted channellayer and gettign the stack ID
+        new_layer.makeAdjustmentStack()
+        newlayer_adj_stack = new_layer.adjustmentStack()
+
+        for adjustment in adjustments_inTrgt_stack:
+            newlayer_adj_stack.moveLayer(adjustment)
+
+        # closing temp layer with backup adjustment stack
+        adjstack_save.close()
+
 
 # ------------------------------------------------------------------------------
 def convertToPaintable():
@@ -148,7 +277,6 @@ def convertToPaintable():
     selected_channel = geo_data[2]
 
 
-
     for layer in selected_layer:
 
         layername = layer.name()
@@ -156,97 +284,13 @@ def convertToPaintable():
 
         layer.makeCurrent()
 
-
-
+        # if it is a channel layer we need special logic
         if layer.isChannelLayer():
-
-            _hasMaskStack = False
-            _hasMask = False
-
-            layer_maskStack = ()
-            layer_mask = ()
-            channelLayer_name = layer
-            selected_channel.clearSelection(1)
-            selected_channel.clearSelection(2)
-            selected_channel.clearSelection(4)
-            channelLayer_name.setSelected(True)
-
-            # Deselecting everything since I need to merge channel layer
-            # With full selection I would merge channellayers AND other layers
-            # into one
-
-
-            if layer.hasMask() and not layer.hasMaskStack():
-                # Creating a templayer and assigning the mask from the channellayer
-                # to keep it through the merge process. In the end reassigning the maskStack
-                # and closing layer
-                _hasMaskStack = False
-                _hasMask = True
-                layer_mask = layer.maskImageSet()
-                masksave = selected_channel.createPaintableLayer("channelLayer_maskstack", layer, flags=1)
-                masksave.setMaskImageSet(layer_mask)
-
-            if layer.hasMaskStack():
-                # Creating a templayer and assigning the maskstqck from the channellayer
-                # to keep it through the merge process. In the end reassigning the maskStack
-                # and closing layer
-                _hasMaskStack = True
-                _hasMask = False
-                layer_maskStack = layer.maskStack()
-                masksave = selected_channel.createPaintableLayer("channelLayer_maskstack", layer, flags=1)
-                masksave.setMaskStack(layer_maskStack)
-
-
-
-            # Saving any layer options on the channel layer to set it to the merged layer afterwards
-            advBlend = layer.getAdvancedBlendComponent()
-            layerBelow = layer.getLayerBelowBlendLut()
-            thisLayer = layer.getThisLayerBlendLut()
-            blendAmount = layer.blendAmount()
-            blendAmountEnabled = layer.blendAmountEnabled()
-            blendMode = layer.blendMode()
-            blendType = layer.blendType()
-            visibility =layer.isVisible()
-            colorTag = layer.colorTag()
-            swizzle_r = layer.swizzle(0)
-            swizzle_g = layer.swizzle(1)
-            swizzle_b = layer.swizzle(2)
-            swizzle_a = layer.swizzle(3)
-
-
-            # 'Convert to paintable' Channel Layer Style
-            mergeLayer = mari.actions.get('/Mari/Layers/Merge Layers')
-            mergeLayer.trigger()
-
-
-            # resetting attributes from channel layer onto new layer
-            new_layer = findLayerSelection()[3][0]
-            new_layer.setAdvancedBlendComponent(advBlend)
-            new_layer.setLayerBelowBlendLut(layerBelow)
-            new_layer.setThisLayerBlendLut(thisLayer)
-            new_layer.setBlendAmount(blendAmount)
-            new_layer.setBlendAmountEnabled(blendAmountEnabled)
-            new_layer.setBlendMode(blendMode)
-            new_layer.setBlendType(blendType)
-            new_layer.setVisibility(visibility)
-            new_layer.setColorTag(colorTag)
-            new_layer.setSwizzle(0,swizzle_r)
-            new_layer.setSwizzle(1,swizzle_g)
-            new_layer.setSwizzle(2,swizzle_b)
-            new_layer.setSwizzle(3,swizzle_a)
-            new_layer.setName(layername)
-
-            # if channel layer has mask stack reassign it from out templayer and close out templayer
-            if _hasMaskStack:
-                new_layer.setMaskStack(layer_maskStack)
-                masksave.close()
-            if _hasMask:
-                new_layer.setMaskImageSet(layer_mask)
-                masksave.close()
-
+            channellayer_name = layer
+            convertChannelLayer(layer,layername,selected_channel)
 
             for layer in selected_layer:
-                if layer is not channelLayer_name:
+                if layer is not channellayer_name:
                     layer.setSelected(True)
 
 
