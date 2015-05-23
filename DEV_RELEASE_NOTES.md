@@ -105,6 +105,8 @@ Channels created by layeredShader stacks (with cryptic channel names) will no lo
 
 #####LAYERS MENU
 
+
+
 ######Channel Layer / Channel Layer Mask / Channel Layer Mask (grouped)
 
 Channel Layer Selection has a new Interface, with alphabetical channel sorting and channel filtering options
@@ -119,6 +121,11 @@ into a mask stack and adding the channel mask or in case of existing mask stacks
 "Channel Layer Mask (grouped)" will now work with multiple selected layers, grouping layers under a single group with a Channel Mask added to the group node
 
 "Channel Layer Mask" will now work with multiple selected layers, adding one ChannelMask per Layer.
+
+
+######Convert to Paintable
+
+Convert to Paintable can now be used on Channel Layers. Masks,Mask- and Adjustment Stacks will remain intact.
 
 
 ######Mask from Selection
