@@ -8,7 +8,7 @@
 # http://cg-cnu.blogspot.in/
 # ------------------------------------------------------------------------------
 # Written by Sreenivas Alapati, 2014
-# Contributions: Jens Kafitz, 2015
+# Contributions & Extension: Jens Kafitz, 2015
 # ------------------------------------------------------------------------------
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -86,6 +86,10 @@ def getLayerList(layer_list, criterionFn):
             matching.extend(getLayerList(layer.maskStack().layerList(), criterionFn))
         if hasattr(layer, 'hasAdjustmentStack') and layer.hasAdjustmentStack():
             matching.extend(getLayerList(layer.adjustmentStack().layerList(), criterionFn))
+        if layer.isGroupLayer():
+            matching.extend(getLayerList(layer.layerStack().layerList(), criterionFn))
+        if layer.isChannelLayer():
+            matching.extend(getLayerList(layer.channel().layerList(), criterionFn))
 
     return matching
 # ------------------------------------------------------------------------------
@@ -97,20 +101,31 @@ def findLayerSelection():
     curChannel = curGeo.currentChannel()
     channels = curGeo.channelList()
     curLayer = mari.current.layer()
+
     layers = ()
-    layerList = ()
+    layerSelList = []
+    chn_layerList = ()
+
     layerSelect = False
 
     if curLayer.isSelected():
-
+    # If current layer is indeed selected one just trawl through current channel to find others
         layerSelect = True
+        chn_layerList = curChannel.layerList()
+        layers = getLayerList(chn_layerList,returnTrue)
+
+        for layer in layers:
+            if layer.isSelected():
+                layerSelList.append(layer)
 
     else:
+    # If current layer is not selected it means that a selection sits somewhere else (non-current channel)
+    # so we are going trawling through the entire channel list including substacks to find it
 
         for channel in channels:
 
-            layerList = channel.layerList()
-            layers = getLayerList(layerList,returnTrue)
+            chn_layerList = channel.layerList()
+            layers = getLayerList(chn_layerList,returnTrue)
 
             for layer in layers:
 
@@ -118,13 +133,14 @@ def findLayerSelection():
                     curLayer = layer
                     curChannel = channel
                     layerSelect = True
+                    layerSelList.append(layer)
 
 
     if not layerSelect:
         mari.utils.message('No Layer Selection found. \n \n Please select at least one Layer.')
 
 
-    return curGeo,curLayer,curChannel
+    return curGeo,curLayer,curChannel,layerSelList
 
 # ------------------------------------------------------------------------------
 
@@ -139,11 +155,11 @@ def clone_merge_layers(mode):
     deactivateViewportToggle.trigger()
 
     geo_data = findLayerSelection()
-    # Geo Data = 0 current geo, 1 current channel , 2 current layer
+    # Geo Data = 0 current geo, 1 current channel , 2 current layer, 3 current selection list
     curGeo = geo_data[0]
     curChan = geo_data[2]
     curLayer = geo_data[1]
-
+    curSel = geo_data[3]
     curActiveLayerName = str(curLayer.name())
 
     patches = list(curGeo.patchList())
@@ -152,11 +168,28 @@ def clone_merge_layers(mode):
     mari.app.setWaitCursor()
     mari.history.startMacro('Clone & Merge Layers')
 
+
     copyAction = mari.actions.find('/Mari/Layers/Copy')
     copyAction.trigger()
 
     pasteAction = mari.actions.find('/Mari/Layers/Paste')
     pasteAction.trigger()
+
+    #running search for selection again in order to get a list of all duplicated layers
+    geo_data = findLayerSelection()
+    # Geo Data = 0 current geo, 1 current channel , 2 current layer, 3 current selection list
+    curGeo = geo_data[0]
+    curChan = geo_data[2]
+    curLayer = geo_data[1]
+    curSel = geo_data[3]
+    channelLayerLst = []
+    #running search from all current selected layers to get a full list of all associated layers such as masks etc.
+    nested_layers = getLayerList(curSel,returnTrue)
+    # lookin through all layers that are associated with duplicates if there are any channel layers where we duplicated channels
+    for layer in nested_layers:
+        if layer.isChannelLayer():
+            channelLayerLst.append(layer.channel())
+
 
     mergeAction = mari.actions.find('/Mari/Layers/Merge Layers')
     mergeAction.trigger()
@@ -178,6 +211,14 @@ def clone_merge_layers(mode):
 
 
     curLayer.setName(curActiveLayerName + '_mrgDup')
+
+    # removing any channels we duplicated in the process of copy/paste
+    for channel in channelLayerLst:
+        try:
+            curGeo.removeChannel(channel)
+        except Exception:
+            continue
+
     mari.history.stopMacro()
     mari.app.restoreCursor()
 
@@ -223,5 +264,4 @@ class CloneMergeGUI(QtGui.QDialog):
     def runCreateAll(self):
     	clone_merge_layers('none')
     	self.close()
-
 
