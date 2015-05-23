@@ -44,11 +44,6 @@ Adjustment Layer to change the color temperature in familiar way using Kelvin
 
 #####SHADERS
 
-######BRDF Metalness-Roughness
-
-A conversion of the Mari BRDF to support a Metalness/Roughness Workflow.
-Additional features include visual representation of diffuse/albedo values
-outside the recommended ranged as outlined in common PBR practices.
 
 ######UNREAL Advanced
 
