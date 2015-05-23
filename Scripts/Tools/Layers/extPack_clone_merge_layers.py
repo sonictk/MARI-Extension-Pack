@@ -8,7 +8,7 @@
 # http://cg-cnu.blogspot.in/
 # ------------------------------------------------------------------------------
 # Written by Sreenivas Alapati, 2014
-# Modified & Extended: Jens Kafitz, 2015
+# Contributions & Extension: Jens Kafitz, 2015
 # ------------------------------------------------------------------------------
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -86,6 +86,8 @@ def getLayerList(layer_list, criterionFn):
             matching.extend(getLayerList(layer.maskStack().layerList(), criterionFn))
         if hasattr(layer, 'hasAdjustmentStack') and layer.hasAdjustmentStack():
             matching.extend(getLayerList(layer.adjustmentStack().layerList(), criterionFn))
+        if layer.isGroupLayer():
+            matching.extend(getLayerList(layer.layerStack().layerList(), criterionFn))
         if layer.isChannelLayer():
             matching.extend(getLayerList(layer.channel().layerList(), criterionFn))
 
@@ -212,7 +214,10 @@ def clone_merge_layers(mode):
 
     # removing any channels we duplicated in the process of copy/paste
     for channel in channelLayerLst:
-        curGeo.removeChannel(channel)
+        try:
+            curGeo.removeChannel(channel)
+        except Exception:
+            continue
 
     mari.history.stopMacro()
     mari.app.restoreCursor()
@@ -259,5 +264,4 @@ class CloneMergeGUI(QtGui.QDialog):
     def runCreateAll(self):
     	clone_merge_layers('none')
     	self.close()
-
 
