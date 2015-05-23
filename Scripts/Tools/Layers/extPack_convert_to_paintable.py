@@ -7,11 +7,8 @@
 # ------------------------------------------------------------------------------
 # coding: utf-8
 # ------------------------------------------------------------------------------
-# Written by Jorel Latraille, 2014
-# ------------------------------------------------------------------------------
-# http://mari.ideascale.com
-# http://www.jorel-latraille.com/
-# http://www.thefoundry.co.uk
+# Original Author: Jorel Latraille, 2014
+# Rewrite: Jens Kafitz, 2015
 # ------------------------------------------------------------------------------
 # DISCLAIMER & TERMS OF USE:
 #
@@ -48,17 +45,6 @@
 
 import mari
 
-version = "0.01"
-
-
-# ------------------------------------------------------------------------------
-# The following are used to find multi selections no matter where in the Mari Interface:
-# returnTru(),getLayerList(),findLayerSelection()
-#
-# This is to support a) Layered Shader Stacks b) deeply nested stacks (maskstack,adjustment stacks),
-# as well as cases where users are working in pinned or docked channels without it being the current channel
-
-# ------------------------------------------------------------------------------
 
 def returnTrue(layer):
     """Returns True for any object passed to it."""
@@ -79,6 +65,19 @@ def getLayerList(layer_list, criterionFn):
             matching.extend(getLayerList(layer.adjustmentStack().layerList(), criterionFn))
 
     return matching
+
+# ------------------------------------------------------------------------------
+# currently not used:
+def getGroupLayerList(layer_list, criterionFn):
+    """Returns a list of all of the layers in the stack including top level group contents"""
+    matching = []
+    for layer in layer_list:
+        if criterionFn(layer):
+            matching.append(layer)
+        if layer.isGroupLayer():
+            matching.extend(getLayerList(layer.layerStack().layerList(), criterionFn))
+
+    return matching
 # ------------------------------------------------------------------------------
 
 def findLayerSelection():
@@ -88,6 +87,7 @@ def findLayerSelection():
     curChannel = curGeo.currentChannel()
     channels = curGeo.channelList()
     curLayer = mari.current.layer()
+
     layers = ()
     layerSelList = []
     chn_layerList = ()
@@ -95,18 +95,18 @@ def findLayerSelection():
     layerSelect = False
 
     if curLayer.isSelected():
-
+    # If current layer is indeed selected one just trawl through current channel to find others
+        layerSelect = True
         chn_layerList = curChannel.layerList()
         layers = getLayerList(chn_layerList,returnTrue)
 
         for layer in layers:
-
             if layer.isSelected():
-
                 layerSelList.append(layer)
-                layerSelect = True
 
     else:
+    # If current layer is not selected it means that a selection sits somewhere else (non-current channel)
+    # so we are going trawling through the entire channel list including substacks to find it
 
         for channel in channels:
 
@@ -118,8 +118,8 @@ def findLayerSelection():
                 if layer.isSelected():
                     curLayer = layer
                     curChannel = channel
-                    layerSelList.append(layer)
                     layerSelect = True
+                    layerSelList.append(layer)
 
 
     if not layerSelect:
@@ -128,6 +128,138 @@ def findLayerSelection():
 
     return curGeo,curLayer,curChannel,layerSelList
 
+# ------------------------------------------------------------------------------
+
+def convertChannelLayer(layerselection,layername,channelselection):
+    "Convert selected Channel Layer to paintable Layer."
+
+
+    layer = layerselection
+    selected_channel = channelselection
+
+
+    _hasMaskStack = False
+    _hasMask = False
+    _hasAdjStack = False
+
+    layer_maskStack = ()
+    layer_mask = ()
+    layer_adjStack = ()
+    channelLayer_name = layer
+    selected_channel.clearSelection(1)
+    selected_channel.clearSelection(2)
+    selected_channel.clearSelection(4)
+    channelLayer_name.setSelected(True)
+
+
+    if layer.hasMask() and not layer.hasMaskStack():
+        # Creating a templayer and assigning the mask from the channellayer
+        # to keep it through the merge process. In the end reassigning the maskStack
+        # and closing layer
+        _hasMaskStack = False
+        _hasMask = True
+        layer_mask = layer.maskImageSet()
+        masksave = selected_channel.createPaintableLayer("channelLayer_maskstack", layer, flags=1)
+        masksave.setMaskImageSet(layer_mask)
+
+    if layer.hasMaskStack():
+        # Creating a templayer and assigning the maskstqck from the channellayer
+        # to keep it through the merge process. In the end reassigning the maskStack
+        # and closing layer
+        _hasMaskStack = True
+        _hasMask = False
+        layer_maskStack = layer.maskStack()
+        masksave = selected_channel.createPaintableLayer("channelLayer_maskstack", layer, flags=1)
+        masksave.setMaskStack(layer_maskStack)
+
+
+    if layer.hasAdjustmentStack():
+        # Creating a templayer and assigning the adjstack from the channellayer
+        # to keep it through the merge process. In the end reassigning the adjstack
+        # and closing layer
+        _hasAdjStack = True
+
+        # finding the layerstack and contents of the layerstack that make up the adjustment stack on the channel layer
+        source_adj_stack = layer.adjustmentStack()
+        adjustments_in_src_stack = source_adj_stack.layerList()
+        # reversing so that it is recreated in right order
+        adjustments_inSrc_stack = reversed(adjustments_in_src_stack)
+
+        # creating a new paintable layer to backup the adjustments to
+        adjstack_save = selected_channel.createPaintableLayer("channelLayer_adjustment", layer)
+
+        # Creating adjustment stack on temp layer and saving name of layerStack, then moving everything from channel layer to temp adjustment stack
+        adjstack_save.makeAdjustmentStack()
+        target_adj_stack = adjstack_save.adjustmentStack()
+        for adjustment in adjustments_inSrc_stack:
+            target_adj_stack.moveLayer(adjustment)
+
+
+
+
+    # Saving any layer options on the channel layer to set it to the merged layer afterwards
+    advBlend = layer.getAdvancedBlendComponent()
+    layerBelow = layer.getLayerBelowBlendLut()
+    thisLayer = layer.getThisLayerBlendLut()
+    blendAmount = layer.blendAmount()
+    blendAmountEnabled = layer.blendAmountEnabled()
+    blendMode = layer.blendMode()
+    blendType = layer.blendType()
+    visibility =layer.isVisible()
+    colorTag = layer.colorTag()
+    swizzle_r = layer.swizzle(0)
+    swizzle_g = layer.swizzle(1)
+    swizzle_b = layer.swizzle(2)
+    swizzle_a = layer.swizzle(3)
+
+
+    # 'Convert to paintable' Channel Layer Style
+    mergeLayer = mari.actions.get('/Mari/Layers/Merge Layers')
+    mergeLayer.trigger()
+
+
+    # resetting attributes from channel layer onto new layer
+    new_layer = findLayerSelection()[3][0]
+    new_layer.setAdvancedBlendComponent(advBlend)
+    new_layer.setLayerBelowBlendLut(layerBelow)
+    new_layer.setThisLayerBlendLut(thisLayer)
+    new_layer.setBlendAmount(blendAmount)
+    new_layer.setBlendAmountEnabled(blendAmountEnabled)
+    new_layer.setBlendMode(blendMode)
+    new_layer.setBlendType(blendType)
+    new_layer.setVisibility(visibility)
+    new_layer.setColorTag(colorTag)
+    new_layer.setSwizzle(0,swizzle_r)
+    new_layer.setSwizzle(1,swizzle_g)
+    new_layer.setSwizzle(2,swizzle_b)
+    new_layer.setSwizzle(3,swizzle_a)
+    new_layer.setName(layername)
+
+    # if channel layer has mask stack, mask or adjustment stack reassign it from out templayer and close out templayer
+    if _hasMaskStack:
+        new_layer.setMaskStack(layer_maskStack)
+        masksave.close()
+    if _hasMask:
+        new_layer.setMaskImageSet(layer_mask)
+        masksave.close()
+    if _hasAdjStack:
+        # moving adjustments into new stack from backup stack
+
+        # finding the adjustments in the temporary adjustment stack that has been created on the templayer
+        adjustments_in_trgt_stack = target_adj_stack.layerList()
+        # reversing so that it is recreated in right order
+        adjustments_inTrgt_stack = reversed(adjustments_in_trgt_stack)
+
+        # Creating adjustment stack on newly converted channellayer and gettign the stack ID
+        new_layer.makeAdjustmentStack()
+        newlayer_adj_stack = new_layer.adjustmentStack()
+
+        for adjustment in adjustments_inTrgt_stack:
+            newlayer_adj_stack.moveLayer(adjustment)
+
+        # closing temp layer with backup adjustment stack
+        adjstack_save.close()
+
 
 # ------------------------------------------------------------------------------
 def convertToPaintable():
@@ -135,16 +267,41 @@ def convertToPaintable():
     if not isProjectSuitable(): #Check if project is suitable
         return False
 
+    # Turning off viewport for better perfromance
     deactivateViewportToggle = mari.actions.find('/Mari/Canvas/Toggle Shader Compiling')
     deactivateViewportToggle.trigger()
 
+    # FInding selection. 2 is channel 3 is layer selection list
     geo_data = findLayerSelection()
-    selected = geo_data[3]
+    selected_layer = geo_data[3]
+    selected_channel = geo_data[2]
 
-    for layer in selected:
+
+    for layer in selected_layer:
+
+        layername = layer.name()
+        mari.history.startMacro('Convert to Paintable -  Layer:'+ '"'+ layername + '"')
+
         layer.makeCurrent()
-        convertToPaintable = mari.actions.get('/Mari/Layers/Convert To Paintable')
-        convertToPaintable.trigger()
+
+        # if it is a channel layer we need special logic
+        if layer.isChannelLayer():
+            channellayer_name = layer
+            convertChannelLayer(layer,layername,selected_channel)
+
+            for layer in selected_layer:
+                if layer is not channellayer_name:
+                    layer.setSelected(True)
+
+
+        # if it is not a channel layer we can just use regular convert to paintable
+        else:
+            layer.makeCurrent()
+            convertToPaintable = mari.actions.get('/Mari/Layers/Convert To Paintable')
+            convertToPaintable.trigger()
+
+
+        mari.history.stopMacro()
 
     deactivateViewportToggle.trigger()
 
