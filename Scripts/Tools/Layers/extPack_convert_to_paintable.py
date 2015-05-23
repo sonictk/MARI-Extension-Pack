@@ -67,18 +67,6 @@ def getLayerList(layer_list, criterionFn):
     return matching
 
 # ------------------------------------------------------------------------------
-# currently not used:
-def getGroupLayerList(layer_list, criterionFn):
-    """Returns a list of all of the layers in the stack including top level group contents"""
-    matching = []
-    for layer in layer_list:
-        if criterionFn(layer):
-            matching.append(layer)
-        if layer.isGroupLayer():
-            matching.extend(getLayerList(layer.layerStack().layerList(), criterionFn))
-
-    return matching
-# ------------------------------------------------------------------------------
 
 def findLayerSelection():
     """Searches for the current selection if mari.current.layer is not the same as layer.isSelected"""
