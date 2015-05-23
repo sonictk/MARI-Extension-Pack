@@ -146,9 +146,13 @@ def convertChannelLayer(layerselection,layername,channelselection):
         # and closing layer
         _hasMaskStack = False
         _hasMask = True
+        _maskEnabled = True
+        _maskEnabled =  layer.isMaskEnabled()
         layer_mask = layer.maskImageSet()
         masksave = selected_channel.createPaintableLayer("channelLayer_maskstack", layer, flags=1)
         masksave.setMaskImageSet(layer_mask)
+        # disabling mask on original layer to avoid pre-mult. Cannot remove it since operations above might still be running causing a crash
+        layer.setMaskEnabled(False)
 
     if layer.hasMaskStack():
         # Creating a templayer and assigning the maskstqck from the channellayer
@@ -156,9 +160,13 @@ def convertChannelLayer(layerselection,layername,channelselection):
         # and closing layer
         _hasMaskStack = True
         _hasMask = False
+        _maskEnabled = True
+        _maskEnabled =  layer.isMaskEnabled()
         layer_maskStack = layer.maskStack()
         masksave = selected_channel.createPaintableLayer("channelLayer_maskstack", layer, flags=1)
         masksave.setMaskStack(layer_maskStack)
+        # disabling mask on original layer to avoid pre-mult. Cannot remove it since operations above might still be running causing a crash
+        layer.setMaskEnabled(False)
 
 
     if layer.hasAdjustmentStack():
@@ -226,9 +234,11 @@ def convertChannelLayer(layerselection,layername,channelselection):
     # if channel layer has mask stack, mask or adjustment stack reassign it from out templayer and close out templayer
     if _hasMaskStack:
         new_layer.setMaskStack(layer_maskStack)
+        new_layer.setMaskEnabled(_maskEnabled)
         masksave.close()
     if _hasMask:
         new_layer.setMaskImageSet(layer_mask)
+        new_layer.setMaskEnabled(_maskEnabled)
         masksave.close()
     if _hasAdjStack:
         # moving adjustments into new stack from backup stack
