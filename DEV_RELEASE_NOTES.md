@@ -128,6 +128,12 @@ into a mask stack and adding the channel mask or in case of existing mask stacks
 Convert to Paintable can now be used on Channel Layers. Masks,Mask- and Adjustment Stacks will remain intact.
 
 
+######Clone & Merge
+
+Clone & Merge now has added logic to prevent it from duplicating channels when executed on a selection that included channel layers.
+This includes cases where channel layers are used in (possibly nested) maskStacks & Adjustment Stacks.
+
+
 ######Mask from Selection
 
 'Mask from Selection' now works with layeredShaders
