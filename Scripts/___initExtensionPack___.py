@@ -42,7 +42,7 @@ from PySide import QtGui
 
 
 # EXTENSION PACK VERSION
-current_extension_pack = "2.0"
+current_extension_pack = "2.1"
 
 
 # SCRIPT DIRECTORY PATH(S)
@@ -122,9 +122,9 @@ def checkMariVersion():
     if mari.app.version().number() >=  MARI_2_6v3_VERSION_NUMBER:
 
 		return True, True
-    
+
     else:
-        mari.utils.message("Mari Version not compatible with MARI Extension Pack 2.0")
+        mari.utils.message("Mari Version not compatible with MARI Extension Pack 2.1")
         return False, False
 
 
@@ -142,27 +142,27 @@ def detectScriptConflict():
 	for scriptpath in base_path:
 
 		for path, subdirs, files in os.walk(scriptpath):
-	
+
 			path_str = path.replace("\\", "/")
-	
+
 			for name in files:
-	
+
 				for script_name in illegalFiles:
-	
+
 					if name.startswith(script_name) and name.endswith(script_name) :
-		
+
 						script_error_dict[name] = path_str + '/' + script_name
 						script_conflict = True
 
 				for shader_name in illegalShaders:
-					
+
 					if name.startswith(shader_name) and name.endswith(shader_name) :
-						
+
 						shader_error_dict[name] = path_str + '/' + shader_name
 						shader_conflict = True
 
-	
-	return script_conflict, shader_conflict, script_error_dict, shader_error_dict     
+
+	return script_conflict, shader_conflict, script_error_dict, shader_error_dict
 
 
 # ------------------------------------------------------------------------------
@@ -226,7 +226,7 @@ def versionConflictCheck():
 # ------------------------------------------------------------------------------
 
 def detectJTOOLS():
-	''' Will scan for old JTOOLS Versions. If found it usually means some modules need to be removed 
+	''' Will scan for old JTOOLS Versions. If found it usually means some modules need to be removed
 		from its init file'''
 
 	module_wrong = False
@@ -266,10 +266,10 @@ def detectJTOOLS():
 
 
 	return module_wrong, module_path
-								
+
 
 # ------------------------------------------------------------------------------
- 
+
 def resolveScriptConflict(script_input_state):
 	''' Will rename any offending files'''
 
@@ -291,13 +291,13 @@ def resolveScriptConflict(script_input_state):
 	# [2] Shader Error Paths
 	# [3] Script Conflict Exists
 	# [4] Shader Conflict Exists
-	
+
 	# Fixing conflicting scripts
 	for script_files in script_input_paths:
 		script_success_state = False
-		file_exists = os.path.exists(script_files) 
+		file_exists = os.path.exists(script_files)
 		# tests if a .VersionConflict file exists as well:
-		file_conflict_exists = os.path.exists(script_files+'.VersionConflict') 
+		file_conflict_exists = os.path.exists(script_files+'.VersionConflict')
 		if file_exists:
 				if file_conflict_exists:
 					os.remove(script_files+'.VersionConflict')
@@ -310,7 +310,7 @@ def resolveScriptConflict(script_input_state):
 
 		else:
 				script_files = script_files.replace("/", "\\")
-				file_conflict_exists = os.path.exists(script_files+'.VersionConflict') 
+				file_conflict_exists = os.path.exists(script_files+'.VersionConflict')
 				if file_conflict_exists:
 					os.remove(script_files+'.VersionConflict')
 				os.rename(script_files,script_files+'.VersionConflict')
@@ -323,7 +323,7 @@ def resolveScriptConflict(script_input_state):
 
 	for shader_files in shader_input_paths:
 			shader_success_state = False
-			file_exists = os.path.exists(shader_files) 
+			file_exists = os.path.exists(shader_files)
 			if file_exists:
 					os.remove(shader_files)
 					time.sleep(1)
@@ -332,7 +332,7 @@ def resolveScriptConflict(script_input_state):
 					print shader_files
 					print ''
 					shader_success_state = True
-	
+
 			else:
 					shader_files = shader_files.replace("/", "\\")
 					os.remove(shader_files)
@@ -346,13 +346,13 @@ def resolveScriptConflict(script_input_state):
 
 	return script_success_state, shader_success_state, script_input_state[3], script_input_state[4]
 
-	
+
 # ------------------------------------------------------------------------------
 
 def resolveJToolsConflict(jtools_path):
 	''' Will edit jtools __init__ file to remove modules and functions '''
 
-	try: 
+	try:
 		f1 = open(jtools_path, 'r')
 		f2 = open(jtools_path + '._tmp', 'w')
 		for line in f1:
@@ -365,22 +365,22 @@ def resolveJToolsConflict(jtools_path):
 				if function in line:
 					f2.write("# " + line)
 					line_write = True
-	
+
 			if not line_write:
 				f2.write(line)
-	
-	
-		f1.close()	
+
+
+		f1.close()
 		f2.close()
-	
+
 		# Rename old __init__ to __init__.py.VersionConflict, check if exists before
 		file_conflict_exists = False
-		file_conflict_exists = os.path.exists(jtools_path+'.VersionConflict') 
+		file_conflict_exists = os.path.exists(jtools_path+'.VersionConflict')
 		if file_conflict_exists:
 			os.remove(jtools_path+'.VersionConflict')
-	
+
 		os.rename(jtools_path,jtools_path+'.VersionConflict')
-	
+
 		# Rename new __init__ to __init__.py
 		os.rename(jtools_path + '._tmp',jtools_path)
 
@@ -389,7 +389,7 @@ def resolveJToolsConflict(jtools_path):
 	except Exception:
 
 		return False
-		
+
 
 # ------------------------------------------------------------------------------
 
@@ -413,7 +413,7 @@ class versionConflictUI(QtGui.QDialog):
 		self.DescrD =  QtGui.QLabel("Choosing to Fix Automatically will try to rename the offending files")
 		self.cancelBtn = QtGui.QPushButton('Cancel')
 		self.resolveBtn = QtGui.QPushButton('Fix')
-		# Populate 
+		# Populate
 		layoutV1.addWidget(self.DescrA)
 		layoutV1.addWidget(self.DescrB)
 		layoutV1.addWidget(self.DescrC)
@@ -464,12 +464,12 @@ class versionConflictUI(QtGui.QDialog):
 				print ''
 				shaders_resolve = True
 			else:
-				print 'Removal of old Shaders failed: You may not have write permissions to the folder'	
+				print 'Removal of old Shaders failed: You may not have write permissions to the folder'
 				print ''
 				shaders_resolve = False
 		else:
 			shaders_resolve = True
-	
+
 		if jtools_path != '':
 			jtoolsresolve = resolveJToolsConflict(jtools_path)
 			if jtoolsresolve:
@@ -485,7 +485,7 @@ class versionConflictUI(QtGui.QDialog):
 
 		else:
 			mari.utils.message('An error occured during the automatic fix.\nYou may not have write permissions to the Script Folder\nCheck Python Console for details.')
-			
+
 		self.close()
 
 
@@ -496,13 +496,13 @@ def extPackLoad():
 	'''Loads MARI Extension Pack'''
 
 	# Checking MARI Version, if False Error
-	mari_version = checkMariVersion()		
+	mari_version = checkMariVersion()
 	if not mari_version[0]:
 		print ' '
 		print '  Mari Extension Pack ' + current_extension_pack
 		print '     DID NOT LOAD'
 		print ' '
-		print 'Reason: Incompatible Mari Version'	
+		print 'Reason: Incompatible Mari Version'
 		print ' '
 		return
 
@@ -524,7 +524,7 @@ def extPackLoad():
 		jtools_path = jtools[1]
 
 		# if JTOOLS Check returns TRUE means that there are Modules
-		# within its __init__ file that need to be disabled 
+		# within its __init__ file that need to be disabled
 		if jtools[0]:
 			print 'Conflicting Modules from JTOOLS above need to be removed from'
 			print 'File: ' + jtools[1]
@@ -538,19 +538,19 @@ def extPackLoad():
 		print '         See printout above to resolve'
 		print ''
 		print '#####################################################'
-			
+
 
 		versionConflictUI(script_version,jtools_path).exec_()
 
 		return
-	
+
 	else:
-	
+
 		import Tools
 		import Shaders.RegisterCustomShaders
-	
+
 	# End Console Printout success:
-		   
+
 	print '#####################################################'
 	print 'Mari Extension Pack ' + current_extension_pack + ' finished loading successfully'
 	print '#####################################################'

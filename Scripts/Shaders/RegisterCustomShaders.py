@@ -56,7 +56,7 @@ base_path = os.path.dirname(__file__)
 default_shader_path = '%s/NodeLibrary' % base_path
 default_lib_path = '%s/FunctionLibrary' % base_path
 min_mari_version = 20603300
-current_lib_version = '1.11'
+current_lib_version = '1.12'
 current_mari_version = 20103300
 register_shader_version = '2.0'
 
@@ -152,7 +152,7 @@ def loadLibraries():
                 print 'Registered Library: %s' % libName
         except Exception as exc:
                 print 'Error Registering Library: %s : %s' % (libName, str(exc))
-                
+
 
 def loadShaders():
     '''Loads custom shaders'''
@@ -191,7 +191,7 @@ def loadShaders():
             print 'This can cause errors, please use <DEFAULTNAME> Tag'
             print '-----------------------------------------'
             print ''
-            
+
 
         # assume all default procedural type
         shaderType = 'Procedural'
