@@ -37,15 +37,24 @@
 # ------------------------------------------------------------------------------
 
 
-
 import mari
 
 # ------------------------------------------------------------------------------
-# The following are used to find selections no matter where in the Mari Interface:
-# returnTru(),getLayerList(),findLayerSelection()
-#
-# This is to support a) Layered Shader Stacks b) deeply nested stacks (maskstack,adjustment stacks),
-# as well as cases where users are working in pinned or docked channels without it being the current channel
+
+def findParentLayerStack(layer,layer_stack):
+      "Returns the direct parent layer stack of the layer starting the search from the layer_stack"
+      for search_layer in layer_stack.layerList():
+          if search_layer==layer:
+              return layer_stack
+          if search_layer.isGroupLayer():
+              result = findParentLayerStack(layer,search_layer.groupStack())
+              if result is not None:
+                  return result
+          elif search_layer.hasMaskStack():
+              result = findParentLayerStack(layer,search_layer.maskStack())
+              if result is not None:
+                  return result
+      return None
 
 # ------------------------------------------------------------------------------
 
@@ -56,60 +65,78 @@ def returnTrue(layer):
 # ------------------------------------------------------------------------------
 def getLayerList(layer_list, criterionFn):
     """Returns a list of all of the layers in the stack that match the given criterion function, including substacks."""
-    matching = []
+    matching_layer = []
     for layer in layer_list:
         if criterionFn(layer):
-            matching.append(layer)
+            matching_layer.append(layer)
         if hasattr(layer, 'layerStack'):
-            matching.extend(getLayerList(layer.layerStack().layerList(), criterionFn))
+            matching_layer.extend(getLayerList(layer.layerStack().layerList(), criterionFn))
         if layer.hasMaskStack():
-            matching.extend(getLayerList(layer.maskStack().layerList(), criterionFn))
+            matching_layer.extend(getLayerList(layer.maskStack().layerList(), criterionFn))
         if hasattr(layer, 'hasAdjustmentStack') and layer.hasAdjustmentStack():
-            matching.extend(getLayerList(layer.adjustmentStack().layerList(), criterionFn))
+            matching_layer.extend(getLayerList(layer.adjustmentStack().layerList(), criterionFn))
 
-    return matching
+    return matching_layer
 # ------------------------------------------------------------------------------
 
 def findLayerSelection():
-    """Searches for the current selection if mari.current.layer is not the same as layer.isSelected"""
+    """Searches for the current selection if mari.current.layer is not the same as layer.isSelected and returns a full list of layers of parent stacks"""
 
     curGeo = mari.geo.current()
     curChannel = curGeo.currentChannel()
     channels = curGeo.channelList()
     curLayer = mari.current.layer()
+
     layers = ()
     layerList = ()
-    chn_layerList = ()
+    selectionList = []
     layerSelect = False
+    parentLayers = []
 
+
+    # If the current layer is selected I am assuming that the user has the channel selected as well
     if curLayer.isSelected():
-
-        layerSelect = True
-        # Stepping through all substacks of current channel so it works in maskstacks etc.
         layerList = curChannel.layerList()
         layers = getLayerList(layerList,returnTrue)
-        chn_layerList = layers
 
+        # scan layers in channels for selection and append to selectionList
+        for layer in layers:
+            if layer.isSelected():
+                selectionList.append(layer)
+                layerSelect = True
+
+    # If the current layer is not selected go hunting for the selection in all channels
     else:
-
         for channel in channels:
 
             layerList = channel.layerList()
             layers = getLayerList(layerList,returnTrue)
 
+            # scan layers in channels for selection and append to selectionList
             for layer in layers:
-
                 if layer.isSelected():
-                    chn_layerList = layers
+                    selectionList.append(layer)
                     curChannel = channel
                     layerSelect = True
 
 
+    # if nothing found:
     if not layerSelect:
         mari.utils.message('No Layer Selection found. \n \n Please select at least one Layer.')
+        return
 
 
-    return curChannel,chn_layerList
+    # For each selected layer find the parent layerStack. For example for layers in groups this means the group
+    for layer in selectionList:
+        parents = findParentLayerStack(layer,curChannel)
+
+        # for each parent LayerStack generate a full list of its layers and append one by one to parentLayers variable
+        layer_list = parents.layerList()
+        for layer in layer_list:
+            parentLayers.append(layer)
+
+
+    return parentLayers
 
 # ------------------------------------------------------------------------------
 
@@ -133,8 +160,7 @@ def layerData():
         mari.utils.message('No project currently open')
         return -1
 
-    geo_data = findLayerSelection()
-    layerList = list (geo_data[1])
+    layerList = findLayerSelection()
 
     layers = [ layer for layer in layerList if not layer.isGroupLayer() ]
     selLayers = [ layer for layer in layers if layer.isSelected() ]
@@ -144,22 +170,7 @@ def layerData():
     selGroups = [ group for group in groups if group.isSelected() ]
     unSelGroups = [ group for group in groups if not group.isSelected() ]
 
-    if len(unSelGroups) != 0:
 
-        for unSelGroup in unSelGroups:
-            layersInGroup = list (getLayersInGroup(unSelGroup))
-
-            for layer in layersInGroup:
-                if layer.isGroupLayer():
-                    if layer.isSelected():
-                        selGroups.append(layer)
-                    else:
-                        unSelGroups.append(layer)
-                else:
-                    if layer.isSelected():
-                        selLayers.append(layer)
-                    else:
-                        unSelLayers.append(layer)
     return
 
 def toggleSelVisibility():
@@ -170,6 +181,9 @@ def toggleSelVisibility():
         mari.history.startMacro('Toggle Selected Layer Visibility')
         mari.app.setWaitCursor()
 
+        # Turning off viewport for better perfromance
+        deactivateViewportToggle = mari.actions.find('/Mari/Canvas/Toggle Shader Compiling')
+        deactivateViewportToggle.trigger()
         for layer in selLayers:
             layer.setVisibility(not layer.isVisible())
         for group in selGroups:
@@ -177,6 +191,7 @@ def toggleSelVisibility():
 
         mari.app.restoreCursor()
         mari.history.stopMacro()
+        deactivateViewportToggle.trigger()
 
 
     return
@@ -189,6 +204,10 @@ def toggleUnselVisibility():
         mari.history.startMacro('Toggle Unselected Layer Visibility')
         mari.app.setWaitCursor()
 
+        # Turning off viewport for better perfromance
+        deactivateViewportToggle = mari.actions.find('/Mari/Canvas/Toggle Shader Compiling')
+        deactivateViewportToggle.trigger()
+
         for layer in unSelLayers:
             layer.setVisibility(not layer.isVisible())
         for group in unSelGroups:
@@ -196,6 +215,7 @@ def toggleUnselVisibility():
 
         mari.app.restoreCursor()
         mari.history.stopMacro()
+        deactivateViewportToggle.trigger()
 
 
     return
@@ -208,6 +228,10 @@ def toggleSelLock():
         mari.history.startMacro('Toggle Selected Layer Lock')
         mari.app.setWaitCursor()
 
+        # Turning off viewport for better perfromance
+        deactivateViewportToggle = mari.actions.find('/Mari/Canvas/Toggle Shader Compiling')
+        deactivateViewportToggle.trigger()
+
         for layer in selLayers:
             layer.setLocked(not layer.isLocked())
         for group in selGroups:
@@ -215,6 +239,7 @@ def toggleSelLock():
 
         mari.app.restoreCursor()
         mari.history.stopMacro()
+        deactivateViewportToggle.trigger()
 
 
     return
@@ -227,6 +252,10 @@ def toggleUnselLock():
         mari.history.startMacro('Toggle Unselected Layer Lock')
         mari.app.setWaitCursor()
 
+        # Turning off viewport for better perfromance
+        deactivateViewportToggle = mari.actions.find('/Mari/Canvas/Toggle Shader Compiling')
+        deactivateViewportToggle.trigger()
+
         for layer in unSelLayers:
             layer.setLocked(not layer.isLocked())
 
@@ -235,6 +264,7 @@ def toggleUnselLock():
 
         mari.app.restoreCursor()
         mari.history.stopMacro()
+        deactivateViewportToggle.trigger()
 
 
     return
