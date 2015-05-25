@@ -140,6 +140,16 @@ mask per layer
 into a mask stack and adding the channel mask or in case of existing mask stacks adding to it.
 
 
+######Toggle Unselected Visibility / Toggle Unselected Lock
+
+'Toggle Unselected Visibility' & 'Toggle Unselected Lock' will now work hierchary based:
+
+    - selecting a group layer or a layer outside of a group will toggle only unselected layers and groups on the same hierchary depth.
+    - selecting a layer within a group will only toggle unselected layers & groups in the same group.
+
+
+
+
 ##Bugfixes:
 
 #####PATCHES
