@@ -181,6 +181,9 @@ def toggleSelVisibility():
         mari.history.startMacro('Toggle Selected Layer Visibility')
         mari.app.setWaitCursor()
 
+        # Turning off viewport for better perfromance
+        deactivateViewportToggle = mari.actions.find('/Mari/Canvas/Toggle Shader Compiling')
+        deactivateViewportToggle.trigger()
         for layer in selLayers:
             layer.setVisibility(not layer.isVisible())
         for group in selGroups:
@@ -188,6 +191,7 @@ def toggleSelVisibility():
 
         mari.app.restoreCursor()
         mari.history.stopMacro()
+        deactivateViewportToggle.trigger()
 
 
     return
@@ -200,6 +204,10 @@ def toggleUnselVisibility():
         mari.history.startMacro('Toggle Unselected Layer Visibility')
         mari.app.setWaitCursor()
 
+        # Turning off viewport for better perfromance
+        deactivateViewportToggle = mari.actions.find('/Mari/Canvas/Toggle Shader Compiling')
+        deactivateViewportToggle.trigger()
+
         for layer in unSelLayers:
             layer.setVisibility(not layer.isVisible())
         for group in unSelGroups:
@@ -207,6 +215,7 @@ def toggleUnselVisibility():
 
         mari.app.restoreCursor()
         mari.history.stopMacro()
+        deactivateViewportToggle.trigger()
 
 
     return
@@ -219,6 +228,10 @@ def toggleSelLock():
         mari.history.startMacro('Toggle Selected Layer Lock')
         mari.app.setWaitCursor()
 
+        # Turning off viewport for better perfromance
+        deactivateViewportToggle = mari.actions.find('/Mari/Canvas/Toggle Shader Compiling')
+        deactivateViewportToggle.trigger()
+
         for layer in selLayers:
             layer.setLocked(not layer.isLocked())
         for group in selGroups:
@@ -226,6 +239,7 @@ def toggleSelLock():
 
         mari.app.restoreCursor()
         mari.history.stopMacro()
+        deactivateViewportToggle.trigger()
 
 
     return
@@ -238,6 +252,10 @@ def toggleUnselLock():
         mari.history.startMacro('Toggle Unselected Layer Lock')
         mari.app.setWaitCursor()
 
+        # Turning off viewport for better perfromance
+        deactivateViewportToggle = mari.actions.find('/Mari/Canvas/Toggle Shader Compiling')
+        deactivateViewportToggle.trigger()
+
         for layer in unSelLayers:
             layer.setLocked(not layer.isLocked())
 
@@ -246,6 +264,7 @@ def toggleUnselLock():
 
         mari.app.restoreCursor()
         mari.history.stopMacro()
+        deactivateViewportToggle.trigger()
 
 
     return
