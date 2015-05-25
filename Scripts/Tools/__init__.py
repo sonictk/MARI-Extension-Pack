@@ -211,7 +211,7 @@ tools_menu.createToolsMenu()
 print "Loading Tool Additions ..."
 print '-----------------------------------------'
 print 'Lighting Toolbar Additions (1): '
-print 'Pause Viewport Update'
+print 'Shading Menu: Pause Viewport Update'
 print '-----------------------------------------'
 print 'Channel Palette Additions (4): '
 print 'Channel Menu: Export Custom Selection'
