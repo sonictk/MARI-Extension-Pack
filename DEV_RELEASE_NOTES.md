@@ -150,6 +150,8 @@ into a mask stack and adding the channel mask or in case of existing mask stacks
 UDIM Numbers were found (for example when a plane is touching the
 UV borders)
 
+Added logic to prevent PatchToImageManager to create channel duplicates if
+selected channel included channel layers
 
 #####LAYERS
 
