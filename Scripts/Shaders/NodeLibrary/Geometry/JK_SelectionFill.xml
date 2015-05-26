@@ -53,7 +53,9 @@
     <Inputs>
     </Inputs>
   <Attributes>
-        <Attribute Name="color" PrettyName="Color" Group="" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(1,1,1,1)</Attribute>
+        <Attribute Name="color" PrettyName="Fill Color" Group="" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(1,1,1,1)</Attribute>
+        <Attribute Name="Opacity" PrettyName="Fill Unselected" Group="Unselected" Type="bool" Min="true" Max="false">false</Attribute>
+        <Attribute Name="bgcolor" PrettyName="Unselected Color" Group="Unselected" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(0,0,0,1)</Attribute>
   </Attributes>
       <Contexts>
         <Context Type="NodeGraphView">
@@ -63,10 +65,11 @@
         <Context Type="GLSL">
             <Shader>
                 <Body><![CDATA[
-#if defined MRI_SHADER_FRAGMENT
-        Output = $color;
-        Output.a *= float(_State.Selected);
-#endif
+        #if defined MRI_SHADER_FRAGMENT
+        vec4 bgcolor = $bgcolor;
+        bgcolor.a *= float($Opacity);
+        Output = mix(bgcolor,$color,float(_State.Selected));
+        #endif
                 ]]></Body>
             </Shader>
         </Context>
