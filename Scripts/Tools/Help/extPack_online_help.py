@@ -38,5 +38,5 @@ import webbrowser as web
 
 def openExtPackHelp():
 
-	url = 'http://www.campi3d.com/External/MariExtensionPack/help/MARI%20Extension%20Pack.html'
+	url = 'http://www.campi3d.com/External/MariExtensionPack/userGuide21/MARIEXTENSIONPACK1.html'
 	web.open(url, new=2, autoraise=True)
