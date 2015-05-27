@@ -125,32 +125,37 @@ def makeChannelLayer(sourceChannel, mode, invert):
             mari.history.startMacro('Create channel mask')
 
             for layer in currentSelection:
+                try:
 
-                layerName = layer.name()
-                currentLayer = layer
-                existingLayer = ()
+                    layer.makeCurrent()
+                    layerName = layer.name()
+                    currentLayer = layer
+                    existingLayer = ()
 
-                ## New Layer Mask Stack.
-                ## If mask exists convert, if stack exists keep, else make new stack
-                if currentLayer.hasMaskStack():
-                    layerMaskStack = currentLayer.maskStack()
-                elif currentLayer.hasMask():
-                    layerMaskStack = currentLayer.makeMaskStack()
-                else:
-                    layerMaskStack = currentLayer.makeMaskStack()
-                    existingLayer = layerMaskStack.layerList()
+                    ## New Layer Mask Stack.
+                    ## If mask exists convert, if stack exists keep, else make new stack
+                    if currentLayer.hasMaskStack():
+                        layerMaskStack = currentLayer.maskStack()
+                    elif currentLayer.hasMask():
+                        layerMaskStack = currentLayer.makeMaskStack()
+                    else:
+                        layerMaskStack = currentLayer.makeMaskStack()
+                        existingLayer = layerMaskStack.layerList()
 
-                ## Create Mask Channel Layer
+                    ## Create Mask Channel Layer
 
-                for channel in sourceChannel:
+                    for channel in sourceChannel:
 
-                    channelLayerName = channel.name()
-                    maskChannelLayerName = '%s(Shared Channel)' % channelLayerName
-                    layerMaskStack.createChannelLayer(maskChannelLayerName, channel)
-                    layerMaskStack.removeLayers(existingLayer)
+                        channelLayerName = channel.name()
+                        maskChannelLayerName = '%s(Shared Channel)' % channelLayerName
+                        layerMaskStack.createChannelLayer(maskChannelLayerName, channel)
+                        layerMaskStack.removeLayers(existingLayer)
 
-                if invert == 1:
-                    layerMaskStack.createAdjustmentLayer("Invert","Filter/Invert")
+                    if invert == 1:
+                        layerMaskStack.createAdjustmentLayer("Invert","Filter/Invert")
+
+                except Exception:
+                    pass
 
             mari.history.stopMacro()
 
