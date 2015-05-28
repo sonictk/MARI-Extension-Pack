@@ -178,7 +178,7 @@
 
 
                  // Initalizing Attributes, necessary since <Default> on INPUTS doesn't do it
-                 vec4 INIT_V4 =   $diffuse_color; INIT_V4 = $specCol_color; INIT_V4 = $normal_color; INIT_V4 = $addColor_color;
+                 vec4 INIT_V4 =   $diffuse_color; INIT_V4 = $specCol_color; INIT_V4 = $normal_color;
                  float INIT_FL =  $diffuse_float; INIT_FL = $roughness_float; INIT_FL = $reflectance_float; INIT_FL = $specCol_float;
                             INIT_FL = $disp_float; INIT_FL = $normal_float;
 
