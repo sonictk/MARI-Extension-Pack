@@ -51,15 +51,12 @@
         <Input Name="specCol"/>
         <Input Name="Disp"/>
         <Input Name="Normal"/>
-        <Input Name="RGBA"/>
-        <Input Name="FLOAT" />
     </Inputs>
     <Outputs>
         <Output Name="OUT_A" />
         <Output Name="OUT_B" />
         <Output Name="OUT_C" />
         <Output Name="OUT_D" />
-        <Output Name="OUT_E" />
     </Outputs>
     <Attributes>
     <!--===============================================================================================================-->
@@ -86,14 +83,6 @@
     <Attribute Name="normal_float" PrettyName="Float" Group="Handle Normal (RGBA)" Type="double">1.0</Attribute>
     <Attribute Name="normal_clamp" PrettyName="Clamp Input" Group="Handle Normal (RGBA)" Type="bool" Min="false" Max="true">true</Attribute>
     <!--===============================================================================================================-->
-    <Attribute Name="addColor_color" PrettyName="Color" Group="Handle Additional Color (RGBA)" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(1,1,1,1)</Attribute>
-    <Attribute Name="addColor_float" PrettyName="Float" Group="Handle Additional Color (RGBA)" Type="double">1.0</Attribute>
-    <Attribute Name="addColor_sRGB" PrettyName="sRgb Input" Group="Handle Additional Color (RGBA)" Type="bool" Min="false" Max="true">false</Attribute>
-    <Attribute Name="addColor_clamp" PrettyName="Clamp Input" Group="Handle Additional Color (RGBA)" Type="bool" Min="false" Max="true">true</Attribute>
-    <!--===============================================================================================================-->
-    <Attribute Name="addFloat_float" PrettyName="Float" Group="Handle Additional Float (float)" Type="double">1.0</Attribute>
-    <Attribute Name="addFloat_clamp" PrettyName="Clamp Input" Group="Handle Additional Float (float)" Type="bool" Min="false" Max="true">false</Attribute>
-    <!--===============================================================================================================-->
 </Attributes>
  <Groups>
      <Group Name="Handle Diffuse (RGBA)" Expanded="false"></Group>
@@ -102,8 +91,6 @@
      <Group Name="Handle Specular Color (RGBA)" Expanded="false"></Group>
      <Group Name="Handle Displacement/Bump (float)" Expanded="false"></Group>
      <Group Name="Handle Normal (RGBA)" Expanded="false"></Group>
-     <Group Name="Handle Additional Color (RGBA)" Expanded="false"></Group>
-     <Group Name="Handle Additional Float (float)" Expanded="false"></Group>
  </Groups>
  <Contexts>
         <Context Type="NodeGraphView">
@@ -115,15 +102,10 @@
                 <Input Name="specCol"><Pos>-240,-150</Pos></Input>
                 <Input Name="Disp"><Pos>60,-150</Pos></Input>
                 <Input Name="Normal"><Pos>120,-150</Pos></Input>
-                <Input Name="RGBA"><Pos>180,-150</Pos></Input>
-                <Input Name="FLOAT"><Pos>240,-150</Pos></Input>
-
-
             </Inputs>
 
             <Outputs>
 
-                <Output Name="OUT_E"><Pos>200,40</Pos></Output>
                 <Output Name="OUT_D"><Pos>200,20</Pos></Output>
                 <Output Name="OUT_C"><Pos>200,-20</Pos></Output>
                 <Output Name="OUT_B"><Pos>200,-40</Pos></Output>
@@ -140,8 +122,6 @@
                 <Input Name="specCol"><Default>$specCol_color*vec4($specCol_float,$specCol_float,$specCol_float,1.0)</Default></Input>
                 <Input Name="Disp"><Default>vec4($disp_float,$disp_float,$disp_float,1.0)</Default></Input>
                 <Input Name="Normal"><Default>$normal_color*vec4($normal_float,$normal_float,$normal_float,1.0)</Default></Input>
-                <Input Name="RGBA"><Default>$addColor_color*vec4($addColor_float,$addColor_float,$addColor_float,1.0)</Default></Input>
-                <Input Name="FLOAT"><Default>vec4($addFloat_float,$addFloat_float,$addFloat_float,1.0)</Default></Input>
                 </Inputs>
             </Shader>
             <Shader>
@@ -150,7 +130,7 @@
            // Initalizing Attributes, necessary since <Default> on INPUTS doesn't do it
            vec4 INIT_V4 =   $diffuse_color; INIT_V4 = $specCol_color; INIT_V4 = $normal_color; INIT_V4 = $addColor_color;
            float INIT_FL =  $diffuse_float; INIT_FL = $roughness_float; INIT_FL = $reflectance_float; INIT_FL = $specCol_float;
-                            INIT_FL = $disp_float; INIT_FL = $normal_float; INIT_FL = $addColor_float; INIT_FL = $addFloat_float;
+                            INIT_FL = $disp_float; INIT_FL = $normal_float;
 
 
 
@@ -161,15 +141,14 @@
             vec4 specCol_handle = #specCol ;
             vec4 disp_handle = #Disp ;
             vec4 normal_handle = #Normal ;
-            vec4 addColor_handle = #RGBA ;
-            vec4 addFloat_handle = #FLOAT ;
+
 
 
 
             // sRGB2Linear Conversion where checked
             if ($diffuse_sRGB) {diffuse_handle.rgb = sRgb2Linear(diffuse_handle.rgb); }
             if ($specCol_sRGB) {specCol_handle.rgb = sRgb2Linear(specCol_handle.rgb); }
-            if ($addColor_sRGB) {addColor_handle.rgb = sRgb2Linear(addColor_handle.rgb);}
+
 
 
             // Blending between clamped and unclamped.
@@ -181,17 +160,16 @@
             vec4 specCol = mix(specCol_handle,clamp(specCol_handle,vec4(0.0),vec4(1.0)),float($specCol_clamp));
             vec4 disp = mix(disp_handle,clamp(disp_handle,vec4(0.0),vec4(1.0)),float($disp_clamp));
             vec4 normal = mix(normal_handle,clamp(normal_handle,vec4(0.0),vec4(1.0)),float($normal_clamp));
-            vec4 addColor = mix(addColor_handle,clamp(addColor_handle,vec4(0.0),vec4(1.0)),float($addColor_clamp));
-            vec4 addFloat = mix(addFloat_handle,clamp(addFloat_handle,vec4(0.0),vec4(1.0)),float($addFloat_clamp));
+
 
 
 
             // Output to Handles. Roughness,reflectance & disp are carried on signle variable
             OUT_A = diffuse;
-            OUT_B = vec4(specRough.r,specRefl.r,disp.r,addFloat.r);
+            OUT_B = vec4(specRough.r,specRefl.r,disp.r,1.0);
             OUT_C = normal;
-            OUT_D = addColor;
-            OUT_E = specCol;
+            OUT_D = specCol;
+
 
 
 

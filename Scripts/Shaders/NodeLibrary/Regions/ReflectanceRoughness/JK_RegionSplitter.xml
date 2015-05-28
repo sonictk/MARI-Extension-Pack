@@ -49,10 +49,9 @@
         <Input Name="IN_B" PreferredInput='2'/>
         <Input Name="IN_C" PreferredInput='3'/>
         <Input Name="IN_D" PreferredInput='4'/>
-        <Input Name="IN_E" PreferredInput='4'/>
     </Inputs>
     <Attributes>
-    <Attribute Name="Value" PrettyName="Region Value" Group="" Type="stringlist">Please Select,Please Select,Diffuse (RGBA),SpecRoughness (Float),SpecReflectance (Float),SpecColor (RGBA),Displacement/Bump (Float),Normal (RGBA),Additional Color (RGBA),Addtional Float (Float)</Attribute>
+    <Attribute Name="Value" PrettyName="Region Value" Group="" Type="stringlist">Please Select,Please Select,Diffuse (RGBA),SpecRoughness (Float),SpecReflectance (Float),SpecColor (RGBA),Displacement/Bump (Float),Normal (RGBA)</Attribute>
     <Attribute Name="Aclamp" PrettyName="Clamp Attribute Output" Type="bool" Min="false" Max="true">false</Attribute>
 
     </Attributes>
@@ -64,7 +63,6 @@
                 <Input Name="IN_B"><Pos>-200,-40</Pos></Input>
                 <Input Name="IN_C"><Pos>-200,-20</Pos></Input>
                 <Input Name="IN_D"><Pos>-200,40</Pos></Input>
-                <Input Name="IN_E"><Pos>-200,60</Pos></Input>
             </Inputs>
 
             <Outputs>
@@ -78,7 +76,6 @@
                 <Input Name="IN_B"><Default>vec4(1.0)</Default></Input>
                 <Input Name="IN_C"><Default>vec4(1.0)</Default></Input>
                 <Input Name="IN_D"><Default>vec4(1.0)</Default></Input>
-                <Input Name="IN_E"><Default>vec4(1.0)</Default></Input>
                 </Inputs>
 
             </Shader>
@@ -126,16 +123,6 @@
             else if($Value==6) //Normal
             {
               result = #IN_C;
-              result = mix(result,clamp(result,zero,one),clampMixer);
-            }
-            else if($Value==7) // Additional Color
-            {
-              result = #IN_D;
-              result = mix(result,clamp(result,zero,one),clampMixer);
-            }
-            else if($Value==8) // Additional Float
-            {
-              result = vec4(#IN_B.a,#IN_B.a,#IN_B.a,1.0);
               result = mix(result,clamp(result,zero,one),clampMixer);
             }
 
