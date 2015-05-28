@@ -112,7 +112,7 @@
     <Attribute Name="idPick" PrettyName="On/Off" Group="Material Region ID" Type="bool" Min="false" Max="true">false</Attribute>
     <Attribute Name="idColor" PrettyName="Mask ID" Group="Material Region ID" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(0.0,0.0,0.0,1)</Attribute>
     <Attribute Name="idError" PrettyName="Max Error" Group="Material Region ID" Type="double" Min="0.0" Max="0.5">0.1</Attribute>
-    <Attribute Name="idColor_sRGB" PrettyName="sRgb Input" Group="Material Region ID" Type="bool" Min="false" Max="true">false</Attribute>
+    <Attribute Name="idColor_sRGB" PrettyName="sRgb Input" Group="Material Region ID" Type="bool" Min="false" Max="true">true</Attribute>
     <!--===============================================================================================================-->
 </Attributes>
  <Groups>
@@ -232,7 +232,7 @@
                 vec4 Roughness = $roughness_BlendMode(roughness_Handle,specRough_clamp,roughness_mix);
                 vec4 Reflectance_Handle = vec4(#IN_B.g,#IN_B.g,#IN_B.g,1.0);
                 vec4 Reflectance = $reflectance_BlendMode(Reflectance_Handle,specRefl_clamp,reflectance_mix);
-                vec4 specCol = $specCol_BlendMode(#IN_E,specCol_clamp,specCol_mix);
+                vec4 specCol = $specCol_BlendMode(#IN_D,specCol_clamp,specCol_mix);
                 vec4 disp_Handle = vec4(#IN_B.b,#IN_B.b,#IN_B.b,1.0);
                 vec4 Disp = $disp_BlendMode(disp_Handle,disp_clamp,disp_mix);
                 vec4 Normal = $normal_BlendMode(#IN_C,normal_clamp,normal_mix);

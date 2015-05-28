@@ -111,7 +111,7 @@
 
             else if($Value==4) // SpecColor
             {
-              result = #IN_E;
+              result = #IN_D;
               result = mix(result,clamp(result,zero,one),clampMixer);
             }
 
