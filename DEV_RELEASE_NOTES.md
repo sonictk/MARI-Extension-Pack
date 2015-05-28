@@ -48,6 +48,12 @@ the Procedural Options.
 A node to add detail to mask edges.
 This Node is only available in the Nodegraph.
 
+######Mix Node
+Very simple mix node to mix two colors by a mask. This is very similar to the 'merge' node but
+a LOT lighter and faster in performance since you don't need to carry around blend modes, advanced blendmodes
+etc. when you don't need them. For convenience a color A and color B can be set on the node. They will be ignored
+if the corresponding handles are mapped in the nodegraph.
+
 
 #####Material Nodes (Nodegraph only):
 
