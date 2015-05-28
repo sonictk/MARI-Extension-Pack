@@ -1,6 +1,6 @@
 <!--
 ================================================================================
-== Transition
+== Mix
 == Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
 ================================================================================
 == File: JK_Mix.xml
@@ -50,10 +50,15 @@
         <Input Name="Mix"></Input>
     </Inputs>
     <Attributes>
+        <Attribute Name="colorA" PrettyName="Color A" Type="color">(1.0,1.0,1.0,1)</Attribute>
+        <Attribute Name="colorB" PrettyName="Color B" Type="color">(0.0,0.0,0.0,1)</Attribute>
 </Attributes>
  <Contexts>
         <Context Type="NodeGraphView">
             <Inputs>
+                <Input Name="A" ><Pos>-120,-10</Pos></Input>
+                <Input Name="B" ><Pos>-120,10</Pos></Input>
+                <Input Name="Mix"><Pos>120,0</Pos></Input>
             </Inputs>
         </Context>
         <Context Type="GLSL">
@@ -84,5 +89,4 @@
         </Context>
     </Contexts>
 </Node>
-
 
