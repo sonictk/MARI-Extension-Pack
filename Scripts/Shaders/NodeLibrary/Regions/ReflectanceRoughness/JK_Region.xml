@@ -103,7 +103,7 @@
     <Attribute Name="disp_clamp" PrettyName="Clamp Input" Group="Handle Displacement/Bump (float)" Type="bool" Min="false" Max="true">false</Attribute>
     <!--===============================================================================================================-->
     <Attribute Name="normal_Use" PrettyName="On/Off" Group="Handle Normal (RGBA)" Type="bool" Min="false" Max="true">false</Attribute>
-    <Attribute Name="normal_color" PrettyName="Color" Group="Handle Normal (RGBA)" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(0.5,0.5,1.0,1.0)</Attribute>
+    <Attribute Name="normal_color" PrettyName="Color" Group="Handle Normal (RGBA)" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(0.216,0.216,1.0,1.0)</Attribute>
     <Attribute Name="normal_float" PrettyName="Float" Group="Handle Normal (RGBA)" Type="double">1.0</Attribute>
     <Attribute Name="normal_mix" PrettyName="Mix" Group="Handle Normal (RGBA)" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
     <Attribute Name="normal_BlendMode" PrettyName="Mode" Group="Handle Normal (RGBA)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
