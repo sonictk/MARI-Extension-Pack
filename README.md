@@ -1,10 +1,14 @@
-#MARI EXTENSION PACK 2.0
+#MARI EXTENSION PACK 2.1
 
 Copyright (c) 2015 www.mari.ideascale.com. All Rights Reserved.
 
 
 ##Version:
-Extension Pack :  2.0  //  MARI Function Library: 1.11
+Extension Pack :  2.1  //  MARI Function Library: 1.12
+
+##What's new in 2.1:
+
+http://www.campi3d.com/External/MariExtensionPack/userGuide21/WhatsnewinExtensionPack21.html
 
 
 ##Info
@@ -17,7 +21,7 @@ This includes all User Content including Python Scripts and user created Nodes
 
 We have adopted the git flow branching model.
 
-A comprehensive Step-by-Step is available on the Twiki: 
+A comprehensive Step-by-Step is available on the Twiki:
 https://github.com/campi3d/IdeascaleNodePack/wiki/Making-a-change---step-by-step-Tutorial
 
 
@@ -29,14 +33,14 @@ so we have some sort of easy way to assemble release information.
 
 Refer to SDK site of the help
 
-http://www.campi3d.com/External/MariExtensionPack/help/MARI%20Extension%20Pack.html?SDK.html
+http://www.campi3d.com/External/MariExtensionPack/userGuide21/SDK.html
 
 
 ##Documentation
 
 Complete online help is available here
 
-http://www.campi3d.com/External/MariExtensionPack/help/MARI%20Extension%20Pack.html
+http://www.campi3d.com/External/MariExtensionPack/userGuide21/MARIEXTENSIONPACK1.html
 
 
 The raw authoring files are located in the Help folder.
