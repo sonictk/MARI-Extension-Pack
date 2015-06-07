@@ -147,7 +147,7 @@
                     noise_val += abs(noise(scaled_seed))/pow(6.0-4.0*sharpness,float(i));
                 }
 
-                noise_val = mix(noise_val,clamp(noise_val,vec4(0.0),vec4(1.0)),float($clamp));
+                noise_val = mix(noise_val,clamp(noise_val,0.0,1.0),float($clamp));
 
 
                 //invert result

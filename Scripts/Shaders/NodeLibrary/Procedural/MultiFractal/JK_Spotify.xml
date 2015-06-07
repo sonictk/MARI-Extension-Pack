@@ -263,7 +263,7 @@
                     result += signal * exponentArray[i];
                 }
 
-                result =  mix(result,clamp(result,vec4(0.0),vec4(1.0)),float($useClamp));
+                result =  mix(result,clamp(result,0.0,1.0),float($useClamp));
                 float Threshold = softThreshold(#Threshold.r,$thresholdBound,result);
                 float resultInv = (1.0 - Threshold);
                 result = mix(resultInv,Threshold,float($invertR));

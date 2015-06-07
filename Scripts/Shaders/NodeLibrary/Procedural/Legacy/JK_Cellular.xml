@@ -133,7 +133,7 @@
                 // noise variables
                 vec3 scaled_seed = P / size_pow;
                 float noise_val = cellular(scaled_seed, $Distance)[$Type];
-                noise_val = mix(noise_val,clamp(noise_val,vec4(0.0),vec4(1.0)),float($clamp));
+                noise_val = mix(noise_val,clamp(noise_val,0.0,1.0),float($clamp));
 
                 // invert result
                 float _invertResult = float($Invert);
