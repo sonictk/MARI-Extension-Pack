@@ -19,7 +19,17 @@ While Node Handles are mapped, Node Sliders are ignored.
 
 ######RGB to HSV + HSV to RGB
 
-Two new nodes were added to Layerstack & Nodegraph to convert values between HSV & RGB.
+Two new nodes were added to Layerstack & Nodegraph to convert values between RGB + HSV (Hue/Saturation/Value).
+
+######RGB to HSL + HSL to RGB
+
+Two new nodes were added to Layerstack & Nodegraph to convert values between RGB + HSL (Hue/Saturation/Lightness).
+
+#####Basic Layer:
+
+######Float
+
+A simple node allowing you to input a value directly
 
 #####Geometry Procedurals:
 

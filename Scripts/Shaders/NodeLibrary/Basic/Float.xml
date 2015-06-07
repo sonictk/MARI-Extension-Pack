@@ -1,16 +1,14 @@
 <!--
 ================================================================================
-== HSV to RGB
-== Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
+== Float
+== Copyright (c) 2015 Jens Kafitz & TheFoundry. All Rights Reserved.
 ================================================================================
-== File: JK_HSV2RGB.xml
-== Description: Converts a vec4 HSV,A to a vec4 RGB,A
+== File: float.xml
+== Description: A simple float layer
 ================================================================================
 == Author: Jens Kafitz
-== Web: www.campi3d.com
-== Email: MariIdeas@campi3d.com
 ================================================================================
-== Modified Date: April, 16 2015
+== Modified Date: June, 7 2015
 ================================================================================
 == Redistribution and use in source and binary forms, with or without
 == modification, are permitted provided that the following conditions are met:
@@ -40,36 +38,24 @@
 ================================================================================
 -->
 
+
 <Node>
-    <ID>JK_HSV2RGB</ID>
-    <DefaultName>HSV to RGB</DefaultName>
-    <Category>Filter/Custom/Utils/</Category>
-    <Tags>
-        <Tag>_adjustment</Tag>
-    </Tags>
-    <Inputs>
-        <Input Name="Input"></Input>
-    </Inputs>
+  <ID>JK_Float</ID>
+  <DefaultName>Float</DefaultName>
+  <Category>Basic/</Category>
+  <Cost>0.001</Cost>
     <Attributes>
+        <Attribute Name="value" PrettyName="Float Value" Group="" Type="float" >0.5</Attribute>
     </Attributes>
     <Contexts>
-        <Context Type="NodeGraphView">
-            <Inputs>
-                <Input Name="Input"><Pos>0,-50</Pos></Input>
-            </Inputs>
-        </Context>
         <Context Type="GLSL">
-            <Shader>
-                <Inputs>
-                    <Input Name="Input"><Default>vec4(1,1,1,1)</Default></Input>
-                </Inputs>
-                <Body><![CDATA[
-
-                Output = mriHsv2Rgb(#Input);
-                Output.a = #Input.a;
-
-                ]]></Body>
-            </Shader>
-        </Context>
-    </Contexts>
+        <Shader>
+           <Body><![CDATA[
+                Output = vec4($value,$value,$value,1.0);
+           ]]>
+           </Body>
+        </Shader>
+      </Context>
+  </Contexts>
 </Node>
+

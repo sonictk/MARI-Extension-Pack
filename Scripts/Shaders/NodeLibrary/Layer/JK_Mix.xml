@@ -52,6 +52,7 @@
     <Attributes>
         <Attribute Name="colorA" PrettyName="Color A" Type="color">(1.0,1.0,1.0,1)</Attribute>
         <Attribute Name="colorB" PrettyName="Color B" Type="color">(0.0,0.0,0.0,1)</Attribute>
+        <Attribute Name="mixer"  PrettyName="Mix" Type="float" Min="0" Max="1">0.5</Attribute>
 </Attributes>
  <Contexts>
         <Context Type="NodeGraphView">
@@ -66,21 +67,22 @@
                 <Inputs>
                 <Input Name="A" ><Default>$colorA</Default></Input>
                 <Input Name="B" ><Default>$colorB</Default></Input>
-                <Input Name="Mix"><Default>vec4(0.0)</Default></Input>
+                <Input Name="Mix"><Default>vec4($mixer)</Default></Input>
                 </Inputs>
             </Shader>
             <Shader ShaderType='TessEvaluation'>
                 <Inputs>
                 <Input Name="A" ><Default>$colorA</Default></Input>
                 <Input Name="B" ><Default>$colorB</Default></Input>
-                <Input Name="Mix"><Default>vec4(0.0)</Default></Input>
+                <Input Name="Mix"><Default>vec4($mixer)</Default></Input>
                 </Inputs>
             </Shader>
             <Shader>
                 <Body><![CDATA[
 
 
-    vec4 INIT = $colorA; INIT = $colorB;
+    vec4 INITv4 = $colorA; INITv4 = $colorB;
+    float INITf = $mixer;
 
     Output = mix(#A,#B,#Mix.r);
 

@@ -1,16 +1,16 @@
 <!--
 ================================================================================
-== HSV to RGB
+== RGB to HSL
 == Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
 ================================================================================
-== File: JK_HSV2RGB.xml
-== Description: Converts a vec4 HSV,A to a vec4 RGB,A
+== File: JK_RGB2HSL.xml
+== Description: Converts a vec4 RGB,A to a vec4 HSL,A
 ================================================================================
 == Author: Jens Kafitz
 == Web: www.campi3d.com
 == Email: MariIdeas@campi3d.com
 ================================================================================
-== Modified Date: April, 16 2015
+== Modified Date: June, 7 2015
 ================================================================================
 == Redistribution and use in source and binary forms, with or without
 == modification, are permitted provided that the following conditions are met:
@@ -41,8 +41,8 @@
 -->
 
 <Node>
-    <ID>JK_HSV2RGB</ID>
-    <DefaultName>HSV to RGB</DefaultName>
+    <ID>JK_RGB2HSL</ID>
+    <DefaultName>RGB to HSL</DefaultName>
     <Category>Filter/Custom/Utils/</Category>
     <Tags>
         <Tag>_adjustment</Tag>
@@ -65,7 +65,7 @@
                 </Inputs>
                 <Body><![CDATA[
 
-                Output = mriHsv2Rgb(#Input);
+                Output = mriRgb2Hsl(#Input);
                 Output.a = #Input.a;
 
                 ]]></Body>
