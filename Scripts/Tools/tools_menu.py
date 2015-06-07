@@ -510,6 +510,7 @@ def createToolsMenu():
     icon_filename = 'extPack_disableViewport.png'
     icon_path = extPack_icon_path + '/' + icon_filename
     action_viewportDisable.setIconPath(icon_path)
+    action_viewportDisable.setShortcut('Ctrl+Space')
 
 
     action_viewportDisable.setStatusTip('Pause Viewport Update. This can help speed up operations by not having to wait for the viewport to update.')
