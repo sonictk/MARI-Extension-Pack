@@ -244,11 +244,12 @@
 
             if (#Metallic.r >= 0.1 && albedo.b <= (0.5*#Metallic.r))
                 { WarnDown = (1.0-(albedo.b/0.69) ) / #Metallic.r ; }
-            if (#Metallic.r <= 0.5 && albedo.b <= 0.015 )
+            else if (#Metallic.r <= 0.5 && albedo.b <= 0.015 )
                 { WarnDown =  1.0-(albedo.b/0.015);}
-            if (#Metallic.r <= 0.5 && albedo.b >= 0.87)
+            else if (#Metallic.r <= 0.5 && albedo.b >= 0.87)
                 { WarnUp = (albedo.b-0.87)*17.0;}
-
+            else if (albedo.b >= 1.0000001)
+                { WarnUp = (1.0); }
          }
 
 
