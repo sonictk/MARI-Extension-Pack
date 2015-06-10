@@ -112,10 +112,11 @@ def makeChannelLayer(sourceChannel, mode, invert):
                         channelLayerName = channel.name()
                         maskChannelLayerName = '%s(Shared Channel)' % channelLayerName
                         layer = layerMaskStack.createChannelLayer(maskChannelLayerName, channel)
+                        # If more than one channelLayer is selected, set 2nd, 3rd etc to 'Screen' BlendMode
                         if channel is not sourceChannel[0]:
                             layer.setBlendMode(27)
 
-                    if invert == 1:
+                    if invert:
                        layerMaskStack.createAdjustmentLayer("Invert","Filter/Invert")
 
                     mari.history.stopMacro()
@@ -126,6 +127,8 @@ def makeChannelLayer(sourceChannel, mode, invert):
         elif mode == 'mask':
             mari.history.startMacro('Create channel mask')
 
+            channellayer_multiselection = len(sourceChannel)
+
             for layer in currentSelection:
                 try:
 
@@ -134,6 +137,13 @@ def makeChannelLayer(sourceChannel, mode, invert):
                     currentLayer = layer
                     existingLayer = ()
                     hasMask = False
+                    performGrouping = False
+
+                    # Triggering grouping in Maskstacks under certain conditions:
+                    # Required: Layer needs to have existing mask
+                    # And: Multiple ChannelLayers need to be selected or INVERT needs to be on
+                    if channellayer_multiselection >=2 or invert:
+                        performGrouping = True
 
                     ## New Layer Mask Stack.
                     ## If mask exists convert, if stack exists keep, else make new stack
@@ -146,26 +156,47 @@ def makeChannelLayer(sourceChannel, mode, invert):
                     else:
                         layerMaskStack = currentLayer.makeMaskStack()
                         existingLayer = layerMaskStack.layerList()
+                        hasMask = False
 
+                    # Removes existing layers. Variable usually empty unless the stack was created by the script
                     layerMaskStack.removeLayers(existingLayer)
 
-                    ## Create Mask Channel Layer
 
+                    # if the selected layer already had a mask and more than one channel layer is selected,
+                    # create group 'ChannelLayer_grouped' in maskStack and set it to multiply
+                    if hasMask and performGrouping:
+                        grouplayer = layerMaskStack.createGroupLayer('ChannelLayer_Masks')
+                        layerMaskStack = grouplayer.groupStack()
+                        hasMask = False
+                        grouplayer.setBlendMode(23)
+
+                    ## Create Mask Channel Layer
                     for channel in sourceChannel:
 
-                        channelLayerName = channel.name()
-                        maskChannelLayerName = '%s(Shared Channel)' % channelLayerName
-                        layer = layerMaskStack.createChannelLayer(maskChannelLayerName, channel)
-                        if hasMask:
-                            layer.setBlendMode(27)
-                        elif channel is not sourceChannel[0]:
-                            layer.setBlendMode(27)
+                        try:
 
-                    if invert == 1:
+                            channelLayerName = channel.name()
+                            maskChannelLayerName = '%s(Shared Channel)' % channelLayerName
+                            layer = layerMaskStack.createChannelLayer(maskChannelLayerName, channel)
+                            # If layer already had a mask and only one channel layer is added set layer to multiply
+                            if hasMask:
+                                layer.setBlendMode(23)
+
+                            # If more than one channelLayer is selected set 2nd,3rd etc to 'Screen'.
+                            # If layer already had a mask, this process will happen in a group 'ChannelLayer_Masks'
+                            elif channel is not sourceChannel[0]:
+                                layer.setBlendMode(27)
+
+                        except Exception:
+                            mari.utils.message("Could not add Channel Layer: " + str(channel))
+
+
+                    if invert:
                         layerMaskStack.createAdjustmentLayer("Invert","Filter/Invert")
 
                 except Exception:
-                    pass
+                    mari.utils.message("Could not add Channel Layer to: " + str(layer))
+
 
             mari.history.stopMacro()
 
