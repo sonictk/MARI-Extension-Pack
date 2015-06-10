@@ -111,7 +111,9 @@ def makeChannelLayer(sourceChannel, mode, invert):
                     for channel in sourceChannel:
                         channelLayerName = channel.name()
                         maskChannelLayerName = '%s(Shared Channel)' % channelLayerName
-                        layerMaskStack.createChannelLayer(maskChannelLayerName, channel)
+                        layer = layerMaskStack.createChannelLayer(maskChannelLayerName, channel)
+                        if channel is not sourceChannel[0]:
+                            layer.setBlendMode(27)
 
                     if invert == 1:
                        layerMaskStack.createAdjustmentLayer("Invert","Filter/Invert")
@@ -150,8 +152,9 @@ def makeChannelLayer(sourceChannel, mode, invert):
 
                         channelLayerName = channel.name()
                         maskChannelLayerName = '%s(Shared Channel)' % channelLayerName
-                        layerMaskStack.createChannelLayer(maskChannelLayerName, channel)
-
+                        layer = layerMaskStack.createChannelLayer(maskChannelLayerName, channel)
+                        if channel is not sourceChannel[0]:
+                            layer.setBlendMode(27)
 
                     if invert == 1:
                         layerMaskStack.createAdjustmentLayer("Invert","Filter/Invert")
