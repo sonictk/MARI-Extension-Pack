@@ -41,7 +41,7 @@ import mari
 
 tool_init_version = '0.1'
 
-# ------------------------------------------------------------------------------ 
+# ------------------------------------------------------------------------------
 # PATCHES:
 import Patches.extPack_patch_bake_to_imageman as patch_bake_to_imageman
 
@@ -73,20 +73,23 @@ import ImageManager.extPack_export_imageMan_images as exportImageManager
 # VIEW:
 import View.extPack_screenshot_all_channels as screenshot_all_channels
 
+# SHADING:
+import Shading.extPack_disableViewport as disableViewport
+
 # HELP:
 import Help.extPack_online_help as onlineHelp
 
-# ------------------------------------------------------------------------------   
+# ------------------------------------------------------------------------------
 
 class customScripts():
 
-    # ------------------------------------------------------------    
+    # ------------------------------------------------------------
     # PATCHES:
 
     def patch_bake_to_imageman(self):
         patch_bake_to_imageman.patch_bake_to_imageman()
 
-    # ------------------------------------------------------------    
+    # ------------------------------------------------------------
     # CAMERA:
 
     def unproject_channel_to_imageman(self):
@@ -95,7 +98,7 @@ class customScripts():
     def unproject_layer_to_imageman(self):
         unproject_layer_to_imageman.unproject_layer_to_imageman()
 
-    # ------------------------------------------------------------    
+    # ------------------------------------------------------------
     # CHANNELS:
 
     def exportSelectedChannels(self):
@@ -113,7 +116,7 @@ class customScripts():
     def channel_template_set(self):
         channel_template.setChannelFromTemplate()
 
-    # ------------------------------------------------------------ 
+    # ------------------------------------------------------------
     # LAYERS:
 
     def CloneMerge(self):
@@ -152,11 +155,10 @@ class customScripts():
         convert_to_paintable.convertToPaintable()
 
     # --------------------------------------------------------------
-    # Shaders:
+    # SHADERS:
 
     def setAllObjectsToShader(self):
         setAllCurrentShader.setAllCurrentShader()
-
 
     # --------------------------------------------------------------
     # OBJECTS:
@@ -177,6 +179,13 @@ class customScripts():
 
     def screenshot_all_channels(self):
         screenshot_all_channels.screenshotAllChannels()
+
+    # --------------------------------------------------------------
+    # SHADING:
+
+    def disableViewport(self):
+        disableViewport.disableViewport()
+
 
     # --------------------------------------------------------------
     # HELP:
@@ -201,6 +210,9 @@ tools_menu.createToolsMenu()
 
 print "Loading Tool Additions ..."
 print '-----------------------------------------'
+print 'Lighting Toolbar Additions (1): '
+print 'Shading Menu: Pause Viewport Update'
+print '-----------------------------------------'
 print 'Channel Palette Additions (4): '
 print 'Channel Menu: Export Custom Selection'
 print 'Channel Menu: Duplicate & Flatten'
@@ -220,7 +232,7 @@ print 'Patches Palette Additions (1): '
 print 'Patches Menu: Patch to Image Manager'
 print '-----------------------------------------'
 print 'Shader Palette Additions (1): '
-print 'Shading Menu: Sync Object Shaders'
+print 'Shader Menu: Sync Object Shaders'
 print '-----------------------------------------'
 print 'Camera Palette Additions (2): '
 print 'Camera Menu: Quick Unproject Channel'

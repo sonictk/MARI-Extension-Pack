@@ -53,8 +53,9 @@
   </Inputs>
   <Attributes>
       <!--===============================================================================================================-->
-      <Attribute Name="worldScale" Group="Image" PrettyName="World Scale" Type="int" Min="0.0" Logarithmic="0">1</Attribute>
+      <Attribute Name="worldScale" Group="Image" PrettyName="World Scale" Type="int" Min="0.0" Logarithmic="0">100</Attribute>
       <Attribute Name="Image" Group="Image" PrettyName="Image" Type="image"></Attribute>
+      <Attribute Name="Alpha" PrettyName="Suppress Image Alpha" Group="Image" Type="bool" Min="false" Max="true" >false</Attribute>
       <Attribute Name="Inv" PrettyName="Invert" Group="Image" Type="bool" Min="false" Max="true" >false</Attribute>
       <Attribute Name="Repeat" Group="Image" PrettyName="Repeat" Type="float" Min="0" Max="50" Logarithmic="1">1</Attribute>
       <Attribute Name="Angle" Group="Image" PrettyName="Angle" Type="float" Min="0" Max="360" Logarithmic="0">0</Attribute>
@@ -63,20 +64,20 @@
       <Attribute Name="UScale" Group="Image" PrettyName="U Scale" Type="float" Min="-1" Max="1" Logarithmic="0">1</Attribute>
       <Attribute Name="VScale" Group="Image" PrettyName="V Scale" Type="float" Min="-1" Max="1" Logarithmic="0">1</Attribute>
       <!--===============================================================================================================-->
-      <Attribute Name="sX" PrettyName="X" Group="Axis" Type="bool" Min="false" Max="true" >false</Attribute>
+      <Attribute Name="sX" PrettyName="X" Group="Axis" Type="bool" Min="false" Max="true" >true</Attribute>
       <Attribute Name="ExpandX" Group="Axis" PrettyName="Expand" Type="float" Min="0" Max="2.0" Logarithmic="0">1.0</Attribute>
-      <Attribute Name="sminX" PrettyName="-X" Group="Axis" Type="bool" Min="false" Max="true" >false</Attribute>
+      <Attribute Name="sminX" PrettyName="-X" Group="Axis" Type="bool" Min="false" Max="true" >true</Attribute>
       <Attribute Name="ExpandMinX" Group="Axis" PrettyName="Expand" Type="float" Min="0" Max="2.0" Logarithmic="0">1.0</Attribute>
       <Attribute Name="sY" PrettyName="Y" Group="Axis" Type="bool" Min="false" Max="true" >true</Attribute>
       <Attribute Name="ExpandY" Group="Axis" PrettyName="Expand" Type="float" Min="0" Max="2.0" Logarithmic="0">1.0</Attribute>
-      <Attribute Name="sminY" PrettyName="-Y" Group="Axis" Type="bool" Min="false" Max="true" >false</Attribute>
-      <Attribute Name="ExpandMinY" Group="Axis" PrettyName="Expand" Type="float" Min="0" Max="2.0" Logarithmic="0">1.0</Attribute> 
-      <Attribute Name="sZ" PrettyName="Z" Group="Axis" Type="bool" Min="false" Max="true" >false</Attribute>
-      <Attribute Name="ExpandZ" Group="Axis" PrettyName="Expand" Type="float" Min="0" Max="2.0" Logarithmic="0">1.0</Attribute> 
-      <Attribute Name="sminZ" PrettyName="-Z" Group="Axis" Type="bool" Min="false" Max="true" >false</Attribute>
-      <Attribute Name="ExpandMinZ" Group="Axis" PrettyName="Expand" Type="float" Min="0" Max="2.0" Logarithmic="0">1.0</Attribute> 
-      <!--===============================================================================================================-->  
-      <Attribute Name="jitter" PrettyName="Jitter" Group="Softness Falloff" Type="double" Min="0.00000000000001" Max="1">0.00000000000001</Attribute>  
+      <Attribute Name="sminY" PrettyName="-Y" Group="Axis" Type="bool" Min="false" Max="true" >true</Attribute>
+      <Attribute Name="ExpandMinY" Group="Axis" PrettyName="Expand" Type="float" Min="0" Max="2.0" Logarithmic="0">1.0</Attribute>
+      <Attribute Name="sZ" PrettyName="Z" Group="Axis" Type="bool" Min="false" Max="true" >true</Attribute>
+      <Attribute Name="ExpandZ" Group="Axis" PrettyName="Expand" Type="float" Min="0" Max="2.0" Logarithmic="0">1.0</Attribute>
+      <Attribute Name="sminZ" PrettyName="-Z" Group="Axis" Type="bool" Min="false" Max="true" >true</Attribute>
+      <Attribute Name="ExpandMinZ" Group="Axis" PrettyName="Expand" Type="float" Min="0" Max="2.0" Logarithmic="0">1.0</Attribute>
+      <!--===============================================================================================================-->
+      <Attribute Name="jitter" PrettyName="Jitter" Group="Softness Falloff" Type="double" Min="0.00000000000001" Max="1">0.00000000000001</Attribute>
       <Attribute Name="FO" PrettyName="Softness Falloff" Group="Softness" Type="curve" >0,0,0.4025,0,0.47,0.137273,0.52,0.834091,0.575,0.996364,1,1</Attribute>
       <!--===============================================================================================================-->
       <Attribute Name="rX" PrettyName="Rotate X" Group="Global Axis Rotation" Type="double" Min="0" Max="360" >0</Attribute>
@@ -166,7 +167,7 @@
     _res = max(_res,resE);
     _res = max(_res,resF);
 
-  
+
     vec2 FrontUv;
     if ( $sZ || $sminZ)
     {
@@ -210,7 +211,7 @@
             TopUv += vec2( -$UOffset, $VOffset);
             TopUv -= vec2(0.5, 0.5);
         }
-  
+
       }
 
     vec2 RightUv;
@@ -236,13 +237,35 @@
     }
 
     //Comp Results together.
-    vec4 result = texture( $Image, RightUv.xy);
-    result = mix(vec4(0.0),result,resA);
-    result = Comp_Default( result, texture( $Image  ,RightUv.xy  ), resB);
-    result = Comp_Default( result, texture( $Image  ,TopUv.xy  ), resC);
-    result = Comp_Default( result, texture( $Image  ,TopUv.xy  ), resD);
-    result = Comp_Default( result, texture( $Image,FrontUv.xy), resE);
-    result = Comp_Default( result, texture( $Image,FrontUv.xy), resF);
+
+   // Converting Alpha Checkbox to float to use in mixers.
+    float AlphaMix = float($Alpha);
+    vec4 result;
+
+    // tempTex is used to write the results of each directional projection into a variable
+    // tempTex_AlphaMix is stripping out the Alpha of the projection if AlphaSurpression is on
+    vec4 tempTex = texture( $Image, RightUv.xy);
+    vec4 tempTex_AlphaMix = mix(tempTex,vec4(tempTex.rgb,1.0),float($Alpha));
+
+
+    // for the first iteration a simple mix against 0.0 is done.
+    result = mix(vec4(0.0),tempTex_AlphaMix,resA);
+    result = Comp_Default( result, tempTex_AlphaMix, resB);
+
+    // tempTex then splitting alpha then comping
+    tempTex = texture( $Image  ,TopUv.xy  );
+    tempTex_AlphaMix = mix(tempTex,vec4(tempTex.rgb,1.0),AlphaMix);
+
+    result = Comp_Default( result,tempTex_AlphaMix, resC);
+    result = Comp_Default( result,tempTex_AlphaMix, resD);
+
+    // tempTex then splitting alpha then comping
+    tempTex = texture( $Image,FrontUv.xy);
+    tempTex_AlphaMix = mix(tempTex,vec4(tempTex.rgb,1.0),AlphaMix);
+
+    result = Comp_Default( result, tempTex_AlphaMix, resE);
+    result = Comp_Default( result, tempTex_AlphaMix, resF);
+
     Output = result;
     //Apply original Image Alpha and Invert
     Output.a = _res * Output.a;
@@ -259,4 +282,4 @@
   </Contexts>
 </Node>
 
-    
+

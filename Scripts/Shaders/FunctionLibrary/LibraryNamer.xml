@@ -39,7 +39,7 @@
 <!-- library renamer node system -->
 <Node>
 	<!-- library version number -->
-    <LibraryVersion>1.11</LibraryVersion>
+    <LibraryVersion>1.12</LibraryVersion>
     <AL_GaborNoiseLib>Gabor Lib (Anders Langlands) </AL_GaborNoiseLib>
     <BS_GpuNoiseLib>GPU Noise Lib (Brian Sharpe)</BS_GpuNoiseLib>
     <DT3D_CellularNoiseLib>Cellular Lib (Miguel Santiago)</DT3D_CellularNoiseLib>
