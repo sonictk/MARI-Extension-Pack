@@ -50,14 +50,14 @@
         <Tag>_adjustment</Tag>
     </Tags>
     <Inputs>
-        <Input Name="Input" PreferredInput='1'/>
+        <Input Name="Input" />
     </Inputs>
     <Attributes>
         <!--===============================================================================================================-->
         <Attribute Name="Temperature" PrettyName="Temperature (Kelvin)" Group="" Type="double" Min="1500" Max="40000" >6500.0</Attribute>
         <Attribute Name="TemperatureFine" PrettyName="Offset (Kelvin)" Group="" Type="double" Min="-1000" Max="1000.0" >0.0</Attribute>
         <Attribute Name="LumPres" PrettyName="Luminance Preservation" Group="" Type="double" Min="0.0" Max="1">1.0</Attribute>
-        <Attribute Name="sRGB" PrettyName="sRGB Mode" Type="bool" Min="true" Max="false">false</Attribute>
+        <Attribute Name="sRGB" PrettyName="sRGB Mode" Type="bool" Min="true" Max="false">true</Attribute>
         <!--===============================================================================================================-->
     </Attributes>
     <Contexts>
