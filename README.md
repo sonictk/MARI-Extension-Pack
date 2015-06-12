@@ -5,15 +5,13 @@ Copyright (c) 2015 www.mari.ideascale.com. All Rights Reserved.
 
 ##Developer Notes for this Branch (Please read):
 
-At the time of writing this the DEV Branch is now based on MARI 3.
-While Python tools should work (mostly) in Mari 2.6 Nodes & Shaders
-will not load in 2.6 due to a change in RegisterCustomShader.py.
+At the time of writing this the DEV Branch is now based on MARI 3. While Python tools should work in Mari 2.6 Nodes & Shaders will not load in 2.6 due to a change in RegisterCustomShader.py.
 
-It is recommended, if you are on 2.6, to branch of master and commit
-to your own created branch so we can cleanly merge it in for Mari 3.
+Mari 3 is also switching to full on pySide and a higher python version so as development on the next mari extension pack release progresses I assume things will work less and less in 2.6
 
-Thanks,
-Jens
+It is recommended, if you are developing on 2.6, to branch of master and commit to your own created branch so we can cleanly merge it in for Mari 3.
+
+Thanks, Jens
 
 
 
