@@ -7,9 +7,8 @@
 == File: JK_SelectionFill.xml
 == Description: Fills the current selection with the color specified. Needs to be converted to paintable.
 ================================================================================
-== Author: Jens Kafitz | Mari Ideascale
+== Author: Jens Kafitz
 == Web: www.campi3d.com
-== Web: www.mari.ideascale.com
 == Email: MariIdeas@campi3d.com
 ================================================================================
 == Modified Date: May, 10 2015
@@ -52,7 +51,6 @@
         <Tag>_noPropagateBoundary</Tag>
     </Tags>
     <Inputs>
-        <Input Name="Input"></Input>
     </Inputs>
   <Attributes>
         <Attribute Name="color" PrettyName="Fill Color" Group="" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(1,1,1,1)</Attribute>
@@ -62,14 +60,10 @@
       <Contexts>
         <Context Type="NodeGraphView">
             <Inputs>
-                <Input Name="Input"><Pos>0,-50</Pos></Input>
             </Inputs>
         </Context>
         <Context Type="GLSL">
             <Shader>
-                <Inputs>
-                    <Input Name="Input"><Default>vec4(1,1,1,1)</Default></Input>
-                </Inputs>
                 <Body><![CDATA[
         #if defined MRI_SHADER_FRAGMENT
         vec4 bgcolor = $bgcolor;

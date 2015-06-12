@@ -1,14 +1,13 @@
 <!--
 ================================================================================
-== Mari Ideascale Procedural Library
+== SV Lookup
 == Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
 ==============================================================================
 == File: JK_SVLookup.xml
 == Description: Lookup & set Saturation and Value along a curve.
 ================================================================================
-== Author: Jens Kafitz | Mari Ideascale
+== Author: Jens Kafitz
 == Web: www.campi3d.com
-== Web: www.mari.ideascale.com
 == Email: MariIdeas@campi3d.com
 ================================================================================
 == Modified Date: April, 8 2015
@@ -45,7 +44,7 @@
 <Node>
     <ID>JK_SVLookup</ID>
     <DefaultName>SV Lookup</DefaultName>
-    <Category>/Custom/</Category>
+    <Category>Filter/Custom/Color Correction/</Category>
   <Description>Explicity set the curve loopup for Hue, saturation and value</Description>
   <Cost>0.02</Cost>
   <CostDescription>Possibly some texture reads</CostDescription>

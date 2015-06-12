@@ -545,6 +545,27 @@ def createToolsMenu():
     icon_path = mari.resources.path(mari.resources.ICONS) + '/' + icon_filename
     syncObjectShaders.setIconPath(icon_path)
 
+######################################################################
+# Selection Groups
+######################################################################
+
+    #  Create Material ID Channel from Selection Groups
+
+    UI_path_B = 'MriGeometrySelectionGroup/Panel'
+    script_menu_path = 'MainWindow/Scripts/Selection Groups'
+    matIdFromGroup = mari.actions.create("MaterialID from Selection Groups", "mari.customScripts.matIDFromGroup()")
+
+    matIdFromGroup.setStatusTip('Create a MaterialID Channel from Selection Groups')
+    matIdFromGroup.setToolTip('Create a MaterialID Channel from Selection Groups')
+    matIdFromGroup.setWhatsThis('Create a MaterialID Channel from Selection Groups')
+
+    mari.menus.addAction(matIdFromGroup, UI_path_B)
+    mari.menus.addAction(matIdFromGroup, script_menu_path)
+
+    icon_filename = "Shader.png"
+    icon_path = mari.resources.path(mari.resources.ICONS) + '/' + icon_filename
+    matIdFromGroup.setIconPath(icon_path)
+
 
 ######################################################################
 # Image Manager

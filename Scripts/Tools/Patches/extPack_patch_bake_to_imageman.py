@@ -120,8 +120,8 @@ def patchBake():
     '''Bakes selected Patches to Image Manager'''
 
     if not mari.projects.current():
-    	mari.utils.message('No project currently open', title = 'Error')
-    	return
+        mari.utils.message('No project currently open', title = 'Error')
+        return
 
 
     # Checking for OS to determine slash handling
@@ -135,7 +135,7 @@ def patchBake():
     curGeo = mari.geo.current()
     curChan = curGeo.currentChannel()
     # MARI 3 Only:
-    # colorSpace = curChan.colorspaceConfig()
+    colorSpace = curChan.colorspaceConfig()
     curChanName = str(curChan.name())
     layers = curChan.layerList()
     patchList = list (curGeo.patchList() )
@@ -143,8 +143,8 @@ def patchBake():
 
 
     if len(selPatchList) == 0:
-    	mari.utils.message('Select at least one patch', title = 'Error')
-    	return
+        mari.utils.message('Select at least one patch', title = 'Error')
+        return
 
     # Deactivate Viewport for increases Spped
     deactivateViewportToggle = mari.actions.find('/Mari/Canvas/Toggle Shader Compiling')
@@ -155,7 +155,7 @@ def patchBake():
     mari.app.setWaitCursor()
 
     for layer in layers:
-    	layer.setSelected(True)
+        layer.setSelected(True)
 
     copyAction = mari.actions.find('/Mari/Layers/Copy')
     copyAction.trigger()
@@ -195,9 +195,9 @@ def patchBake():
             patchImg = curImgSet.image(uv, -1)
             patchImg.saveAs(savePath)
             # MARI 2.6:
-            mari.images.load(savePath)
+            # mari.images.load(savePath)
             # MARI 3:
-            # mari.images.open(savePath,colorSpace)
+            mari.images.open(savePath,colorSpace)
             os.remove(savePath)
 
         except Exception:

@@ -2,17 +2,16 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 // Mari Ideascale Procedural Library
-// Copyright (c) 2013 Jens Kafitz. All Rights Reserved.
+// Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
 ////////////////////////////////////////////////////////////////////////////////
 // File: ID_ProceduralLib.glslh
 // Description: Procedural library for various procedural functions.
 ////////////////////////////////////////////////////////////////////////////////
-// Author: Jens Kafitz | Mari Ideascale
+// Author: Jens Kafitz
 // Web: www.campi3d.com
-// Web: www.mari.ideascale.com
 // Email: MariIdeas@campi3d.com
 ////////////////////////////////////////////////////////////////////////////////
-// Modified Date: June 14, 2014
+// Modified Date: May 18, 2015
 ////////////////////////////////////////////////////////////////////////////////
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -341,7 +340,6 @@ vec2 relUVTransform(vec2 uvCoord, float RotationAngle, vec2 Offset, vec2 Repeat,
 
 
 
-
 // Kelvin to RGB
 // Ported from original code from Tanner Helland
 // http://www.tannerhelland.com/4435/convert-temperature-rgb-algorithm-code/
@@ -387,7 +385,7 @@ vec3 Kelvin2Rgb(float Kelvin)
 
 
 
-
+//Luminance
 //return Luminance of Color
 float Luminance(vec3 color)
 {
@@ -440,3 +438,14 @@ vec3 linear2sRgb(vec3 Color)
             outCol[i] = Color[i] > 0.0031308 ? 1.055*pow(Color[i], 1/2.4)-0.055 : Color[i]*12.92; }
 
     return outCol;  }
+
+
+// Returns black and white mask from source based on clipcolor
+float col2Mask(vec4 Source,vec4 ClipColor, float MaxError)
+{
+
+    float Distance = length( Source.rgb - ClipColor.rgb);
+    // Saturate the 0-0.5 range and ramps 0.-1.0 down
+    float Mask = clamp( 2 * (1- (Distance / MaxError)), 0.0, 1.0);
+    return Mask;
+}

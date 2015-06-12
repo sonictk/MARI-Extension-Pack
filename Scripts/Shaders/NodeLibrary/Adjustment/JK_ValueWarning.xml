@@ -9,12 +9,11 @@
 == Based on original code samples from theFoundry located in
 == \Mari2.6v1\Bundle\Media\Examples\Nodes\
 ================================================================================
-== Author: Jens Kafitz | Mari Ideascale
+== Author: Jens Kafitz
 == Web: www.campi3d.com
-== Web: www.mari.ideascale.com
 == Email: MariIdeas@campi3d.com
 ================================================================================
-== Modified Date: August, 15 2014
+== Modified Date: May 18, 2015
 ================================================================================
 == Redistribution and use in source and binary forms, with or without
 == modification, are permitted provided that the following conditions are met:
@@ -47,7 +46,7 @@
 <Node>
   <ID>IllegalColorWarning</ID>
       <DefaultName>Illegal Value Warning</DefaultName>
-    <Category>/Custom/</Category>
+    <Category>Filter/Custom/Utils/</Category>
   <Inputs>
     <Input Name="Albedo"></Input>
   </Inputs>
@@ -61,7 +60,6 @@
     <Attribute Name="Lowerbound" Group="Upper/Lower Bound" Description="Lowerbound of the albedo color.\nValues above this lowerbound will be warned." Type="double" Min="0.0" Max="1.0">0.03</Attribute>
     <Attribute Name="blink" Group="Blink Settings" PrettyName="Blink Interval (sec)" Description="Blink interval in seconds" Type="int" Min="0" Max="200">1</Attribute>
     <Attribute Name="blinkFade" Group="Blink Settings" PrettyName="Blink Fadeout (msec)" Description="Blink fadeout in msec" Type="int" Min="0" Max="200">100</Attribute>
-
 
 
   </Attributes>

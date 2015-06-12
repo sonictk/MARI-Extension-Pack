@@ -1,16 +1,15 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Mari Ideascale Procedural Library
-// Copyright (c) 2013 Jens Kafitz. All Rights Reserved.
+// Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
 ////////////////////////////////////////////////////////////////////////////////
 // File: ID_ProceduralLib.glslh
 // Description: Procedural library for various procedural functions.
 ////////////////////////////////////////////////////////////////////////////////
-// Author: Jens Kafitz | Mari Ideascale
+// Author: Jens Kafitz
 // Web: www.campi3d.com
-// Web: www.mari.ideascale.com
 // Email: MariIdeas@campi3d.com
 ////////////////////////////////////////////////////////////////////////////////
-// Modified Date: June 14, 2014
+// Modified Date: May 18, 2015
 ////////////////////////////////////////////////////////////////////////////////
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -107,19 +106,19 @@ vec2 relUVTransform(vec2 uvCoord, float RotationAngle, vec2 Offset, vec2 Repeat,
 // and implementation by Renaud Bédard (@renaudbedard)
 vec3 Kelvin2Rgb(float Kelvin);
 
-
 //Luminance
 // Returns Luminance of Image
 float Luminance(vec3 color);
-
 
 // sRgb to Linear Conversion
 // vec3 + vec4 functions to convert to sRgb to linear
 vec4 sRgb2Linear(vec4 Color);
 vec3 sRgb2Linear(vec3 Color);
 
-
 // Linear to sRGB conversion
 // vec3 + vec4 functions to convert to linear to sRGB
 vec4 linear2sRgb(vec4 Color);
 vec3 linear2sRgb(vec3 Color);
+
+// Returns black and white mask from source based on clipcolor
+float col2Mask(vec4 Source,vec4 ClipColor, float MaxError);
