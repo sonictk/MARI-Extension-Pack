@@ -1,7 +1,7 @@
 <!--
 ================================================================================
-== Orlando Esponda Mari Procedural Library
-== Copyright (c) 2013 Orlando Esponda. All Rights Reserved.
+== Normal Map Intensity
+== Copyright (c) 2015 Orlando Esponda. All Rights Reserved.
 ================================================================================
 == File: OE_NormalMapIntensity.xml
 == Description: Simple adjustment layer to increase or decrease a normal map.
@@ -41,7 +41,7 @@
 <Node>
     <ID>Normal Map Intensity</ID>
     <DefaultName>Normal Map Intensity</DefaultName>
-    <Category>/Custom/</Category>
+    <Category>Filter/Custom/Normal Map/</Category>
     <Tags>
         <Tag>_adjustment</Tag>
     </Tags>

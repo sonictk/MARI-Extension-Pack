@@ -1,14 +1,13 @@
 <!--
 ================================================================================
-== Mari Ideascale Procedural Library
-== Copyright (c) 2013 Jens Kafitz. All Rights Reserved.
+== Backface Mask
+== Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
 ================================================================================
 == File: JK_BackfaceMask.xml
 == Description: Isolate Geometry Backfaces
 ================================================================================
-== Author: Jens Kafitz | Mari Ideascale
+== Author: Jens Kafitz
 == Web: www.campi3d.com
-== Web: www.mari.ideascale.com
 == Email: MariIdeas@campi3d.com
 ================================================================================
 == Modified Date: November, 16 2014
@@ -47,52 +46,36 @@
   <Cost>0.2</Cost>
   <CostDescription>Some calculations and some texture lookup</CostDescription>
   <Inputs>
-      <Input Name="Mask"></Input>
-      <Input Name="Position"></Input>
-      <Input Name="Normal"></Input>
   </Inputs>
   <Attributes>
-      <Attribute Name="BackfaceThreshold" Group="Backfaces" PrettyName="Backface Threshold" Type="float" Min="-1" Max="1" Logarithmic="0">0</Attribute>    
-      <Attribute Name="CullBackfaceInv" PrettyName="Invert Faces"  Group="Backfaces" Type="bool" >true</Attribute> 
+      <Attribute Name="BackfaceThreshold" Group="Backfaces" PrettyName="Backface Threshold" Type="float" Min="-1" Max="1" Logarithmic="0">0</Attribute>
+      <Attribute Name="CullBackfaceInv" PrettyName="Invert Faces"  Group="Backfaces" Type="bool" >true</Attribute>
       <!--===============================================================================================================-->
-    
+
   </Attributes>
-  <Contexts>
-      <Context Type="NodeGraphView">
-          <Inputs>
-              <Input Name="Mask"><Pos>100,0</Pos></Input>
-              <Input Name="Position"><Pos>100,-20</Pos></Input>
-              <Input Name="Normal"><Pos>100,-40</Pos></Input>
-          </Inputs>
-      </Context>
-      <Context Type="GLSL">
-          <Shader ShaderType='Fragment'>
-              <Inputs>
-                  <Input Name="Position"><Default>(State.Position - u_MriObjectCenter)</Default></Input>
-                  <Input Name="Normal"><Default>State.Normal</Default></Input>
-              </Inputs>
-          </Shader>
-
-          <Shader ShaderType='TessEvaluation'>
-              <Inputs>
-                  <Input Name="Position"><Default>State.Position</Default></Input>
-                  <Input Name="Normal"><Default>State.Normal</Default></Input>
-              </Inputs>
-          </Shader>
-
-          <Shader>
-              <Inputs>
-                  <Input Name="Mask"><Default>vec4(1,1,1,1)</Default></Input>
-              </Inputs>
-              <Body>
-    <![CDATA[
+     <Contexts>
+        <Context Type="NodeGraphView">
+            <Inputs>
+            </Inputs>
+        </Context>
+        <Context Type="GLSL">
+            <Shader ShaderType='Fragment'>
+                <Inputs>
+                </Inputs>
+            </Shader>
+                <Shader ShaderType='TessEvaluation'>
+                    <Inputs>
+                    </Inputs>
+                </Shader>
+                <Shader>
+                <Body><![CDATA[
 
 
     // build modified state.normal via mari function library call
     vec3 Normal = State.Normal;
     vec3 Pos = State.Position;
 
-    
+
     vec3 Ray = normalize( Pos );
     float NDotV = dot( Ray,Normal );
     float result = ($BackfaceThreshold > NDotV) ? 0.0 : 1.0;
@@ -108,4 +91,4 @@
   </Contexts>
 </Node>
 
-    
+

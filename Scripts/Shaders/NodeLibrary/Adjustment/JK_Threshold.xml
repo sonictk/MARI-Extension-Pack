@@ -1,17 +1,16 @@
 <!--
 ================================================================================
-== Mari Ideascale Procedural Library
-== Copyright (c) 2013 Jens Kafitz. All Rights Reserved.
+== Threshold
+== Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
 ================================================================================
 == File: JK_Threshold.xml
 == Description: Photoshop style threshold adjustment layer.
 ================================================================================
-== Author: Jens Kafitz | Mari Ideascale
+== Author: Jens Kafitz
 == Web: www.campi3d.com
-== Web: www.mari.ideascale.com
 == Email: MariIdeas@campi3d.com
 ================================================================================
-== Modified Date: June, 16 2014
+== Modified Date: May 18, 2015
 ================================================================================
 == Redistribution and use in source and binary forms, with or without
 == modification, are permitted provided that the following conditions are met:
@@ -44,34 +43,42 @@
 <Node>
     <ID>Threshold</ID>
     <DefaultName>Threshold</DefaultName>
-    <Category>/Custom/</Category>
+    <Category>Filter/Custom/Filter/</Category>
     <Tags>
         <Tag>_adjustment</Tag>
     </Tags>
     <Inputs>
-        <Input Name="Input"></Input>
+        <Input Name="Input" PreferredInput='1'/>
+        <Input Name="Threshold" ></Input>
+        <Input Name="Edge" ></Input>
     </Inputs>
     <Attributes>
         <!--===============================================================================================================-->
-        <Attribute Name="Threshold" PrettyName="Threshold" Group="" Type="double" Min="0" Max="1">0</Attribute>
+        <Attribute Name="Threshold" PrettyName="Threshold" Group="" Type="double" Min="0" Max="1">0.5</Attribute>
         <Attribute Name="Clip" PrettyName="Edge" Group="" Type="double" Min="0.001" Max="1">0.001</Attribute>
         <!--===============================================================================================================-->
     </Attributes>
     <Contexts>
         <Context Type="NodeGraphView">
             <Inputs>
-                <Input Name="Input"><Pos>0,-50</Pos></Input>
+                <Input Name="Input" ><Pos>0,-50</Pos></Input>
+                <Input Name="Threshold" ><Pos>-120,0</Pos></Input>
+                <Input Name="Edge" ><Pos>120,0</Pos></Input>
             </Inputs>
         </Context>
             <Context Type="GLSL">
             <Shader>
                 <Inputs>
+                    <Input Name="Threshold"><Default>vec4($Threshold)</Default></Input>
                     <Input Name="Input"><Default>vec4(1,1,1,1)</Default></Input>
+                    <Input Name="Edge"><Default>vec4($Clip)</Default></Input>
                 </Inputs>
                 <Body><![CDATA[
 
-                vec4 threshold = vec4($Threshold,$Threshold,$Threshold,1);
-                vec4 bounds = vec4($Clip,$Clip,$Clip,1)/2;
+                float INIT = $Threshold; INIT = $Clip;
+
+                vec4 threshold = vec4(#Threshold.rgb,1);
+                vec4 bounds = vec4(#Edge.rgb,1)/2;
                 vec4 edgeH = threshold + bounds;
                 vec4 edgeL = threshold - bounds;
                 vec4 _input = mriRgb2Hsv(#Input);

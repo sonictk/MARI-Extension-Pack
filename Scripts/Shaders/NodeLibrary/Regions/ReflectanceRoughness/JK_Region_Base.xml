@@ -1,0 +1,181 @@
+<!--
+================================================================================
+== Material Region Base Reflectance-Roughness
+== Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
+================================================================================
+== File: JK_Region_Base.xml
+== Description: Material Region Base to set start values for Material Region Chain
+================================================================================
+== Author: Jens Kafitz
+== Web: www.campi3d.com
+== Email: MariIdeas@campi3d.com
+================================================================================
+== Modified Date: April, 3 2015
+================================================================================
+== Redistribution and use in source and binary forms, with or without
+== modification, are permitted provided that the following conditions are met:
+==
+== 1. Redistributions of source code must retain the above copyright
+== notice, this list of conditions and the following disclaimer.
+==
+== 2. Redistributions in binary form must reproduce the above copyright
+== notice, this list of conditions and the following disclaimer in the
+== documentation and/or other materials provided with the distribution.
+==
+== 3. Neither the name of the copyright holder nor the names of its
+== contributors may be used to endorse or promote products derived from
+== this software without specific prior written permission.
+==
+== THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+== IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+== THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+== PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+== CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+== EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+== PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+== OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+== WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+== OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+== ADVISED OF HE POSSIBILITY OF SUCH DAMAGE.
+================================================================================
+-->
+
+<Node>
+    <ID>JK_Region_Base_RR</ID>
+    <DefaultName>Material Region Base (R-R)</DefaultName>
+    <Category>Regions/Reflectance-Roughness/</Category>
+    <Inputs>
+        <Input Name="diffuse" />
+        <Input Name="specRough"/>
+        <Input Name="specRefl"/>
+        <Input Name="specCol"/>
+        <Input Name="Disp"/>
+        <Input Name="Normal"/>
+    </Inputs>
+    <Outputs>
+        <Output Name="OUT_A" />
+        <Output Name="OUT_B" />
+        <Output Name="OUT_C" />
+        <Output Name="OUT_D" />
+    </Outputs>
+    <Attributes>
+    <!--===============================================================================================================-->
+    <Attribute Name="diffuse_color" PrettyName="Color" Group="Handle Diffuse (RGBA)" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(0.0,0.0,0.0,1.0)</Attribute>
+    <Attribute Name="diffuse_float" PrettyName="Float" Group="Handle Diffuse (RGBA)" Type="double">1.0</Attribute>
+    <Attribute Name="diffuse_sRGB" PrettyName="sRgb Input" Group="Handle Diffuse (RGBA)" Type="bool" Min="false" Max="true">false</Attribute>
+    <Attribute Name="diffuse_clamp" PrettyName="Clamp Input" Group="Handle Diffuse (RGBA)" Type="bool" Min="false" Max="true">true</Attribute>
+     <!--===============================================================================================================-->
+    <Attribute Name="roughness_float" PrettyName="Float" Group="Handle Roughness (float)" Type="double">0.3</Attribute>
+    <Attribute Name="roughness_clamp" PrettyName="Clamp Input" Group="Handle Roughness (float)" Type="bool" Min="false" Max="true">true</Attribute>
+    <!--===============================================================================================================-->
+    <Attribute Name="reflectance_float" PrettyName="Float" Group="Handle Reflectance (float)" Type="double">0.1</Attribute>
+    <Attribute Name="reflectance_clamp" PrettyName="Clamp Input" Group="Handle Reflectance (float)" Type="bool" Min="false" Max="true">true</Attribute>
+    <!--===============================================================================================================-->
+    <Attribute Name="specCol_color" PrettyName="Color" Group="Handle Specular Color (RGBA)" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(1,1,1,1)</Attribute>
+    <Attribute Name="specCol_float" PrettyName="Float" Group="Handle Specular Color (RGBA)" Type="double">1.0</Attribute>
+    <Attribute Name="specCol_sRGB" PrettyName="sRgb Input" Group="Handle Specular Color (RGBA)" Type="bool" Min="false" Max="true">false</Attribute>
+    <Attribute Name="specCol_clamp" PrettyName="Clamp Input" Group="Handle Specular Color (RGBA)" Type="bool" Min="false" Max="true">true</Attribute>
+    <!--===============================================================================================================-->
+    <Attribute Name="disp_float" PrettyName="Float" Group="Handle Displacement/Bump (float)" Type="double">0.5</Attribute>
+    <Attribute Name="disp_clamp" PrettyName="Clamp Input" Group="Handle Displacement/Bump (float)" Type="bool" Min="false" Max="true">false</Attribute>
+    <!--===============================================================================================================-->
+    <Attribute Name="normal_color" PrettyName="Color" Group="Handle Normal (RGBA)" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(0.216,0.216,1.0,1.0)</Attribute>
+    <Attribute Name="normal_float" PrettyName="Float" Group="Handle Normal (RGBA)" Type="double">1.0</Attribute>
+    <Attribute Name="normal_clamp" PrettyName="Clamp Input" Group="Handle Normal (RGBA)" Type="bool" Min="false" Max="true">true</Attribute>
+    <!--===============================================================================================================-->
+</Attributes>
+ <Groups>
+     <Group Name="Handle Diffuse (RGBA)" Expanded="false"></Group>
+     <Group Name="Handle Roughness (float)" Expanded="false"></Group>
+     <Group Name="Handle Reflectance (float)" Expanded="false"></Group>
+     <Group Name="Handle Specular Color (RGBA)" Expanded="false"></Group>
+     <Group Name="Handle Displacement/Bump (float)" Expanded="false"></Group>
+     <Group Name="Handle Normal (RGBA)" Expanded="false"></Group>
+ </Groups>
+ <Contexts>
+        <Context Type="NodeGraphView">
+            <Inputs>
+
+                <Input Name="diffuse"><Pos>0,-150</Pos></Input>
+                <Input Name="specRough"><Pos>-60,-150</Pos></Input>
+                <Input Name="specRefl"><Pos>-150,-150</Pos></Input>
+                <Input Name="specCol"><Pos>-240,-150</Pos></Input>
+                <Input Name="Disp"><Pos>60,-150</Pos></Input>
+                <Input Name="Normal"><Pos>120,-150</Pos></Input>
+            </Inputs>
+
+            <Outputs>
+
+                <Output Name="OUT_D"><Pos>200,20</Pos></Output>
+                <Output Name="OUT_C"><Pos>200,-20</Pos></Output>
+                <Output Name="OUT_B"><Pos>200,-40</Pos></Output>
+                <Output Name="OUT_A"><Pos>200,-60</Pos></Output>
+
+            </Outputs>
+        </Context>
+        <Context Type="GLSL">
+            <Shader ShaderType='Fragment'>
+                <Inputs>
+                <Input Name="diffuse"><Default>$diffuse_color*vec4($diffuse_float,$diffuse_float,$diffuse_float,1.0)</Default></Input>
+                <Input Name="specRough"><Default>vec4($roughness_float,$roughness_float,$roughness_float,1.0) </Default></Input>
+                <Input Name="specRefl"><Default>vec4($reflectance_float,$reflectance_float,$reflectance_float,1.0)</Default></Input>
+                <Input Name="specCol"><Default>$specCol_color*vec4($specCol_float,$specCol_float,$specCol_float,1.0)</Default></Input>
+                <Input Name="Disp"><Default>vec4($disp_float,$disp_float,$disp_float,1.0)</Default></Input>
+                <Input Name="Normal"><Default>$normal_color*vec4($normal_float,$normal_float,$normal_float,1.0)</Default></Input>
+                </Inputs>
+            </Shader>
+            <Shader>
+                <Body><![CDATA[
+
+           // Initalizing Attributes, necessary since <Default> on INPUTS doesn't do it
+           vec4 INIT_V4 =   $diffuse_color; INIT_V4 = $specCol_color; INIT_V4 = $normal_color;
+           float INIT_FL =  $diffuse_float; INIT_FL = $roughness_float; INIT_FL = $reflectance_float; INIT_FL = $specCol_float;
+                            INIT_FL = $disp_float; INIT_FL = $normal_float;
+
+
+
+            // Casting # to Variable
+            vec4 diffuse_handle = #diffuse ;
+            vec4 specRough_handle = #specRough ;
+            vec4 specRefl_handle = #specRefl ;
+            vec4 specCol_handle = #specCol ;
+            vec4 disp_handle = #Disp ;
+            vec4 normal_handle = #Normal ;
+
+
+
+
+            // sRGB2Linear Conversion where checked
+            if ($diffuse_sRGB) {diffuse_handle.rgb = sRgb2Linear(diffuse_handle.rgb); }
+            if ($specCol_sRGB) {specCol_handle.rgb = sRgb2Linear(specCol_handle.rgb); }
+
+
+
+            // Blending between clamped and unclamped.
+            // CLamping here is only done directly on the region input (diffuse, specRough etc.)
+            // not on any values coming from another region
+            vec4 diffuse = mix(diffuse_handle,clamp(diffuse_handle,vec4(0.0),vec4(1.0)),float($diffuse_clamp));
+            vec4 specRough = mix(specRough_handle,clamp(specRough_handle,vec4(0.0),vec4(1.0)),float($roughness_clamp));
+            vec4 specRefl = mix(specRefl_handle,clamp(specRefl_handle,vec4(0.0),vec4(1.0)),float($reflectance_clamp));
+            vec4 specCol = mix(specCol_handle,clamp(specCol_handle,vec4(0.0),vec4(1.0)),float($specCol_clamp));
+            vec4 disp = mix(disp_handle,clamp(disp_handle,vec4(0.0),vec4(1.0)),float($disp_clamp));
+            vec4 normal = mix(normal_handle,clamp(normal_handle,vec4(0.0),vec4(1.0)),float($normal_clamp));
+
+
+
+
+            // Output to Handles. Roughness,reflectance & disp are carried on signle variable
+            OUT_A = diffuse;
+            OUT_B = vec4(specRough.r,specRefl.r,disp.r,1.0);
+            OUT_C = normal;
+            OUT_D = specCol;
+
+
+
+
+                ]]></Body>
+            </Shader>
+        </Context>
+    </Contexts>
+</Node>
+

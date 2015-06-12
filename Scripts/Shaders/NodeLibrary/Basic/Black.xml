@@ -9,7 +9,7 @@
 == Based on original code from theFoundry located in
 == \Mari2.6v1\Bundle\Media\Nodes\Simple\Basic\
 ================================================================================
-== Modification by: Jens Kafitz | Mari Ideascale
+== Modification by: Jens Kafitz
 ================================================================================
 == Modified Date: Spetember, 27 2014
 ================================================================================
@@ -62,4 +62,4 @@
   </Contexts>
 </Node>
 
-    
+

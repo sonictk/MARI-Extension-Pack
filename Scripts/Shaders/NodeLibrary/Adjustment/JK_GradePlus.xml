@@ -1,14 +1,13 @@
 <!--
 ================================================================================
-== Mari Ideascale Procedural Library
-== Copyright (c) 2013 Jens Kafitz. All Rights Reserved.
+== Grade Plus
+== Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
 ================================================================================
 == File: JK_GradePlus.xml
 == Description: Slightly modified version of the stock Mari Grade Node.
 ================================================================================
-== Author: Jens Kafitz | Mari Ideascale
+== Author: Jens Kafitz
 == Web: www.campi3d.com
-== Web: www.mari.ideascale.com
 == Email: MariIdeas@campi3d.com
 ================================================================================
 == Modified Date: June, 16 2014
@@ -44,7 +43,7 @@
 <Node>
     <ID>Grade+</ID>
     <DefaultName>Grade+</DefaultName>
-    <Category>/Custom/</Category>
+    <Category>Filter/Custom/Color Correction/</Category>
     <Tags>
         <Tag>_adjustment</Tag>
     </Tags>

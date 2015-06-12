@@ -1,3 +1,204 @@
+#Release Notes for MARI EXTENSION PACK 2.2
+Copyright (c) 2015 www.mari.ideascale.com. All Rights Reserved.
+
+##New Features:
+
+###Nodes & Shaders:
+
+#####General:
+
+######Nodes ready for Nodegraph
+
+MARI Extension Pack Nodes have been reworked for best experience in the Nodegraph.
+Nodes now have their most useful paramenters exposed as Node Handles to allow node-driven paramenters
+(Octaves driven by another Noise etc.).
+While Node Handles are unmapped, Node Sliders are used.
+While Node Handles are mapped, Node Sliders are ignored.
+
+#####Adjustment Layers:
+
+######RGB to HSV + HSV to RGB
+
+Two new nodes were added to Layerstack & Nodegraph to convert values between RGB + HSV (Hue/Saturation/Value).
+
+######RGB to HSL + HSL to RGB
+
+Two new nodes were added to Layerstack & Nodegraph to convert values between RGB + HSL (Hue/Saturation/Lightness).
+
+#####Basic Layer:
+
+######Float
+
+A simple node allowing you to input a value directly
+
+#####Geometry Procedurals:
+
+######Transform Coordinates 3D
+A node to transform object coordinates such as Position + Normal.
+All Extension Pack Procedurals now have a 'Transform Coordinate' Handle
+in the Nodegraph to attach this to.
+
+Many Extension Pack Procedurals already have Scale/offset/Rotatuion options
+built in but this can be used as a central control hub to modify multiple nodes at once.
+
+######Transform Coordinates UV
+A node to transform object UV Coordinates.
+All Extension Pack Procedurals now have a 'Transform Coordinate' Handle
+in the Nodegraph to attach this to.
+
+Many Extension Pack Procedurals already have Scale/offset/Rotatuion options
+built in but this can be used as a central control hub to modify multiple nodes at once.
+Attaching this Node to a procedural will give the same effect as activating 'UV Space' in
+the Procedural Options.
+
+
+#####Layer Nodes (Nodegraph only):
+
+######Transition Node
+A node to add detail to mask edges.
+This Node is only available in the Nodegraph.
+
+######Mix Node
+Very simple mix node to mix two colors by a mask. This is very similar to the 'merge' node but
+a LOT lighter and faster in performance since you don't need to carry around blend modes, advanced blendmodes
+etc. when you don't need them. For convenience a color A and color B can be set on the node. They will be ignored
+if the corresponding handles are mapped in the nodegraph.
+
+
+#####Material Nodes (Nodegraph only):
+
+######Material Regions
+
+New nodes were added as part of the implementation of 'Material Regions'.
+Material Region Base, Material Region, Material Region Pass Through and
+Material Region Value Selector.
+
+Different Material Region Presets for different workflows (Roughness/Reflectance, Metallness/Roughness, Glossiness) are available.
+
+Material Regions are a powerful way to layer different materials on top of each other, provide a logical grouping in the Nodegraph and giving the user maximum control over each part of the material. Other than Layered Shaders
+performance is kept high by only passing a 'finished' channel to one shader
+instead of layereing multiple shaders on top of each other.
+
+Material Regions are only available in the Nodegraph.
+
+
+###Tools:
+
+#####Selection Groups:
+
+######Material ID from Selection Group
+
+A new tool was added to the 'Selection Group' Palette that will allow you to easily create a materialID channel from your selection groups
+
+
+##Feature Improvements:
+
+###Nodes & Shaders:
+
+
+######Adjustments - General
+
+Adjustments are now categorized in subfolders (Color Correction, Utilities etc.)
+
+######Procedurals - General
+
+ATTENTION: Some of the following changes will change the look of existing procedurals when converting Projects
+           that use the old ones.
+
+The 'Transform Scale' Settings (Scale X,Y,Z) have been refactored so that larger numbers now mean larger scale.
+Previously procedurals would scale up in size the closer the value got to 0.0.
+At default setting of 1.0 the result is identical as before.
+
+Clamping options have been added to various procedurals where they were missing.
+Clamping is now generaly performed on the result of the noise computation but before applying Color A / B.
+This ensures that color mixing behaves relieably but it is still possible to set color values outside of 0-1 range.
+
+Various Slider ranges have been refactored to a 0-1 range to make it easier to map attributes in the nodegraph with
+paintable nodes or other procedurals.
+
+Procedurals in the MainWindow/Layers/ Menu no longer appear under a
+'CustomProcedurals' Folder but are merged into the main Procedurals,Geometry,
+Environment etc. Folders
+
+
+######Polysurface Curvature
+
+Polysurface Curvature now has a 'Min Curvature' Attribute
+
+The Polysurface Curvature Node now has an additional 'Normal Map Mix'.
+When a Normal Map (for example a 'Normal Map' Channel) is attached to the
+handle in the Nodegraph you are able to mix or add edges from a normalmap
+into the final calculation of the curvature.
+
+
+######Paintable Gabor Noise
+
+Paintable Gabor Noise no longer appears under 'Adjustments'
+and has been moved to Procedurals/Custom/Gabor/
+
+
+######Custom Object Normal
+
+Custom Obect Normal has been renamed to Custom Surface Normal to be in line
+wit Maris Vocabulary.
+
+######FBM+
+FBM+ now uses a different algorithm, giving more predicatable results with less
+overall 'flowing' of features across the surface when changing sliders
+
+
+###Tools:
+
+
+######Tools - General
+
+The performance of various tools such as ConvertToPaintable, ExportSelectedChannels, Duplicate-Flatten etc.
+has been improved by surpressing viewport updates during their runtime.
+This can lead to speed improvements of 40-50% in some cases.
+
+######Patch Bake to Image Manager
+
+'Patch Bake to Image Manager' now use Mari 3s new OCIO color management when loading images into the image manager.
+The colorspace to load images in are determined by the selected channel when executing the tool.
+
+
+######Unproject to Image Manager, Patch Bake to Image Manager
+
+'Unproject Channel to Image Manager' and 'Unproject Layer to Image Manager'
+now use Mari 3s new OCIO color management when loading images into the image manager.
+The colorspace to load images in are determined by the selected channel when executing the tool.
+
+Due to Mari 3s lack of Color Management on Projectors you still might be required to set
+the colorspace on the projector images in the image manager manually to achieve correct
+paintThrough colores.
+
+
+##Developer Notes:
+
+######New Category handling
+
+RegisterCustomShaders now uses the new mari.gl_render.registerCustomNodeFromXMLFile for
+adjustments and procedurals.
+
+As a result categories in Adjustment & Procedural Node XML Files now need to be specified explicitely including
+their initial path (/Filters/, '/Procedurals/').
+The path is no longer derrived from the TAGS attribute such as _adjustment.
+
+Adjustments now need to be placed manually under adjustments by specifying
+the path '/Filter/' in the CATEGORY section of the xml file
+
+This allows for placement of adjustment files in other locations as the
+Adjustment Layer Submenu.
+
+######New Functions
+
+DT3D Noise Functions have been amended with clamping variable. Doc needs updating
+col2mask function ?
+
+
+
+
+
 #Release Notes for MARI EXTENSION PACK 2.1
 Copyright (c) 2015 www.mari.ideascale.com. All Rights Reserved.
 

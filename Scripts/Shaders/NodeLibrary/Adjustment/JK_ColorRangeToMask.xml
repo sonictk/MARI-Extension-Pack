@@ -1,17 +1,17 @@
 <!--
 ================================================================================
-== Mari Ideascale Procedural Library
-== Copyright (c) 2013 Jens Kafitz. All Rights Reserved.
+== Color Range to Mask (+Grade)
+== Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
 ================================================================================
 == File: JK_ColorRangeToMask.xml
 == Description: Convert a picked color range into a mask layer for texturing.
+==              Additional Grade options included.
 ================================================================================
-== Author: Jens Kafitz | Mari Ideascale
+== Author: Jens Kafitz
 == Web: www.campi3d.com
-== Web: www.mari.ideascale.com
 == Email: MariIdeas@campi3d.com
 ================================================================================
-== Modified Date: June, 16 2014
+== Modified Date: December, 16 2014
 ================================================================================
 == Redistribution and use in source and binary forms, with or without
 == modification, are permitted provided that the following conditions are met:
@@ -44,7 +44,7 @@
 <Node>
     <ID>ColorRange to Mask</ID>
     <DefaultName>ColorRange to Mask</DefaultName>
-    <Category>/Custom/</Category>
+    <Category>Filter/Custom/Color Correction/</Category>
     <Tags>
         <Tag>_adjustment</Tag>
     </Tags>
@@ -93,7 +93,7 @@
         <Attribute Name="Gamma" Group="Grade Mode" Type="double" Min="0.0" Max="3.0">1.0</Attribute>
         <Attribute Name="Contrast" Group="Grade Mode" Type="double" Min="0.0" Max="2.0">1.0</Attribute>
         <Attribute Name="ContrastPivot" PrettyName="Contrast Pivot" Group="Grade Mode" Type="double" Min="0.0" Max="1.0">0.5</Attribute>
-       
+
     </Attributes>
     <Groups>
         <Group Name="Enhance Selection" Expanded="false"></Group>
@@ -255,7 +255,7 @@
                     SelectionResult = mix(#Input,colorCorrect,_range);
 
                 }
-                
+
                 Output = SelectionResult;
 
                 ]]></Body>

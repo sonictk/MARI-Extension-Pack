@@ -1,0 +1,127 @@
+<!--
+================================================================================
+== Transition
+== Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
+================================================================================
+== File: JK_Transition.xml
+== Description: Overlay B over A by Transition and or Pattern
+================================================================================
+== Author: Jens Kafitz
+== Web: www.campi3d.com
+== Email: MariIdeas@campi3d.com
+================================================================================
+== Modified Date: March, 28 2015
+================================================================================
+== Redistribution and use in source and binary forms, with or without
+== modification, are permitted provided that the following conditions are met:
+==
+== 1. Redistributions of source code must retain the above copyright
+== notice, this list of conditions and the following disclaimer.
+==
+== 2. Redistributions in binary form must reproduce the above copyright
+== notice, this list of conditions and the following disclaimer in the
+== documentation and/or other materials provided with the distribution.
+==
+== 3. Neither the name of the copyright holder nor the names of its
+== contributors may be used to endorse or promote products derived from
+== this software without specific prior written permission.
+==
+== THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+== IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+== THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+== PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+== CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+== EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+== PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+== OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+== WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+== OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+== ADVISED OF HE POSSIBILITY OF SUCH DAMAGE.
+================================================================================
+-->
+
+<Node>
+    <ID>JK_Transition</ID>
+    <DefaultName>Transition</DefaultName>
+    <Category>Layer/Custom/</Category>
+    <Inputs>
+        <Input Name="A" ></Input>
+        <Input Name="B" ></Input>
+        <Input Name="Pattern"></Input>
+        <Input Name="Transition"></Input>
+    </Inputs>
+    <Attributes>
+     <Attribute Name="Trans_Type" PrettyName="Transition" Type="stringlist">B over A by (PatternToBlack by Transition),B over A by (Transition),B over A by (Pattern),B over A by (Transition*Pattern),B over A by (WhiteToBlack),B over A by (PatternToBlack by Transition),B over A by (WhiteToPattern by Transition)</Attribute>
+     <Attribute Name="BlendMode"       PrettyName="Mode"        Group=""         Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
+    <Attribute Name="Contrast"  PrettyName="Contrast B" Type="double" Min="0.0" Max="10.0">3.0</Attribute>
+</Attributes>
+ <Contexts>
+        <Context Type="NodeGraphView">
+            <Inputs>
+                <Input Name="A" ><Pos>-30,-50</Pos></Input>
+                <Input Name="B" ><Pos>30,-50</Pos></Input>
+                <Input Name="Pattern"><Pos>-100,-50</Pos></Input>
+                <Input Name="Transition"><Pos>100,-50</Pos></Input>
+            </Inputs>
+        </Context>
+        <Context Type="GLSL">
+            <Shader ShaderType='Fragment'>
+                <Inputs>
+                <Input Name="A" ><Default>vec4(9999.0)</Default></Input>
+                <Input Name="B" ><Default>vec4(9999.0)</Default></Input>
+                <Input Name="Pattern"><Default>vec4(0.5)</Default></Input>
+                <Input Name="Transition"><Default>vec4(0.5)</Default></Input>
+                </Inputs>
+            </Shader>
+            <Shader ShaderType='TessEvaluation'>
+                <Inputs>
+                <Input Name="A" ><Default>vec4(9999.0)</Default></Input>
+                <Input Name="B" ><Default>vec4(9999.0)</Default></Input>
+                <Input Name="Pattern"><Default>vec4(0.5)</Default></Input>
+                <Input Name="Transition"><Default>vec4(0.5)</Default></Input>
+                </Inputs>
+            </Shader>
+            <Shader>
+                <Body><![CDATA[
+
+    float alpha = 0;
+    vec4 A_B_unmapped = (#A-vec4(0.5))*$Contrast+vec4(0.5);
+    vec4 B_Handle = ( #B == vec4(9999.0) ) ? A_B_unmapped : #B ;
+
+
+
+    if($Trans_Type==0)
+    {
+      alpha = #Transition.r;
+    }
+    else if($Trans_Type==1)
+    {
+      alpha = #Pattern.r;
+    }
+    else if($Trans_Type==2)
+    {
+      alpha = #Transition.r * #Pattern.r;
+    }
+    else if($Trans_Type==3)
+    {
+      alpha = clamp(#Pattern.r + (2*(#Transition.r-0.5)), 0.0, 1.0);
+    }
+    else if($Trans_Type==4)
+    {
+      alpha = Comp_Default( vec4(0.0,0.0,0.0,1.0), #Pattern, #Transition.r).r;
+    }
+    else if($Trans_Type==5)
+    {
+      alpha = Comp_Default( #Pattern, vec4(1.0,1.0,1.0,1.0), #Transition.r).r;
+    }
+
+
+
+    Output = clamp( $BlendMode(#A, B_Handle, alpha),vec4(0.0),vec4(1.0) );
+
+                ]]></Body>
+            </Shader>
+        </Context>
+    </Contexts>
+</Node>
+

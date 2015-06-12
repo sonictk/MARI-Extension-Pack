@@ -41,32 +41,41 @@ import mari
 
 
 def unprojChanPaint():
+    '''Unprojects current Channel to image manager'''
 
-  mari.history.startMacro('Unproject Channel to Image Manager')
-  projectionCamera = mari.actions.get ("/Mari/Canvas/Projection/Create Projector") 
-  projectionCamera.trigger() 
-  mari.projectors.current().setName("CurrentChannel")
-  mari.projectors.current().setName("CurrentChannel")
-  mari.projectors.current().setUseShader("Current Channel")
-  mari.projectors.current().setLightingMode(0)
-  mari.projectors.current().setSize (4096, 4096)
-  mari.projectors.current().setBitDepth (8)
-  unprojDir = os.path.expanduser('~') + "/"
-  unprojectFileLoc = "{1}{0}.png".format(mari.projectors.current().name(), unprojDir)
-  print unprojectFileLoc
-  mari.projectors.current().unprojectToFile(unprojectFileLoc)
-  mari.projectors.remove("CurrentChannel")
-  mari.images.load(unprojectFileLoc)
-  mari.tools.setCurrent("Paint Through")
-  mari.history.stopMacro()
-  return 
+    deactivateViewportToggle = mari.actions.find('/Mari/Canvas/Toggle Shader Compiling')
+    deactivateViewportToggle.trigger()
+    curGeo = mari.geo.current()
+    curChan = curGeo.currentChannel()
+    colorSpace = curChan.colorspaceConfig()
+
+    mari.history.startMacro('Unproject Channel to Image Manager')
+    projectionCamera = mari.actions.get ("/Mari/Canvas/Projection/Create Projector")
+    projectionCamera.trigger()
+    mari.projectors.current().setName("CurrentChannel")
+    mari.projectors.current().setName("CurrentChannel")
+    mari.projectors.current().setUseShader("Current Channel")
+    mari.projectors.current().setLightingMode(0)
+    mari.projectors.current().setSize (4096, 4096)
+    mari.projectors.current().setBitDepth (8)
+    unprojDir = os.path.expanduser('~') + "/"
+    unprojectFileLoc = "{1}{0}.png".format(mari.projectors.current().name(), unprojDir)
+    print unprojectFileLoc
+    mari.projectors.current().unprojectToFile(unprojectFileLoc)
+    mari.projectors.remove("CurrentChannel")
+    mari.images.open(unprojectFileLoc,colorSpace)
+    mari.tools.setCurrent("Paint Through")
+    mari.history.stopMacro()
+
+    deactivateViewportToggle.trigger()
+    return
 
 
 def _isProjectSuitable():
     """Checks project state."""
     MARI_2_0V1_VERSION_NUMBER = 20001300    # see below
     if mari.app.version().number() >= MARI_2_0V1_VERSION_NUMBER:
-    
+
         if mari.projects.current() is None:
             mari.utils.message("Please open a project before running.")
             return False, False
@@ -75,7 +84,7 @@ def _isProjectSuitable():
             return True, True
 
         return True, False
-        
+
     else:
         mari.utils.message("You can only run this script in Mari 2.6v3 or newer.")
         return False, False

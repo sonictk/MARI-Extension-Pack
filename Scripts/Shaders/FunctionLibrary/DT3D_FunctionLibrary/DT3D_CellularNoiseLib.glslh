@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
-// DigiTecK3D Procedural Shader Library
-// Copyright (c) 2013 DigiTecK3D. All Rights Reserved.
+// Miguel A Santiago Jr. Procedural Shader Library
+// Copyright (c) 2015 Miguel A Santiago Jr.. All Rights Reserved.
 ////////////////////////////////////////////////////////////////////////////////
 // File: DT3D_CellularNoiseLib.glslh
 // Description: Cellular noise library for the cellular noise funciton.

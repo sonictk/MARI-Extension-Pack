@@ -1,17 +1,16 @@
 <!--
 ================================================================================
-== Mari Ideascale Procedural Library
-== Copyright (c) 2013 Jens Kafitz. All Rights Reserved.
+== Axis Projection
+== Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
 ================================================================================
 == File: JK_AxisMask.xml
 == Description: Axis mask node to create masking based on specific directions.
 ================================================================================
-== Author: Jens Kafitz | Mari Ideascale
+== Author: Jens Kafitz
 == Web: www.campi3d.com
-== Web: www.mari.ideascale.com
 == Email: MariIdeas@campi3d.com
 ================================================================================
-== Modified Date: June, 16 2014
+== Modified Date: May, 18 2015
 ================================================================================
 == Redistribution and use in source and binary forms, with or without
 == modification, are permitted provided that the following conditions are met:
@@ -47,9 +46,10 @@
   <Cost>0.7</Cost>
   <CostDescription>Some calculations and some texture lookup</CostDescription>
   <Inputs>
-      <Input Name="Mask"></Input>
-      <Input Name="Position"></Input>
-      <Input Name="Normal"></Input>
+      <Input Name="WorldScale"></Input>
+      <Input Name="Angle"></Input>
+      <Input Name="UVOffset"></Input>
+      <Input Name="UVScale"></Input>
   </Inputs>
   <Attributes>
       <!--===============================================================================================================-->
@@ -89,32 +89,47 @@
   <Contexts>
       <Context Type="NodeGraphView">
           <Inputs>
-              <Input Name="Mask"><Pos>100,0</Pos></Input>
-              <Input Name="Position"><Pos>100,-20</Pos></Input>
-              <Input Name="Normal"><Pos>100,-40</Pos></Input>
+              <Input Name="WorldScale"><Pos>140,0</Pos></Input>
+              <Input Name="Angle"><Pos>-120,0</Pos></Input>
+              <Input Name="UVOffset"><Pos>70,-50</Pos></Input>
+              <Input Name="UVScale"><Pos>-70,-50</Pos></Input>
           </Inputs>
       </Context>
       <Context Type="GLSL">
           <Shader ShaderType='Fragment'>
               <Inputs>
-                  <Input Name="Position"><Default>(State.Position - u_MriObjectCenter)</Default></Input>
-                  <Input Name="Normal"><Default>State.Normal</Default></Input>
+                  <Input Name="WorldScale"><Default>vec4($worldScale)</Default></Input>
+                  <Input Name="Angle"><Default>vec4($Angle)</Default></Input>
+                  <Input Name="UVOffset"><Default>vec4($UOffset,$VOffset,0.0,1.0)</Default></Input>
+                  <Input Name="UVScale"><Default>vec4($UScale,$VScale,0.0,1.0)</Default></Input>
               </Inputs>
           </Shader>
 
           <Shader ShaderType='TessEvaluation'>
               <Inputs>
-                  <Input Name="Position"><Default>State.Position</Default></Input>
-                  <Input Name="Normal"><Default>State.Normal</Default></Input>
+                  <Input Name="WorldScale"><Default>vec4($worldScale)</Default></Input>
+                  <Input Name="Angle"><Default>vec4($Angle)</Default></Input>
+                  <Input Name="UVOffset"><Default>vec4($UOffset,$VOffset,0.0,1.0)</Default></Input>
+                  <Input Name="UVScale"><Default>vec4($UScale,$VScale,0.0,1.0)</Default></Input>
               </Inputs>
           </Shader>
 
           <Shader>
-              <Inputs>
-                  <Input Name="Mask"><Default>vec4(1,1,1,1)</Default></Input>
-              </Inputs>
               <Body>
     <![CDATA[
+
+
+    //Workaround: Init UV Elements by casting otherwise UI is greyed out because <DEFAULT> Values do not turn them on
+    float UI = $worldScale; UI = $Angle; UI = $UOffset; UI = $VOffset; UI = $UScale; UI = $VScale;
+
+    // Input Handles
+    float WorldScale = $worldScale;
+    float Angle = #Angle.r;
+    float UOffset = #UVOffset.r;
+    float VOffset = #UVOffset.g;
+    float UScale = #UVScale.r;
+    float VScale = #UVScale.g;
+
 
     // Axis Separation from JK_AxisMask.xml
 
@@ -123,7 +138,7 @@
 
     // build modified state.normal via mari function library call
     vec3 _N = positionTransform(State.Normal,vec3(0.0),rotate,vec3(1.0));
-    vec3 pos = positionTransform(State.Position,vec3(0.0),rotate,vec3(1.0));
+    vec3 pos = positionTransform((State.Position - u_MriObjectCenter),vec3(0.0),rotate,vec3(1.0));
 
     // divisor for p in fbm jitter function
     float pow_J = pow($jitter,length(_N));
@@ -172,20 +187,20 @@
     if ( $sZ || $sminZ)
     {
       {
-          if ($worldScale <= 0.0)
+          if (WorldScale <= 0.0)
           {
               FrontUv = vec2(0.0, 0.0);
           }
           else
           {
-              FrontUv = (1.0 / $worldScale) * pos.xy * vec2( $UScale, -$VScale);
+              FrontUv = (1.0 / WorldScale) * pos.xy * vec2( UScale, -VScale);
           }
-          float angleRads = radians( $Angle);
+          float angleRads = radians( Angle);
           float cosAngle = cos( angleRads);
           float sinAngle = sin( angleRads);
           FrontUv = mat2( cosAngle, -sinAngle, sinAngle, cosAngle ) * FrontUv;
           FrontUv *= vec2( $Repeat);
-          FrontUv += vec2( -$UOffset, $VOffset);
+          FrontUv += vec2( -UOffset, VOffset);
           FrontUv -= vec2(0.5, 0.5);
       }
     }
@@ -195,20 +210,20 @@
     if ( $sY || $sminY)
       {
         {
-            if ($worldScale <= 0.0)
+            if (WorldScale <= 0.0)
             {
                 TopUv = vec2(0.0, 0.0);
             }
             else
             {
-                TopUv = (1.0 / $worldScale) * pos.xz * vec2( -$UScale, -$VScale);
+                TopUv = (1.0 / WorldScale) * pos.xz * vec2( -UScale, -VScale);
             }
-            float angleRads = radians( $Angle);
+            float angleRads = radians( Angle);
             float cosAngle = cos( angleRads);
             float sinAngle = sin( angleRads);
             TopUv = mat2( cosAngle, -sinAngle, sinAngle, cosAngle ) * TopUv;
             TopUv *= vec2( $Repeat);
-            TopUv += vec2( -$UOffset, $VOffset);
+            TopUv += vec2( -UOffset, VOffset);
             TopUv -= vec2(0.5, 0.5);
         }
 
@@ -218,20 +233,20 @@
     if ( $sX || $sminX)
     {
       {
-          if ($worldScale <= 0.0)
+          if (WorldScale <= 0.0)
           {
               RightUv = vec2(0.0, 0.0);
           }
           else
           {
-              RightUv = (1.0 / $worldScale) * pos.zy * vec2( $UScale, -$VScale);
+              RightUv = (1.0 / WorldScale) * pos.zy * vec2( UScale, -VScale);
           }
-          float angleRads = radians( $Angle);
+          float angleRads = radians( Angle);
           float cosAngle = cos( angleRads);
           float sinAngle = sin( angleRads);
           RightUv = mat2( cosAngle, -sinAngle, sinAngle, cosAngle ) * RightUv;
           RightUv *= vec2( $Repeat);
-          RightUv += vec2( -$UOffset, $VOffset);
+          RightUv += vec2( -UOffset, VOffset);
           RightUv -= vec2(0.5, 0.5);
       }
     }

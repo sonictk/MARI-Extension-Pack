@@ -5,9 +5,8 @@
 // File: JK_TexScatterUV.glslh
 // Description: UV Based Texture Bombing Function(s) for use in JK_TextureScatter_UV.
 ////////////////////////////////////////////////////////////////////////////////
-// Author: Jens Kafitz | Mari Ideascale
+// Author: Jens Kafitz
 // Web: www.campi3d.com
-// Web: www.mari.ideascale.com
 // Email: MariIdeas@campi3d.com
 ////////////////////////////////////////////////////////////////////////////////
 // Modified Date: December 21, 2014
@@ -45,7 +44,7 @@
 // ------------------------------------------------------------------------
 
 
-vec4 JK_texScatterUV( 
+vec4 JK_texScatterUV(
 					vec2 UV,
 					float scale,
 					float ScaleRnd,
@@ -95,7 +94,7 @@ vec4 JK_texScatterUV(
 //1D Random Function with Thresholding
 float rnd1d_threshold(float x,float lo,float hi,float threshold,float threshold_bound);
 
-// voronoi cellular pattern generator from DT3D_CellularNoise.glslc 
+// voronoi cellular pattern generator from DT3D_CellularNoise.glslc
 // but a little simplified for better performance and with a threshold.
 void voronoi_simple(vec3 position, float jitterD,out vec3 f1cell,float threshold,float threshold_bound);
 
@@ -103,5 +102,5 @@ void voronoi_simple(vec3 position, float jitterD,out vec3 f1cell,float threshold
 float udn(float x,float scale,float lo,float hi);
 
 
-// A very expensive, voronoi based noise for seeding. 
+// A very expensive, voronoi based noise for seeding.
 float udnVor(float x,float scale,float lo,float hi, float threshold, float threshold_bound);

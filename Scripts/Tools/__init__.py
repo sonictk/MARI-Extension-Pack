@@ -64,6 +64,9 @@ import Channels.extPack_channelTemplate as channel_template
 # SHADERS:
 import Shaders.extPack_set_all_current_shader as setAllCurrentShader
 
+# SELECTION GROUPS:
+import SelectionGroups.extPack_matIDfromGroup as matIDFromGroup
+
 # OBJECTS:
 import Object.extPack_export_uv_masks as export_uv_masks
 
@@ -122,7 +125,6 @@ class customScripts():
     def CloneMerge(self):
         clone_merge_layers.CloneMergeGUI().exec_()
 
-
     def toggleSelVisibility(self):
         toggle_layer_visibility_lock.toggleSelVisibility()
 
@@ -159,6 +161,12 @@ class customScripts():
 
     def setAllObjectsToShader(self):
         setAllCurrentShader.setAllCurrentShader()
+
+    # --------------------------------------------------------------
+    # SELECTION GROUPS:
+
+    def matIDFromGroup(self):
+        matIDFromGroup.matIDFromSelectionGroup()
 
     # --------------------------------------------------------------
     # OBJECTS:
@@ -233,6 +241,9 @@ print 'Patches Menu: Patch to Image Manager'
 print '-----------------------------------------'
 print 'Shader Palette Additions (1): '
 print 'Shader Menu: Sync Object Shaders'
+print '-----------------------------------------'
+print 'SelectionGroup Palette Additions (1): '
+print 'Create MaterialID from Selection Group'
 print '-----------------------------------------'
 print 'Camera Palette Additions (2): '
 print 'Camera Menu: Quick Unproject Channel'

@@ -1,6 +1,6 @@
 <!--
 ================================================================================
-== Antonio Neto Mari Procedural Library
+== Falloff Map
 == Copyright (c) 2015 Antonio Neto. All Rights Reserved.
 ================================================================================
 == File: AN_FalloffMap.xml
@@ -10,7 +10,9 @@
 == Web: www.netocg.blogspot.com
 == Email: netocg.fx@gmail.com
 ================================================================================
-== Modified for Extension Pack: Jens Kafitz
+== Modifications + Maintenance: Jens Kafitz
+== Web: www.campi3d.com
+== Email: MariIdeas@campi3d.com
 ================================================================================
 == Modified Date: January, 10 2015
 ================================================================================
@@ -66,20 +68,20 @@
                 <![CDATA[
 
                 vec4 Blend  = vec4 (0.0);
-				
+
 				#if defined MRI_SHADER_FRAGMENT || defined MRI_SHADER_TESS_EVALUATION
-				
+
 				// Perpendicular/Parallel Mode (Facing Ratio in Maya)
 				if ($FalloffType == 0)
 				{
 					float VdotN = dot(State.ViewVectorInEyeSpaceFromProjectionCamera, State.NormalInEyeSpaceFromProjectionCamera);
 					float Fresnel = mriCurveLookup($Falloff, length(VdotN) );
-					Blend  = mix($FrontColor, $SideColor, 1-Fresnel);                    
+					Blend  = mix($FrontColor, $SideColor, 1-Fresnel);
 				}
 
 				// Fresnel Mode
 				if ($FalloffType == 1)
-				{			
+				{
 					float VdotN = dot(-State.ViewVectorInEyeSpaceFromProjectionCamera, State.NormalInEyeSpaceFromProjectionCamera);
 					float IdotN = dot(State.ViewVectorInEyeSpaceFromProjectionCamera, State.NormalInEyeSpaceFromProjectionCamera);
 					float Eta = (IdotN < 0.0) ? 1.0/$IOR : $IOR;
@@ -87,30 +89,30 @@
 					F0 *= F0;
 					float Fresnel = F0 + (1.0-F0) * pow(1.0 - VdotN, 5.0);
 					Fresnel = mriCurveLookup($Falloff, length(Fresnel) );
-					Blend  = mix($FrontColor, $SideColor, Fresnel);   
+					Blend  = mix($FrontColor, $SideColor, Fresnel);
 				}
-					
+
 
 				// REMOVED SHADOW-LIGHT + DEPTH MODES BECAUSE IT CONFUSES PEOPLE THAT IT IS NOT STABLE IN A PROJECTION MASK
 				// MAKING IT ONLY NICE TO LOOK AT BUT OF NO PARTICULAR PRACTICAL TEXTURING USE - JENS KAFITZ
- 
+
 				// Shadow/Light Mode
 				// if ($FalloffType == 2)
-				// {											
+				// {
 					// for(int i=0;i<4;i++)
 					// {
 						// if( vec3( 0) == u_MriLightSources[i].DiffuseColor.rgb && vec3( 0) == u_MriLightSources[i].SpecularColor.rgb)
 						// {
 							// continue;
 						// }
-						// 
+						//
 						// vec3 L = normalize(u_MriLightSources[i].Position.xyz - State.FragmentPositionInEyeSpaceFromProjectionCamera);
-						// float lightVisibility = mriLightVisibility( i, State.Position);                        
-						// 
+						// float lightVisibility = mriLightVisibility( i, State.Position);
+						//
 						// float NdotL = max(0, dot(State.Normal, L) );
 						// float Fresnel = mriCurveLookup($Falloff, length(NdotL) );
-						// Blend += mix($FrontColor, $SideColor, Fresnel) * NdotL * lightVisibility;						
-					// }    				
+						// Blend += mix($FrontColor, $SideColor, Fresnel) * NdotL * lightVisibility;
+					// }
 				// }
 
 				// Distance Blend Mode
@@ -118,10 +120,10 @@
 				// {
 					// float Fresnel = mriCurveLookup($Falloff, length(gl_FragDepth) );
 					// Blend = mix($FrontColor, $SideColor, 1-Fresnel );
-				// }			
-						
+				// }
 
-		
+
+
 				// Local X Axis
 				if ($FalloffType == 2)
                 {
@@ -129,11 +131,11 @@
 					vec3 P = N*u_MriObjectRadius+u_MriObjectCenter;
 					float d = -dot(N,P);
 					float D = abs(dot(N,State.Position)+d)/length(P);
-					D /=u_MriObjectRadius;					
+					D /=u_MriObjectRadius;
                     float Fresnel = mriCurveLookup($Falloff, length(D) );
-                    Blend  = mix($FrontColor, $SideColor, Fresnel);                    
+                    Blend  = mix($FrontColor, $SideColor, Fresnel);
                 }
-				
+
 				// Local Y Axis
 				if ($FalloffType == 3)
                 {
@@ -141,11 +143,11 @@
 					vec3 P = N*u_MriObjectRadius+u_MriObjectCenter;
 					float d = -dot(N,P);
 					float D = abs(dot(N,State.Position)+d)/length(P);
-					D /=u_MriObjectRadius;					
+					D /=u_MriObjectRadius;
                     float Fresnel = mriCurveLookup($Falloff, length(D) );
-                    Blend  = mix($FrontColor, $SideColor, Fresnel);                    
+                    Blend  = mix($FrontColor, $SideColor, Fresnel);
                 }
-				
+
 				// Local Z Axis
 				if ($FalloffType == 4)
                 {
@@ -153,13 +155,13 @@
 					vec3 P = N*u_MriObjectRadius+u_MriObjectCenter;
 					float d = -dot(N,P);
 					float D = abs(dot(N,State.Position)+d)/length(P);
-					D /=u_MriObjectRadius;					
+					D /=u_MriObjectRadius;
                     float Fresnel = mriCurveLookup($Falloff, length(D) );
-                    Blend  = mix($FrontColor, $SideColor, Fresnel);                    
-                }			
-					
-				#endif               
-				
+                    Blend  = mix($FrontColor, $SideColor, Fresnel);
+                }
+
+				#endif
+
                 Output.rgb = Blend.rgb;
 				Output.a = 1.0;
                 ]]>

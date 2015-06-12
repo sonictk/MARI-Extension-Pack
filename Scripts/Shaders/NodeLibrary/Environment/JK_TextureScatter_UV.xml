@@ -1,17 +1,16 @@
 <!--
 ================================================================================
-== Texture Scatter UV Tile
+== Texture Scatter UV (Tile)
 == Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
 ================================================================================
 == File: JK_TextureScatter_UV.xml
 == Description: A UV Based Texture Bomber capable of creating tileable textures on a plane
 ================================================================================
-== Author: Jens Kafitz | Mari Ideascale
+== Author: Jens Kafitz
 == Web: www.campi3d.com
-== Web: www.mari.ideascale.com
 == Email: MariIdeas@campi3d.com
 ================================================================================
-== Modified Date: January, 14 2015
+== Modified Date: May, 18 2015
 ================================================================================
 == Redistribution and use in source and binary forms, with or without
 == modification, are permitted provided that the following conditions are met:
@@ -47,7 +46,6 @@
     <Cost>0.99</Cost>
     <CostDescription>Heavy calculations and texture reads do not keep live</CostDescription>
     <Inputs>
-        <Input Name="UV"></Input>
     </Inputs>
     <Attributes>
         <!--===============================================================================================================-->
@@ -56,16 +54,16 @@
         <Attribute Name="Clumping" PrettyName="Clumping" Group="Density" Type="double" Min="0.0" Max="1" Logarithmic="true" Description="Removes cells so distribution is sparser">0</Attribute>
         <Attribute Name="NoiseScaleA" PrettyName="Noise" Group="Density" Type="double" Min="0.0001" Max="100" Logarithmic="true" Description="Noise Scales. Very low values will usually give a slightly higher density but overall works like a Seed">1</Attribute>
         <Attribute Name="ForceTile" PrettyName="Force to Tileable" Group="Density" Type="bool" Min="false" Max="true" Description="Switches between a more random distribution and a seamless one">true</Attribute>
-        <!--===============================================================================================================-->   
+        <!--===============================================================================================================-->
         <Attribute Name="scene" PrettyName="Scene Size" Group="Global Scale" Type="int" Description="A global modifier for scene size to change slider ranges">100</Attribute>
         <Attribute Name="Scale" PrettyName="Scale" Group="Global Scale" Type="double" Min="0.001" Max="100" Description="Overall UV Scale">40</Attribute>
         <Attribute Name="TexSizeA" PrettyName="MapA Scale" Group="Global Scale" Type="double" Min="1" Max="10">10</Attribute>
         <Attribute Name="TexSizeB" PrettyName="MapB Scale" Group="Global Scale" Type="double" Min="1" Max="10">10</Attribute>
         <Attribute Name="TexSizeC" PrettyName="MapC Scale" Group="Global Scale" Type="double" Min="1" Max="10">10</Attribute>
-        <Attribute Name="TexSizeD" PrettyName="MapD Scale" Group="Global Scale" Type="double" Min="1" Max="10">10</Attribute> 
+        <Attribute Name="TexSizeD" PrettyName="MapD Scale" Group="Global Scale" Type="double" Min="1" Max="10">10</Attribute>
         <!--===============================================================================================================-->
         <Attribute Name="ScaleRnd" PrettyName="Randomize Scale" Group="Randomize Scale" Type="double" Min="0.00" Max="1" Description="Introduces a random scale offset to each cell">0.1</Attribute>
-        <Attribute Name="ScaleRndWeight" PrettyName="% Original Scale" Group="Randomize Scale" Type="double" Min="0.00" Max="1" Description="Determines what percentage of cells to keep at original full scale">0.1</Attribute>      
+        <Attribute Name="ScaleRndWeight" PrettyName="% Original Scale" Group="Randomize Scale" Type="double" Min="0.00" Max="1" Description="Determines what percentage of cells to keep at original full scale">0.1</Attribute>
         <Attribute Name="RndSizeA" PrettyName="MapA Rnd. Mix" Group="Randomize Scale" Type="double" Min="0" Max="1">1</Attribute>
         <Attribute Name="RndSizeB" PrettyName="MapB Rnd. Mix" Group="Randomize Scale" Type="double" Min="0" Max="1">1</Attribute>
         <Attribute Name="RndSizeC" PrettyName="MapC Rnd. Mix" Group="Randomize Scale" Type="double" Min="0" Max="1">1</Attribute>
@@ -80,22 +78,22 @@
         <Attribute Name="A_minS" PrettyName="Min Sat" Group="HSV Shift" Type="double" Min="0" Max="2">1</Attribute>
         <Attribute Name="A_maxS" PrettyName="Max Sat" Group="HSV Shift" Type="double" Min="0" Max="2">1</Attribute>
         <Attribute Name="A_minV" PrettyName="Min Val" Group="HSV Shift" Type="double" Min="0" Max="2">1</Attribute>
-        <Attribute Name="A_maxV" PrettyName="Max Val" Group="HSV Shift" Type="double" Min="0" Max="2">1</Attribute>  
+        <Attribute Name="A_maxV" PrettyName="Max Val" Group="HSV Shift" Type="double" Min="0" Max="2">1</Attribute>
         <Attribute Name="Clamp" PrettyName="Clamp" Group="HSV Shift" Type="bool" Min="false" Max="true">true</Attribute>
         <Attribute Name="ValOffset" PrettyName="Value Offset" Group="HSV Shift" Type="double" Min="-1" Max="1">0</Attribute>
         <Attribute Name="LayerAtten" PrettyName="Layer Attenuation" Group="HSV Shift" Type="double" Min="-1" Max="1">0</Attribute>
         <Attribute Name="HSVSeed" PrettyName="HSV Seed" Group="HSV Shift" Type="double" Min="1" Max="1000">500</Attribute>
-         <!--===============================================================================================================--> 
+         <!--===============================================================================================================-->
         <Attribute Name="MapA_weight" PrettyName="Importance" Group="Texture Map A" Type="double" Min="0" Max="1">1.0</Attribute>
         <Attribute Name="ClumpingA" PrettyName="Clumping" Group="Texture Map A" Type="double" Min="0.0" Max="1" Logarithmic="true">0</Attribute>
         <Attribute Name="MapA" PrettyName="MapA" Group="Texture Map A" Type="image" GenerateMipMaps="false"></Attribute>
         <Attribute Name="Invert_A" PrettyName="Invert Map" Group="Texture Map A" Type="bool" Min="false" Max="true">false</Attribute>
         <Attribute Name="MapA_Alpha" PrettyName="Alpha" Group="Texture Map A" Type="stringlist">From Map,From Map,Alpha is Luminance,Alpha is Inverse Luminance</Attribute>
-        <Attribute Name="HSMixA" PrettyName="Hue/Sat Shift Mix" Group="Texture Map A" Type="double" Min="0" Max="1">1</Attribute>      
-        <Attribute Name="ValMixA" PrettyName="Value Shift Mix" Group="Texture Map A" Type="double" Min="0" Max="1">1</Attribute>      
-        <Attribute Name="FadeA" PrettyName="Edge Falloff" Group="Texture Map A" Type="double" Min="0" Max="1">0</Attribute>  
-        <Attribute Name="HardnessA" PrettyName="Edge Softness" Group="Texture Map A" Type="double" Min="0.0" Max="1.0">0.0</Attribute>  
-        <Attribute Name="roundnessA" PrettyName="Edge Roundness" Group="Texture Map A" Type="double" Min="0" Max="1">0</Attribute>  
+        <Attribute Name="HSMixA" PrettyName="Hue/Sat Shift Mix" Group="Texture Map A" Type="double" Min="0" Max="1">1</Attribute>
+        <Attribute Name="ValMixA" PrettyName="Value Shift Mix" Group="Texture Map A" Type="double" Min="0" Max="1">1</Attribute>
+        <Attribute Name="FadeA" PrettyName="Edge Falloff" Group="Texture Map A" Type="double" Min="0" Max="1">0</Attribute>
+        <Attribute Name="HardnessA" PrettyName="Edge Softness" Group="Texture Map A" Type="double" Min="0.0" Max="1.0">0.0</Attribute>
+        <Attribute Name="roundnessA" PrettyName="Edge Roundness" Group="Texture Map A" Type="double" Min="0" Max="1">0</Attribute>
         <!--===============================================================================================================-->
         <Attribute Name="UseMapB" PrettyName="Activate Texture B" Group="Texture Map B" Type="bool" Min="false" Max="true">false</Attribute>
         <Attribute Name="MapB_weight" PrettyName="Importance" Group="Texture Map B" Type="double" Min="0" Max="1">0.25</Attribute>
@@ -103,11 +101,11 @@
         <Attribute Name="MapB" PrettyName="MapB" Group="Texture Map B" Type="image" GenerateMipMaps="false"></Attribute>
         <Attribute Name="Invert_B" PrettyName="Invert Map" Group="Texture Map B" Type="bool" Min="false" Max="true">false</Attribute>
         <Attribute Name="MapB_Alpha" PrettyName="Alpha" Group="Texture Map B" Type="stringlist">From Map,From Map,Alpha is Luminance,Alpha is Inverse Luminance</Attribute>
-        <Attribute Name="HSMixB" PrettyName="Hue/Sat Shift Mix" Group="Texture Map B" Type="double" Min="0" Max="1">1</Attribute>      
-        <Attribute Name="ValMixB" PrettyName="Value Shift Mix" Group="Texture Map B" Type="double" Min="0" Max="1">1</Attribute>      
-        <Attribute Name="FadeB" PrettyName="Edge Falloff" Group="Texture Map B" Type="double" Min="0" Max="1">0</Attribute>  
-        <Attribute Name="HardnessB" PrettyName="Edge Softness" Group="Texture Map B" Type="double" Min="0.0" Max="1.0">0.0</Attribute>  
-        <Attribute Name="roundnessB" PrettyName="Edge Roundness" Group="Texture Map B" Type="double" Min="0" Max="1">0</Attribute>  
+        <Attribute Name="HSMixB" PrettyName="Hue/Sat Shift Mix" Group="Texture Map B" Type="double" Min="0" Max="1">1</Attribute>
+        <Attribute Name="ValMixB" PrettyName="Value Shift Mix" Group="Texture Map B" Type="double" Min="0" Max="1">1</Attribute>
+        <Attribute Name="FadeB" PrettyName="Edge Falloff" Group="Texture Map B" Type="double" Min="0" Max="1">0</Attribute>
+        <Attribute Name="HardnessB" PrettyName="Edge Softness" Group="Texture Map B" Type="double" Min="0.0" Max="1.0">0.0</Attribute>
+        <Attribute Name="roundnessB" PrettyName="Edge Roundness" Group="Texture Map B" Type="double" Min="0" Max="1">0</Attribute>
         <!--===============================================================================================================-->
         <Attribute Name="UseMapC" PrettyName="Activate Texture C" Group="Texture Map C" Type="bool" Min="false" Max="true">false</Attribute>
         <Attribute Name="MapC_weight" PrettyName="Importance" Group="Texture Map C" Type="double" Min="0" Max="1">0.25</Attribute>
@@ -115,11 +113,11 @@
         <Attribute Name="MapC" PrettyName="MapC" Group="Texture Map C" Type="image" GenerateMipMaps="false"></Attribute>
         <Attribute Name="Invert_C" PrettyName="Invert Map" Group="Texture Map C" Type="bool" Min="false" Max="true">false</Attribute>
         <Attribute Name="MapC_Alpha" PrettyName="Alpha" Group="Texture Map C" Type="stringlist">From Map,From Map,Alpha is Luminance,Alpha is Inverse Luminance</Attribute>
-        <Attribute Name="HSMixC" PrettyName="Hue/Sat Shift Mix" Group="Texture Map C" Type="double" Min="0" Max="1">1</Attribute>      
-        <Attribute Name="ValMixC" PrettyName="Value Shift Mix" Group="Texture Map C" Type="double" Min="0" Max="1">1</Attribute>      
-        <Attribute Name="FadeC" PrettyName="Edge Falloff" Group="Texture Map C" Type="double" Min="0" Max="1">0</Attribute>  
-        <Attribute Name="HardnessC" PrettyName="Edge Softness" Group="Texture Map C" Type="double" Min="0.0" Max="1.0">0.0</Attribute>  
-        <Attribute Name="roundnessC" PrettyName="Edge Roundness" Group="Texture Map C" Type="double" Min="0" Max="1">0</Attribute>  
+        <Attribute Name="HSMixC" PrettyName="Hue/Sat Shift Mix" Group="Texture Map C" Type="double" Min="0" Max="1">1</Attribute>
+        <Attribute Name="ValMixC" PrettyName="Value Shift Mix" Group="Texture Map C" Type="double" Min="0" Max="1">1</Attribute>
+        <Attribute Name="FadeC" PrettyName="Edge Falloff" Group="Texture Map C" Type="double" Min="0" Max="1">0</Attribute>
+        <Attribute Name="HardnessC" PrettyName="Edge Softness" Group="Texture Map C" Type="double" Min="0.0" Max="1.0">0.0</Attribute>
+        <Attribute Name="roundnessC" PrettyName="Edge Roundness" Group="Texture Map C" Type="double" Min="0" Max="1">0</Attribute>
         <!--===============================================================================================================-->
         <Attribute Name="UseMapD" PrettyName="Activate Texture D" Group="Texture Map D" Type="bool" Min="false" Max="true">false</Attribute>
         <Attribute Name="MapD_weight" PrettyName="Importance" Group="Texture Map D" Type="double" Min="0" Max="1">0.25</Attribute>
@@ -127,11 +125,11 @@
         <Attribute Name="MapD" PrettyName="MapD" Group="Texture Map D" Type="image" GenerateMipMaps="false"></Attribute>
         <Attribute Name="Invert_D" PrettyName="Invert Map" Group="Texture Map D" Type="bool" Min="false" Max="true">false</Attribute>
         <Attribute Name="MapD_Alpha" PrettyName="Alpha" Group="Texture Map D" Type="stringlist">From Map,From Map,Alpha is Luminance,Alpha is Inverse Luminance</Attribute>
-        <Attribute Name="HSMixD" PrettyName="Hue/Sat Shift Mix" Group="Texture Map D" Type="double" Min="0" Max="1">1</Attribute>      
-        <Attribute Name="ValMixD" PrettyName="Value Shift Mix" Group="Texture Map D" Type="double" Min="0" Max="1">1</Attribute>      
-        <Attribute Name="FadeD" PrettyName="Edge Falloff" Group="Texture Map D" Type="double" Min="0" Max="1">0</Attribute>  
-        <Attribute Name="HardnessD" PrettyName="Edge Softness" Group="Texture Map D" Type="double" Min="0.0" Max="1.0">0.0</Attribute>  
-        <Attribute Name="roundnessD" PrettyName="Edge Roundness" Group="Texture Map D" Type="double" Min="0" Max="1">0</Attribute>  
+        <Attribute Name="HSMixD" PrettyName="Hue/Sat Shift Mix" Group="Texture Map D" Type="double" Min="0" Max="1">1</Attribute>
+        <Attribute Name="ValMixD" PrettyName="Value Shift Mix" Group="Texture Map D" Type="double" Min="0" Max="1">1</Attribute>
+        <Attribute Name="FadeD" PrettyName="Edge Falloff" Group="Texture Map D" Type="double" Min="0" Max="1">0</Attribute>
+        <Attribute Name="HardnessD" PrettyName="Edge Softness" Group="Texture Map D" Type="double" Min="0.0" Max="1.0">0.0</Attribute>
+        <Attribute Name="roundnessD" PrettyName="Edge Roundness" Group="Texture Map D" Type="double" Min="0" Max="1">0</Attribute>
         <!--===============================================================================================================-->
     </Attributes>
     <Groups>
@@ -152,20 +150,19 @@
         <Context Type="GLSL">
             <Shader>
                 <Inputs>
-                    <Input Name="UV"><Default>State.UV</Default></Input>
                 </Inputs>
                 <Body><![CDATA[
 
-                vec2 UV = fract(#UV);
+                vec2 UV = fract(State.UV);
 
 
-                // passing a vec4 into function to save function arguments, 
+                // passing a vec4 into function to save function arguments,
                 // otherwise it can crash Mari when aborting a bake
                 vec4 RndSize = vec4($RndSizeA,$RndSizeB,$RndSizeC,$RndSizeD);
-                vec4 HSMix = vec4($HSMixA,$HSMixB,$HSMixC,$HSMixD);                     
-                vec4 ValMix = vec4($ValMixA,$ValMixB,$ValMixC,$ValMixD);                                       
-                                         
-                                                                
+                vec4 HSMix = vec4($HSMixA,$HSMixB,$HSMixC,$HSMixD);
+                vec4 ValMix = vec4($ValMixA,$ValMixB,$ValMixC,$ValMixD);
+
+
                 // Base Scene Size. This is to give more range on the scale slider
                 float scene = float($scene) / 100.0;
                 float scale = ( (100.0 ) - $Scale*2.0) / scene;
@@ -176,7 +173,7 @@
                 float invertB = float($Invert_B);
                 float invertC = float($Invert_C);
                 float invertD = float($Invert_D);
-                // passing a vec4 into function to save function arguments, 
+                // passing a vec4 into function to save function arguments,
                 // otherwise it can crash Mari when aborting a bake
                 vec4 invert = vec4(invertA,invertB,invertC,invertD);
 
@@ -185,7 +182,7 @@
                 float FadeB = $FadeB*4.0;
                 float FadeC = $FadeC*4.0;
                 float FadeD = $FadeD*4.0;
-                // passing a vec4 into function to save function arguments, 
+                // passing a vec4 into function to save function arguments,
                 // otherwise it can crash Mari when aborting a bake
                 vec4 Fade = vec4(FadeA,FadeB,FadeC,FadeD);
 
@@ -193,7 +190,7 @@
                 float roundnessB = $roundnessB+0.1 ;
                 float roundnessC = $roundnessC+0.1 ;
                 float roundnessD = $roundnessD+0.1 ;
-                // passing a vec4 into function to save function arguments, 
+                // passing a vec4 into function to save function arguments,
                 // otherwise it can crash Mari when aborting a bake
                 vec4 roundness = vec4(roundnessA,roundnessB,roundnessC,roundnessD);
 
@@ -201,7 +198,7 @@
                 float HardnessB = 10.0 - ($HardnessB*10.0);
                 float HardnessC = 10.0 - ($HardnessC*10.0);
                 float HardnessD = 10.0 - ($HardnessD*10.0);
-                // passing a vec4 into function to save function arguments, 
+                // passing a vec4 into function to save function arguments,
                 // otherwise it can crash Mari when aborting a bake
                 vec4 Hardness = vec4(HardnessA,HardnessB,HardnessC,HardnessD);
 
@@ -215,7 +212,7 @@
                 float TexSizeB = 11 - $TexSizeB;
                 float TexSizeC = 11 - $TexSizeC;
                 float TexSizeD = 11 - $TexSizeD;
-                // passing a vec4 into function to save function arguments, 
+                // passing a vec4 into function to save function arguments,
                 // otherwise it can crash Mari when aborting a bake
                 vec4 TexSize = vec4(TexSizeA,TexSizeB,TexSizeC,TexSizeD);
 
@@ -224,7 +221,7 @@
                 float ClumpingB = clamp( ($Clumping-0.01) + ( ($ClumpingB-0.01)*(1.0-$Clumping)),0.0,1.0);
                 float ClumpingC = clamp( ($Clumping-0.01) + ( ($ClumpingC-0.01)*(1.0-$Clumping)),0.0,1.0);
                 float ClumpingD = clamp( ($Clumping-0.01) + ( ($ClumpingD-0.01)*(1.0-$Clumping)),0.0,1.0);
-                // passing a vec4 into function to save function arguments, 
+                // passing a vec4 into function to save function arguments,
                 // otherwise it can crash Mari when aborting a bake
                 vec4 Clumping = vec4(ClumpingA,ClumpingB,ClumpingC,ClumpingD);
 
@@ -238,7 +235,7 @@
                 float MapB_weight = $MapB_weight * Frequency_M;
                 float MapC_weight = $MapC_weight * Frequency_M;
                 float MapD_weight = $MapD_weight * Frequency_M;
-                // passing a vec4 into function to save function arguments, 
+                // passing a vec4 into function to save function arguments,
                 // otherwise it can crash Mari when aborting a bake
                 vec4 Map_Weight = vec4(MapA_weight,MapB_weight,MapC_weight,MapD_weight);
 

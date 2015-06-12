@@ -1,14 +1,13 @@
 <!--
 ================================================================================
-== Mari Ideascale Procedural Library
-== Copyright (c) 2013 Jens Kafitz. All Rights Reserved.
+== Vibrance
+== Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
 ================================================================================
 == File: JK_Vibrance.xml
 == Description: Vibrance will saturate pixels with lower saturation.
 ================================================================================
-== Author: Jens Kafitz | Mari Ideascale
+== Author: Jens Kafitz
 == Web: www.campi3d.com
-== Web: www.mari.ideascale.com
 == Email: MariIdeas@campi3d.com
 ================================================================================
 == Modified Date: June, 16 2014
@@ -44,7 +43,7 @@
 <Node>
     <ID>Vibrance</ID>
     <DefaultName>Vibrance</DefaultName>
-    <Category>/Custom/</Category>
+    <Category>Filter/Custom/Color Correction/</Category>
     <Tags>
         <Tag>_adjustment</Tag>
     </Tags>

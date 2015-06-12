@@ -1,17 +1,16 @@
 <!--
 ================================================================================
-== Mari Ideascale Procedural Library
-== Copyright (c) 2013 Jens Kafitz. All Rights Reserved.
+== MultiFBM
+== Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
 ================================================================================
 == File: JK_MultiFbm.xml
 == Description: FBM procedural noise node with two additional noise drivers.
 ================================================================================
-== Author: Jens Kafitz | Mari Ideascale
+== Author: Jens Kafitz
 == Web: www.campi3d.com
-== Web: www.mari.ideascale.com
 == Email: MariIdeas@campi3d.com
 ================================================================================
-== Modified Date: June, 15 2014
+== Modified Date: May, 18 2015
 ================================================================================
 == Redistribution and use in source and binary forms, with or without
 == modification, are permitted provided that the following conditions are met:
@@ -46,7 +45,7 @@
     <DefaultName>Multi FBM</DefaultName>
     <Category>Procedural/Custom/FBM/</Category>
     <Inputs>
-        <Input Name="Input"/>
+        <Input Name="Transform" PrettyName="Transform Coordinates"></Input>
     </Inputs>
     <Attributes>
         <!--===============================================================================================================-->
@@ -55,7 +54,7 @@
         <!--===============================================================================================================-->
         <Attribute Name="Size" Group="Base" Type="double" Min="0" Max="1" Description="The general feature size" >0.4</Attribute>
         <Attribute Name="octaves" Group="Base" Type="float" Min="0" Max="8" Description="Visual complexitity of noise" >3</Attribute>
-        <Attribute Name="lacunarity" Group="Base" Type="double" Min="0" Max="8" Description="Frequency spacing between successive octaves" >4</Attribute>
+        <Attribute Name="lacunarity" Group="Base" Type="double" Min="0.001" Max="8" Description="Frequency spacing between successive octaves" >4</Attribute>
         <Attribute Name="Amp" PrettyName="amplitude" Group="Base" Type="double" Min="0.0001" Max="1" Description="Each successive octave gets multiplied gain*amplitude, smaller values result in less contrast between frequencies" >0.5</Attribute>
         <Attribute Name="FreqOffset" PrettyName="Offset" Group="Base" Type="double" Min="0.0001" Max="1" Description="Frequency Offset" >0.5</Attribute>
         <Attribute Name="SeedBase" PrettyName="Seed" Group="Base" Type="double" Min="1" Max="100000" Logarithmic="1" Description="frequency">1</Attribute>
@@ -64,6 +63,7 @@
         <Attribute Name="Threshold" PrettyName="Threshold" Group="Base" Type="double" Min="0" Max="1" Description="Threshold of final result" >0.1</Attribute>
         <Attribute Name="Clip" PrettyName="Soft Clip Result" Group="Base" Type="double" Min="0.001" Max="1" Description="extends the threshold box by a fixed value up and down">0.6</Attribute>
         <Attribute Name="Absolut" PrettyName="Absolute Values" Group="Base" Type="bool" Min="false" Max="true" Description="By default positive and negative noise values will all be treated as positive making for a denser noise. This will remove any negative noise values">false</Attribute>
+        <Attribute Name="clamp" PrettyName="Clamp Output" Group="Base" Type="bool" Min="false" Max="true" >true</Attribute>
         <Attribute Name="Invert" PrettyName="Invert" Group="Base" Type="bool" Min="false" Max="true" Description="Inverts the Noise result before ColorA+B are applied" >false</Attribute>
         <!--===============================================================================================================-->
         <Attribute Name="PreviewA" PrettyName="Preview Handle A" Group="Handle A" Type="bool" Min="false" Max="true" Description="Shows you the Result from the Fractal in Handle A" >false</Attribute>
@@ -119,18 +119,18 @@
     <Contexts>
         <Context Type="NodeGraphView">
             <Inputs>
-                <Input Name="Input"><Pos>0,-50</Pos></Input>
+                <Input Name="Transform" ><Pos>0,-50</Pos></Input>
             </Inputs>
         </Context>
         <Context Type="GLSL">
             <Shader ShaderType='Fragment'>
                 <Inputs>
-                    <Input Name="Input"> <Default>vec4(1,1,1,1)</Default> </Input>
+                <Input Name="Transform" ><Default>vec4(State.Position,1.0)</Default></Input>
                 </Inputs>
             </Shader>
             <Shader ShaderType='TessEvaluation'>
                 <Inputs>
-                    <Input Name="Input"> <Default>vec4(1,1,1,1)</Default> </Input>
+                <Input Name="Transform" ><Default>vec4(State.Position,1.0)</Default></Input>
                 </Inputs>
             </Shader>
             <Shader>
@@ -143,11 +143,10 @@
                 // build the needed vector attributes for position transform, offset max growths exponentially
                 vec3 trans = (vec3($XOffset,$YOffset,$ZOffset)*size_pow);
                 vec3 rotate = vec3($rX,$rY,$rZ);
-                vec3 scale = vec3($XScale,$YScale,$ZScale);
+                vec3 scale = vec3(1.0) / vec3($XScale,$YScale,$ZScale);
 
                 // transform the position to translate,rotate,scale the position
-                vec3 InputScaleBase3d = positionTransform(State.Position,trans,rotate,scale) / size_pow;
-                vec3 _Input3d = State.Position;
+                vec3 InputScaleBase3d = positionTransform(#Transform.rgb,trans,rotate,scale) / size_pow;
 
                 // 2d uv space surface position
                 // build the needed vector attributes for position transform, offset max growths exponentially
@@ -444,6 +443,7 @@
                 // thresholding of result
                 float finalValueA= mix(0.0,1.0,noise_val);
                 float resultA = softThreshold($Threshold, $Clip*2, finalValueA);
+                resultA = mix(resultA,clamp(resultA,0.0,1.0),float($clamp));
 
                 float _invertResult = float($Invert);
 
@@ -461,7 +461,8 @@
                 }
 
                 // output
-                Output = fractal;
+                Output =  fractal;
+
 
                 ]]></Body>
             </Shader>

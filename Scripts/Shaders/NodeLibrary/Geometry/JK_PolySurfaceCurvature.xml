@@ -1,17 +1,16 @@
 <!--
 ================================================================================
-== Mari Ideascale Procedural Library
-== Copyright (c) 2013 Jens Kafitz. All Rights Reserved.
+== Polysurface Curvature
+== Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
 ================================================================================
 == File: JK_PolySurfaceCurvature.xml
 == Description: Polygon Surface curvature detection node.
 ================================================================================
-== Author: Jens Kafitz | Mari Ideascale
+== Author: Jens Kafitz
 == Web: www.campi3d.com
-== Web: www.mari.ideascale.com
 == Email: MariIdeas@campi3d.com
 ================================================================================
-== Modified Date: January 13, 2015
+== Modified Date: May, 18 2015
 ================================================================================
 == Redistribution and use in source and binary forms, with or without
 == modification, are permitted provided that the following conditions are met:
@@ -46,38 +45,50 @@
     <DefaultName>PolySurface Curvature</DefaultName>
     <Category>Geometry/Custom/</Category>
     <Inputs>
-        <Input Name="Position"></Input>
-        <Input Name="Normal"></Input>
+        <Input Name="NormalMap"></Input>
+        <Input Name="Curvature"></Input>
+        <Input Name="MinVar" PrettyName="Min Curvature"></Input>
+        <Input Name="Intensity"></Input>
     </Inputs>
     <Attributes>
         <!--===============================================================================================================-->
-        <Attribute Name="Adjust" PrettyName="Curvature" Group="" Type="double" Logarithmic="1" Min="0" Max="1">0.1</Attribute>
-        <Attribute Name="Size" PrettyName="Intensity" Group="" Type="double" Logarithmic="1" Min="0" Max="2">0.1</Attribute>
+        <Attribute Name="Adjust" PrettyName="Curvature" Group="" Type="double" Logarithmic="1" Min="0.0" Max="1.0">0.1</Attribute>
+        <Attribute Name="MinVar" PrettyName="Min Curvature Variation" Group="" Type="double" Logarithmic="1" Min="0" Max="1">0.00</Attribute>
+        <Attribute Name="Size" PrettyName="Intensity" Group="" Type="double" Logarithmic="1" Min="0.0" Max="2.0">0.1</Attribute>
         <Attribute Name="Invert" PrettyName="Invert" Group="" Type="bool" Min="false" Max="true">false</Attribute>
+        <!--===============================================================================================================-->
+        <Attribute Name="MixNrm" PrettyName="Mix Normal Map" Group="Normal Map (Nodegraph Only)" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
+        <Attribute Name="Mode" PrettyName="Mode" Group="Normal Map (Nodegraph Only)" Type="userenum">Comp_MixRGBEncodedNormals,Comp_MixRGBEncodedNormals,Comp_AddRGBEncodedNormals,Comp_ReorientedNormalMappingRGBEncodedNormals,Mix Normals,Add Normals,Mix Reoriented Normals</Attribute>
+        <!--===============================================================================================================-->
         <Attribute Name="absolute" PrettyName="Hard Edged" Group="Extra Attributes" Type="bool" Min="false" Max="true">false</Attribute>
         <Attribute Name="AO" PrettyName="Attenuate with AmbientOcclusion" Group="Extra Attributes" Type="bool" Min="false" Max="true">false</Attribute>
-     
         <!--===============================================================================================================-->
 
     </Attributes>
     <Contexts>
         <Context Type="NodeGraphView">
             <Inputs>
-                <Input Name="Position"><Pos>100,-20</Pos></Input>
-                <Input Name="Normal"><Pos>100,+20</Pos></Input>
+                <Input Name="Curvature"><Pos>-70,-50</Pos></Input>
+                <Input Name="MinVar"><Pos>0,-70</Pos></Input>
+                <Input Name="Intensity"><Pos>70,-50</Pos></Input>
+                <Input Name="NormalMap"><Pos>-120,0</Pos></Input>
             </Inputs>
         </Context>
         <Context Type="GLSL">
             <Shader ShaderType='Fragment'>
                 <Inputs>
-                    <Input Name="Position"><Default>State.Position</Default></Input>
-                    <Input Name="Normal"><Default>State.Normal</Default></Input>
+                <Input Name="NormalMap"><Default>vec4(9999.0)</Default></Input>
+                <Input Name="Curvature"><Default>vec4($Adjust)</Default></Input>
+                <Input Name="MinVar"><Default>vec4($MinVar)</Default></Input>
+                <Input Name="Intensity"><Default>vec4($Size)</Default></Input>
                 </Inputs>
             </Shader>
             <Shader ShaderType='TessEvaluation'>
                 <Inputs>
-                    <Input Name="Position"><Default>State.Position</Default></Input>
-                    <Input Name="Normal"><Default>State.Normal</Default></Input>
+                <Input Name="NormalMap"><Default>vec4(9999.0)</Default></Input>
+                <Input Name="Curvature"><Default>vec4($Adjust)</Default></Input>
+                <Input Name="MinVar"><Default>vec4($MinVar)</Default></Input>
+                <Input Name="Intensity"><Default>vec4($Size)</Default></Input>
                 </Inputs>
             </Shader>
             <Shader>
@@ -86,16 +97,28 @@
 
                 #if defined MRI_SHADER_FRAGMENT || defined MRI_SHADER_TESS_EVALUATION
 
-                vec3 N = #Normal;
-                vec3 P = #Position;
+
+                // Initialize Attributes
+                float INIT = $Adjust; INIT = $MinVar; INIT = $Size;
+
+                float MixNormMip =  $MixNrm;
+                vec4 N_4 = vec4(State.Normal,1.0);
+                vec4 mix_nrm = $Mode(N_4,#NormalMap,MixNormMip);
+
+                float Adj = #Curvature.r;
+                float Si = #Intensity.r;
+
+                // Checking if anything is attached to Nodegraph Handles
+                vec3 N = ( #NormalMap == vec4(9999.0) ) ? N_4.rgb : mix_nrm.rgb ;
+
+
+                vec3 P = State.Position;
                 float AO = mix(1.0,State.AmbientOcclusion,float($AO));
-
-
                 float hardEdge = float($absolute);
 
 
-                float Size = AO*$Size;
-                float Adjust = AO*$Adjust;
+                float Size = AO*Si;
+                float Adjust = AO*Adj;
 
 
                 float size_pow = (pow(10000.0,Size*Size)-1.0) + 0.0001;
@@ -104,12 +127,13 @@
                 float curvN = 0.0;
                 float curvP = 0.0;
 
-           
+
                 float tuneCurvature = (Adjust*size_pow);
                 curvN = length(fwidth(N)) ;
+                curvN = (curvN >=$MinVar) ? curvN : 0.0;
                 curvP = length(fwidth(P)) ;
 
-                
+
                 float mixer = clamp(curvN,0,1) / curvP;
 
                 float curvature = clamp((mixer*tuneCurvature),0.0,1.0);
@@ -120,7 +144,6 @@
                 float result = mix(curvature,inv_curv,float($Invert));
                 result = clamp(result,0.0,1.0);
 
-                
                 Output = vec4(result,result,result,1.0);
 
                 #endif
