@@ -1,14 +1,29 @@
-#MARI EXTENSION PACK 2.1
+#MARI EXTENSION PACK 2.2 DEVELOPMENT BRANCH
 
 Copyright (c) 2015 www.mari.ideascale.com. All Rights Reserved.
 
 
+##Developer Notes for this Branch (Please read):
+
+At the time of writing this the DEV Branch is now based on MARI 3.
+While Python tools should work (mostly) in Mari 2.6 Nodes & Shaders
+will not load in 2.6 due to a change in RegisterCustomShader.py.
+
+It is recommended, if you are on 2.6, to branch of master and commit
+to your own created branch so we can cleanly merge it in for Mari 3.
+
+Thanks,
+Jens
+
+
+
 ##Version:
-Extension Pack :  2.1  //  MARI Function Library: 1.12
+Extension Pack :  2.2  //  MARI Function Library: 1.12
 
-##What's new in 2.1:
 
-http://www.campi3d.com/External/MariExtensionPack/userGuide21/WhatsnewinExtensionPack21.html
+##What's new in 2.2:
+
+Please refer to DEV_RELEASE_NOTES.md for a list of addition we already made for ExtensionPack 2.2
 
 
 ##Info
