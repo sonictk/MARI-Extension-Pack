@@ -389,9 +389,8 @@ vec3 Kelvin2Rgb(float Kelvin)
 //return Luminance of Color
 float Luminance(vec3 color)
 {
-    float fmin = min(min(color.r, color.g), color.b);
-    float fmax = max(max(color.r, color.g), color.b);
-    return (fmax + fmin) / 2.0;
+    float lum =  dot(vec3(0.2126, 0.7152, 0.0722), color);
+    return lum;
 }
 
 

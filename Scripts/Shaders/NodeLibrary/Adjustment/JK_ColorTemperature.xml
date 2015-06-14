@@ -83,14 +83,14 @@
                      Kelvin = remap($Temperature + $TemperatureFine, 6499.999999, 1500.0, 6500.000001, 40000.0, 1.0);
                      }
 
-
+                float LumPres = 1.0 - $LumPres;
                 vec4 temperatureRGB = vec4( Kelvin2Rgb(Kelvin),1.0);
                      temperatureRGB = mix(sRgb2Linear(temperatureRGB),temperatureRGB,float($sRGB));
                 float original_lum = Luminance(#Input.rgb);
                 vec4 blended = #Input * temperatureRGB;
                 vec4 HSL = mriRgb2Hsl(blended);
                 vec4 lumPreservedRGB = mriHsl2Rgb(vec4(HSL.r, HSL.g, original_lum, 1.0));
-                Output = vec4(mix(blended.rgb,lumPreservedRGB.rgb,$LumPres),#Input.a);
+                Output = vec4(mix(blended.rgb,lumPreservedRGB.rgb,LumPres),#Input.a);
 
 
                 ]]></Body>

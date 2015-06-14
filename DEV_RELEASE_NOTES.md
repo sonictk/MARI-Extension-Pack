@@ -192,6 +192,8 @@ Adjustment Layer Submenu.
 
 ######New Functions
 
+Luminance function was updated
+
 DT3D Noise Functions have been amended with clamping variable. Doc needs updating
 col2mask function ?
 
