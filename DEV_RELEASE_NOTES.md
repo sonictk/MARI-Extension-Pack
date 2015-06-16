@@ -63,7 +63,7 @@ Very simple mix node to mix two colors by a mask. This is very similar to the 'm
 a LOT lighter and faster in performance since you don't need to carry around blend modes, advanced blendmodes
 etc. when you don't need them. For convenience a color A and color B can be set on the node. They will be ignored
 if the corresponding handles are mapped in the nodegraph.
-
+The Mix Slider will always be evaluated regardless of the Mix Noodle being mapped (in which case it's an added multiplier)
 
 #####Material Nodes (Nodegraph only):
 

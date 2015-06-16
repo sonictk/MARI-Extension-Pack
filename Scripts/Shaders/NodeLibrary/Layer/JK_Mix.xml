@@ -84,7 +84,9 @@
     vec4 INITv4 = $colorA; INITv4 = $colorB;
     float INITf = $mixer;
 
-    Output = mix(#A,#B,#Mix.r);
+    float mixMult = (#Mix.r == $mixer) ? #Mix.r : (#Mix.r * $mixer);
+
+    Output = mix(#A,#B,mixMult);
 
                 ]]></Body>
             </Shader>
