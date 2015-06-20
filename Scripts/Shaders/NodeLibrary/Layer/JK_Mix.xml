@@ -42,7 +42,7 @@
 
 <Node>
     <ID>JK_Mix</ID>
-    <DefaultName>Mix</DefaultName>
+    <DefaultName>Mix (Lerp) </DefaultName>
     <Category>Layer/Custom/</Category>
     <Inputs>
         <Input Name="A" ></Input>

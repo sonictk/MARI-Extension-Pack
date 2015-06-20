@@ -1,0 +1,125 @@
+<!--
+================================================================================
+== Histogram Scan
+== Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
+================================================================================
+== File: JK_HistorgramScan.xml
+== Description: A slight modification of a contrast node, reacting exactly like its counterpart in substance designer
+================================================================================
+== Author: Jens Kafitz
+== Web: www.campi3d.com
+== Email: MariIdeas@campi3d.com
+================================================================================
+== Modified Date: June 20, 2015
+================================================================================
+== Redistribution and use in source and binary forms, with or without
+== modification, are permitted provided that the following conditions are met:
+==
+== 1. Redistributions of source code must retain the above copyright
+== notice, this list of conditions and the following disclaimer.
+==
+== 2. Redistributions in binary form must reproduce the above copyright
+== notice, this list of conditions and the following disclaimer in the
+== documentation and/or other materials provided with the distribution.
+==
+== 3. Neither the name of the copyright holder nor the names of its
+== contributors may be used to endorse or promote products derived from
+== this software without specific prior written permission.
+==
+== THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+== IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+== THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+== PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+== CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+== EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+== PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+== OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+== WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+== OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+== ADVISED OF HE POSSIBILITY OF SUCH DAMAGE.
+================================================================================
+-->
+
+<Node>
+    <ID>JK_HistogramScan</ID>
+    <DefaultName>Histogram Scan</DefaultName>
+    <Category>Filter/Custom/Histogram/</Category>
+    <Tags>
+        <Tag>_adjustment</Tag>
+  </Tags>
+    <Inputs>
+        <Input Name="Input"></Input>
+    </Inputs>
+    <Attributes>
+        <Attribute Name="position" PrettyName="Position" Group="" Type="double" Min="0.0" Max="1.0">0.0</Attribute>
+        <Attribute Name="contrast" PrettyName="Contrast" Group="" Type="double" Min="0.0" Max="1.0">0.0</Attribute>
+        <Attribute Name="invertPosition"     PrettyName="Invert Position"  Group="" Type="bool" Min="true" Max="false">false</Attribute>
+        <Attribute Name="clamp" PrettyName="Clamp"  Group=""  Type="bool" Min="true" Max="false">false</Attribute>
+
+</Attributes>
+  <Contexts>
+    <Context Type="NodeGraphView">
+        <Inputs>
+            <Input Name="Input"><Pos>0,-50</Pos></Input>
+        </Inputs>
+    </Context>
+    <Context Type="GLSL">
+        <Shader>
+            <Inputs>
+                <Input Name="Input"><Default>vec4(1,1,1,1)</Default></Input>
+            </Inputs>
+            <!--
+            NOTE: alpha = clamp(alpha,0.0001,alpha) is necessary to avoid calling pow(0,0), which is undefined
+            If alpha is 0 and the base of pow in the for loop below is clamped up to 0, it ends up in pow(0,0)
+            alpha is not desinged to be 0. InMid is suppoed so be constrained to be between InWhite and InBlack
+            so that ratio is [0,1]. However, due to lack of constraining in GUI, ratio can be a large negative number.
+            This causes alpha to be 0 under some card/driver. This in the end causes pow(0,0) to be called.
+            We prevent this by ensuring alpha is not 0
+            -->
+            <Body><![CDATA[
+
+
+    // Histogram Scan
+
+    float position = mix($position,1.0-$position,float($invertPosition));
+    float pos_a = ( max(position,0.5) - 0.5) * 2.0;
+    float pos_b = min( (position*2.0),1.0);
+    float pos_x = min( ($contrast*0.5),1.0);
+          pos_x = max(pos_x,0.0);
+    float InBlack = mix(pos_a,pos_b,pos_x);
+    float InWhite = mix(pos_b,pos_a,pos_x);
+
+    float outWhite = 0.0;
+    float outBlack = 1.0;
+    float grad = (outWhite - outBlack) / (InWhite - InBlack);
+    float inMid = 0.5;
+    inMid = mix( InBlack, InWhite, inMid);
+
+    float ratio = (inMid - InBlack) / (InWhite - InBlack);
+    float alpha = 1.0 / pow(10.0, 1.0 - 2.0 * ratio);
+
+    alpha = max(alpha, 0.0001);
+
+    vec3 levelled = vec3(0.0);
+    for (int i = 0; i != 3; ++i)
+    {
+        float val = outBlack + (#Input[i] - InBlack) * grad;
+        levelled[i] = pow(
+                max( val, 0.0 )
+                ,alpha );
+    }
+    if( $clamp)
+    {
+            // Clamp to 0-1 range
+            levelled.rgb = clamp( levelled.rgb, vec3( 0), vec3( 1));
+    }
+
+    Output.rgb = levelled.rgb;
+    Output.a = #Input.a;
+
+            ]]></Body>
+        </Shader>
+    </Context>
+  </Contexts>
+
+</Node>
