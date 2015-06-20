@@ -17,6 +17,10 @@ While Node Handles are mapped, Node Sliders are ignored.
 
 #####Adjustment Layers:
 
+######Historgram Scan
+
+A node similar to a default Contrast Node but mimicking behavior of Substance Designers 'Histogram Scan' Node.
+
 ######RGB to HSV + HSV to RGB
 
 Two new nodes were added to Layerstack & Nodegraph to convert values between RGB + HSV (Hue/Saturation/Value).
@@ -25,11 +29,6 @@ Two new nodes were added to Layerstack & Nodegraph to convert values between RGB
 
 Two new nodes were added to Layerstack & Nodegraph to convert values between RGB + HSL (Hue/Saturation/Lightness).
 
-#####Basic Layer:
-
-######Float
-
-A simple node allowing you to input a value directly
 
 #####Geometry Procedurals:
 
