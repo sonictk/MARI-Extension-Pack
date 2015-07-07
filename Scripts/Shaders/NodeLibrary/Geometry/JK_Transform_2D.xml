@@ -10,7 +10,7 @@
 == Web: www.campi3d.com
 == Email: MariIdeas@campi3d.com
 ===============================================================================
-== Modified Date: May, 18 2015
+== Modified Date: July, 7 2015
 ================================================================================
 == Redistribution and use in source and binary forms, with or without
 == modification, are permitted provided that the following conditions are met:
@@ -52,14 +52,14 @@
     </Inputs>
     <Attributes>
         <!--===============================================================================================================-->
-        <Attribute Name="WorldScale" PrettyName="Scale UV" Group="Transform Scale" Type="float">1</Attribute>
-        <Attribute Name="scaleX" PrettyName="Scale U" Group="Transform Scale" Type="float" Min="0" Max="100" Logarithmic="1">1</Attribute>
-        <Attribute Name="scaleY" PrettyName="Scale V" Group="Transform Scale" Type="float" Min="0" Max="100" Logarithmic="1">1</Attribute>
+        <Attribute Name="WorldScale" PrettyName="Repeat UV" Group="Transform Scale" Type="float">1</Attribute>
+        <Attribute Name="scaleX" PrettyName="Repeat U" Group="Transform Scale" Type="float" Min="0" Max="100" Logarithmic="1">1</Attribute>
+        <Attribute Name="scaleY" PrettyName="Repeat V" Group="Transform Scale" Type="float" Min="0" Max="100" Logarithmic="1">1</Attribute>
         <!--===============================================================================================================-->
         <Attribute Name="rotateZ" PrettyName="Rotate" Group="Transform Rotate" Type="float" Min="0" Max="360">0</Attribute>
         <!--===============================================================================================================-->
-        <Attribute Name="transX" PrettyName="Translate U" Group="Transform Translate" Type="float" Min="0" Max="100" Logarithmic="1">0</Attribute>
-        <Attribute Name="transY" PrettyName="Translate V" Group="Transform Translate" Type="float" Min="0" Max="100" Logarithmic="1">0</Attribute>
+        <Attribute Name="transX" PrettyName="Translate U" Group="Transform Translate" Type="float" Min="0" Max="100">0</Attribute>
+        <Attribute Name="transY" PrettyName="Translate V" Group="Transform Translate" Type="float" Min="0" Max="100">0</Attribute>
         <!--===============================================================================================================-->
 </Attributes>
  <Contexts>
@@ -74,7 +74,7 @@
         <Context Type="GLSL">
             <Shader ShaderType='Fragment'>
                 <Inputs>
-                <Input Name="Coordinates" ><Default>vec4(State.Position,1.0)</Default></Input>
+                <Input Name="Coordinates" ><Default>vec4(State.UV,1.0,1.0)</Default></Input>
                 <Input Name="Scale" ><Default>vec4( vec3($scaleX,$scaleY,1.0)*vec3($WorldScale),1.0)</Default></Input>
                 <Input Name="Rotate" ><Default>vec4($rotateZ,1.0,1.0,1.0)</Default></Input>
                 <Input Name="Translate" ><Default>vec4($transX,$transY,1.0,1.0)</Default></Input>
@@ -82,7 +82,7 @@
             </Shader>
             <Shader ShaderType='TessEvaluation'>
                 <Inputs>
-                <Input Name="Coordinates" ><Default>vec4(State.Position,1.0)</Default></Input>
+                <Input Name="Coordinates" ><Default>vec4(State.UV,1.0,1.0)</Default></Input>
                 <Input Name="Scale" ><Default>vec4( vec3($scaleX,$scaleY,1.0)*vec3($WorldScale),1.0)</Default></Input>
                 <Input Name="Rotate" ><Default>vec4($rotateZ,1.0,1.0,1.0)</Default></Input>
                 <Input Name="Translate" ><Default>vec4($transX,$transY,1.0,1.0)</Default></Input>
@@ -101,7 +101,7 @@
     vec2 UVScale = vec2(#Scale.x,#Scale.y);
 
     // transform the position to translate,rotate,scale the position
-    vec2 InputScaleUV = relUVTransform(State.UV,#Rotate.r,UVOffset,UVScale,0.5,0.5);
+    vec2 InputScaleUV = relUVTransform(#Coordinates.rg,#Rotate.r,UVOffset,UVScale,0.5,0.5);
 
     Output =  vec4(InputScaleUV,0.0,1.0);
 
