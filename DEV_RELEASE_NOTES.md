@@ -151,9 +151,16 @@ overall 'flowing' of features across the surface when changing sliders
 
 ######Tools - General
 
-The performance of various tools such as ConvertToPaintable, ExportSelectedChannels, Duplicate-Flatten etc.
-has been improved by surpressing viewport updates during their runtime.
+We've continued adding improved performance to more tools such as ConvertToPaintable, ExportSelectedChannels, Duplicate-Flatten etc.
+by surpressing viewport updates during their runtime.
 This can lead to speed improvements of 40-50% in some cases.
+
+
+######Mask From Selection / Mask from Selection (inverted)
+
+Layer/AddLayerMask/Mask From Selection + Mask From Selection (inverted) have been removed from MARI Extension Pack
+since MARI 3 now ships natively with its own implementation.
+
 
 ######Patch Bake to Image Manager
 

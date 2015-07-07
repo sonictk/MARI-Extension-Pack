@@ -133,21 +133,6 @@ def createToolsMenu():
     ExportSelected.setIconPath(icon_path)
 
     # --------------------------------------------------------------------
-
-    ###   Cache Channel Selection ###
-
-    UI_path = 'MainWindow/&Channels'
-    script_menu_path = 'MainWindow/Scripts/Channels'
-
-    DuplicateFlatten = mari.actions.create ('Cache Selected', 'mari.customScripts.cacheSelectedChannels()')
-    mari.menus.addAction(DuplicateFlatten, UI_path, 'Transfer')
-    mari.menus.addAction(DuplicateFlatten, script_menu_path)
-
-    icon_filename = 'BakeShader.png'
-    icon_path = mari.resources.path(mari.resources.ICONS) + '/' + icon_filename
-    DuplicateFlatten.setIconPath(icon_path)
-
-    # --------------------------------------------------------------------
     ###   Save Channel Resolution ###
 
     UI_path = 'MainWindow/&Channels/Resize'
@@ -323,38 +308,6 @@ def createToolsMenu():
 
     mari.menus.addSeparator(UI_path,'Toggle Selected Lock')
     mari.menus.addSeparator('MainWindow/&Layers/','Remove Layers')
-
-
-    # --------------------------------------------------------------------
-
-
-    ###  Layer Mask from Selection ###
-
-    UI_path = 'MainWindow/&Layers/Layer Mask/Add Mask'
-    script_menu_path = 'MainWindow/Scripts/Layers/Layer Mask'
-
-
-    mask_from_selection = mari.actions.create('From Patch Selection', 'mari.customScripts.selectionMask()')
-    mari.menus.addAction(mask_from_selection, UI_path)
-    mari.menus.addAction(mask_from_selection, script_menu_path)
-
-    icon_filename = 'Mask.png'
-    icon_path = mari.resources.path(mari.resources.ICONS) + '/' + icon_filename
-    mask_from_selection.setIconPath(icon_path)
-
-
-    ###  Layer Mask from Selection (invert) ###
-
-    UI_path = 'MainWindow/&Layers/Layer Mask/Add Mask'
-    script_menu_path = 'MainWindow/Scripts/Layers/Layer Mask'
-
-    mask_from_selection = mari.actions.create('From Patch Selection (Invert)', 'mari.customScripts.selectionMask_inv()')
-    mari.menus.addAction(mask_from_selection, UI_path)
-    mari.menus.addAction(mask_from_selection, script_menu_path)
-
-    icon_filename = 'Mask.png'
-    icon_path = mari.resources.path(mari.resources.ICONS) + '/' + icon_filename
-    mask_from_selection.setIconPath(icon_path)
 
 
     # --------------------------------------------------------------------

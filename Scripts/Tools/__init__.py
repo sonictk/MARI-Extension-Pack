@@ -39,7 +39,7 @@
 
 import mari
 
-tool_init_version = '0.1'
+tool_init_version = '0.2'
 
 # ------------------------------------------------------------------------------
 # PATCHES:
@@ -51,7 +51,6 @@ import Camera.extPack_unproject_layer_to_imageman as unproject_layer_to_imageman
 
 # LAYERS
 import Layers.extPack_channel_layer as channel_layer
-import Layers.extPack_mask_from_selection as mask_from_selection
 import Layers.extPack_clone_merge_layers as clone_merge_layers
 import Layers.extPack_toggle_visibility_lock as toggle_layer_visibility_lock
 import Layers.extPack_convert_to_paintable as convert_to_paintable
@@ -138,12 +137,6 @@ class customScripts():
         toggle_layer_visibility_lock.toggleUnselLock()
 
 
-    def selectionMask(self):
-        mask_from_selection.selectionMask(invert=False)
-
-    def selectionMask_inv(self):
-        mask_from_selection.selectionMask(invert=True)
-
     def ChannelLayerUI_layer(self):
         channel_layer.ChannelLayerUI("layer").exec_()
 
@@ -227,7 +220,7 @@ print 'Channel Menu: Duplicate & Flatten'
 print 'Channel Menu: Resize/Save Channel Resolution'
 print 'Channel Menu: Resize/Load Channel Resolution'
 print '-----------------------------------------'
-print 'Layer Palette Additions (9): '
+print 'Layer Palette Additions (7): '
 print 'Layer Menu: Add Channel Layer'
 print 'Layer Menu: Layer Mask/Add Mask/Add Channel Mask'
 print 'Layer Menu: Layer Mask/Add Mask/Add Channel Mask (Group)'
