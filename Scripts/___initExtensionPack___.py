@@ -42,11 +42,11 @@ from PySide import QtGui
 
 
 # EXTENSION PACK VERSION
-current_extension_pack = "2.1"
+current_extension_pack = "2.2"
 
 
 # SCRIPT DIRECTORY PATH(S)
-base_path = os.path.abspath(mari.resources.path(mari.resources.USER_SCRIPTS))
+base_path = os.curdir
 if mari.app.version().isWindows():
     base_path = base_path.split(';')
 else:

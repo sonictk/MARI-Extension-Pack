@@ -60,13 +60,11 @@ Shortcut Bindings are available but not necessarily set.'''
 import mari
 import os
 
-tool_menu_version = '0.1'
+tool_menu_version = '2.2'
 
 
 # Icon Path for custom icons
-extPack_icon_path = os.path.abspath(mari.resources.path(mari.resources.USER_SCRIPTS)) + '\\Tools\\Icons'
-extPack_icon_path = extPack_icon_path.replace("\\", "/")
-
+extPack_icon_path = os.path.join(os.path.dirname(__file__), "Icons")
 
 
 def createToolsMenu():

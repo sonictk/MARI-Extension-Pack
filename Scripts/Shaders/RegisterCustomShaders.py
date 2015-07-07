@@ -94,17 +94,9 @@ def libVersion():
     # if check grab version
     if libNamer:
         # check for lib version in xml
-        libVersion = (root or "").find("LibraryVersion")
-        if libVersion != None:
-            # lib xml version found
-            current_lib_version = libVersion.text
-            # print '-----------------------------------------'
-            # print 'Library Version Found v' + (current_lib_version)
-        else:
-            # lib version min default
-            print '-----------------------------------------'
-            print 'Library Version Not Set'
-            print 'Using Min Version v' + (current_lib_version)
+        libVersion = root.find("LibraryVersion")
+        current_lib_version = libVersion.text
+
 
 def loadLibraries():
     '''Loads custom shader libraries'''
