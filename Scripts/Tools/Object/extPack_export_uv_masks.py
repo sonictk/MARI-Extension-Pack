@@ -79,6 +79,8 @@ def exportMasks(g_eum_window, q_geo_list, file_type_combo):
     deactivateViewportToggle = mari.actions.find('/Mari/Canvas/Toggle Shader Compiling')
     deactivateViewportToggle.trigger()
 
+    mari.history.startMacro('Export UV Masks')
+
     geo_list = q_geo_list.currentGeometry()
     file_type = file_type_combo.currentText()
 
@@ -107,6 +109,7 @@ def exportMasks(g_eum_window, q_geo_list, file_type_combo):
             index = len(image_list) - 1
             image_list[index].close()
 
+    mari.history.stopMacro()
     deactivateViewportToggle.trigger()
     mari.utils.message("Export UV Masks Complete.")
 
