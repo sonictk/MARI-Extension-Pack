@@ -6,7 +6,8 @@
 # ------------------------------------------------------------------------------
 # http://mari.ideascale.com
 # ------------------------------------------------------------------------------
-# Written by Antoni Kujawa, 2014
+# Originally written by Antoni Kujawa, 2014
+# Extended by Jens Kafitz, 2015
 # ------------------------------------------------------------------------------
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -38,36 +39,103 @@
 
 import os
 import mari
+from time import gmtime, strftime
+
 
 
 def unprojChanPaint():
     '''Unprojects current Channel to image manager'''
 
-    deactivateViewportToggle = mari.actions.find('/Mari/Canvas/Toggle Shader Compiling')
-    deactivateViewportToggle.trigger()
     curGeo = mari.geo.current()
     curChan = curGeo.currentChannel()
-    colorSpace = curChan.colorspaceConfig()
+    curCam = mari.current.canvas().camera()
+    buffer_ident = 0
+    stage = "Information not available"
+
 
     mari.history.startMacro('Unproject Channel to Image Manager')
     projectionCamera = mari.actions.get ("/Mari/Canvas/Projection/Create Projector")
     projectionCamera.trigger()
-    mari.projectors.current().setName("CurrentChannel")
-    mari.projectors.current().setName("CurrentChannel")
-    mari.projectors.current().setUseShader("Current Channel")
-    mari.projectors.current().setLightingMode(0)
-    mari.projectors.current().setSize (4096, 4096)
-    mari.projectors.current().setBitDepth (8)
-    unprojDir = os.path.expanduser('~') + "/"
-    unprojectFileLoc = "{1}{0}.png".format(mari.projectors.current().name(), unprojDir)
-    print unprojectFileLoc
-    mari.projectors.current().unprojectToFile(unprojectFileLoc)
-    mari.projectors.remove("CurrentChannel")
-    mari.images.open(unprojectFileLoc,colorSpace)
-    mari.tools.setCurrent("Paint Through")
-    mari.history.stopMacro()
 
-    deactivateViewportToggle.trigger()
+    # Get Buffer Resolution,Channel Depth and Channel Colorspace
+    paint_buffer = mari.canvases.paintBuffer()
+    buffer_res_U = paint_buffer.resolution().width()*2
+    buffer_res_V = paint_buffer.resolution().height()*2
+    buffer_scale_X = paint_buffer.scale().width()
+    buffer_scale_Y = paint_buffer.scale().height()
+
+    # MARI is being a little bitch about the Class variables after Pyside Change
+    # since they no longer can be called by number ...
+    if curChan.depth() is mari.Image.DEPTH_BYTE:
+        buffer_depth = mari.Projector.BitDepth.DEPTH_BYTE
+        buffer_ident = 0
+    elif curChan.depth() is mari.Image.DEPTH_HALF:
+        buffer_depth = mari.Projector.BitDepth.DEPTH_HALF
+        buffer_ident = 1
+    elif curChan.depth() is mari.Image.DEPTH_FLOAT:
+        buffer_depth = mari.Projector.BitDepth.DEPTH_FLOAT
+        buffer_ident = 2
+
+    colorSpace = curChan.colorspaceConfig()
+
+
+    try:
+        channel_projector = mari.projectors.current()
+        timestamp = strftime("%Hh%Mm%Ss_%m%d%Y", gmtime())
+        channelNameString = curChan.name()
+        channelNameString = channelNameString.replace(" ", "")
+        projectorName = channel_projector.setName("CurrentChannel_" + channelNameString + "_" + timestamp)
+        channel_projector = mari.projectors.current()
+        channel_projector.setUseShader("Current Channel")
+        channel_projector.setLightingMode(channel_projector.FLAT)
+        channel_projector.setSize (buffer_res_U,buffer_res_U)
+        channel_projector.setScale(mari.VectorN(buffer_scale_X,buffer_scale_X))
+        channel_projector.setBitDepth (buffer_depth)
+        channel_projector.setExportColorspaceConfig(colorSpace)
+        unprojDir = os.path.expanduser('~') + "/"
+        filename = channel_projector.name()
+        filename = filename.replace(":", "_")
+
+        # Determining File Format based on buffer depth
+        if buffer_ident > 0:
+            unprojectFileLoc = "{1}{0}.exr".format(channel_projector.name(), unprojDir)
+        else:
+            unprojectFileLoc = "{1}{0}.png".format(channel_projector.name(), unprojDir)
+
+        stage = "Saving File"
+        channel_projector.unprojectToFile(unprojectFileLoc)
+
+        stage = "Removing temporary projector"
+        mari.projectors.remove(mari.projectors.current().name())
+
+        stage = "Loading file from disc"
+        mari.images.open(unprojectFileLoc)
+
+        stage = "Setting unprojected Image as Paint Through"
+        mari.tools.setCurrent("Paint Through")
+
+        stage = "Resetting Camera"
+        # Resetting Camera
+        if curCam.type() is mari.Camera.ORTHOGRAPHIC:
+            cam_action = mari.actions.find('/Mari/Canvas/Camera/Ortho Camera')
+            cam_action.trigger()
+        elif curCam.type() is mari.Camera.PERSPECTIVE:
+            cam_action = mari.actions.find('/Mari/Canvas/Camera/Perspective Camera')
+            cam_action.trigger()
+        elif curCam.type() is mari.Camera.UV:
+            cam_action = mari.actions.find('/Mari/Canvas/Camera/UV Camera')
+            cam_action.trigger()
+        else:
+            pass
+        print "Successfully unprojected Channel to Image Manager"
+
+
+        mari.history.stopMacro()
+
+    except Exception:
+        print 'Something bad happened, Channel Quick Unproject did not complete the last stage: '+ stage
+        mari.utils.message("Channel Unproject did not complete: " + stage, "Quick Channel Unproject")
+
     return
 
 

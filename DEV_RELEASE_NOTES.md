@@ -168,15 +168,20 @@ since MARI 3 now ships natively with its own implementation.
 The colorspace to load images in are determined by the selected channel when executing the tool.
 
 
-######Unproject to Image Manager, Patch Bake to Image Manager
+######Unproject Channel to Image Manager / Unproject Layer to Image Manager
 
-'Unproject Channel to Image Manager' and 'Unproject Layer to Image Manager'
-now use Mari 3s new OCIO color management when loading images into the image manager.
-The colorspace to load images in are determined by the selected channel when executing the tool.
+'Unproject Channel/Layer to Image Manager' now uses Mari 3s new OCIO color management on projectors and when loading
+images into the image manager. The colorspace to unproject the image in is determined by the selected channel when executing the tool
 
-Due to Mari 3s lack of Color Management on Projectors you still might be required to set
-the colorspace on the projector images in the image manager manually to achieve correct
-paintThrough colores.
+'Unproject Channel/Layer to Image Manager' will now unproject images at 2x PaintBuffer Resolution or maximum 16k.
+
+'Unproject Channel/Layer to Image Manager' will set the scale of the Projector based on the X Dimennsion of the Paintbuffer.
+Unrpojected Images will always be square with a 1:1 Pixel Aspect Ratio.
+
+'Unproject Channel/Layer to Image Manager' will unproject at appropriate bitDepth based on the selected channel/layer.
+8bit Images are saved in PNG, 16bit/32bit in exr format.
+
+'Unproject Channel/Layer to Image Manager' will now timestamp imported images and images will have the correct layer / channel name.
 
 
 ##Developer Notes:
