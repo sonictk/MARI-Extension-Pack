@@ -7,6 +7,7 @@
 # http://cg-cnu.blogspot.in/
 # ------------------------------------------------------------------------------
 # Written by Sreenivas Alapati, 2014
+# Extended by Jens Kafitz, 2015
 # ------------------------------------------------------------------------------
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -130,6 +131,7 @@ def patchBake():
     else:
         path = str( mari.resources.path("MARI_USER_PATH") )
 
+    stage = "Not available"
 
     # Determine general Selection Info
     curGeo = mari.geo.current()
@@ -154,72 +156,94 @@ def patchBake():
     mari.history.startMacro('Patch Bake to Image Manager')
     mari.app.setWaitCursor()
 
-    for layer in layers:
-        layer.setSelected(True)
-
-    copyAction = mari.actions.find('/Mari/Layers/Copy')
-    copyAction.trigger()
-
-    pasteAction = mari.actions.find('/Mari/Layers/Paste')
-    pasteAction.trigger()
 
 
-    #running search for current selection in order to get a list of all duplicated layers
-    geo_data = findLayerSelection()
-    # Geo Data = 0 current geo, 1 current channel , 2 current layer, 3 current selection list
-    curSel = geo_data[3]
-    channelLayerLst = []
-    #running search from all current selected layers to get a full list of all associated layers such as masks etc.
-    nested_layers = getLayerList(curSel,returnTrue)
-    # lookin through all layers that are associated with duplicates if there are any channel layers where we duplicated channels
-    for layer in nested_layers:
-        if layer.isChannelLayer():
-            channelLayerLst.append(layer.channel())
+
+    try:
 
 
-    # merging the duplicated layers into one
-    curChan.mergeLayers()
+        for layer in layers:
+            stage = "Select layer:" + layer
+            layer.setSelected(True)
 
-    # determine new current layer (result of merge),set name and grab its image set
-    curLayer = curChan.currentLayer()
-    curLayer.setName('BakeToImageManager')
-    curImgSet = curLayer.imageSet()
+        copyAction = mari.actions.find('/Mari/Layers/Copy')
+        copyAction.trigger()
 
-
-    # extract current image set to image manager
-    for patch in selPatchList:
-        try:
-            uv = patch.uvIndex()
-            curPatchIndex = str(patch.udim())
-            savePath = path + curChanName + '.' + curPatchIndex + '.tif'
-            patchImg = curImgSet.image(uv, -1)
-            patchImg.saveAs(savePath)
-            # MARI 2.6:
-            # mari.images.load(savePath)
-            # MARI 3:
-            mari.images.open(savePath)
-            os.remove(savePath)
-
-        except Exception:
-            mari.history.stopMacro()
-            mari.app.restoreCursor()
-            pass
+        pasteAction = mari.actions.find('/Mari/Layers/Paste')
+        pasteAction.trigger()
 
 
-    # Running cleanup: Close newly created layer out, close any channel duplicates that may have been created as a result of copy+paste
-    # of channel layers
-    curLayer.close()
-    for channel in channelLayerLst:
-        try:
-            curGeo.removeChannel(channel)
-        except Exception:
-            continue
+        #running search for current selection in order to get a list of all duplicated layers
+        stage = "Finding Layer Selection"
+        geo_data = findLayerSelection()
+        # Geo Data = 0 current geo, 1 current channel , 2 current layer, 3 current selection list
+        curSel = geo_data[3]
+        channelLayerLst = []
+        #running search from all current selected layers to get a full list of all associated layers such as masks etc.
+        nested_layers = getLayerList(curSel,returnTrue)
+        # lookin through all layers that are associated with duplicates if there are any channel layers where we duplicated channels
+        for layer in nested_layers:
+            stage = "Finding Channel Layers"
+            if layer.isChannelLayer():
+                channelLayerLst.append(layer.channel())
 
 
-    # Stop Macro, restore cursor, refresh viewport
-    mari.history.stopMacro()
-    mari.app.restoreCursor()
-    deactivateViewportToggle.trigger()
+        # merging the duplicated layers into one
+        stage = "Merging duplicated Layers into single layer"
+        curChan.mergeLayers()
+
+        # determine new current layer (result of merge),set name and grab its image set
+        stage = "Renaming Temp Layer"
+        curLayer = curChan.currentLayer()
+        curLayer.setName('BakeToImageManager')
+        stage = "Finding attached Textures on Temp Layer"
+        curImgSet = curLayer.imageSet()
+
+
+        # extract current image set to image manager
+        for patch in selPatchList:
+            try:
+                stage = "Saving per Patch Images"
+                uv = patch.uvIndex()
+                curPatchIndex = str(patch.udim())
+                savePath = path + curChanName + '.' + curPatchIndex + '.tif'
+                patchImg = curImgSet.image(uv, -1)
+                patchImg.saveAs(savePath)
+                # MARI 2.6:
+                # mari.images.load(savePath)
+                # MARI 3:
+                mari.images.open(savePath)
+                os.remove(savePath)
+
+            except Exception:
+                mari.history.stopMacro()
+                mari.app.restoreCursor()
+                pass
+
+
+        # Running cleanup: Close newly created layer out, close any channel duplicates that may have been created as a result of copy+paste
+        # of channel layers
+        stage = "Deleting Temp Layer"
+        curLayer.close()
+        for channel in channelLayerLst:
+            try:
+                stage = "Deleting duplicated Channel Layers"
+                curGeo.removeChannel(channel)
+            except Exception:
+                continue
+
+
+        # Stop Macro, restore cursor, refresh viewport
+        mari.history.stopMacro()
+        mari.app.restoreCursor()
+        deactivateViewportToggle.trigger()
+
+    except Exception:
+        mari.history.stopMacro()
+        mari.app.restoreCursor()
+        deactivateViewportToggle.trigger()
+        print 'Something bad happened, Patch Bake to Image Manager did not complete the last stage: '+ stage
+        mari.utils.message("Patch Bake to Image Manage did not complete: " + stage, "Patch Bake to Image Manage")
 
 
 def patch_bake_to_imageman():

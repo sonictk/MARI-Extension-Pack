@@ -139,6 +139,7 @@ def unprojLayerPaint():
 
 
     except Exception:
+        mari.history.stopMacro()
         print 'Something bad happened, Channel Quick Unproject did not complete the last stage: '+ stage
         mari.utils.message("Channel Unproject did not complete: " + stage, "Quick Channel Unproject")
 
