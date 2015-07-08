@@ -66,7 +66,7 @@ The Mix Slider will always be evaluated regardless of the Mix Noodle being mappe
 
 #####Material Nodes (Nodegraph only):
 
-######Material Regions
+######Material Regions - WIP
 
 New nodes were added as part of the implementation of 'Material Regions'.
 Material Region Base, Material Region, Material Region Pass Through and
@@ -154,6 +154,12 @@ overall 'flowing' of features across the surface when changing sliders
 We've continued adding improved performance to more tools such as ConvertToPaintable, ExportSelectedChannels, Duplicate-Flatten etc.
 by surpressing viewport updates during their runtime.
 This can lead to speed improvements of 40-50% in some cases.
+
+
+######Duplicate/Flatten Channel
+
+Duplicate/Flatten Channel will no longer create channel duplicates of channelLayers (shared channels) if the
+duplicate/flattened channel contained channel layers
 
 
 ######Mask From Selection / Mask from Selection (inverted)

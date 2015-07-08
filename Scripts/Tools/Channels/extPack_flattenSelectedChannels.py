@@ -278,6 +278,32 @@ def listAllObjects(channel_list, cur_obj_channels, showAll):
 
 
 # ------------------------------------------------------------------------------
+
+def returnTrue(layer):
+    """Returns True for any object passed to it."""
+    return True
+
+# ------------------------------------------------------------------------------
+def getLayerList(layer_list, criterionFn):
+    """Returns a list of all of the layers in the stack that match the given criterion function, including substacks."""
+    matching = []
+    for layer in layer_list:
+        if criterionFn(layer):
+            matching.append(layer)
+        if hasattr(layer, 'layerStack'):
+            matching.extend(getLayerList(layer.layerStack().layerList(), criterionFn))
+        if layer.hasMaskStack():
+            matching.extend(getLayerList(layer.maskStack().layerList(), criterionFn))
+        if hasattr(layer, 'hasAdjustmentStack') and layer.hasAdjustmentStack():
+            matching.extend(getLayerList(layer.adjustmentStack().layerList(), criterionFn))
+        if layer.isGroupLayer():
+            matching.extend(getLayerList(layer.layerStack().layerList(), criterionFn))
+        if layer.isChannelLayer():
+            matching.extend(getLayerList(layer.channel().layerList(), criterionFn))
+
+    return matching
+
+# ------------------------------------------------------------------------------
 def updateFlattenFilter(flatten_filter_box, flatten_list):
     "For each item in the flatten list display, set it to hidden if it doesn't match the filter text."
     match_words = flatten_filter_box.text().lower().split()
@@ -288,6 +314,53 @@ def updateFlattenFilter(flatten_filter_box, flatten_list):
         item.setHidden(not matches)
 
 # ------------------------------------------------------------------------------
+def flattenSelectedChannels():
+    "Duplicate and flatten selected channels."
+    if not isProjectSuitable():
+        return
+
+    deactivateViewportToggle = mari.actions.find('/Mari/Canvas/Toggle Shader Compiling')
+    deactivateViewportToggle.trigger()
+    mari.history.startMacro('Duplicate & Flatten Channels')
+
+    flatten_channel_layer_lst = ()
+    layers = ()
+    channelLayerLst = []
+
+    #Create dialog and execute accordingly
+    dialog = FlattenSelectedChannelsGUI()
+    if dialog.exec_():
+        channels_to_flatten = dialog.getChannelsToFlatten()
+
+        for channel in channels_to_flatten:
+            orig_name = channel.name()
+            geo = channel.geoEntity()
+            flatten_channel = geo.createDuplicateChannel(channel, channel.name() + '_flatten')
+
+            # Searching for Channel Layers in duplicated Channel
+            flatten_channel_layer_lst = flatten_channel.layerList()
+            layers = getLayerList(flatten_channel_layer_lst,returnTrue)
+            # lookin through all layers that are associated with duplicates if there are any channel layers where we duplicated channels
+            for layer in layers:
+                if layer.isChannelLayer():
+                    channelLayerLst.append(layer.channel())
+
+            flatten_channel.flatten()
+            channel.setName(orig_name + '_original')
+            flatten_channel.setName(orig_name)
+
+            # removing any channels we duplicated in the process of copy/paste
+            for channel_layer in channelLayerLst:
+                try:
+                    geo.removeChannel(channel_layer)
+                except Exception:
+                    continue
+
+    mari.history.stopMacro()
+    deactivateViewportToggle.trigger()
+
+# ------------------------------------------------------------------------------
+
 def isProjectSuitable():
     "Checks project state."
     MARI_2_0V1_VERSION_NUMBER = 20001300    # see below
@@ -310,33 +383,6 @@ def isProjectSuitable():
         mari.utils.message("You can only run this script in Mari 2.6v3 or newer.")
         return False
 
-# ------------------------------------------------------------------------------
-def flattenSelectedChannels():
-    "Duplicate and flatten selected channels."
-    if not isProjectSuitable():
-        return
-
-    deactivateViewportToggle = mari.actions.find('/Mari/Canvas/Toggle Shader Compiling')
-    deactivateViewportToggle.trigger()
-    mari.history.startMacro('Duplicate & Flatten Channels')
-
-    #Create dialog and execute accordingly
-    dialog = FlattenSelectedChannelsGUI()
-    if dialog.exec_():
-        channels_to_flatten = dialog.getChannelsToFlatten()
-
-        for channel in channels_to_flatten:
-            orig_name = channel.name()
-            geo = channel.geoEntity()
-            flatten_channel = geo.createDuplicateChannel(channel, channel.name() + '_flatten')
-            flatten_channel.flatten()
-            channel.setName(channel.name() + '_original')
-            flatten_channel.setName(orig_name)
-
-    mari.history.stopMacro()
-    deactivateViewportToggle.trigger()
-
-# ------------------------------------------------------------------------------
 
 if __name__ == "__main__":
     flattenSelectedChannels()
