@@ -197,7 +197,7 @@ def patchBake():
             # MARI 2.6:
             # mari.images.load(savePath)
             # MARI 3:
-            mari.images.open(savePath,colorSpace)
+            mari.images.open(savePath)
             os.remove(savePath)
 
         except Exception:
