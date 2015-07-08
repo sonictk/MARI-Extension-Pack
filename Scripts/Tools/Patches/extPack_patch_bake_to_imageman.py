@@ -120,6 +120,9 @@ def findLayerSelection():
 def patchBake():
     '''Bakes selected Patches to Image Manager'''
 
+
+    stage = "Not available"
+
     if not mari.projects.current():
         mari.utils.message('No project currently open', title = 'Error')
         return
@@ -131,7 +134,6 @@ def patchBake():
     else:
         path = str( mari.resources.path("MARI_USER_PATH") )
 
-    stage = "Not available"
 
     # Determine general Selection Info
     curGeo = mari.geo.current()
@@ -163,7 +165,7 @@ def patchBake():
 
 
         for layer in layers:
-            stage = "Select layer:" + layer
+            stage = "Select layers in channel"
             layer.setSelected(True)
 
         copyAction = mari.actions.find('/Mari/Layers/Copy')
