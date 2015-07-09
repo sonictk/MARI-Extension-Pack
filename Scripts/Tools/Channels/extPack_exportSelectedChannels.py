@@ -458,15 +458,17 @@ class InfoUI(QtGui.QMessageBox):
 
 # ------------------------------------------------------------------------------
 def _exportChannels(args_dict):
-    deactivateViewportToggle = mari.actions.find('/Mari/Canvas/Toggle Shader Compiling')
-    deactivateViewportToggle.trigger()
-    save_options = 0
+
+    save_options = mari.Image.DEFAULT_OPTIONS
     if args_dict['full_patch_bleed']:
-        save_options = save_options|2
+        save_options = mari.Image.ENABLE_FULL_PATCH_BLEED
     elif args_dict['small_textures']:
-        save_options = save_options|1
+        save_options = mari.Image.DISABLE_SMALL_UNIFORMS
     elif args_dict['remove_alpha']:
-        save_options = save_options|4
+        save_options = mari.Image.REMOVE_ALPHA
+
+    print save_options
+
     #Check if export flattened is ticked, if not export unflattened
     path = args_dict['path']
     if args_dict['flattened']:
@@ -506,25 +508,25 @@ def _exportChannels(args_dict):
             channel.setMetadata('OnlyModifiedTextures', True)
             channel.setMetadataEnabled('OnlyModifiedTextures', False)
     #If successful let the user know
-    deactivateViewportToggle.trigger()
+
     mari.utils.message("Export Successful")
+
 
 # ------------------------------------------------------------------------------
 def _exportEverything(args_dict):
     """Export everything, all geo and all channels"""
-    deactivateViewportToggle = mari.actions.find('/Mari/Canvas/Toggle Shader Compiling')
-    deactivateViewportToggle.trigger()
+
     geo_list = mari.geo.list()
     channels = []
     for geo in geo_list:
         channels.extend(geo.channelList())
-    save_options = 0
+    save_options = mari.Image.DEFAULT_OPTIONS
     if args_dict['full_patch_bleed']:
-        save_options = save_options|2
+        save_options = mari.Image.ENABLE_FULL_PATCH_BLEED
     elif args_dict['small_textures']:
-        save_options = save_options|1
+        save_options = mari.Image.DISABLE_SMALL_UNIFORMS
     elif args_dict['remove_alpha']:
-        save_options = save_options|4
+        save_options = mari.Image.REMOVE_ALPHA
     #Check if export flattened is ticked, if not export unflattened
     path = args_dict['path']
     if args_dict['flattened']:
@@ -564,7 +566,6 @@ def _exportEverything(args_dict):
             channel.setMetadata('OnlyModifiedTextures', True)
             channel.setMetadataEnabled('OnlyModifiedTextures', False)
     #If successful let the user know
-    deactivateViewportToggle.trigger()
     mari.utils.message("Export Successful")
 
 # ------------------------------------------------------------------------------
