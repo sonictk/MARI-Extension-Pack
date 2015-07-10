@@ -47,10 +47,71 @@
 import mari, os, hashlib
 import PySide.QtGui as QtGui
 import PySide.QtCore as QtCore
+import inspect
+from PySide.QtCore import QSettings
 
 version = "0.05"
 
 USER_ROLE = 34          # PySide.Qt.UserRole
+
+
+def uiSettings_save(ui, settings):
+
+    for name, obj in inspect.getmembers(ui):
+        if isinstance(obj, QtGui.QComboBox):
+            name   = obj.objectName()      # get combobox name
+            index  = obj.currentIndex()    # get current index from combobox
+            text   = obj.itemText(index)   # get the text for current index
+            settings.setValue(name, text)   # save combobox selection to registry
+
+        if isinstance(obj, QtGui.QLineEdit):
+            name = obj.objectName()
+            value = obj.text()
+            settings.setValue(name, value)    # save ui values, so they can be restored next time
+
+        if isinstance(obj, QtGui.QCheckBox):
+            name = obj.objectName()
+            state = obj.checkState()
+            settings.setValue(name, state)
+
+
+
+def uiSettings_load(ui, settings):
+
+    for name, obj in inspect.getmembers(ui):
+        if isinstance(obj, QtGui.QComboBox):
+            index  = obj.currentIndex()    # get current region from combobox
+            #text   = obj.itemText(index)   # get the text for new selected index
+            name   = obj.objectName()
+
+            value = unicode(settings.value(name))
+
+            if value == "":
+                continue
+
+            index = obj.findText(value)   # get the corresponding index for specified string in combobox
+
+            if index == -1:  # add to list if not found
+                obj.insertItems(0,[value])
+                index = obj.findText(value)
+                obj.setCurrentIndex(index)
+            else:
+                obj.setCurrentIndex(index)   # preselect a combobox value by index
+
+        if isinstance(obj, QtGui.QLineEdit):
+            name = obj.objectName()
+            value = unicode(settings.value(name))  # get stored value from registry
+            obj.setText(value)  # restore lineEditFile
+
+        if isinstance(obj, QtGui.QCheckBox):
+            name = obj.objectName()
+            value = settings.value(name)   # get stored value from registry
+            if value != None:
+                if value is 'True':
+                    obj.setChecked(True)   # restore checkbox
+                else:
+                    obj.setChecked(False)   # restore checkbox
+
 
 # ------------------------------------------------------------------------------
 class ExportSelectedChannelsUI(QtGui.QDialog):
@@ -139,10 +200,9 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
         top_layout.addLayout(middle_button_layout)
         top_layout.addLayout(export_layout)
 
-# -----------------------------------------------------------------------------------------------------
 
-        #Add path layout.
-        path_layout = QtGui.QHBoxLayout()
+        #Add path layout
+        path_layout = QtGui.QGridLayout()
 
         #Get mari default path and template
         path = os.path.abspath(mari.resources.path(mari.resources.DEFAULT_EXPORT))
@@ -156,15 +216,24 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
         icon = QtGui.QIcon(path_pixmap)
         path_button = QtGui.QPushButton(icon, "")
         path_button.clicked.connect(self._getPath)
-        self.path_line_edit.setText(export_path_template)
+        self.path_line_edit.setText(path)
 
         #Add path line input and button to middle layout
-        path_layout.addWidget(path_label)
-        path_layout.addWidget(self.path_line_edit)
-        path_layout.addWidget(path_button)
+        path_layout.addWidget(path_label,0,0)
+        path_layout.addWidget(self.path_line_edit,0,1)
+        path_layout.addWidget(path_button,0,2)
+
+        #Add Template line input and file format dropdown
+        template_label = QtGui.QLabel('Template:')
+        self.template_line_edit = QtGui.QLineEdit()
+        self.template_line_edit.setText(template)
+
+        #Add template line input and file format dropdown to middle layout
+        path_layout.addWidget(template_label,0,3)
+        path_layout.addWidget(self.template_line_edit,0,4)
 
         #Add to top group
-        top_group_layout = QtGui.QVBoxLayout()
+        top_checkbox_group_layout = QtGui.QVBoxLayout()
 
         #Add Display all Objects check box
         displayAllObjBox = QtGui.QCheckBox('List all Objects')
@@ -172,25 +241,26 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
         displayAllObjBox.clicked.connect(lambda: listAllObjects(self.channel_list,currentObjChannels,displayAllObjBox.isChecked()))
 
 
-
         #Add export everything check box
         self.export_everything_box = QtGui.QCheckBox('Export Everything')
         self.export_everything_box.setToolTip('Exports all Channels for all Objects')
         self.export_everything_box.clicked.connect(self._exportEverything)
 
-        top_group_layout.addLayout(top_layout)
-        top_group_layout.addLayout(path_layout)
-        top_group_layout.addWidget(displayAllObjBox)
-        top_group_layout.addWidget(self.export_everything_box)
-        top_group.setLayout(top_group_layout)
+        top_checkbox_group_layout.addLayout(top_layout)
+        top_checkbox_group_layout.addLayout(path_layout)
+        top_checkbox_group_layout.addWidget(displayAllObjBox)
+        top_checkbox_group_layout.addWidget(self.export_everything_box)
+        top_group.setLayout(top_checkbox_group_layout)
+
 
         #Add middle group layout and check boxes
-        middle_group_layout = QtGui.QHBoxLayout()
+        middle_checkbox_group_layout = QtGui.QHBoxLayout()
+
         self.export_only_modified_textures_box = QtGui.QCheckBox('Only Modified Textures')
         self.export_only_modified_textures_box.setToolTip('Exports only modified UDIMs. Requires at least one previous export with this tool')
         self.export_only_modified_textures_box.setChecked(True)
-        middle_group_layout.addWidget(self.export_only_modified_textures_box)
-        middle_group.setLayout(middle_group_layout)
+        middle_checkbox_group_layout.addWidget(self.export_only_modified_textures_box)
+        middle_group.setLayout(middle_checkbox_group_layout)
 
         #Add check box layout.
         check_box_layout = QtGui.QGridLayout()
@@ -201,7 +271,7 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
         self.export_full_patch_bleed_box = QtGui.QCheckBox('Full Patch Bleed')
         self.export_full_patch_bleed_box.setToolTip('Turns edge bleed on/off. Existing edge bleed won''t be removed')
         self.export_small_textures_box = QtGui.QCheckBox('Disable Small Textures')
-        self.export_small_textures_box.setToolTip('If ON, patches that have flat colors will be exported at 8x8 pixel resolution')
+        self.export_small_textures_box.setToolTip('If OFF, patches that have flat colors will be exported at 8x8 pixel resolution')
         if self.bool_:
             self.export_remove_alpha_box = QtGui.QCheckBox('Remove Alpha')
             self.export_remove_alpha_box.setToolTip('If ON, Transparency will be removed from exported UDIMS')
@@ -312,6 +382,8 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
     def _checkInput(self):
         file_types = ['.' + format for format in mari.images.supportedWriteFormats()]
         path_template = self.path_line_edit.text()
+        template_template = self.template_line_edit.text()
+        full_path = os.path.join(path_template, template_template)
         if not os.path.exists(os.path.split(path_template)[0]):
             title = 'Create Directories'
             text = 'Path does not exist "%s".' %os.path.split(path_template)[0]
@@ -320,7 +392,7 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
             if not dialog.exec_():
                 return
             os.makedirs(os.path.split(path_template)[0])
-        if not path_template.endswith(tuple(file_types)):
+        if not template_template.endswith(tuple(file_types)):
             mari.utils.message("File type is not supported: '%s'" %(os.path.split(path_template)[1]))
             return
         if self.export_everything_box.isChecked():
@@ -336,7 +408,9 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
 
     #Get export path and template
     def _getExportPathTemplate(self):
-        return self.path_line_edit.text()
+        path = self.path_line_edit.text()
+        template = self.template_line_edit.text()
+        return os.path.join(path, template)
 
     #Get export everything box is ticked (bool)
     def _getExportEverything(self):
@@ -366,6 +440,7 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
             return False
 
 # ------------------------------------------------------------------------------
+
 class ChannelsToExportList(QtGui.QListWidget):
     """Stores a list of operations to perform."""
 
@@ -445,7 +520,6 @@ class InfoUI(QtGui.QMessageBox):
         super(InfoUI, self).__init__(parent)
 
         # Create info gui
-        self.setIcon(4)
         self.setWindowTitle(title)
         self.setText(text)
         if not info == None:
@@ -467,7 +541,6 @@ def _exportChannels(args_dict):
     elif args_dict['remove_alpha']:
         save_options = mari.Image.REMOVE_ALPHA
 
-    print save_options
 
     #Check if export flattened is ticked, if not export unflattened
     path = args_dict['path']
@@ -575,9 +648,13 @@ def exportSelectedChannels():
     if not suitable[0]:
         return
 
+    settings = QSettings('extPack_exportSelected.ini', QSettings.IniFormat)
+
     #Create dialog and execute accordingly
     dialog = ExportSelectedChannelsUI(suitable[1])
+    uiSettings_load(dialog, settings)
     if dialog.exec_():
+        uiSettings_save(dialog, settings)
         args_dict = {
         'channels' : dialog._getChannelsToExport(),
         'path' : dialog._getExportPathTemplate(),
