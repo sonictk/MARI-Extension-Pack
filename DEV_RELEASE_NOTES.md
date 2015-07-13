@@ -156,6 +156,9 @@ to avoid having to retype the template everytime you change the path
 
 'Export Custom Channel Selection' will now remember your last settings for checkbox options and Export File Template
 
+'Export Custom Channel Selection' now uses the default Operation System Dialog for Path Selections instead of the
+ limited MARI Default one.
+
 
 ######Duplicate/Flatten Channel
 

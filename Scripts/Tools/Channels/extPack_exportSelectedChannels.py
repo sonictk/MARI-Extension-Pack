@@ -47,10 +47,11 @@
 import mari, os, hashlib
 import PySide.QtGui as QtGui
 import PySide.QtCore as QtCore
-import inspect
 from PySide.QtCore import QSettings
+import inspect
 
-version = "3.0"
+
+version = "3.0"     #UI VERSION
 
 # Storing Widget Settings between sessions here:
 USER_PATH = os.path.abspath(mari.resources.path(mari.resources.USER))
@@ -271,14 +272,12 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
                     SETTINGS.setValue(name,state)
 
             if isinstance(obj, QtGui.QCheckBox):
-
                 state = obj.isChecked()
                 SETTINGS.setValue(name,state)
 
 
     def _optionsLoad(self):
         """Loads UI Options between sessions."""
-
 
         for name, obj in inspect.getmembers(self):
             if isinstance(obj, QtGui.QLineEdit):
@@ -289,7 +288,6 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
                         obj.setText(state)
 
             if isinstance(obj, QtGui.QCheckBox):
-
                 state_string = SETTINGS.value(name)
                 if state_string == "true":
                     obj.setChecked(True)
@@ -357,7 +355,7 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
 
     #Get the path from existing directory
     def _getPath(self):
-        path = mari.utils.misc.getSaveFileName(parent=None, caption='Export Path', dir='', filter='', selected_filter=None, options=0, save_filename='')
+        path = QtGui.QFileDialog.getExistingDirectory(None,"Export Path",self.path_line_edit.text())
         if path == "":
             return
         else:
@@ -787,6 +785,9 @@ def _isProjectSuitable():
         if mari.projects.current() is None:
             mari.utils.message("Please open a project before running.")
             return False, False
+
+        if mari.app.version().number() >= MARI_3_0V1b2_VERSION_NUMBER:
+            return True, True
 
         return True, False
 
