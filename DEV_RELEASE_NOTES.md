@@ -160,6 +160,7 @@ to avoid having to retype the template everytime you change the path
  limited MARI Default one.
 
 
+
 ######Duplicate/Flatten Channel
 
 Duplicate/Flatten Channel will no longer create channel duplicates of channelLayers (shared channels) if the
@@ -206,8 +207,15 @@ Unrpojected Images will always be square with a 1:1 Pixel Aspect Ratio.
 Count increased (for example by adding geometry versions) or if users mistakenly removed the channel user attributes
 used to determine changes in textures.
 
+'Export Custom Channel Selection' when used with 'Only Modified Textures' previously would error with certain
+ maskStack configurations.
+
+
 'Export Custom Channel Selection' when used with 'Only Modified Textures' would not register changes to a channel
 caused by a Channel Layer in the Layerstack.
+
+ Metadata added to Channels to determine what textures have changed between exports are no longer visible to the user
+ in the 'Channel' Info Section
 
 
 ##Developer Notes:

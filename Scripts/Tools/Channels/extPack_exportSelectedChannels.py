@@ -547,8 +547,10 @@ def _exportChannels(args_dict):
                 return
             for data in metadata:
                 channel.setMetadata(*data)
-                channel.setMetadataEnabled(data[0], False)
+                channel.setMetadataDisplayName(data[0],str(data[0]) + ' Modified Texture Export')
+                channel.setMetadataFlags(data[0],mari.Metadata.METADATA_EDITABLE)
             channel.setMetadata('OnlyModifiedTextures', True)
+            channel.setMetadataFlags('OnlyModifiedTextures',mari.Metadata.METADATA_EDITABLE)
             channel.setMetadataEnabled('OnlyModifiedTextures', False)
     else:
         for channel in args_dict['channels']:
@@ -565,11 +567,13 @@ def _exportChannels(args_dict):
                 return
             for data in metadata:
                 channel.setMetadata(*data)
-                channel.setMetadataEnabled(data[0], False)
+                channel.setMetadataDisplayName(data[0],str(data[0]) + ' Modified Texture Export')
+                channel.setMetadataFlags(data[0],mari.Metadata.METADATA_EDITABLE)
             channel.setMetadata('OnlyModifiedTextures', True)
+            channel.setMetadataFlags('OnlyModifiedTextures',mari.Metadata.METADATA_EDITABLE)
             channel.setMetadataEnabled('OnlyModifiedTextures', False)
-    #If successful let the user know
 
+    #If successful let the user know
     mari.utils.message("Export Successful")
 
 
@@ -605,8 +609,10 @@ def _exportEverything(args_dict):
                 return
             for data in metadata:
                 channel.setMetadata(*data)
-                channel.setMetadataEnabled(data[0], False)
+                channel.setMetadataDisplayName(data[0],str(data[0]) + ' Modified Texture Export')
+                channel.setMetadataFlags(data[0],mari.Metadata.METADATA_EDITABLE)
             channel.setMetadata('OnlyModifiedTextures', True)
+            channel.setMetadataFlags('OnlyModifiedTextures',mari.Metadata.METADATA_EDITABLE)
             channel.setMetadataEnabled('OnlyModifiedTextures', False)
     else:
         for channel in channels:
@@ -623,8 +629,10 @@ def _exportEverything(args_dict):
                 return
             for data in metadata:
                 channel.setMetadata(*data)
-                channel.setMetadataEnabled(data[0], False)
+                channel.setMetadataDisplayName(data[0],str(data[0]) + ' Modified Texture Export')
+                channel.setMetadataFlags(data[0],mari.Metadata.METADATA_EDITABLE)
             channel.setMetadata('OnlyModifiedTextures', True)
+            channel.setMetadataFlags('OnlyModifiedTextures',mari.Metadata.METADATA_EDITABLE)
             channel.setMetadataEnabled('OnlyModifiedTextures', False)
     #If successful let the user know
     mari.utils.message("Export Successful")
@@ -674,7 +682,7 @@ def _getChangedUvIndexes(channel):
     for patch in patch_list:
         hash_ = _createHash(patch, all_layers)
         try:
-            if not hash_ == channel.metadata(str(patch.uvIndex())):
+            if not hash_ == channel.metadata(str(patch.uvIndex()) ):
                 uv_index_list.append(patch.uvIndex())
                 metadata.append((str(patch.uvIndex()), hash_))
         except Exception:
@@ -728,7 +736,7 @@ def _createHash(patch, all_layers):
         elif layer.isPaintableLayer():
             hash_ += layer.imageSet().image(index).hash()
 
-        elif layer.hasMask():
+        elif layer.hasMask() and not layer.hasMaskStack():
             hash_ += layer.maskImageSet().image(index).hash()
 
     return _sha256(hash_)
