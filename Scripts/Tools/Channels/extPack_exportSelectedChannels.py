@@ -4,8 +4,8 @@
 # Export selected channels from one or more objects
 # coding: utf-8
 # ------------------------------------------------------------------------------
-# Written by Jorel Latraille, 2014
-# Modified by Jens Kafitz, 2015
+# Originally written by Jorel Latraille, 2014
+# Extended by Jens Kafitz, 2015
 # ------------------------------------------------------------------------------
 # http://mari.ideascale.com
 # http://www.jorel-latraille.com/
@@ -50,67 +50,15 @@ import PySide.QtCore as QtCore
 import inspect
 from PySide.QtCore import QSettings
 
-version = "0.05"
+version = "3.0"
+
+# Storing Widget Settings between sessions here:
+USER_PATH = os.path.abspath(mari.resources.path(mari.resources.USER))
+USER_SETTINGS_FILE = 'extPack_exportSelectedChannels' + version + '_settings.conf'
+USER_SETTINGS = os.path.join(USER_PATH,USER_SETTINGS_FILE)
+SETTINGS = QSettings(USER_SETTINGS, QSettings.IniFormat)
 
 USER_ROLE = 34          # PySide.Qt.UserRole
-
-
-def uiSettings_save(ui, settings):
-
-    for name, obj in inspect.getmembers(ui):
-        if isinstance(obj, QtGui.QComboBox):
-            name   = obj.objectName()      # get combobox name
-            index  = obj.currentIndex()    # get current index from combobox
-            text   = obj.itemText(index)   # get the text for current index
-            settings.setValue(name, text)   # save combobox selection to registry
-
-        if isinstance(obj, QtGui.QLineEdit):
-            name = obj.objectName()
-            value = obj.text()
-            settings.setValue(name, value)    # save ui values, so they can be restored next time
-
-        if isinstance(obj, QtGui.QCheckBox):
-            name = obj.objectName()
-            state = obj.checkState()
-            settings.setValue(name, state)
-
-
-
-def uiSettings_load(ui, settings):
-
-    for name, obj in inspect.getmembers(ui):
-        if isinstance(obj, QtGui.QComboBox):
-            index  = obj.currentIndex()    # get current region from combobox
-            #text   = obj.itemText(index)   # get the text for new selected index
-            name   = obj.objectName()
-
-            value = unicode(settings.value(name))
-
-            if value == "":
-                continue
-
-            index = obj.findText(value)   # get the corresponding index for specified string in combobox
-
-            if index == -1:  # add to list if not found
-                obj.insertItems(0,[value])
-                index = obj.findText(value)
-                obj.setCurrentIndex(index)
-            else:
-                obj.setCurrentIndex(index)   # preselect a combobox value by index
-
-        if isinstance(obj, QtGui.QLineEdit):
-            name = obj.objectName()
-            value = unicode(settings.value(name))  # get stored value from registry
-            obj.setText(value)  # restore lineEditFile
-
-        if isinstance(obj, QtGui.QCheckBox):
-            name = obj.objectName()
-            value = settings.value(name)   # get stored value from registry
-            if value != None:
-                if value is 'True':
-                    obj.setChecked(True)   # restore checkbox
-                else:
-                    obj.setChecked(False)   # restore checkbox
 
 
 # ------------------------------------------------------------------------------
@@ -258,7 +206,7 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
 
         self.export_only_modified_textures_box = QtGui.QCheckBox('Only Modified Textures')
         self.export_only_modified_textures_box.setToolTip('Exports only modified UDIMs. Requires at least one previous export with this tool')
-        self.export_only_modified_textures_box.setChecked(True)
+        self.export_only_modified_textures_box.setChecked(False)
         middle_checkbox_group_layout.addWidget(self.export_only_modified_textures_box)
         middle_group.setLayout(middle_checkbox_group_layout)
 
@@ -308,6 +256,47 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
 
         #calling once to cull the object list, whole thing doesn't really make for a snappy interface appearance
         listAllObjects(self.channel_list,currentObjChannels,displayAllObjBox.isChecked())
+        self._optionsLoad()
+
+
+
+    def _optionsSave(self):
+        """Saves UI Options between sessions."""
+
+        for name, obj in inspect.getmembers(self):
+            if isinstance(obj, QtGui.QLineEdit):
+                state = None
+                if name is 'template_line_edit':
+                    state = obj.text()
+                    SETTINGS.setValue(name,state)
+
+            if isinstance(obj, QtGui.QCheckBox):
+
+                state = obj.isChecked()
+                SETTINGS.setValue(name,state)
+
+
+    def _optionsLoad(self):
+        """Loads UI Options between sessions."""
+
+
+        for name, obj in inspect.getmembers(self):
+            if isinstance(obj, QtGui.QLineEdit):
+                state = None
+                if name is 'template_line_edit':
+                    state = unicode(SETTINGS.value(name))
+                    if state != 'None':
+                        obj.setText(state)
+
+            if isinstance(obj, QtGui.QCheckBox):
+
+                state_string = SETTINGS.value(name)
+                if state_string == "true":
+                    obj.setChecked(True)
+                if state_string == "false":
+                    obj.setChecked(False)
+
+
 
     #Generate List of Channels for the Channel List
     def populateChannelList(self,channel_list):
@@ -384,14 +373,6 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
         path_template = self.path_line_edit.text()
         template_template = self.template_line_edit.text()
         full_path = os.path.join(path_template, template_template)
-        if not os.path.exists(os.path.split(path_template)[0]):
-            title = 'Create Directories'
-            text = 'Path does not exist "%s".' %os.path.split(path_template)[0]
-            info = 'Create the path?'
-            dialog = InfoUI(title, text, info)
-            if not dialog.exec_():
-                return
-            os.makedirs(os.path.split(path_template)[0])
         if not template_template.endswith(tuple(file_types)):
             mari.utils.message("File type is not supported: '%s'" %(os.path.split(path_template)[1]))
             return
@@ -400,6 +381,15 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
         elif len(self.export_list._currentChannels()) == 0:
             mari.utils.message("Please add a channel to export.")
             return
+        if not os.path.exists(os.path.split(path_template)[0]):
+            title = 'Create Directories'
+            text = 'Path does not exist "%s".' %os.path.split(path_template)[0]
+            info = 'Create the path?'
+            dialog = InfoUI(title, text, info)
+            if not dialog.exec_():
+                return
+            os.makedirs(os.path.split(path_template)[0])
+        self._optionsSave()
         self.accept()
 
     #Get list of channels to export from the export list
@@ -648,13 +638,10 @@ def exportSelectedChannels():
     if not suitable[0]:
         return
 
-    settings = QSettings('extPack_exportSelected.ini', QSettings.IniFormat)
-
     #Create dialog and execute accordingly
     dialog = ExportSelectedChannelsUI(suitable[1])
-    uiSettings_load(dialog, settings)
+    # dialog.uiSettings_load(dialog, settings)
     if dialog.exec_():
-        uiSettings_save(dialog, settings)
         args_dict = {
         'channels' : dialog._getChannelsToExport(),
         'path' : dialog._getExportPathTemplate(),
@@ -688,9 +675,13 @@ def _getChangedUvIndexes(channel):
     metadata = []
     for patch in patch_list:
         hash_ = _createHash(patch, all_layers)
-        if not hash_ == channel.metadata(str(patch.uvIndex())):
-            uv_index_list.append(patch.uvIndex())
-            metadata.append((str(patch.uvIndex()), hash_))
+        try:
+            if not hash_ == channel.metadata(str(patch.uvIndex())):
+                uv_index_list.append(patch.uvIndex())
+                metadata.append((str(patch.uvIndex()), hash_))
+        except Exception:
+                uv_index_list.append(patch.uvIndex())
+                metadata.append((str(patch.uvIndex()), hash_))
     return uv_index_list, metadata
 
 # ------------------------------------------------------------------------------
@@ -767,6 +758,8 @@ def _getMatchingLayers(layer_list, criterionFn):
             matching.extend(_getMatchingLayers(layer.maskStack().layerList(), criterionFn))
         if hasattr(layer, 'hasAdjustmentStack') and layer.hasAdjustmentStack():
             matching.extend(_getMatchingLayers(layer.adjustmentStack().layerList(), criterionFn))
+        if layer.isChannelLayer():
+            matching.extend(_getMatchingLayers(layer.channel().layerList(), criterionFn))
 
     return matching
 
@@ -788,20 +781,17 @@ def _sha256(string):
 # ------------------------------------------------------------------------------
 def _isProjectSuitable():
     """Checks project state."""
-    MARI_2_0V1_VERSION_NUMBER = 20001300    # see below
-    if mari.app.version().number() >= MARI_2_0V1_VERSION_NUMBER:
+    MARI_3_0V1b2_VERSION_NUMBER = 30001202    # see below
+    if mari.app.version().number() >= MARI_3_0V1b2_VERSION_NUMBER:
 
         if mari.projects.current() is None:
             mari.utils.message("Please open a project before running.")
             return False, False
 
-        if mari.app.version().number() >= 20603300:
-            return True, True
-
         return True, False
 
     else:
-        mari.utils.message("You can only run this script in Mari 2.6v3 or newer.")
+        mari.utils.message("You can only run this script in Mari 3.0v1 or newer.")
         return False, False
 
 # ------------------------------------------------------------------------------

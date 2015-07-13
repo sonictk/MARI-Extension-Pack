@@ -149,11 +149,12 @@ overall 'flowing' of features across the surface when changing sliders
 ###Tools:
 
 
-######Tools - General
+######Export Custom Channel Selection
 
-We've continued adding improved performance to more tools such as ConvertToPaintable, ExportSelectedChannels, Duplicate-Flatten etc.
-by surpressing viewport updates during their runtime.
-This can lead to speed improvements of 40-50% in some cases.
+'Export Custom Channel Selection' now separates the File Path and the File Export Template in its UI
+to avoid having to retype the template everytime you change the path
+
+'Export Custom Channel Selection' will now remember your last settings for checkbox options and Export File Template
 
 
 ######Duplicate/Flatten Channel
@@ -188,6 +189,22 @@ Unrpojected Images will always be square with a 1:1 Pixel Aspect Ratio.
 8bit Images are saved in PNG, 16bit/32bit in exr format.
 
 'Unproject Channel/Layer to Image Manager' will now timestamp imported images and images will have the correct layer / channel name.
+
+
+##Bugfixes:
+
+###Tools:
+
+######Export Custom Channel Selection
+
+'Export Custom Channel Selection' errored in MARI 3.0 during Export.
+
+'Export Custom Channel Selection' when used with 'Only Modified Textures' previously would error if the UDIM
+Count increased (for example by adding geometry versions) or if users mistakenly removed the channel user attributes
+used to determine changes in textures.
+
+'Export Custom Channel Selection' when used with 'Only Modified Textures' would not register changes to a channel
+caused by a Channel Layer in the Layerstack.
 
 
 ##Developer Notes:
