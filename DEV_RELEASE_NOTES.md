@@ -218,6 +218,14 @@ caused by a Channel Layer in the Layerstack.
  in the 'Channel' Info Section
 
 
+
+######Add Channel Mask / Add Channel Mask (grouped)
+
+'Add Channel Mask' would cause a program crash in Mari 3.0
+
+WIP - 'Add Channel Mask (grouped) would error and stop working in Mari 3.0
+
+
 ##Developer Notes:
 
 ######New Category handling

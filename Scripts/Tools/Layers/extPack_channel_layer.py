@@ -42,13 +42,15 @@ import PySide.QtGui as QtGui
 
 USER_ROLE = 32          # PySide.Qt.UserRole
 
+version = "3.0"     #UI VERSION
+
 # ------------------------------------------------------------------------------
 
 
 def _isProjectSuitable():
     """Checks project state and mari version"""
-    MARI_2_6V3_VERSION_NUMBER = 20603300   # see below
-    if mari.app.version().number() >= MARI_2_6V3_VERSION_NUMBER:
+    MARI_3_0V1b2_VERSION_NUMBER = 30001202    # see below
+    if mari.app.version().number() >= MARI_3_0V1b2_VERSION_NUMBER:
 
         if mari.projects.current() is None:
             mari.utils.message("Please open a project before running.")
@@ -57,7 +59,7 @@ def _isProjectSuitable():
         return True, False
 
     else:
-        mari.utils.message("You can only run this script in Mari 2.6v3 or newer.")
+        mari.utils.message("You can only run this script in Mari 3.0v1 or newer.")
         return False, False
 
 
@@ -76,6 +78,11 @@ def makeChannelLayer(sourceChannel, mode, invert):
     currentSelection = selectionData[4]
 
     layerName = currentLayer.name()
+
+    # Existing Layer & BaseMaskStack Variables are used to get & store a layerlist of a maskstack after creation
+    # in order to remove auto-created layers later on.
+    existingLayer = ()
+    baseMaskStack = None
 
 
 
@@ -101,10 +108,11 @@ def makeChannelLayer(sourceChannel, mode, invert):
                     layerGroupName = '%s_grp' % layerName
                     selectionData = getSelectedLayer().findSelection()
                     currentStack = selectionData[2]
-                    groupLayer = currentStack.groupLayers([currentSelection], None, None, 16)
+                    groupLayer = currentStack.groupLayers([currentSelection], None, None, mari.LayerStack.INSERT_NEW_LAYER_ABOVE_SELECTION)
                     groupLayer.setName(layerGroupName)
                     layerMaskStack = groupLayer.makeMaskStack()
-                    layerMaskStack.removeLayers(layerMaskStack.layerList())
+                    baseMaskStack = layerMaskStack
+                    existingLayer = baseMaskStack.layerlist()
 
                     ## Create Mask Channel Layer
 
@@ -119,9 +127,14 @@ def makeChannelLayer(sourceChannel, mode, invert):
                     if invert:
                        layerMaskStack.createAdjustmentLayer("Invert","Filter/Invert")
 
+                    # Removes old layers from MaskStack creation. Variable usually empty unless the stack was created by the script
+                    baseMaskStack.removeLayers(existingLayer)
+
                     mari.history.stopMacro()
 
                 except Exception:
+                    mari.history.stopMacro()
+                    mari.utils.message("Add Channel Layer Mask to Group failed to execute correctly")
                     pass
 
         elif mode == 'mask':
@@ -135,7 +148,6 @@ def makeChannelLayer(sourceChannel, mode, invert):
                     # layer.makeCurrent()
                     layerName = layer.name()
                     currentLayer = layer
-                    existingLayer = ()
                     hasMask = False
                     performGrouping = False
 
@@ -148,18 +160,19 @@ def makeChannelLayer(sourceChannel, mode, invert):
                     ## New Layer Mask Stack.
                     ## If mask exists convert, if stack exists keep, else make new stack
                     if currentLayer.hasMaskStack():
+                        d
                         layerMaskStack = currentLayer.maskStack()
+                        baseMaskStack = layerMaskStack
                         hasMask = True
                     elif currentLayer.hasMask():
                         layerMaskStack = currentLayer.makeMaskStack()
+                        baseMaskStack = layerMaskStack
                         hasMask = True
                     else:
                         layerMaskStack = currentLayer.makeMaskStack()
+                        baseMaskStack = layerMaskStack
                         existingLayer = layerMaskStack.layerList()
                         hasMask = False
-
-                    # Removes existing layers. Variable usually empty unless the stack was created by the script
-                    layerMaskStack.removeLayers(existingLayer)
 
 
                     # if the selected layer already had a mask and more than one channel layer is selected,
@@ -187,15 +200,21 @@ def makeChannelLayer(sourceChannel, mode, invert):
                             elif channel is not sourceChannel[0]:
                                 layer.setBlendMode(27)
 
+
                         except Exception:
                             mari.utils.message("Could not add Channel Layer: " + str(channel))
+                            pass
 
 
                     if invert:
                         layerMaskStack.createAdjustmentLayer("Invert","Filter/Invert")
 
+                    # Removes old layers from MaskStack creation. Variable usually empty unless the stack was created by the script
+                    baseMaskStack.removeLayers(existingLayer)
+
                 except Exception:
                     mari.utils.message("Could not add Channel Layer to: " + str(layer))
+                    pass
 
 
             mari.history.stopMacro()
