@@ -58,9 +58,11 @@
         <!--===============================================================================================================-->
         <Attribute Name="rotateZ" PrettyName="Rotate" Group="Transform Rotate" Type="float" Min="0" Max="360">0</Attribute>
         <!--===============================================================================================================-->
-        <Attribute Name="transX" PrettyName="Translate U" Group="Transform Translate" Type="float" Min="0" Max="100">0</Attribute>
-        <Attribute Name="transY" PrettyName="Translate V" Group="Transform Translate" Type="float" Min="0" Max="100">0</Attribute>
+        <Attribute Name="transX" PrettyName="Translate U" Group="Transform Translate" Type="float" Min="0" Max="1">0</Attribute>
+        <Attribute Name="transY" PrettyName="Translate V" Group="Transform Translate" Type="float" Min="0" Max="1">0</Attribute>
         <!--===============================================================================================================-->
+        <Attribute Name="MirrorU" PrettyName="Mirror U" Group="Mirror" Type="bool">false</Attribute>
+        <Attribute Name="MirrorV" PrettyName="Mirror V" Group="Mirror" Type="bool">false</Attribute>
 </Attributes>
  <Contexts>
         <Context Type="NodeGraphView">
@@ -91,9 +93,10 @@
             <Shader>
                 <Body><![CDATA[
 
-    // Initialize Sliders
-    float INIT = $scaleX; INIT = $scaleY; INIT = $WorldScale;
-    INIT = $rotateZ; INIT = $transX; INIT = $transY;
+    // Do not delete the following: Have to reference Attributes once in GLSL for them to become active in UI:
+    // $scaleX; $scaleY; $WorldScale;
+    // $rotateZ; $transX; $transY;
+
 
     // 2d uv space surface position
     // build the needed vector attributes for position transform, offset max growths exponentially
@@ -102,6 +105,10 @@
 
     // transform the position to translate,rotate,scale the position
     vec2 InputScaleUV = relUVTransform(#Coordinates.rg,#Rotate.r,UVOffset,UVScale,0.5,0.5);
+
+    // mirror
+    InputScaleUV.x = $MirrorU ? (1.0-InputScaleUV.x) : +InputScaleUV.x;
+    InputScaleUV.y = $MirrorV ? +InputScaleUV.y : (1.0-InputScaleUV.y);
 
     Output =  vec4(InputScaleUV,0.0,1.0);
 

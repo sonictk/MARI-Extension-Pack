@@ -30,7 +30,7 @@ Two new nodes were added to Layerstack & Nodegraph to convert values between RGB
 Two new nodes were added to Layerstack & Nodegraph to convert values between RGB + HSL (Hue/Saturation/Lightness).
 
 
-#####Geometry Procedurals:
+#####Geometry Nodes:
 
 ######Transform Coordinates 3D
 A node to transform object coordinates such as Position + Normal.
@@ -42,13 +42,24 @@ built in but this can be used as a central control hub to modify multiple nodes 
 
 ######Transform Coordinates UV
 A node to transform object UV Coordinates.
-All Extension Pack Procedurals now have a 'Transform Coordinate' Handle
+All Extension Pack Noises now have a 'Transform Coordinate' Handle
 in the Nodegraph to attach this to.
 
 Many Extension Pack Procedurals already have Scale/offset/Rotatuion options
 built in but this can be used as a central control hub to modify multiple nodes at once.
 Attaching this Node to a procedural will give the same effect as activating 'UV Space' in
 the Procedural Options.
+
+
+#####Environment Nodes:
+
+######Image Node
+
+The 'Image Node' will allow you to load an image with similar options as you have on the
+default Mari 'Tiled' Node. However this node does not contain any UV transformation options (repeat, offset).
+By attaching a 'Transform Coordinates UV' Node to the 'Image' Node Input you get the same options as a tiled node has
+but with the advantage of being able to use different  tiling images in different channels while having only a single set
+of controls for repeat, offset etc.
 
 
 #####Layer Nodes (Nodegraph only):
@@ -64,7 +75,7 @@ etc. when you don't need them. For convenience a color A and color B can be set 
 if the corresponding handles are mapped in the nodegraph.
 The Mix Slider will always be evaluated regardless of the Mix Noodle being mapped (in which case it's an added multiplier)
 
-#####Material Nodes (Nodegraph only):
+#####Region Nodes (Nodegraph only):
 
 ######Material Regions - WIP
 
