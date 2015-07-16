@@ -55,10 +55,10 @@ import xml.etree.ElementTree as ET
 base_path = os.path.dirname(__file__)
 default_shader_path = '%s/NodeLibrary' % base_path
 default_lib_path = '%s/FunctionLibrary' % base_path
-min_mari_version = 20603300
+min_mari_version = 30001202
 current_lib_version = '' # will be grabbed from LibraryNamer.xml !
-current_mari_version = 20103300
-register_shader_version = '2.0'
+current_mari_version = 30001202
+register_shader_version = '3.0'
 
 def mariVersion():
     '''Loads current mari version'''

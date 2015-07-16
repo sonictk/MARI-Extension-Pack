@@ -42,7 +42,7 @@ from PySide import QtGui
 
 
 # EXTENSION PACK VERSION
-current_extension_pack = "2.2"
+current_extension_pack = "3.0"
 
 
 # SCRIPT DIRECTORY PATH(S)
@@ -117,9 +117,9 @@ illegal_Func = ["def convertSelectedToPaintable(self):","convert_selected_to_pai
 
 def checkMariVersion():
     "Checks if Mari Version is compatible"
-    MARI_2_6v3_VERSION_NUMBER =   20603300 #MARI 2.6v3
+    MARI_3_0v1_VERSION_NUMBER =   30001202 #MARI 3.0v1
 
-    if mari.app.version().number() >=  MARI_2_6v3_VERSION_NUMBER:
+    if mari.app.version().number() >=  MARI_3_0v1_VERSION_NUMBER:
 
 		return True, True
 
