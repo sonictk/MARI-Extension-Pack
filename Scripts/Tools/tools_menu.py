@@ -60,7 +60,7 @@ Shortcut Bindings are available but not necessarily set.'''
 import mari
 import os
 
-tool_menu_version = '2.2'
+tool_menu_version = '3.0'
 
 
 # Icon Path for custom icons

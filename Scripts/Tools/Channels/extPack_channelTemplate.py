@@ -54,14 +54,14 @@ geo_dict = {}
 
 def _isProjectSuitable():
     """Checks project state."""
-    MARI_2_5V2_VERSION_NUMBER = 20502300    # see below
-    if mari.app.version().number() >= MARI_2_5V2_VERSION_NUMBER:
+    MARI_3_0v1_VERSION_NUMBER = 30001202    # see below
+    if mari.app.version().number() >= MARI_3_0v1_VERSION_NUMBER:
 
         if mari.projects.current() is None:
             mari.utils.message("Please open a project before running.")
             return False, False
 
-        if mari.app.version().number() >= 20603300:
+        if mari.app.version().number() >= 30001202:
             return True, True
 
         return True, False

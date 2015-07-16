@@ -307,8 +307,8 @@ def convertToPaintable():
 # ------------------------------------------------------------------------------
 def isProjectSuitable():
     "Checks project state and Mari version."
-    MARI_2_0V1_VERSION_NUMBER = 20001300    # see below
-    if mari.app.version().number() >= MARI_2_0V1_VERSION_NUMBER:
+    MARI_3_0V1_VERSION_NUMBER = 30001202    # see below
+    if mari.app.version().number() >= MARI_3_0V1_VERSION_NUMBER:
 
         if mari.projects.current() is None:
             mari.utils.message("Please open a project before running.")
