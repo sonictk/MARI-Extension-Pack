@@ -149,7 +149,7 @@ def _isProjectSuitable():
             mari.utils.message("Please open a project before running.")
             return False, False
 
-        if mari.app.version().number() >= 20603300:
+        if mari.app.version().number() >= 30001202:
             return True, True
 
         return True, False
