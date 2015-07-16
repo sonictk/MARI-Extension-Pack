@@ -1,4 +1,4 @@
-#Release Notes for MARI EXTENSION PACK 2.2
+#Release Notes for MARI EXTENSION PACK 3.0
 Copyright (c) 2015 www.mari.ideascale.com. All Rights Reserved.
 
 ##New Features:
@@ -209,6 +209,12 @@ Unrpojected Images will always be square with a 1:1 Pixel Aspect Ratio.
 ##Bugfixes:
 
 ###Tools:
+
+
+######Pause Viewport Update
+
+The icon for 'Pause Viewport Update' would not be found on MARI Configurations with multiple Script Paths.
+
 
 ######Export Custom Channel Selection
 
