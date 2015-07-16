@@ -216,10 +216,8 @@ venv
 
 # Ignore Mari workspace files
 /DT3D_MariLibraryV1.0.jpg
-/shortcuts.conf
 /gViewBookmark.prefs
 /gViewConfig.prefs
-/layout.mws
 logs
 Script_docs
 Scripts_docs
