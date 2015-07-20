@@ -7,7 +7,17 @@
 import os
 import logging
 import traceback
-import imp
+
+import sys
+
+# Use importlib if detected Python 2.7 or later
+if sys.version_info >= (2,7):
+    _use_legacy_libraries = False
+    import importlib
+
+else:
+    import imp
+    _use_legacy_libraries = True
 
 
 def import_submodules():
@@ -47,13 +57,18 @@ def import_submodules():
 
     for module in modules:
         try:
-            print module[0]
-            print 'first'
-            print module[1]
-            print 'sec'
+            # Format namespace for absolute import
+            namespace = os.path.dirname(module[1]).split('stkMariTools')[-1].split(os.path.sep)
+            namespace[0] = 'stkMariTools'
+            namespace = '.'.join(namespace)
 
-            loaded_module = imp.load_source(module[0], module[1])
+            if _use_legacy_libraries:
+                loaded_module = imp.load_source(namespace, module[1])
+            else:
+                loaded_module = importlib.import_module(name=namespace, package=module[1])
+
             loaded_module.registerMenuItem()
+            logger.debug('Successfully registered the following menuItem plugin: {0}'.format(module[0]))
 
         except RuntimeWarning:
             logger.warning('# Absolute import was handled incorrectly!\n{0}'
@@ -65,8 +80,8 @@ def import_submodules():
             continue
 
         except AttributeError:
-            logger.error('### Module does not have required registerMenuItem() method!!!\n{0}'
-                         .format(traceback.print_exc()))
+            logger.debug('Module does not have required registerMenuItem() method, skipping...\n{0}'
+                         .format(module[1]))
             continue
 
         except Exception:
