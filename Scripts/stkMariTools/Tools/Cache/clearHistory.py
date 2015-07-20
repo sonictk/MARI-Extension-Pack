@@ -12,6 +12,17 @@ from PySide.QtGui import QMessageBox
 from stkMariTools.lib.ui_utils import MariToolsMenuItem
 
 
+def registerMenuItem():
+    """
+    This method acts as a identifier method to be run automatically when
+    detected. It adds the menu item to the Mari menubar.
+
+    :return:
+    """
+
+    ClearHistoryMenuItem()
+
+
 class ClearHistoryMenuItem(MariToolsMenuItem):
     """
     This class adds a Clear History action.

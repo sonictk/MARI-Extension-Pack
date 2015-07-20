@@ -9,35 +9,6 @@ import mari
 import traceback
 
 
-class MariToolsMenuManager(object):
-    """
-    This class will add a Mari menu item
-    """
-
-    logger = logging.getLogger(__name__)
-
-
-    def __init__(self):
-        """
-        The constructor.
-
-        """
-
-        # Call base class
-        super(MariToolsMenuManager, self).__init__()
-
-
-    def addMenuItemsFromScripts(self):
-        """
-        This method searches through the existing modules and adds any
-        valid MenuItems to the main Mari menu.
-
-        :return:
-        """
-
-        pass
-
-
 class MariToolsMenuItem(object):
     """
     This base class is used for adding a Mari action.

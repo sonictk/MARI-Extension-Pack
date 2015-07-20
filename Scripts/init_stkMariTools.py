@@ -6,6 +6,8 @@
 # noinspection PyUnresolvedReferences
 import mari
 import logging
+import sys
+import traceback
 
 from stkMariTools.lib.app_utils import MariAppUtils
 
@@ -16,23 +18,28 @@ logging.basicConfig(level=logging.DEBUG)
 def start():
     """
     This initializes the module and acts as the entry point.
-
-    :return: `None`
     """
     logger = logging.getLogger(__name__)
 
     # Check for appropriate Mari version
     if MariAppUtils.checkSupportedMariVersion():
-        logger.debug('\n####################################\n'
+        logger.info('\n####################################\n'
                      'Intializing stkMariTools plugin...\n'
                      '####################################\n\n')
 
         # Add the menu items
-        MariAppUtils.addMenuItems()
+        from stkMariTools import tools
+        tools.import_submodules()
+
+        logger.info('Successfully loaded stkMariTools plugin!')
 
     else:
         logger.error('### stkMariTools not supported on this version of Mari!!!')
 
 
-start()
+if __name__ == '__main__':
 
+    try: start()
+    except Exception:
+        sys.stderr.write('### Failed to initialize stkMariTools plugin!!!\n{0}'
+                         .format(traceback.print_exc()))
