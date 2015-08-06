@@ -84,8 +84,6 @@ def makeChannelLayer(sourceChannel, mode, invert):
     existingLayer = ()
     baseMaskStack = None
 
-
-
     if mode == 'layer':
         mari.history.startMacro('Create channel Layer')
         for channel in sourceChannel:
@@ -94,7 +92,6 @@ def makeChannelLayer(sourceChannel, mode, invert):
         mari.history.stopMacro()
 
     else:
-
 
         if mode == 'maskgroup':
             if currentLayer.isShaderLayer():
@@ -108,11 +105,11 @@ def makeChannelLayer(sourceChannel, mode, invert):
                     layerGroupName = '%s_grp' % layerName
                     selectionData = getSelectedLayer().findSelection()
                     currentStack = selectionData[2]
-                    groupLayer = currentStack.groupLayers([currentSelection], None, None, mari.LayerStack.INSERT_NEW_LAYER_ABOVE_SELECTION)
+                    groupLayer = currentStack.groupLayers(currentSelection, None, '', 16)
                     groupLayer.setName(layerGroupName)
                     layerMaskStack = groupLayer.makeMaskStack()
                     baseMaskStack = layerMaskStack
-                    existingLayer = baseMaskStack.layerlist()
+                    existingLayer = baseMaskStack.layerList()
 
                     ## Create Mask Channel Layer
 
@@ -125,7 +122,7 @@ def makeChannelLayer(sourceChannel, mode, invert):
                             layer.setBlendMode(27)
 
                     if invert:
-                       layerMaskStack.createAdjustmentLayer("Invert","Filter/Invert")
+                        layerMaskStack.createAdjustmentLayer("Invert", "Filter/Invert")
 
                     # Removes old layers from MaskStack creation. Variable usually empty unless the stack was created by the script
                     baseMaskStack.removeLayers(existingLayer)
