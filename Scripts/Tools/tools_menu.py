@@ -171,7 +171,7 @@ def createToolsMenu():
     UI_path = 'MainWindow/&Channels'
     script_menu_path = 'MainWindow/Scripts/Channels/Template'
 
-    newChannelFromTemplate = mari.actions.create ('Create Channel from Resolution', 'mari.customScripts.channel_template_set()')
+    newChannelFromTemplate = mari.actions.create ('Create Channel from Resolution', 'mari.customScripts.channel_template_create()')
 
     # mari.menus.addAction(newChannelFromTemplate, UI_path)
     mari.menus.addAction(newChannelFromTemplate, script_menu_path)

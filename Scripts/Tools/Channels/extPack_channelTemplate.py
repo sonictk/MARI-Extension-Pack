@@ -49,6 +49,18 @@ import PySide.QtGui as QtGui
 version = "0.01"
 geo_dict = {}
 
+# Mari 3 beta 6 has some problems with these class variables so defining them myself:
+
+size_dict = {256:mari.ImageSet.SIZE_256,
+             512:mari.ImageSet.SIZE_512,
+             1024:mari.ImageSet.SIZE_1024,
+             2048:mari.ImageSet.SIZE_2048,
+             4096:mari.ImageSet.SIZE_4096,
+             8192:mari.ImageSet.SIZE_8192,
+             16384:mari.ImageSet.SIZE_16384,
+             32768:mari.ImageSet.SIZE_32768
+            }
+
 
 # ------------------------------------------------------------------------------
 
@@ -93,35 +105,32 @@ def setChannelFromTemplate():
     suitable = _isProjectSuitable()
     if not suitable[0]:
           return
-    deactivateViewportToggle = mari.actions.find('/Mari/Canvas/Toggle Shader Compiling')
-    deactivateViewportToggle.trigger()
     mari.history.startMacro('Load Channel Resolution')
     geo = mari.geo.current()
     if not geo_dict.has_key(geo):
         mari.utils.message('There is no Channel Resolution saved for the current geometry, please use "/Channel/Resize/Save Channel Resolution" to save one')
+        mari.history.stopMacro()
         return
     channel = mari.current.channel()
     for item in geo_dict[geo]:
         if item == geo_dict[geo][0]:
             continue
         try:
-            channel.resize(item[0], [item[1],])
+            channel.resize(size_dict[item[0]], [item[1],])
         except Exception, e:
             print(e)
     mari.history.stopMacro()
-    deactivateViewportToggle.trigger()
 # ------------------------------------------------------------------------------
 def createChannelFromTemplate():
     "Create a channel from a template."
     suitable = _isProjectSuitable()
     if not suitable[0]:
           return
-    deactivateViewportToggle = mari.actions.find('/Mari/Canvas/Toggle Shader Compiling')
-    deactivateViewportToggle.trigger()
     mari.history.startMacro('Create Channel from Saved Resolution')
     geo = mari.geo.current()
     if not geo_dict.has_key(geo):
         mari.utils.message('There is no Channel Resolution saved for the current geometry, please use "/Channel/Resize/Save Channel Resolution" to save one')
+        mari.history.stopMacro()
         return
     name = (u'', True)
     while name == (u'', True):
@@ -134,10 +143,9 @@ def createChannelFromTemplate():
         if item == geo_dict[geo][0]:
             continue
         try:
-            channel.resize(item[0], [item[1],])
+            channel.resize(size_dict[item[0]], [item[1],])
         except Exception, e:
             print(e)
     mari.history.stopMacro()
-    deactivateViewportToggle.trigger()
 
 # ------------------------------------------------------------------------------

@@ -227,7 +227,6 @@ used to determine changes in textures.
 'Export Custom Channel Selection' when used with 'Only Modified Textures' previously would error with certain
  maskStack configurations.
 
-
 'Export Custom Channel Selection' when used with 'Only Modified Textures' would not register changes to a channel
 caused by a Channel Layer in the Layerstack.
 
@@ -235,12 +234,22 @@ caused by a Channel Layer in the Layerstack.
  in the 'Channel' Info Section
 
 
-
 ######Add Channel Mask / Add Channel Mask (grouped)
 
 'Add Channel Mask' would cause a program crash in Mari 3.0
 
-WIP - 'Add Channel Mask (grouped) would error and stop working in Mari 3.0
+'Add Channel Mask (grouped) would error and stop working in Mari 3.0
+
+
+######Create Channel from custom Channel Resolution
+
+'Create new Channel from custom Resolution' UI Action under 'Scripts/'Channel'/'Templae' was calling the wrong tool
+in Mari Extension Pack 2.1
+
+######Save/Load Custom Channel Resolution
+
+'Save Custom Channel Resolution' + 'Load Custom Channel Resolution' would error in Mari 3.0
+
 
 
 ##Developer Notes:
