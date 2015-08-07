@@ -523,11 +523,11 @@ def _exportChannels(args_dict):
 
     save_options = mari.Image.DEFAULT_OPTIONS
     if args_dict['full_patch_bleed']:
-        save_options = mari.Image.ENABLE_FULL_PATCH_BLEED
+        save_options = save_options | mari.Image.ENABLE_FULL_PATCH_BLEED
     elif args_dict['small_textures']:
-        save_options = mari.Image.DISABLE_SMALL_UNIFORMS
+        save_options = save_options | mari.Image.DISABLE_SMALL_UNIFORMS
     elif args_dict['remove_alpha']:
-        save_options = mari.Image.REMOVE_ALPHA
+        save_options = save_options | mari.Image.REMOVE_ALPHA
 
 
     #Check if export flattened is ticked, if not export unflattened
@@ -587,11 +587,11 @@ def _exportEverything(args_dict):
         channels.extend(geo.channelList())
     save_options = mari.Image.DEFAULT_OPTIONS
     if args_dict['full_patch_bleed']:
-        save_options = mari.Image.ENABLE_FULL_PATCH_BLEED
+        save_options = save_options | mari.Image.ENABLE_FULL_PATCH_BLEED
     elif args_dict['small_textures']:
-        save_options = mari.Image.DISABLE_SMALL_UNIFORMS
+        save_options = save_options | mari.Image.DISABLE_SMALL_UNIFORMS
     elif args_dict['remove_alpha']:
-        save_options = mari.Image.REMOVE_ALPHA
+        save_options = save_options | mari.Image.REMOVE_ALPHA
     #Check if export flattened is ticked, if not export unflattened
     path = args_dict['path']
     if args_dict['flattened']:
