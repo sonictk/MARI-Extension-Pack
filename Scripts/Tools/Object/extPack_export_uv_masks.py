@@ -81,37 +81,43 @@ def exportMasks(g_eum_window, q_geo_list, file_type_combo):
 
     mari.history.startMacro('Export UV Masks')
 
-    geo_list = q_geo_list.currentGeometry()
-    file_type = file_type_combo.currentText()
+    try:
+        geo_list = q_geo_list.currentGeometry()
+        file_type = file_type_combo.currentText()
 
-    if len(geo_list) == 0:
-        return False
+        if len(geo_list) == 0:
+            return False
 
-    g_eum_window.reject()
+        g_eum_window.reject()
 
-    #Export selected geo UV masks
-    for geo in geo_list:
-        mari.geo.setCurrent(geo)
-        geo_name = geo.name()
-        patch_list = geo.patchList()
-        patch_udims = []
-        for patch in patch_list:
-            patch_udims.append(int(patch.name()))
-            patch.setSelected(False)
-        for patch in patch_udims:
-            uv_mask = mari.actions.get('/Mari/Geometry/Patches/UV Mask to Image Manager')
-            index = patch - 1001
-            geo.patch(index).setSelected(True)
-            uv_mask.trigger()
-            geo.patch(index).setSelected(False)
-            image_list = mari.images.list()
-            mari.images.saveImages(image_list[-1:], os.path.join(directory, "%s.mask.%d.%s" %(geo_name, patch, file_type)))
-            index = len(image_list) - 1
-            image_list[index].close()
+        #Export selected geo UV masks
+        for geo in geo_list:
+            mari.geo.setCurrent(geo)
+            geo_name = geo.name()
+            patch_list = geo.patchList()
+            patch_udims = []
+            for patch in patch_list:
+                patch_udims.append(int(patch.name()))
+                patch.setSelected(False)
+            for patch in patch_udims:
+                uv_mask = mari.actions.get('/Mari/Geometry/Patches/UV Mask to Image Manager')
+                index = patch - 1001
+                geo.patch(index).setSelected(True)
+                uv_mask.trigger()
+                geo.patch(index).setSelected(False)
+                image_list = mari.images.list()
+                mari.images.saveImages(image_list[-1:], os.path.join(directory, "%s.mask.%d.%s" %(geo_name, patch, file_type)))
+                index = len(image_list) - 1
+                image_list[index].close()
 
-    mari.history.stopMacro()
-    deactivateViewportToggle.trigger()
-    mari.utils.message("Export UV Masks Complete.")
+        mari.history.stopMacro()
+        deactivateViewportToggle.trigger()
+        mari.utils.message("Export UV Masks Complete.")
+
+    except Exception:
+        mari.utils.message("Export UV Masks failed to complete.")
+        mari.history.stopMacro()
+        deactivateViewportToggle.trigger()
 
 # ------------------------------------------------------------------------------
 def showUI():

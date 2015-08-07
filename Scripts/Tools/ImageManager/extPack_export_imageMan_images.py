@@ -9,6 +9,7 @@
 # http://cg-cnu.blogspot.in/
 # ------------------------------------------------------------------------------
 # Written by Sreenivas Alapati, 2014
+# Modified by Jens Kafitz, 2015
 # ------------------------------------------------------------------------------
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -37,85 +38,106 @@
 # ADVISED OF HE POSSIBILITY OF SUCH DAMAGE.
 # ------------------------------------------------------------------------------
 import mari
-from PythonQt import QtGui, QtCore
+import PySide.QtGui as QtGui
+import PySide.QtCore as QtCore
 import os
+
+
 
 class ProgressDialog(QtGui.QDialog):
 
-	def __init__(self, maxStep):
-		super(ProgressDialog, self).__init__()
-		self.setWindowTitle('Exporting Images...')
+        def __init__(self, maxStep):
+            super(ProgressDialog, self).__init__()
+            self.setWindowTitle('Exporting Images...')
 
-		self.cancelCpy = False
+            self.cancelCpy = False
 
-		layout = QtGui.QVBoxLayout()
-		self.setLayout(layout)
-		self.pbar = QtGui.QProgressBar(self)
-		self.pbar.setRange(0, maxStep)
-		self.pbar.setGeometry(30, 40, 200, 25)
+            layout = QtGui.QVBoxLayout()
+            self.setLayout(layout)
+            self.pbar = QtGui.QProgressBar(self)
+            self.pbar.setRange(0, maxStep)
+            self.pbar.setGeometry(30, 40, 200, 25)
 
-		self.pbar.connect("valueChanged (int)", self.status)
-		layout.addWidget(self.pbar)
+            self.pbar.valueChanged.connect(self.status)
+            layout.addWidget(self.pbar)
 
-		self.cBtn = QtGui.QPushButton("cancel")
-		self.cBtn.connect('clicked()', lambda: self.cancelCopy())
-		layout.addWidget(self.cBtn)
-	
-	def status(self):
-		if self.pbar.value == self.pbar.maximum:
-			self.close()
-		
-	def cancelCopy(self):
-		self.pbar.value = self.pbar.maximum
-		self.cancelCpy = True
+            self.cBtn = QtGui.QPushButton("cancel")
+            self.cBtn.clicked.connect( lambda: self.cancelCopy())
+            layout.addWidget(self.cBtn)
+
+        def status(self):
+                 if self.pbar.value == self.pbar.maximum:
+                        self.close()
+
+        def cancelCopy(self):
+            self.cancelCpy = True
+            self.close()
+            mari.utils.message('Image Manager export canceled by user','Export Canceled')
+
 
 def exportSelImgs():
-	''' export the selected images to the given path '''
-	if not mari.projects.current():
-		mari.utils.message("No project currently open")
-		return
+    ''' export the selected images to the given path '''
+    user_cancel = False
 
-	path = mari.utils.getExistingDirectory()
-	if not os.path.exists(path):
-		mari.utils.message("Not a valid path")
-		return
-	else:
-		path = path + '/'
+    if not mari.projects.current():
+        mari.utils.message("No project currently open")
+        return
 
-	images = mari.images.selected()
+    path =  QtGui.QFileDialog.getExistingDirectory(None,"Image Manager Export Path",'')
+    if not os.path.exists(path):
+        mari.utils.message("Not a valid path")
+        return
+    else:
+        path = path + '/'
 
-	if len(images) == 0:
-		mari.utils.message("No images currently selected")
-		return
-	
-	formats = [ str(i) for i in mari.images.supportedWriteFormats() ]
+    images = mari.images.selected()
 
-	maxStep = len( images )
+    if len(images) == 0:
+        mari.utils.message("No images currently selected")
+        return
 
-	progressDiag = ProgressDialog(maxStep)
-	progressDiag.show()
+    formats = [ str(i) for i in mari.images.supportedWriteFormats() ]
 
-	progStep = 0
-	for image in images:
 
-		if progressDiag.cancelCpy == True:
-			progressDiag.close()
-			return
+    maxStep = len( images )
+    no_error = True
 
-		imageName = ( image.filePath() ).split("/")[-1]
+    progressDiag = ProgressDialog(maxStep)
+    progressDiag.show()
+    progStep = 0
 
-		try:
-			format = imageName.split(".")[-1]
+    for image in images:
 
-			# check if the format is valid...
-			if format in formats:
-				image.saveAs( path + imageName )
-			else:
-				format = ".tif"
-				image.saveAs( path + imageName + format)
-		except:
-			pass
+        if progressDiag.cancelCpy:
+            break
+        else:
 
-		progStep += 1
-		progressDiag.pbar.setValue(progStep)
+            imageName = ( image.filePath() ).split("/")[-1]
+
+            try:
+                format = imageName.split(".")[-1]
+
+                # check if the format is valid...
+                if format in formats:
+                    image.saveAs( path + imageName )
+                else:
+                    format = ".tif"
+                    image.saveAs( path + imageName + format)
+            except:
+                print imageName + ' failed to export'
+                no_error = False
+                pass
+
+            progStep += 1
+            progressDiag.pbar.setValue(progStep)
+            # processing cancel if executed
+            QtGui.qApp.processEvents()
+
+
+    if no_error and not progressDiag.cancelCpy:
+        mari.utils.message('Image Manager Export to:\n\n' + path +  '\n\nsuccessfully completed','Export successful')
+    if not no_error and not progressDiag.cancelCpy:
+        mari.utils.message('WARNING:\n\n Some Images did not export. \nCheck python console for file names','Export failed')
+
+    progressDiag.close()
 
