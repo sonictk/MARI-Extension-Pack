@@ -251,6 +251,19 @@ in Mari Extension Pack 2.1
 'Save Custom Channel Resolution' + 'Load Custom Channel Resolution' would error in Mari 3.0
 
 
+######Image Manager/ Export Selection
+
+'Image Manager'/'Export Selection' would error in Mari 3.0
+
+'Image Manager'/'Export Selection' will now use the standard OS Folder Selection Dialog
+
+'Image Manager'/'Export Selection' will now default to the Project Path for Reference Images defined by
+ mari.resources.DEFAULT_IMAGE
+
+Image Manager'/'Export Selection' cancel button will now more reliably cancel exports since the export thread
+is now checking for a user executed cancel after every image export.
+
+
 
 ##Developer Notes:
 

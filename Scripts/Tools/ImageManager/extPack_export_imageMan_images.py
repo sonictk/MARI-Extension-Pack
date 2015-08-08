@@ -83,7 +83,8 @@ def exportSelImgs():
         mari.utils.message("No project currently open")
         return
 
-    path =  QtGui.QFileDialog.getExistingDirectory(None,"Image Manager Export Path",'')
+    default_path = os.path.abspath(mari.resources.path(mari.resources.DEFAULT_IMAGE))
+    path =  QtGui.QFileDialog.getExistingDirectory(None,"Image Manager Export Path",default_path)
     if not os.path.exists(path):
         mari.utils.message("Not a valid path")
         return
