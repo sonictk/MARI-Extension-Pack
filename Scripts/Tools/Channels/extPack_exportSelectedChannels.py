@@ -55,7 +55,7 @@ version = "3.0"     #UI VERSION
 
 # Storing Widget Settings between sessions here:
 USER_PATH = os.path.abspath(mari.resources.path(mari.resources.USER))
-USER_SETTINGS_FILE = 'extPack_exportSelectedChannels' + version + '_settings.conf'
+USER_SETTINGS_FILE = 'extPack_settings.conf'
 USER_SETTINGS = os.path.join(USER_PATH,USER_SETTINGS_FILE)
 SETTINGS = QSettings(USER_SETTINGS, QSettings.IniFormat)
 
@@ -265,6 +265,7 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
         """Saves UI Options between sessions."""
 
         for name, obj in inspect.getmembers(self):
+            SETTINGS.beginGroup("Export_Selected_Channels " + version)
             if isinstance(obj, QtGui.QLineEdit):
                 state = None
                 if name is 'template_line_edit':
@@ -275,11 +276,16 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
                 state = obj.isChecked()
                 SETTINGS.setValue(name,state)
 
+            SETTINGS.endGroup()
+
 
     def _optionsLoad(self):
         """Loads UI Options between sessions."""
 
+
+
         for name, obj in inspect.getmembers(self):
+            SETTINGS.beginGroup("Export_Selected_Channels " + version)
             if isinstance(obj, QtGui.QLineEdit):
                 state = None
                 if name is 'template_line_edit':
@@ -293,6 +299,8 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
                     obj.setChecked(True)
                 if state_string == "false":
                     obj.setChecked(False)
+
+            SETTINGS.endGroup()
 
 
 
