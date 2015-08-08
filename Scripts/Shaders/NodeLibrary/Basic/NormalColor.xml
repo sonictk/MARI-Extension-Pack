@@ -1,13 +1,14 @@
 <!--
 ================================================================================
-== Simple Constant Black
-== Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
+== Normal Color
+== Copyright (c) 2015 Jens Kafitz All Rights Reserved.
 ================================================================================
-== File: Black.xml
-== Description: A simple Black Constant for convenience
-== Author: Jens Kafitz
+== File: NormalColor.xml
+== Description: Simple Normal Color generted in linear space
 ================================================================================
-== Modified Date: Spetember, 27 2014
+== Modification by: Jens Kafitz
+================================================================================
+== Modified Date: August, 10 2015
 ================================================================================
 == Redistribution and use in source and binary forms, with or without
 == modification, are permitted provided that the following conditions are met:
@@ -36,11 +37,9 @@
 == ADVISED OF HE POSSIBILITY OF SUCH DAMAGE.
 ================================================================================
 -->
-
-
 <Node>
-  <ID>constant_black</ID>
-  <DefaultName>Black Constant</DefaultName>
+  <ID>constant_normal</ID>
+  <DefaultName>Normal Color</DefaultName>
   <Category>Basic/</Category>
   <Cost>0.001</Cost>
   <CostDescription>Trivial operation</CostDescription>
@@ -50,7 +49,7 @@
       <Context Type="GLSL">
         <Shader>
            <Body><![CDATA[
-                Output = vec4(0.0,0.0,0.0,1.0);
+                Output = vec4(0.213,0.213,1.0,1.0);
            ]]>
            </Body>
         </Shader>

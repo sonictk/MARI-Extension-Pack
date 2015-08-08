@@ -29,6 +29,12 @@ Two new nodes were added to Layerstack & Nodegraph to convert values between RGB
 
 Two new nodes were added to Layerstack & Nodegraph to convert values between RGB + HSL (Hue/Saturation/Lightness).
 
+#####Basic Nodes:
+
+######Normal Color
+
+A simple node generating a default tangent space normal color
+
 
 #####Geometry Nodes:
 

@@ -1,15 +1,11 @@
 <!--
 ================================================================================
 == Simple Constant White
-== Copyright (c) 2015 Jens Kafitz & TheFoundry. All Rights Reserved.
+== Copyright (c) 2015 Jens Kafitz All Rights Reserved.
 ================================================================================
 == File: White.xml
 == Description: A simple Grey (0.498) Constant for convenience
-================================================================================
-== Based on original code from theFoundry located in
-== \Mari2.6v1\Bundle\Media\Nodes\Simple\Basic\
-================================================================================
-== Modification by: Jens Kafitz
+== Author: Jens Kafitz
 ================================================================================
 == Modified Date: Spetember, 27 2014
 ================================================================================
