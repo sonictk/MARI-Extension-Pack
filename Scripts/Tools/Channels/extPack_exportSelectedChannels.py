@@ -53,12 +53,6 @@ import inspect
 
 version = "3.0"     #UI VERSION
 
-# Storing Widget Settings between sessions here:
-USER_PATH = os.path.abspath(mari.resources.path(mari.resources.USER))
-USER_SETTINGS_FILE = 'extPack_settings.conf'
-USER_SETTINGS = os.path.join(USER_PATH,USER_SETTINGS_FILE)
-SETTINGS = QSettings(USER_SETTINGS, QSettings.IniFormat)
-
 USER_ROLE = 34          # PySide.Qt.UserRole
 
 
@@ -68,7 +62,15 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
     def __init__(self, bool_, parent=None):
         super(ExportSelectedChannelsUI, self).__init__(parent)
 
+
+        # Storing Widget Settings between sessions here:
+        user_path = os.path.abspath(mari.resources.path(mari.resources.USER))
+        user_settings_file = 'extPack_settings.conf'
+        user_settings = os.path.join(user_path,user_settings_file)
+        self.SETTINGS = QSettings(user_settings, QSettings.IniFormat)
+
         #Set window title and create a main layout
+        self._optionsLoad()
         self.bool_ = bool_
         self.setWindowTitle("Export Custom Channel Selection")
         main_layout = QtGui.QVBoxLayout()
@@ -164,6 +166,7 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
         path_pixmap = QtGui.QPixmap(mari.resources.path(mari.resources.ICONS) + '/ExportImages.png')
         icon = QtGui.QIcon(path_pixmap)
         path_button = QtGui.QPushButton(icon, "")
+        path_button.setToolTip('Browse for Export Folder')
         path_button.clicked.connect(self._getPath)
         self.path_line_edit.setText(path)
 
@@ -172,14 +175,23 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
         path_layout.addWidget(self.path_line_edit,0,1)
         path_layout.addWidget(path_button,0,2)
 
-        #Add Template line input and file format dropdown
+        #Add Template line input & Reset Template Button
         template_label = QtGui.QLabel('Template:')
         self.template_line_edit = QtGui.QLineEdit()
+        self.template_line_edit.setToolTip('Supported Formats:')
         self.template_line_edit.setText(template)
+
+        template_reset_pixmap = QtGui.QPixmap(mari.resources.path(mari.resources.ICONS) + '/Reset.png')
+        template_reset_icon = QtGui.QIcon(template_reset_pixmap)
+        self.template_reset_button = QtGui.QPushButton(template_reset_icon, "")
+        self.template_reset_button.setToolTip('Reset Export Template to Project Default')
+        self.template_reset_button.clicked.connect(self._resetExportPathTemplate)
+
 
         #Add template line input and file format dropdown to middle layout
         path_layout.addWidget(template_label,0,3)
         path_layout.addWidget(self.template_line_edit,0,4)
+        path_layout.addWidget(self.template_reset_button,0,5)
 
         #Add to top group
         top_checkbox_group_layout = QtGui.QVBoxLayout()
@@ -261,46 +273,47 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
 
 
 
+
     def _optionsSave(self):
         """Saves UI Options between sessions."""
 
         for name, obj in inspect.getmembers(self):
-            SETTINGS.beginGroup("Export_Selected_Channels " + version)
+            self.SETTINGS.beginGroup("Export_Selected_Channels_" + version)
             if isinstance(obj, QtGui.QLineEdit):
                 state = None
                 if name is 'template_line_edit':
                     state = obj.text()
-                    SETTINGS.setValue(name,state)
+                    self.SETTINGS.setValue(name,state)
 
             if isinstance(obj, QtGui.QCheckBox):
                 state = obj.isChecked()
-                SETTINGS.setValue(name,state)
+                self.SETTINGS.setValue(name,state)
 
-            SETTINGS.endGroup()
+            self.SETTINGS.endGroup()
 
 
     def _optionsLoad(self):
         """Loads UI Options between sessions."""
 
 
-
         for name, obj in inspect.getmembers(self):
-            SETTINGS.beginGroup("Export_Selected_Channels " + version)
-            if isinstance(obj, QtGui.QLineEdit):
-                state = None
-                if name is 'template_line_edit':
-                    state = unicode(SETTINGS.value(name))
-                    if state != 'None':
-                        obj.setText(state)
+            self.SETTINGS.beginGroup("Export_Selected_Channels_" + version)
 
             if isinstance(obj, QtGui.QCheckBox):
-                state_string = SETTINGS.value(name)
+                state_string = self.SETTINGS.value(name)
                 if state_string == "true":
                     obj.setChecked(True)
                 if state_string == "false":
                     obj.setChecked(False)
 
-            SETTINGS.endGroup()
+            if isinstance(obj, QtGui.QLineEdit):
+                state = None
+                if name is 'template_line_edit':
+                    state = unicode(self.SETTINGS.value(name))
+                    if state != 'None':
+                        obj.setText(state)
+
+            self.SETTINGS.endGroup()
 
 
 
@@ -376,11 +389,16 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
     #Check path and template will work, check if export everything box is ticked if not make sure there are some channels to export
     def _checkInput(self):
         file_types = ['.' + format for format in mari.images.supportedWriteFormats()]
+        file_types_str = []
+        for format in file_types:
+            type_str = format.encode('utf-8')
+            file_types_str.append(type_str)
+
         path_template = self.path_line_edit.text()
         template_template = self.template_line_edit.text()
         full_path = os.path.join(path_template, template_template)
         if not template_template.endswith(tuple(file_types)):
-            mari.utils.message("File type is not supported: '%s'" %(os.path.split(path_template)[1]))
+            mari.utils.message("File Extension is not supported: '%s'" %(os.path.split(template_template)[1])+ '\n\nSupported File Extensions: \n'+ str(file_types_str),'Invalid File Extension specified')
             return
         if self.export_everything_box.isChecked():
             pass
@@ -404,9 +422,15 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
 
     #Get export path and template
     def _getExportPathTemplate(self):
+        ''' sample the export template used to generate the file name'''
         path = self.path_line_edit.text()
         template = self.template_line_edit.text()
         return os.path.join(path, template)
+
+    def _resetExportPathTemplate(self):
+        ''' reset the path template to whatever is set in the project'''
+        original_template = mari.resources.sequenceTemplate()
+        self.template_line_edit.setText(original_template)
 
     #Get export everything box is ticked (bool)
     def _getExportEverything(self):
@@ -588,6 +612,7 @@ def _exportChannels(args_dict):
 # ------------------------------------------------------------------------------
 def _exportEverything(args_dict):
     """Export everything, all geo and all channels"""
+
 
     geo_list = mari.geo.list()
     channels = []
