@@ -44,17 +44,19 @@
 
 import mari, os
 import PySide.QtGui as QtGui
+import PySide.QtCore as QtCore
+from PySide.QtCore import QSettings
+import inspect
 
-version = "0.05"
+version = "3.0"         #UI VERSION
 
 USER_ROLE = 32          # PySide.Qt.UserRole
 
-
-g_eum_window = None
 g_eum_cancelled = False
 directory = ''
 g_file_types = ['.' + format for format in mari.images.supportedWriteFormats()]
 list.sort(g_file_types)
+
 
 # ------------------------------------------------------------------------------
 def exportUVMasks():
@@ -65,25 +67,34 @@ def exportUVMasks():
     if not isProjectSuitable():
         return False
 
-    showUI()
+    dialog = ExportUVMaskUI()
+    if dialog.exec_():
+        geo = dialog.geometry_to_copy_widget
+        export_path = dialog._getExportPathTemplate()
+        path = export_path[0]
+        template = export_path[1]
+        exportMasks(dialog,geo,path,template)
+
 
 # ------------------------------------------------------------------------------
-def exportMasks(g_eum_window, q_geo_list, file_type_combo):
+def exportMasks(UI, q_geo_list,path,template):
     "Export the masks"
 
-    deactivateViewportToggle = mari.actions.find('/Mari/Canvas/Toggle Shader Compiling')
-    deactivateViewportToggle.trigger()
+    # try:
+    geo_list = q_geo_list.currentGeometry()
 
-    mari.history.startMacro('Export UV Masks')
+    if len(geo_list) == 0:
+        mari.utils.message('Please add at least one Object','No Objects added to Export List')
+        return False
 
-    try:
-        geo_list = q_geo_list.currentGeometry()
-        file_type = file_type_combo.currentText()
+    else:
 
-        if len(geo_list) == 0:
-            return False
+        deactivateViewportToggle = mari.actions.find('/Mari/Canvas/Toggle Shader Compiling')
+        deactivateViewportToggle.trigger()
 
-        g_eum_window.reject()
+        mari.history.startMacro('Export UV Masks')
+
+        UI.close()
 
         #Export selected geo UV masks
         for geo in geo_list:
@@ -101,7 +112,14 @@ def exportMasks(g_eum_window, q_geo_list, file_type_combo):
                 uv_mask.trigger()
                 geo.patch(index).setSelected(False)
                 image_list = mari.images.list()
-                mari.images.saveImages(image_list[-1:], os.path.join(directory, "%s.mask.%d.%s" %(geo_name, patch, file_type)))
+
+                # Checking Template
+                template_replace = template.replace('$ENTITY', geo_name)
+                template_replace = template_replace.replace('$UDIM', str(patch))
+                export_path_template = os.path.join(path, template_replace)
+
+                mari.images.saveImages(image_list[-1:], export_path_template)
+                print export_path_template
                 index = len(image_list) - 1
                 image_list[index].close()
 
@@ -109,111 +127,238 @@ def exportMasks(g_eum_window, q_geo_list, file_type_combo):
         deactivateViewportToggle.trigger()
         mari.utils.message("Export UV Masks Complete.")
 
-    except Exception:
-        mari.utils.message("Export UV Masks failed to complete.")
-        mari.history.stopMacro()
-        deactivateViewportToggle.trigger()
+    # except Exception,e:
+        # print(e)
+        # mari.utils.message("Export UV Masks failed to complete.")
+        # mari.history.stopMacro()
+        # deactivateViewportToggle.trigger()
 
 # ------------------------------------------------------------------------------
-def showUI():
+class ExportUVMaskUI(QtGui.QDialog):
     "Copy paint from one or more patches to other patches, for all layers and geometry."
-    #Create UI
+    def __init__(self, parent=None):
+        super(ExportUVMaskUI, self).__init__(parent)
 
-    #Check project state
-    if not isProjectSuitable():
-        return False
+        # Storing Widget Settings between sessions here:
+        user_path = os.path.abspath(mari.resources.path(mari.resources.USER))
+        user_settings_file = 'extPack_settings.conf'
+        user_settings = os.path.join(user_path,user_settings_file)
+        self.SETTINGS = QSettings(user_settings, QSettings.IniFormat)
 
-    #Create main dialog, add main layout and set title
-    global g_eum_window
-    g_eum_window = QtGui.QDialog()
-    eum_layout = QtGui.QVBoxLayout()
-    g_eum_window.setLayout(eum_layout)
-    g_eum_window.setWindowTitle("Export UV Masks")
+        #Create main dialog, add main layout and set title
+        self._optionsLoad()
+        self.setWindowTitle("Export UV Masks")
+        main_layout = QtGui.QVBoxLayout()
+        self.setLayout(main_layout)
 
-    #Create layout for middle section
-    centre_layout = QtGui.QHBoxLayout()
+        #Create layout for middle section
+        centre_layout = QtGui.QHBoxLayout()
 
-    #Create geometry layout, label, and widget. Finally populate.
-    geo_layout = QtGui.QVBoxLayout()
-    geo_header_layout = QtGui.QHBoxLayout()
-    geo_label = QtGui.QLabel("<strong>Geometry</strong>")
-    geo_list = QtGui.QListWidget()
-    geo_list.setSelectionMode(geo_list.ExtendedSelection)
+        #Create geometry layout, label, and widget. Finally populate.
+        geo_layout = QtGui.QVBoxLayout()
+        geo_header_layout = QtGui.QHBoxLayout()
+        geo_label = QtGui.QLabel("<strong>Geometry</strong>")
+        geo_list = QtGui.QListWidget()
+        geo_list.setSelectionMode(geo_list.ExtendedSelection)
 
-    filter_box = QtGui.QLineEdit()
-    mari.utils.connect(filter_box.textEdited, lambda: updateFilter(filter_box, geo_list))
+        filter_box = QtGui.QLineEdit()
+        mari.utils.connect(filter_box.textEdited, lambda: self.updateFilter(filter_box, geo_list))
 
-    geo_header_layout.addWidget(geo_label)
-    geo_header_layout.addStretch()
-    geo_search_icon = QtGui.QLabel()
-    search_pixmap = QtGui.QPixmap(mari.resources.path(mari.resources.ICONS) + os.sep + 'Lookup.png')
-    geo_search_icon.setPixmap(search_pixmap)
-    geo_header_layout.addWidget(geo_search_icon)
-    geo_header_layout.addWidget(filter_box)
+        geo_header_layout.addWidget(geo_label)
+        geo_header_layout.addStretch()
+        geo_search_icon = QtGui.QLabel()
+        search_pixmap = QtGui.QPixmap(mari.resources.path(mari.resources.ICONS) + os.sep + 'Lookup.png')
+        geo_search_icon.setPixmap(search_pixmap)
+        geo_header_layout.addWidget(geo_search_icon)
+        geo_header_layout.addWidget(filter_box)
 
-    geo = mari.geo.current()
-    for geo in mari.geo.list():
-        geo_list.addItem(geo.name())
-        geo_list.item(geo_list.count() - 1).setData(USER_ROLE, geo)
+        geo = mari.geo.current()
+        for geo in mari.geo.list():
+            geo_list.addItem(geo.name())
+            geo_list.item(geo_list.count() - 1).setData(USER_ROLE, geo)
 
-    geo_layout.addLayout(geo_header_layout)
-    geo_layout.addWidget(geo_list)
+        geo_layout.addLayout(geo_header_layout)
+        geo_layout.addWidget(geo_list)
 
-    #Create middle button section
-    middle_button_layout = QtGui.QVBoxLayout()
-    add_button = QtGui.QPushButton("+")
-    remove_button = QtGui.QPushButton("-")
-    middle_button_layout.addStretch()
-    middle_button_layout.addWidget(add_button)
-    middle_button_layout.addWidget(remove_button)
-    middle_button_layout.addStretch()
+        #Create middle button section
+        middle_button_layout = QtGui.QVBoxLayout()
+        add_button = QtGui.QPushButton("+")
+        remove_button = QtGui.QPushButton("-")
+        middle_button_layout.addStretch()
+        middle_button_layout.addWidget(add_button)
+        middle_button_layout.addWidget(remove_button)
+        middle_button_layout.addStretch()
 
-    #Add wrapped QtGui.QListWidget with custom functions
-    geometry_to_copy_layout = QtGui.QVBoxLayout()
-    geometry_to_copy_label = QtGui.QLabel("<strong>Geometry to export UV masks from.</strong>")
-    geometry_to_copy_widget = GeoToExportList()
-    geometry_to_copy_layout.addWidget(geometry_to_copy_label)
-    geometry_to_copy_layout.addWidget(geometry_to_copy_widget)
+        #Add wrapped QtGui.QListWidget with custom functions
+        geometry_to_copy_layout = QtGui.QVBoxLayout()
+        geometry_to_copy_label = QtGui.QLabel("<strong>Geometry to export UV masks from.</strong>")
+        self.geometry_to_copy_widget = GeoToExportList()
+        geometry_to_copy_layout.addWidget(geometry_to_copy_label)
+        geometry_to_copy_layout.addWidget(self.geometry_to_copy_widget)
 
-    #Hook up add/remove buttons
-    remove_button.clicked.connect(geometry_to_copy_widget.removeGeometry)
-    add_button.clicked.connect(lambda: geometry_to_copy_widget.addGeometry(geo_list))
+        #Hook up add/remove buttons
+        remove_button.clicked.connect(self.geometry_to_copy_widget.removeGeometry)
+        add_button.clicked.connect(lambda: self.geometry_to_copy_widget.addGeometry(geo_list))
 
-    #Add widgets to centre layout
-    centre_layout.addLayout(geo_layout)
-    centre_layout.addLayout(middle_button_layout)
-    centre_layout.addLayout(geometry_to_copy_layout)
+        #Add widgets to centre layout
+        centre_layout.addLayout(geo_layout)
+        centre_layout.addLayout(middle_button_layout)
+        centre_layout.addLayout(geometry_to_copy_layout)
 
-    #Add centre layout to main layout
-    eum_layout.addLayout(centre_layout)
+        #Add centre layout to main layout
+        main_layout.addLayout(centre_layout)
 
-    #Add bottom layout.
-    bottom_layout = QtGui.QHBoxLayout()
+        #Add path layout
+        path_layout = QtGui.QGridLayout()
 
-    #Add file type options
-    file_type_combo_text = QtGui.QLabel('File Types:')
-    file_type_combo = QtGui.QComboBox()
-    for file_type in g_file_types:
-        file_type_combo.addItem(file_type)
-    file_type_combo.setCurrentIndex(file_type_combo.findText('.tif'))
+        #Get mari default path and template
+        self.path = os.path.abspath(mari.resources.path(mari.resources.DEFAULT_EXPORT))
+        self.template = '$ENTITY.UVMask.$UDIM.tif'
 
-    bottom_layout.addWidget(file_type_combo_text)
-    bottom_layout.addWidget(file_type_combo)
-    bottom_layout.addStretch()
+        #Add path line input and button, also set text to Mari default path and template
+        path_label = QtGui.QLabel('Path:')
+        self.path_line_edit = QtGui.QLineEdit()
+        path_pixmap = QtGui.QPixmap(mari.resources.path(mari.resources.ICONS) +  os.sep + 'ExportImages.png')
+        icon = QtGui.QIcon(path_pixmap)
+        path_button = QtGui.QPushButton(icon, "")
+        path_button.setToolTip('Browse for Export Folder')
+        path_button.clicked.connect(self._getPath)
+        self.path_line_edit.setText(self.path)
 
-    #Add OK Cancel buttons layout, buttons and add
-    main_ok_button = QtGui.QPushButton("OK")
-    main_cancel_button = QtGui.QPushButton("Cancel")
-    main_ok_button.clicked.connect(lambda: exportMasks(g_eum_window, geometry_to_copy_widget, file_type_combo))
-    main_cancel_button.clicked.connect(g_eum_window.reject)
-    bottom_layout.addWidget(main_ok_button)
-    bottom_layout.addWidget(main_cancel_button)
+        #Add path line input and button to middle layout
+        path_layout.addWidget(path_label,0,0)
+        path_layout.addWidget(self.path_line_edit,0,1)
+        path_layout.addWidget(path_button,0,2)
 
-    #Add browse lines to main layout
-    eum_layout.addLayout(bottom_layout)
+        #Add Template line input & Reset Template Button
+        template_label = QtGui.QLabel('Template:')
+        self.template_line_edit = QtGui.QLineEdit()
+        self.template_line_edit.setToolTip('Supported Formats:')
+        self.template_line_edit.setText(self.template)
 
-    # Display
-    g_eum_window.show()
+        template_reset_pixmap = QtGui.QPixmap(mari.resources.path(mari.resources.ICONS) + os.sep + 'Reset.png')
+        template_reset_icon = QtGui.QIcon(template_reset_pixmap)
+        self.template_reset_button = QtGui.QPushButton(template_reset_icon, "")
+        self.template_reset_button.setToolTip('Reset Export Template to Project Default')
+        self.template_reset_button.clicked.connect(self._resetExportPathTemplate)
+
+
+        #Add template line input and file format dropdown to middle layout
+        path_layout.addWidget(template_label,0,3)
+        path_layout.addWidget(self.template_line_edit,0,4)
+        path_layout.addWidget(self.template_reset_button,0,5)
+
+        #Add browse lines & template to main layout
+        main_layout.addLayout(path_layout)
+
+        #Add bottom layout.
+        bottom_layout = QtGui.QHBoxLayout()
+
+        #Add OK Cancel buttons layout, buttons and add
+        main_ok_button = QtGui.QPushButton("OK")
+        main_cancel_button = QtGui.QPushButton("Cancel")
+        main_ok_button.clicked.connect(self._checkInput)
+
+        main_cancel_button.clicked.connect(self.reject)
+        bottom_layout.addWidget(main_ok_button)
+        bottom_layout.addWidget(main_cancel_button)
+
+        #Add browse lines to main layout
+        main_layout.addLayout(bottom_layout)
+
+
+    # Save the UI Settings (File emplate)
+    def _optionsSave(self):
+        """Saves UI Options between sessions."""
+
+        for name, obj in inspect.getmembers(self):
+            self.SETTINGS.beginGroup("Export_UV_Masks_" + version)
+            if isinstance(obj, QtGui.QLineEdit):
+                state = None
+                if name is 'template_line_edit':
+                    state = obj.text()
+                    self.SETTINGS.setValue(name,state)
+
+            self.SETTINGS.endGroup()
+
+    # Load the UI Settings (File emplate)
+    def _optionsLoad(self):
+        """Loads UI Options between sessions."""
+
+
+        for name, obj in inspect.getmembers(self):
+            self.SETTINGS.beginGroup("Export_UV_Masks_" + version)
+
+            if isinstance(obj, QtGui.QLineEdit):
+                state = None
+                if name is 'template_line_edit':
+                    state = unicode(self.SETTINGS.value(name))
+                    if state != 'None':
+                        obj.setText(state)
+
+            self.SETTINGS.endGroup()
+
+    #Get the path from existing directory
+    def _getPath(self):
+        path = QtGui.QFileDialog.getExistingDirectory(None,"Export Path",self.path_line_edit.text())
+        if path == "":
+            return
+        else:
+            self._setPath(os.path.abspath(path))
+
+    #Set the path line edit box text to be the path provided
+    def _setPath(self, path):
+        self.path_line_edit.setText(path)
+
+    #Check path and template will work, check if export everything box is ticked if not make sure there are some channels to export
+    def _checkInput(self):
+        file_types = ['.' + format for format in mari.images.supportedWriteFormats()]
+        file_types_str = []
+        for format in file_types:
+            type_str = format.encode('utf-8')
+            file_types_str.append(type_str)
+
+        path_template = self.path_line_edit.text()
+        template_template = self.template_line_edit.text()
+        full_path = os.path.join(path_template, template_template)
+        if not template_template.endswith(tuple(file_types)):
+            mari.utils.message("File Extension is not supported: '%s'" %(os.path.split(template_template)[1])+ '\n\nSupported File Extensions: \n'+ str(file_types_str),'Invalid File Extension specified')
+            return
+        if not os.path.exists(os.path.split(path_template)[1]):
+            title = 'Create Directories'
+            text = 'Folder does not exist "%s".' %os.path.split(path_template)[1]
+            info = 'Create the path?'
+            dialog = InfoUI(title, text, info)
+            if not dialog.exec_():
+                return
+            os.makedirs(os.path.split(path_template)[1])
+        self._optionsSave()
+        self.accept()
+
+
+    #Get export path and template
+    def _getExportPathTemplate(self):
+        ''' sample the export template used to generate the file name'''
+        self.path = self.path_line_edit.text()
+        self.template = self.template_line_edit.text()
+        return self.path,self.template
+
+    #Reset the Export File Template to what is set on project
+    def _resetExportPathTemplate(self):
+        ''' reset the path template to whatever is set in the project'''
+        original_template = '$ENTITY.UVMask.$UDIM.tif'
+        self.template_line_edit.setText(original_template)
+
+
+    def updateFilter(self,filter_box, geo_list):
+        "For each item in the geo list display, set it to hidden if it doesn't match the filter text."
+        match_words = filter_box.text().lower().split()
+        for item_index in range(geo_list.count()):
+            item = geo_list.item(item_index)
+            item_text_lower = item.text().lower()
+            matches = all([word in item_text_lower for word in match_words])
+            item.setHidden(not matches)
+
 
 # ------------------------------------------------------------------------------
 class GeoToExportList(QtGui.QListWidget):
@@ -250,17 +395,25 @@ class GeoToExportList(QtGui.QListWidget):
             self.takeItem(index)
 
 # ------------------------------------------------------------------------------
-def updateFilter(filter_box, geo_list):
-    "For each item in the geo list display, set it to hidden if it doesn't match the filter text."
-    match_words = filter_box.text().lower().split()
-    for item_index in range(geo_list.count()):
-        item = geo_list.item(item_index)
-        item_text_lower = item.text().lower()
-        matches = all([word in item_text_lower for word in match_words])
-        item.setHidden(not matches)
+class InfoUI(QtGui.QMessageBox):
+    """Show the user information for them to make a decision on whether to procede."""
+    def __init__(self, title, text, info=None, details=None, bool_=False, parent=None):
+        super(InfoUI, self).__init__(parent)
+
+        # Create info gui
+        self.setWindowTitle(title)
+        self.setText(text)
+        if not info == None:
+            self.setInformativeText(info)
+        if not details == None:
+            self.setDetailedText(details)
+        if not bool_:
+            self.setStandardButtons(QtGui.QMessageBox.Ok | QtGui.QMessageBox.Cancel)
+            self.setDefaultButton(QtGui.QMessageBox.Ok)
 
 
 # ------------------------------------------------------------------------------
+
 def isProjectSuitable():
     "Checks project state and Mari version."
     MARI_3_0V1_VERSION_NUMBER = 30001202    # see below
