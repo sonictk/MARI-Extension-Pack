@@ -178,7 +178,6 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
         #Add Template line input & Reset Template Button
         template_label = QtGui.QLabel('Template:')
         self.template_line_edit = QtGui.QLineEdit()
-        self.template_line_edit.setToolTip('Supported Formats:')
         self.template_line_edit.setText(template)
 
         template_reset_pixmap = QtGui.QPixmap(mari.resources.path(mari.resources.ICONS) + '/Reset.png')
