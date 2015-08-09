@@ -40,6 +40,7 @@
 import mari
 import PySide.QtGui as QtGui
 import random
+import os
 
 version = "0.05"
 

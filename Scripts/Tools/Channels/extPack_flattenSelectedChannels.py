@@ -48,6 +48,7 @@
 
 import mari
 import PySide.QtGui as QtGui
+import os
 
 version = "0.05"
 

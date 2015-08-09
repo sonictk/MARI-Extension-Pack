@@ -97,7 +97,7 @@ def unprojLayerPaint():
         channel_projector.setScale(mari.VectorN(buffer_scale_X,buffer_scale_X))
         channel_projector.setBitDepth (buffer_depth)
         channel_projector.setExportColorspaceConfig(colorSpace)
-        unprojDir = os.path.expanduser('~') + "/"
+        unprojDir = os.path.expanduser('~') + os.sep
         filename = channel_projector.name()
         filename = filename.replace(":", "_")
 
