@@ -387,6 +387,7 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
 
     #Check path and template will work, check if export everything box is ticked if not make sure there are some channels to export
     def _checkInput(self):
+
         file_types = ['.' + format for format in mari.images.supportedWriteFormats()]
         file_types_str = []
         for format in file_types:
@@ -394,6 +395,8 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
             file_types_str.append(type_str)
 
         path_template = self.path_line_edit.text()
+        if path_template.endswith(os.sep):
+            path_template = path_template[:-1]
         template_template = self.template_line_edit.text()
         full_path = os.path.join(path_template, template_template)
         if not template_template.endswith(tuple(file_types)):
@@ -404,16 +407,23 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
         elif len(self.export_list._currentChannels()) == 0:
             mari.utils.message("Please add a channel to export.")
             return
+
         if not os.path.exists(os.path.split(path_template)[1]):
             title = 'Create Directories'
             text = 'Folder does not exist "%s".' %os.path.split(path_template)[1]
             info = 'Create the path?'
-            dialog = InfoUI(title, text, info)
-            if not dialog.exec_():
+            info_dialog = InfoUI(title, text, info)
+            info_dialog.exec_()
+            info_reply = info_dialog.buttonRole(info_dialog.clickedButton())
+            if info_reply is QtGui.QMessageBox.ButtonRole.RejectRole:
                 return
-            os.makedirs(os.path.split(path_template)[1])
-        self._optionsSave()
-        self.accept()
+            else:
+                os.makedirs(os.path.split(path_template)[1])
+                self._optionsSave()
+                self.accept()
+        else:
+            self._optionsSave()
+            self.accept()
 
     #Get list of channels to export from the export list
     def _getChannelsToExport(self):
