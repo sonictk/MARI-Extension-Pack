@@ -62,7 +62,6 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
     def __init__(self, bool_, parent=None):
         super(ExportSelectedChannelsUI, self).__init__(parent)
 
-
         # Storing Widget Settings between sessions here:
         user_path = os.path.abspath(mari.resources.path(mari.resources.USER))
         user_settings_file = 'extPack_settings.conf'
@@ -405,14 +404,14 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
         elif len(self.export_list._currentChannels()) == 0:
             mari.utils.message("Please add a channel to export.")
             return
-        if not os.path.exists(os.path.split(path_template)[0]):
+        if not os.path.exists(os.path.split(path_template)[1]):
             title = 'Create Directories'
-            text = 'Path does not exist "%s".' %os.path.split(path_template)[0]
+            text = 'Folder does not exist "%s".' %os.path.split(path_template)[1]
             info = 'Create the path?'
             dialog = InfoUI(title, text, info)
             if not dialog.exec_():
                 return
-            os.makedirs(os.path.split(path_template)[0])
+            os.makedirs(os.path.split(path_template)[1])
         self._optionsSave()
         self.accept()
 
