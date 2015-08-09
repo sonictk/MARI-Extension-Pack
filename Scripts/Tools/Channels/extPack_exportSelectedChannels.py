@@ -96,7 +96,7 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
         channel_header_layout.addWidget(self.channel_label)
         channel_header_layout.addStretch()
         self.channel_search_icon = QtGui.QLabel()
-        search_pixmap = QtGui.QPixmap(mari.resources.path(mari.resources.ICONS) + + os.sep + 'Lookup.png')
+        search_pixmap = QtGui.QPixmap(mari.resources.path(mari.resources.ICONS) + os.sep + 'Lookup.png')
         self.channel_search_icon.setPixmap(search_pixmap)
         channel_header_layout.addWidget(self.channel_search_icon)
         channel_header_layout.addWidget(self.channel_filter_box)
