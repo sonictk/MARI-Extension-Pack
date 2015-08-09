@@ -408,7 +408,7 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
             mari.utils.message("Please add a channel to export.")
             return
 
-        if not os.path.exists(os.path.split(path_template)[1]):
+        if not os.path.exists(path_template):
             title = 'Create Directories'
             text = 'Folder does not exist "%s".' %os.path.split(path_template)[1]
             info = 'Create the path?'
