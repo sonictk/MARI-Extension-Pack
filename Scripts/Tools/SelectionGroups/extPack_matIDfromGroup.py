@@ -73,7 +73,7 @@ class matIDFromSelectionGroupGUI(QtGui.QDialog):
         selGroup_header_layout.addWidget(selGroup_label)
         selGroup_header_layout.addStretch()
         selGroup_search_icon = QtGui.QLabel()
-        search_pixmap = QtGui.QPixmap(mari.resources.path(mari.resources.ICONS) + '/Lookup.png')
+        search_pixmap = QtGui.QPixmap(mari.resources.path(mari.resources.ICONS) + os.sep + 'Lookup.png')
         selGroup_search_icon.setPixmap(search_pixmap)
         selGroup_header_layout.addWidget(selGroup_search_icon)
         selGroup_header_layout.addWidget(selGroups_filter_box)

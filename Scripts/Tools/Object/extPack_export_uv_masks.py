@@ -65,11 +65,6 @@ def exportUVMasks():
     if not isProjectSuitable():
         return False
 
-    #Get directory to export to
-    directory = mari.utils.misc.getExistingDirectory(parent=None, caption='Export UV Masks', dir='')
-    if directory == "":
-        return False
-
     showUI()
 
 # ------------------------------------------------------------------------------
@@ -151,7 +146,7 @@ def showUI():
     geo_header_layout.addWidget(geo_label)
     geo_header_layout.addStretch()
     geo_search_icon = QtGui.QLabel()
-    search_pixmap = QtGui.QPixmap(mari.resources.path(mari.resources.ICONS) + '/Lookup.png')
+    search_pixmap = QtGui.QPixmap(mari.resources.path(mari.resources.ICONS) + + os.sep + 'Lookup.png')
     geo_search_icon.setPixmap(search_pixmap)
     geo_header_layout.addWidget(geo_search_icon)
     geo_header_layout.addWidget(filter_box)

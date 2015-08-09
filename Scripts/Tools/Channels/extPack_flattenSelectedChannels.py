@@ -81,7 +81,7 @@ class FlattenSelectedChannelsGUI(QtGui.QDialog):
         channel_header_layout.addWidget(channel_label)
         channel_header_layout.addStretch()
         channel_search_icon = QtGui.QLabel()
-        search_pixmap = QtGui.QPixmap(mari.resources.path(mari.resources.ICONS) + '/Lookup.png')
+        search_pixmap = QtGui.QPixmap(mari.resources.path(mari.resources.ICONS) + os.sep + 'Lookup.png')
         channel_search_icon.setPixmap(search_pixmap)
         channel_header_layout.addWidget(channel_search_icon)
         channel_header_layout.addWidget(channel_filter_box)

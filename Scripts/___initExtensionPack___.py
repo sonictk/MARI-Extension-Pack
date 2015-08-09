@@ -151,14 +151,14 @@ def detectScriptConflict():
 
 					if name.startswith(script_name) and name.endswith(script_name) :
 
-						script_error_dict[name] = path_str + '/' + script_name
+						script_error_dict[name] = path_str + os.sep +  script_name
 						script_conflict = True
 
 				for shader_name in illegalShaders:
 
 					if name.startswith(shader_name) and name.endswith(shader_name) :
 
-						shader_error_dict[name] = path_str + '/' + shader_name
+						shader_error_dict[name] = path_str + os.sep +  shader_name
 						shader_conflict = True
 
 

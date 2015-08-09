@@ -96,7 +96,7 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
         channel_header_layout.addWidget(self.channel_label)
         channel_header_layout.addStretch()
         self.channel_search_icon = QtGui.QLabel()
-        search_pixmap = QtGui.QPixmap(mari.resources.path(mari.resources.ICONS) + '/Lookup.png')
+        search_pixmap = QtGui.QPixmap(mari.resources.path(mari.resources.ICONS) + + os.sep + 'Lookup.png')
         self.channel_search_icon.setPixmap(search_pixmap)
         channel_header_layout.addWidget(self.channel_search_icon)
         channel_header_layout.addWidget(self.channel_filter_box)
@@ -163,7 +163,7 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
         #Add path line input and button, also set text to Mari default path and template
         path_label = QtGui.QLabel('Path:')
         self.path_line_edit = QtGui.QLineEdit()
-        path_pixmap = QtGui.QPixmap(mari.resources.path(mari.resources.ICONS) + '/ExportImages.png')
+        path_pixmap = QtGui.QPixmap(mari.resources.path(mari.resources.ICONS) +  os.sep + 'ExportImages.png')
         icon = QtGui.QIcon(path_pixmap)
         path_button = QtGui.QPushButton(icon, "")
         path_button.setToolTip('Browse for Export Folder')
@@ -178,9 +178,10 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
         #Add Template line input & Reset Template Button
         template_label = QtGui.QLabel('Template:')
         self.template_line_edit = QtGui.QLineEdit()
+        self.template_line_edit.setToolTip('Supported Formats:')
         self.template_line_edit.setText(template)
 
-        template_reset_pixmap = QtGui.QPixmap(mari.resources.path(mari.resources.ICONS) + '/Reset.png')
+        template_reset_pixmap = QtGui.QPixmap(mari.resources.path(mari.resources.ICONS) + os.sep + 'Reset.png')
         template_reset_icon = QtGui.QIcon(template_reset_pixmap)
         self.template_reset_button = QtGui.QPushButton(template_reset_icon, "")
         self.template_reset_button.setToolTip('Reset Export Template to Project Default')

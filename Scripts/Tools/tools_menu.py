@@ -84,7 +84,7 @@ def createToolsMenu():
     mari.menus.addAction(exportUVMask, script_menu_path)
 
     icon_filename = 'EdgeMask.png'
-    icon_path = mari.resources.path(mari.resources.ICONS) + '/' + icon_filename
+    icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
     exportUVMask.setIconPath(icon_path)
 
 
@@ -109,7 +109,7 @@ def createToolsMenu():
     mari.menus.addAction(DuplicateFlatten, script_menu_path)
 
     icon_filename = 'BakeShader.png'
-    icon_path = mari.resources.path(mari.resources.ICONS) + '/' + icon_filename
+    icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
     DuplicateFlatten.setIconPath(icon_path)
 
     # --------------------------------------------------------------------
@@ -127,7 +127,7 @@ def createToolsMenu():
     mari.menus.addAction(ExportSelected, script_menu_path)
 
     icon_filename = 'ExportImages.png'
-    icon_path = mari.resources.path(mari.resources.ICONS) + '/' + icon_filename
+    icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
     ExportSelected.setIconPath(icon_path)
 
     # --------------------------------------------------------------------
@@ -142,7 +142,7 @@ def createToolsMenu():
     mari.menus.addAction(getChannelTemplate, script_menu_path)
 
     icon_filename = 'Channel.png'
-    icon_path = mari.resources.path(mari.resources.ICONS) + '/' + icon_filename
+    icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
     getChannelTemplate.setIconPath(icon_path)
 
     # --------------------------------------------------------------------
@@ -158,7 +158,7 @@ def createToolsMenu():
     mari.menus.addAction(setChannelTemplate, script_menu_path)
 
     icon_filename = 'ChannelPresets.png'
-    icon_path = mari.resources.path(mari.resources.ICONS) + '/' + icon_filename
+    icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
     setChannelTemplate.setIconPath(icon_path)
 
 # --------------------------------------------------------------------
@@ -177,7 +177,7 @@ def createToolsMenu():
     mari.menus.addAction(newChannelFromTemplate, script_menu_path)
 
     icon_filename = "AddChannel.png"
-    icon_path = mari.resources.path(mari.resources.ICONS) + '/' + icon_filename
+    icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
     newChannelFromTemplate.setIconPath(icon_path)
 
 
@@ -197,7 +197,7 @@ def createToolsMenu():
     mari.menus.addAction(chanLayer, script_menu_path)
 
     icon_filename = 'linked.png'
-    icon_path = mari.resources.path(mari.resources.ICONS) + '/' + icon_filename
+    icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
     chanLayer.setIconPath(icon_path)
 
 
@@ -213,7 +213,7 @@ def createToolsMenu():
     mari.menus.addAction(MergeDuplicate, script_menu_path)
 
     icon_filename = 'AddChannel.png'
-    icon_path = mari.resources.path(mari.resources.ICONS) + '/' + icon_filename
+    icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
     MergeDuplicate.setIconPath(icon_path)
     MergeDuplicate.setShortcut('Ctrl+Shift+E')
 
@@ -237,7 +237,7 @@ def createToolsMenu():
     mari.menus.addAction(BatchConvertToPaintable, script_menu_path)
 
     icon_filename = 'Painting.png'
-    icon_path = mari.resources.path(mari.resources.ICONS) + '/' + icon_filename
+    icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
     BatchConvertToPaintable.setIconPath(icon_path)
 
 
@@ -261,7 +261,7 @@ def createToolsMenu():
     mari.menus.addAction(toggleSelVisibility, script_menu_path)
 
     icon_filename = 'ToggleVisibility.png'
-    icon_path = mari.resources.path(mari.resources.ICONS) + '/' + icon_filename
+    icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
     toggleSelVisibility.setIconPath(icon_path)
 
 
@@ -270,7 +270,7 @@ def createToolsMenu():
     mari.menus.addAction(toggleUnselVisibility, script_menu_path)
 
     icon_filename = 'ToggleVisibility.png'
-    icon_path = mari.resources.path(mari.resources.ICONS) + '/' + icon_filename
+    icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
     toggleUnselVisibility.setIconPath(icon_path)
 
 
@@ -287,7 +287,7 @@ def createToolsMenu():
     mari.menus.addAction(toggleSelLock, script_menu_path)
 
     icon_filename = 'Lock.png'
-    icon_path = mari.resources.path(mari.resources.ICONS) + '/' + icon_filename
+    icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
     toggleSelLock.setIconPath(icon_path)
 
 
@@ -296,7 +296,7 @@ def createToolsMenu():
     mari.menus.addAction(toggleUnselLock, script_menu_path)
 
     icon_filename = 'Lock.png'
-    icon_path = mari.resources.path(mari.resources.ICONS) + '/' + icon_filename
+    icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
     toggleUnselLock.setIconPath(icon_path)
 
 
@@ -320,7 +320,7 @@ def createToolsMenu():
     mari.menus.addAction(chanMask, script_menu_path)
 
     icon_filename = 'linked.png'
-    icon_path = mari.resources.path(mari.resources.ICONS) + '/' + icon_filename
+    icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
     chanMask.setIconPath(icon_path)
 
 
@@ -334,7 +334,7 @@ def createToolsMenu():
     mari.menus.addAction(chanMaskGrp, script_menu_path)
 
     icon_filename = 'NewFolder.png'
-    icon_path = mari.resources.path(mari.resources.ICONS) + '/' + icon_filename
+    icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
     chanMaskGrp.setIconPath(icon_path)
 
 
@@ -354,7 +354,7 @@ def createToolsMenu():
     mari.menus.addAction(PatchToImageMgr, script_menu_path)
 
     icon_filename = 'SaveToImageManager.png'
-    icon_path = mari.resources.path(mari.resources.ICONS) + '/' + icon_filename
+    icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
     PatchToImageMgr.setIconPath(icon_path)
 
 
@@ -382,7 +382,7 @@ def createToolsMenu():
     mari.menus.addAction(ChannelToImageMgr, UI_path,'Camera Left')
 
     icon_filename = 'SaveToImageManager.png'
-    icon_path = mari.resources.path(mari.resources.ICONS) + '/' + icon_filename
+    icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
     ChannelToImageMgr.setIconPath(icon_path)
 
 
@@ -398,7 +398,7 @@ def createToolsMenu():
     mari.menus.addAction(LayerToImageMgr, script_menu_path)
 
     icon_filename = 'SaveToImageManager.png'
-    icon_path = mari.resources.path(mari.resources.ICONS) + '/' + icon_filename
+    icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
     LayerToImageMgr.setIconPath(icon_path)
 
 
@@ -426,7 +426,7 @@ def createToolsMenu():
     mari.menus.addAction(screenshotChannels, script_menu_path)
 
     icon_filename = 'CanvasSnapshot.png'
-    icon_path = mari.resources.path(mari.resources.ICONS) + '/' + icon_filename
+    icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
     screenshotChannels.setIconPath(icon_path)
 
 
@@ -446,7 +446,7 @@ def createToolsMenu():
     mari.menus.addAction(action_viewportDisable, UI_path, 'Toggle Wireframe')
 
     icon_filename = 'extPack_disableViewport.png'
-    icon_path = extPack_icon_path + '/' + icon_filename
+    icon_path = extPack_icon_path + os.sep +  icon_filename
     action_viewportDisable.setIconPath(icon_path)
     action_viewportDisable.setShortcut('Ctrl+Space')
 
@@ -493,7 +493,7 @@ def createToolsMenu():
     mari.menus.addAction(syncObjectShaders, script_menu_path)
 
     icon_filename = "Shader.png"
-    icon_path = mari.resources.path(mari.resources.ICONS) + '/' + icon_filename
+    icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
     syncObjectShaders.setIconPath(icon_path)
 
 ######################################################################
@@ -514,7 +514,7 @@ def createToolsMenu():
     mari.menus.addAction(matIdFromGroup, script_menu_path)
 
     icon_filename = "Shader.png"
-    icon_path = mari.resources.path(mari.resources.ICONS) + '/' + icon_filename
+    icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
     matIdFromGroup.setIconPath(icon_path)
 
 
@@ -532,7 +532,7 @@ def createToolsMenu():
     mari.menus.addAction(exportUVMask, script_menu_path)
 
     icon_filename = 'ExtractImage.png'
-    icon_path = mari.resources.path(mari.resources.ICONS) + '/' + icon_filename
+    icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
     exportUVMask.setIconPath(icon_path)
 
     ###  Menu Separators ###
@@ -554,7 +554,7 @@ def createToolsMenu():
     mari.menus.addAction(extHelp, script_menu_path)
 
     icon_filename = 'Help.png'
-    icon_path = mari.resources.path(mari.resources.ICONS) + '/' + icon_filename
+    icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
     extHelp.setIconPath(icon_path)
 
     ###  Menu Separators ###
