@@ -169,7 +169,9 @@ overall 'flowing' of features across the surface when changing sliders
 ######Export Custom Channel Selection
 
 'Export Custom Channel Selection' now separates the File Path and the File Export Template in its UI
-to avoid having to retype the template everytime you change the path
+to avoid having to retype the template everytime you change the path.
+Path & Template Field support the usual MARI Variables such as $ENTITY,$CHANNEL etc.
+If a $Variable is defined as a subfolder, folders will be auto-created. Otherwise a user prompt will appear.
 
 'Export Custom Channel Selection' will now remember your last settings for checkbox options and Export File Template, an option was
 added to reset the Export File Template to Project Default
@@ -177,6 +179,18 @@ added to reset the Export File Template to Project Default
 'Export Custom Channel Selection' now uses the default Operation System Dialog for Path Selections instead of the
  limited MARI Default one.
 
+ To improve understanding the previous 'DISABLE SMALL TEXTURES' Checkbox is now a 'ENABLE SMALL TEXTURES' checkbox.
+
+
+######Export UV Mask
+
+'Export UV Mask' now uses a similar interface as 'Export Custom Channel Selection'
+
+'Export UV Mask' now lets the user choose the Export File Template.
+Path & Template Field support the usual MARI Variables such as $ENTITY,$CHANNEL etc.
+If a $Variable is defined as a subfolder, folders will be auto-created. Otherwise a user prompt will appear.
+
+Template Entries are saved between sessions
 
 
 ######Duplicate/Flatten Channel
