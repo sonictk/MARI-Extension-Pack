@@ -160,8 +160,9 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
         export_path_template = os.path.join(path, template)
 
         #Add path line input and button, also set text to Mari default path and template
-        path_label = QtGui.QLabel('Path:')
+        path_label = QtGui.QLabel('Base Path:')
         self.path_line_edit = QtGui.QLineEdit()
+        self.path_line_edit.setToolTip('Define your export base path here.\nWhen a $ Variable is found all subfolders will be \ncreated automatically without user prompts\nSupported Variables are: \n\n$ENTITY\n$CHANNEL\n$LAYER\n$UDIM\n$FRAME\n')
         path_pixmap = QtGui.QPixmap(mari.resources.path(mari.resources.ICONS) +  os.sep + 'ExportImages.png')
         icon = QtGui.QIcon(path_pixmap)
         path_button = QtGui.QPushButton(icon, "")
@@ -177,7 +178,7 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
         #Add Template line input & Reset Template Button
         template_label = QtGui.QLabel('Template:')
         self.template_line_edit = QtGui.QLineEdit()
-        self.template_line_edit.setToolTip('Supported Formats:')
+        self.template_line_edit.setToolTip('Use this section to define an export template. \nYou can use Variables to create subfolders here as well. \nSupported Variables are: \n\n$ENTITY\n$CHANNEL\n$LAYER\n$UDIM\n$FRAME\n')
         self.template_line_edit.setText(template)
 
         template_reset_pixmap = QtGui.QPixmap(mari.resources.path(mari.resources.ICONS) + os.sep + 'Reset.png')
@@ -230,8 +231,8 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
         self.export_flattened_box.setToolTip('Flattens layer stacks for export. If OFF all layers of channels will be exported separately')
         self.export_full_patch_bleed_box = QtGui.QCheckBox('Full Patch Bleed')
         self.export_full_patch_bleed_box.setToolTip('Turns edge bleed on/off. Existing edge bleed won''t be removed')
-        self.export_small_textures_box = QtGui.QCheckBox('Disable Small Textures')
-        self.export_small_textures_box.setToolTip('If OFF, patches that have flat colors will be exported at 8x8 pixel resolution')
+        self.export_small_textures_box = QtGui.QCheckBox('Enable Small Textures')
+        self.export_small_textures_box.setToolTip('If ON, patches that have flat colors will be exported at 8x8 pixel resolution')
         if self.bool_:
             self.export_remove_alpha_box = QtGui.QCheckBox('Remove Alpha')
             self.export_remove_alpha_box.setToolTip('If ON, Transparency will be removed from exported UDIMS')
@@ -245,6 +246,7 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
 
 
         self.export_flattened_box.setChecked(True)
+        self.export_small_textures_box.setChecked(True)
         self.export_full_patch_bleed_box.setChecked(True)
         self.export_remove_alpha_box.setChecked(False)
 
@@ -409,18 +411,23 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
             return
 
         if not os.path.exists(path_template):
-            title = 'Create Directories'
-            text = 'Folder does not exist "%s".' %os.path.split(path_template)[1]
-            info = 'Create the path?'
-            info_dialog = InfoUI(title, text, info)
-            info_dialog.exec_()
-            info_reply = info_dialog.buttonRole(info_dialog.clickedButton())
-            if info_reply is QtGui.QMessageBox.ButtonRole.RejectRole:
-                return
-            else:
-                os.makedirs(os.path.split(path_template)[1])
+            path_string = str(path_template)
+            if '$' in path_string:
                 self._optionsSave()
                 self.accept()
+            else:
+                title = 'Create Directories'
+                text = 'Sub-Folder does not exist "%s".' %os.path.split(path_template)[1]
+                info = 'Create the path?'
+                info_dialog = InfoUI(title, text, info)
+                info_dialog.exec_()
+                info_reply = info_dialog.buttonRole(info_dialog.clickedButton())
+                if info_reply is QtGui.QMessageBox.ButtonRole.RejectRole:
+                    return
+                else:
+                    os.makedirs(os.path.split(path_template)[1])
+                    self._optionsSave()
+                    self.accept()
         else:
             self._optionsSave()
             self.accept()
@@ -459,7 +466,11 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
 
     #Get export small textures box is ticked (bool)
     def _getExportSmallTextures(self):
-        return self.export_small_textures_box.isChecked()
+        if self.export_small_textures_box.isChecked():
+            return False
+        else:
+            return True
+
 
     #Get export remove alpha box is ticked (bool)
     def _getExportRemoveAlpha(self):
