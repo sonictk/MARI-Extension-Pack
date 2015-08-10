@@ -5,6 +5,7 @@
 # Option can be found under the Objects Menu
 # ------------------------------------------------------------------------------
 # Written by Jorel Latraille, 2014
+# Ammended by Jens Kafitz, 2015
 # ------------------------------------------------------------------------------
 # http://mari.ideascale.com
 # http://www.jorel-latraille.com/
@@ -52,11 +53,6 @@ version = "3.0"         #UI VERSION
 
 USER_ROLE = 32          # PySide.Qt.UserRole
 
-g_eum_cancelled = False
-directory = ''
-g_file_types = ['.' + format for format in mari.images.supportedWriteFormats()]
-list.sort(g_file_types)
-
 
 # ------------------------------------------------------------------------------
 def exportUVMasks():
@@ -80,58 +76,64 @@ def exportUVMasks():
 def exportMasks(UI, q_geo_list,path,template):
     "Export the masks"
 
-    # try:
-    geo_list = q_geo_list.currentGeometry()
+    try:
+        geo_list = q_geo_list.currentGeometry()
 
-    if len(geo_list) == 0:
-        mari.utils.message('Please add at least one Object','No Objects added to Export List')
-        return False
+        if len(geo_list) == 0:
+            mari.utils.message('Please add at least one Object','No Objects added to Export List')
+            return False
 
-    else:
+        else:
 
-        deactivateViewportToggle = mari.actions.find('/Mari/Canvas/Toggle Shader Compiling')
-        deactivateViewportToggle.trigger()
+            deactivateViewportToggle = mari.actions.find('/Mari/Canvas/Toggle Shader Compiling')
+            deactivateViewportToggle.trigger()
 
-        mari.history.startMacro('Export UV Masks')
+            mari.history.startMacro('Export UV Masks')
 
-        UI.close()
+            UI.close()
 
-        #Export selected geo UV masks
-        for geo in geo_list:
-            mari.geo.setCurrent(geo)
-            geo_name = geo.name()
-            patch_list = geo.patchList()
-            patch_udims = []
-            for patch in patch_list:
-                patch_udims.append(int(patch.name()))
-                patch.setSelected(False)
-            for patch in patch_udims:
-                uv_mask = mari.actions.get('/Mari/Geometry/Patches/UV Mask to Image Manager')
-                index = patch - 1001
-                geo.patch(index).setSelected(True)
-                uv_mask.trigger()
-                geo.patch(index).setSelected(False)
-                image_list = mari.images.list()
+            #Export selected geo UV masks
+            for geo in geo_list:
+                mari.geo.setCurrent(geo)
+                geo_name = geo.name()
+                patch_list = geo.patchList()
+                patch_udims = []
+                for patch in patch_list:
+                    patch_udims.append(int(patch.name()))
+                    patch.setSelected(False)
+                for patch in patch_udims:
+                    uv_mask = mari.actions.get('/Mari/Geometry/Patches/UV Mask to Image Manager')
+                    index = patch - 1001
+                    geo.patch(index).setSelected(True)
+                    uv_mask.trigger()
+                    geo.patch(index).setSelected(False)
+                    image_list = mari.images.list()
 
-                # Checking Template
-                template_replace = template.replace('$ENTITY', geo_name)
-                template_replace = template_replace.replace('$UDIM', str(patch))
-                export_path_template = os.path.join(path, template_replace)
+                    # Checking Path for Variables
+                    # If any $ Variables are found all folder creation will happen automatically
+                    # This is different from cases where a user specifies an explicit subfolder in the path line
+                    # If an explicit subfolder is named a dialog will come up asking to create that folder
+                    # That part is handled as part of the InfoUI() call previously
+                    export_path_template = os.path.join(path, template)
+                    export_path_template = export_path_template.replace('$ENTITY', geo_name)
+                    export_path_template = export_path_template.replace('$UDIM', str(patch))
+                    if not os.path.exists(os.path.split(export_path_template)[0]):
+                        os.makedirs(os.path.split(export_path_template)[0])
 
-                mari.images.saveImages(image_list[-1:], export_path_template)
-                print export_path_template
-                index = len(image_list) - 1
-                image_list[index].close()
+                    mari.images.saveImages(image_list[-1:], export_path_template)
+                    print export_path_template
+                    index = len(image_list) - 1
+                    image_list[index].close()
 
+            mari.history.stopMacro()
+            deactivateViewportToggle.trigger()
+            mari.utils.message("Export UV Masks Complete.",'Export Successful')
+
+    except Exception,e:
+        print(e)
+        mari.utils.message("Export UV Masks failed to complete.")
         mari.history.stopMacro()
         deactivateViewportToggle.trigger()
-        mari.utils.message("Export UV Masks Complete.")
-
-    # except Exception,e:
-        # print(e)
-        # mari.utils.message("Export UV Masks failed to complete.")
-        # mari.history.stopMacro()
-        # deactivateViewportToggle.trigger()
 
 # ------------------------------------------------------------------------------
 class ExportUVMaskUI(QtGui.QDialog):
@@ -213,11 +215,13 @@ class ExportUVMaskUI(QtGui.QDialog):
 
         #Get mari default path and template
         self.path = os.path.abspath(mari.resources.path(mari.resources.DEFAULT_EXPORT))
-        self.template = '$ENTITY.UVMask.$UDIM.tif'
+        self.template = '$ENTITY' + os.sep + '$ENTITY_UVMask_$UDIM.tif'
 
         #Add path line input and button, also set text to Mari default path and template
         path_label = QtGui.QLabel('Path:')
         self.path_line_edit = QtGui.QLineEdit()
+        self.path_line_edit.setToolTip('Define your export base path here.\nWhen a $ Variable is found all subfolders will be \ncreated automatically without user prompts\nSupported Variables are: \n\n$ENTITY\n$UDIM\n')
+
         path_pixmap = QtGui.QPixmap(mari.resources.path(mari.resources.ICONS) +  os.sep + 'ExportImages.png')
         icon = QtGui.QIcon(path_pixmap)
         path_button = QtGui.QPushButton(icon, "")
@@ -233,7 +237,7 @@ class ExportUVMaskUI(QtGui.QDialog):
         #Add Template line input & Reset Template Button
         template_label = QtGui.QLabel('Template:')
         self.template_line_edit = QtGui.QLineEdit()
-        self.template_line_edit.setToolTip('Supported Formats:')
+        self.template_line_edit.setToolTip('Use this section to define an export template. \nYou can use Variables to create subfolders here as well. \nSupported Variables are: \n\n$ENTITY\n$UDIM\n')
         self.template_line_edit.setText(self.template)
 
         template_reset_pixmap = QtGui.QPixmap(mari.resources.path(mari.resources.ICONS) + os.sep + 'Reset.png')
@@ -266,6 +270,8 @@ class ExportUVMaskUI(QtGui.QDialog):
         #Add browse lines to main layout
         main_layout.addLayout(bottom_layout)
 
+        self._optionsLoad()
+
 
     # Save the UI Settings (File emplate)
     def _optionsSave(self):
@@ -284,7 +290,6 @@ class ExportUVMaskUI(QtGui.QDialog):
     # Load the UI Settings (File emplate)
     def _optionsLoad(self):
         """Loads UI Options between sessions."""
-
 
         for name, obj in inspect.getmembers(self):
             self.SETTINGS.beginGroup("Export_UV_Masks_" + version)
@@ -319,21 +324,36 @@ class ExportUVMaskUI(QtGui.QDialog):
             file_types_str.append(type_str)
 
         path_template = self.path_line_edit.text()
+        if path_template.endswith(os.sep):
+            path_template = path_template[:-1]
         template_template = self.template_line_edit.text()
         full_path = os.path.join(path_template, template_template)
         if not template_template.endswith(tuple(file_types)):
             mari.utils.message("File Extension is not supported: '%s'" %(os.path.split(template_template)[1])+ '\n\nSupported File Extensions: \n'+ str(file_types_str),'Invalid File Extension specified')
             return
-        if not os.path.exists(os.path.split(path_template)[1]):
-            title = 'Create Directories'
-            text = 'Folder does not exist "%s".' %os.path.split(path_template)[1]
-            info = 'Create the path?'
-            dialog = InfoUI(title, text, info)
-            if not dialog.exec_():
-                return
-            os.makedirs(os.path.split(path_template)[1])
-        self._optionsSave()
-        self.accept()
+
+        if not os.path.exists(path_template):
+            path_string = str(path_template)
+            if '$' in path_string:
+                self._optionsSave()
+                self.accept()
+            else:
+                title = 'Create Directories'
+                text = 'Sub-Folder does not exist "%s".' %os.path.split(path_template)[1]
+                info = 'Create the path?'
+                info_dialog = InfoUI(title, text, info)
+                info_dialog.exec_()
+                info_reply = info_dialog.buttonRole(info_dialog.clickedButton())
+                if info_reply is QtGui.QMessageBox.ButtonRole.RejectRole:
+                    return
+                else:
+                    os.makedirs(os.path.split(path_template)[1])
+                    self._optionsSave()
+                    self.accept()
+        else:
+            self._optionsSave()
+            self.accept()
+
 
 
     #Get export path and template
@@ -346,7 +366,7 @@ class ExportUVMaskUI(QtGui.QDialog):
     #Reset the Export File Template to what is set on project
     def _resetExportPathTemplate(self):
         ''' reset the path template to whatever is set in the project'''
-        original_template = '$ENTITY.UVMask.$UDIM.tif'
+        original_template = '$ENTITY' + os.sep + '$ENTITY_UVMask_$UDIM.tif'
         self.template_line_edit.setText(original_template)
 
 
@@ -378,15 +398,16 @@ class GeoToExportList(QtGui.QListWidget):
         if selected_items == []:
             mari.utils.message("Please select at least one object.")
             return
+        else:
 
-        # Add geometry that aren't already added
-        current_geometry = set(self.currentGeometry())
-        for item in selected_items:
-            geo = item.data(USER_ROLE)
-            if geo not in current_geometry:
-                current_geometry.add(geo)
-                self.addItem(geo.name())
-                self.item(self.count() - 1).setData(USER_ROLE, geo)
+            # Add geometry that aren't already added
+            current_geometry = set(self.currentGeometry())
+            for item in selected_items:
+                geo = item.data(USER_ROLE)
+                if geo not in current_geometry:
+                    current_geometry.add(geo)
+                    self.addItem(geo.name())
+                    self.item(self.count() - 1).setData(USER_ROLE, geo)
 
     def removeGeometry(self):
         "Removes any currently selected operations."
@@ -410,7 +431,6 @@ class InfoUI(QtGui.QMessageBox):
         if not bool_:
             self.setStandardButtons(QtGui.QMessageBox.Ok | QtGui.QMessageBox.Cancel)
             self.setDefaultButton(QtGui.QMessageBox.Ok)
-
 
 # ------------------------------------------------------------------------------
 
