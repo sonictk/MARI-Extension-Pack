@@ -175,9 +175,14 @@ class ExportUVMaskUI(QtGui.QDialog):
         geo_header_layout.addWidget(filter_box)
 
         geo = mari.geo.current()
-        for geo in mari.geo.list():
-            geo_list.addItem(geo.name())
-            geo_list.item(geo_list.count() - 1).setData(USER_ROLE, geo)
+        for geo_item in mari.geo.list():
+            geo_list.addItem(geo_item.name())
+            geo_list.item(geo_list.count() - 1).setData(USER_ROLE, geo_item)
+            if geo_item is geo:
+                currentGeoRow = geo_list.count()-1
+
+        # Set currently active channel to selected
+        geo_list.setCurrentRow(currentGeoRow)
 
         geo_layout.addLayout(geo_header_layout)
         geo_layout.addWidget(geo_list)
