@@ -733,7 +733,7 @@ def _getChangedUvIndexes(channel):
     uv_index_list = []
     metadata = []
     for patch in patch_list:
-        hash_ = _createHash(patch, all_layers)
+        hash_ = _createHash(patch, all_layers,channel)
         try:
             if not hash_ == channel.metadata(str(patch.uvIndex()) ):
                 uv_index_list.append(patch.uvIndex())
@@ -752,16 +752,21 @@ def _setChannelUvIndexes(channel):
     uv_index_list = []
     metadata = []
     for patch in patch_list:
-        hash_ = _createHash(patch, all_layers)
+        hash_ = _createHash(patch, all_layers, channel)
         uv_index_list.append(patch.uvIndex())
         metadata.append((str(patch.uvIndex()), hash_))
     return uv_index_list, metadata
 
 # ------------------------------------------------------------------------------
-def _createHash(patch, all_layers):
+def _createHash(patch, all_layers,channel):
     """Create hashes on channel for all layers"""
     hash_ = ''
     index = patch.uvIndex()
+
+    # Currently only checking against COLOR colorspace config settings
+    hash_ += channel.colorspaceConfig().resolveColorspace(mari.ColorspaceConfig.ColorspaceStage.COLORSPACE_STAGE_NATIVE)
+    hash_ += channel.colorspaceConfig().resolveColorspace(mari.ColorspaceConfig.ColorspaceStage.COLORSPACE_STAGE_OUTPUT)
+    hash_ += channel.colorspaceConfig().resolveColorspace(mari.ColorspaceConfig.ColorspaceStage.COLORSPACE_STAGE_WORKING)
 
     for layer in all_layers:
         hash_ += _basicLayerData(layer)
@@ -825,10 +830,12 @@ def _getMatchingLayers(layer_list, criterionFn):
 # ------------------------------------------------------------------------------
 def _basicLayerData(layer):
     """Collect basic layer data common to all types of layers."""
-    return str(layer.blendAmount()) + \
+    return str(layer.hash()) + \
+    str(layer.blendAmount()) + \
     str(layer.blendMode()) + \
     str(layer.blendModeStr()) + \
-    str(layer.isVisible())
+    str(layer.isVisible()) + \
+    str()
 
 # ------------------------------------------------------------------------------
 def _sha256(string):
