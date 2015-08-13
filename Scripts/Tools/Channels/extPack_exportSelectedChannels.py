@@ -334,11 +334,15 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
 
 
          # Push current object to the top of the list
-        currentObjName = mari.current.geo().name()
-        sorted_list = sorted(mari.geo.current().channelList(),key=lambda x: unicode.lower( x.name() ) )
-        currentChannelCount = len(sorted_list)
-        currentObj = (currentObjName,sorted_list)
-        chan_list.insert(0,currentObj)
+        currentObjName = ''
+        currentChan = ''
+        currentChannelCount = 0
+        if mari.current.geo() is not None:
+            currentObjName = mari.current.geo().name()
+            sorted_list = sorted(mari.geo.current().channelList(),key=lambda x: unicode.lower( x.name() ) )
+            currentChannelCount = len(sorted_list)
+            currentObj = (currentObjName,sorted_list)
+            chan_list.insert(0,currentObj)
 
         for item in chan_list:
             shaderChannelCountCheck = False
@@ -351,11 +355,14 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
                 if not shaderChannel:
                     channel_list.addItem(item[0] + ' : ' + channel.name())
                     channel_list.item(channel_list.count() - 1).setData(USER_ROLE, channel)
-                    if channel is mari.current.channel():
+                    if mari.current.geo() is not None:
+                        currentChan = mari.current.channel()
+                    if channel is currentChan:
                         currentChannelRow = channel_list.count()-1
 
         # Set currently active channel to selected
-        channel_list.setCurrentRow(currentChannelRow)
+        if mari.current.geo() is not None:
+            channel_list.setCurrentRow(currentChannelRow)
 
         return channel_list, currentChannelCount
 
@@ -763,10 +770,14 @@ def _createHash(patch, all_layers,channel):
     hash_ = ''
     index = patch.uvIndex()
 
-    # Currently only checking against COLOR colorspace config settings
+    # Checking COLOR and SCALAR Colorspaces
     hash_ += channel.colorspaceConfig().resolveColorspace(mari.ColorspaceConfig.ColorspaceStage.COLORSPACE_STAGE_NATIVE)
     hash_ += channel.colorspaceConfig().resolveColorspace(mari.ColorspaceConfig.ColorspaceStage.COLORSPACE_STAGE_OUTPUT)
     hash_ += channel.colorspaceConfig().resolveColorspace(mari.ColorspaceConfig.ColorspaceStage.COLORSPACE_STAGE_WORKING)
+
+    hash_ += channel.scalarColorspaceConfig().resolveColorspace(mari.ColorspaceConfig.ColorspaceStage.COLORSPACE_STAGE_NATIVE)
+    hash_ += channel.scalarColorspaceConfig().resolveColorspace(mari.ColorspaceConfig.ColorspaceStage.COLORSPACE_STAGE_OUTPUT)
+    hash_ += channel.scalarColorspaceConfig().resolveColorspace(mari.ColorspaceConfig.ColorspaceStage.COLORSPACE_STAGE_WORKING)
 
     for layer in all_layers:
         hash_ += _basicLayerData(layer)

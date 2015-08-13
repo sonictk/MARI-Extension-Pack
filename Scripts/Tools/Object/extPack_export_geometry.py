@@ -159,7 +159,9 @@ class exportGEOUI(QtGui.QDialog):
                                 currentGeoRow = geo_list.count()-1
 
                 # Set currently active channel to selected
-                geo_list.setCurrentRow(currentGeoRow)
+                # Catch errors if a locator is selected
+                if geo is not None:
+                    geo_list.setCurrentRow(currentGeoRow)
 
                 geo_layout.addLayout(geo_header_layout)
                 geo_layout.addWidget(geo_list)
@@ -422,7 +424,7 @@ def isProjectSuitable():
         if mari.app.version().number() >= MARI_3_0V1_VERSION_NUMBER:
 
                 if mari.projects.current() is None:
-                        mari.utils.message("Please open a project before running.")
+                        mari.utils.message("Please open a project before running.","No Project Open")
                         return False
 
                 return True

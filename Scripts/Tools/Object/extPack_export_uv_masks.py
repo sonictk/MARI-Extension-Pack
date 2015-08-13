@@ -181,8 +181,10 @@ class ExportUVMaskUI(QtGui.QDialog):
             if geo_item is geo:
                 currentGeoRow = geo_list.count()-1
 
-        # Set currently active channel to selected
-        geo_list.setCurrentRow(currentGeoRow)
+        # Set currently active object to selected
+        # Catch errors if a locator is selected
+        if geo is not None:
+            geo_list.setCurrentRow(currentGeoRow)
 
         geo_layout.addLayout(geo_header_layout)
         geo_layout.addWidget(geo_list)
@@ -319,6 +321,7 @@ class ExportUVMaskUI(QtGui.QDialog):
 
     #Get the path from existing directory
     def _getPath(self):
+        """Get chosen Path from OS Dialog"""
         path = QtGui.QFileDialog.getExistingDirectory(None,"Export Path",self.path_line_edit.text())
         if path == "":
             return
@@ -327,10 +330,11 @@ class ExportUVMaskUI(QtGui.QDialog):
 
     #Set the path line edit box text to be the path provided
     def _setPath(self, path):
+        """Set path selected in Browse"""
         self.path_line_edit.setText(path)
 
-    #Check path and template will work, check if export everything box is ticked if not make sure there are some channels to export
     def _checkInput(self):
+        """Check validity of user path and template input"""
         file_types = ['.' + format for format in mari.images.supportedWriteFormats()]
         file_types_str = []
         for format in file_types:
