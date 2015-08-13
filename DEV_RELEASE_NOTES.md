@@ -105,6 +105,7 @@ Material Regions are only available in the Nodegraph.
 ######Export Geometry
 
 It is now possible to export your geometry from inside Mari to an OBJ File.
+Export Geometry will always export the unsubdivided stage (level 0) in case you have OpenSubD applied.
 
 #####Selection Groups:
 
