@@ -38,8 +38,8 @@ class setProjectPathUI(QtGui.QDialog):
             self.Descr =  QtGui.QLabel("Default Paths:")
             path_pixmap = QtGui.QPixmap(mari.resources.path(mari.resources.ICONS) +  os.sep + 'ExportImages.png')
             path_icon = QtGui.QIcon(path_pixmap)
-            template_reset_pixmap = QtGui.QPixmap(mari.resources.path(mari.resources.ICONS) + os.sep + 'Reset.png')
-            template_reset_icon = QtGui.QIcon(template_reset_pixmap)
+            templateReset_pixmap = QtGui.QPixmap(mari.resources.path(mari.resources.ICONS) + os.sep + 'Reset.png')
+            templateReset_icon = QtGui.QIcon(templateReset_pixmap)
 
 
             # Base Widgets
@@ -66,7 +66,7 @@ class setProjectPathUI(QtGui.QDialog):
             self.Path_VarA = QtGui.QLineEdit()
             self.path_button_VarA = QtGui.QPushButton(path_icon, "")
             self.path_button_VarA.setToolTip('Browse for Folder')
-            self.templateReset_VarA = QtGui.QPushButton(template_reset_icon, "")
+            self.templateReset_VarA = QtGui.QPushButton(templateReset_icon, "")
             self.templateReset_VarA.setToolTip('Reset to Project Default')
             self.link_VarA = QtGui.QCheckBox('Relative to Base')
             self.link_VarA.setToolTip('Relative to Base ON will add a $BASE variable to your path. \n If the $BASE Variable exists and you turn it off, the path will be fully resolved')
@@ -77,7 +77,10 @@ class setProjectPathUI(QtGui.QDialog):
             variable_layout_grid.addWidget(self.templateReset_VarA,2,4)
             variable_layout_grid.addWidget(self.link_VarA,2,5)
 
-
+            # Connections:
+            #### Reset Button:
+            Reset_VarA_button_connect = lambda: self._setProjectTemplate(self.Path_VarA,'Tex_Import')
+            self.templateReset_VarA.clicked.connect(Reset_VarA_button_connect)
 
 
 
@@ -89,16 +92,23 @@ class setProjectPathUI(QtGui.QDialog):
             self.Path_VarC = QtGui.QLineEdit()
             self.path_button_VarC = QtGui.QPushButton(path_icon, "")
             self.path_button_VarC.setToolTip('Browse for Folder')
-            self.template_reset_VarC = QtGui.QPushButton(template_reset_icon, "")
-            self.template_reset_VarC.setToolTip('Reset to Project Default')
+            self.templateReset_VarC = QtGui.QPushButton(templateReset_icon, "")
+            self.templateReset_VarC.setToolTip('Reset to Project Default')
             self.link_VarC = QtGui.QCheckBox('Relative to Base')
             self.link_VarC.setToolTip('Relative to Base ON will add a $BASE variable to your path. \n If the $BASE Variable exists and you turn it off, the path will be fully resolved')
             variable_layout_grid.addWidget(self.Active_VarC,3,0)
             variable_layout_grid.addWidget(self.Descr_VarC,3,1)
             variable_layout_grid.addWidget(self.Path_VarC,3,2)
             variable_layout_grid.addWidget(self.path_button_VarC,3,3)
-            variable_layout_grid.addWidget(self.template_reset_VarC,3,4)
+            variable_layout_grid.addWidget(self.templateReset_VarC,3,4)
             variable_layout_grid.addWidget(self.link_VarC,3,5)
+
+            # Connections:
+            #### Reset Button:
+            Reset_VarC_button_connect = lambda: self._setProjectTemplate(self.Path_VarC,'Tex_Export')
+            self.templateReset_VarC.clicked.connect(Reset_VarC_button_connect)
+
+
 
 
             # Variable Widgets Variable D
@@ -109,16 +119,23 @@ class setProjectPathUI(QtGui.QDialog):
             self.Path_VarD = QtGui.QLineEdit()
             self.path_button_VarD = QtGui.QPushButton(path_icon, "")
             self.path_button_VarD.setToolTip('Browse for Folder')
-            self.template_reset_VarD = QtGui.QPushButton(template_reset_icon, "")
-            self.template_reset_VarD.setToolTip('Reset to Project Default')
+            self.templateReset_VarD = QtGui.QPushButton(templateReset_icon, "")
+            self.templateReset_VarD.setToolTip('Reset to Project Default')
             self.link_VarD = QtGui.QCheckBox('Relative to Base')
             self.link_VarD.setToolTip('Relative to Base ON will add a $BASE variable to your path. \n If the $BASE Variable exists and you turn it off, the path will be fully resolved')
             variable_layout_grid.addWidget(self.Active_VarD,4,0)
             variable_layout_grid.addWidget(self.Descr_VarD,4,1)
             variable_layout_grid.addWidget(self.Path_VarD,4,2)
             variable_layout_grid.addWidget(self.path_button_VarD,4,3)
-            variable_layout_grid.addWidget(self.template_reset_VarD,4,4)
+            variable_layout_grid.addWidget(self.templateReset_VarD,4,4)
             variable_layout_grid.addWidget(self.link_VarD,4,5)
+
+            # Connections:
+            #### Reset Button:
+            Reset_VarD_button_connect = lambda: self._setProjectTemplate(self.Path_VarD,'Geo')
+            self.templateReset_VarD.clicked.connect(Reset_VarD_button_connect)
+
+
 
             # Variable Widgets Variable E
             self.Active_VarE = QtGui.QCheckBox()
@@ -128,16 +145,22 @@ class setProjectPathUI(QtGui.QDialog):
             self.Path_VarE = QtGui.QLineEdit()
             self.path_button_VarE = QtGui.QPushButton(path_icon, "")
             self.path_button_VarE.setToolTip('Browse for Folder')
-            self.template_reset_VarE = QtGui.QPushButton(template_reset_icon, "")
-            self.template_reset_VarE.setToolTip('Reset to Project Default')
+            self.templateReset_VarE = QtGui.QPushButton(templateReset_icon, "")
+            self.templateReset_VarE.setToolTip('Reset to Project Default')
             self.link_VarE = QtGui.QCheckBox('Relative to Base')
             self.link_VarE.setToolTip('Relative to Base ON will add a $BASE variable to your path. \n If the $BASE Variable exists and you turn it off, the path will be fully resolved')
             variable_layout_grid.addWidget(self.Active_VarE,5,0)
             variable_layout_grid.addWidget(self.Descr_VarE,5,1)
             variable_layout_grid.addWidget(self.Path_VarE,5,2)
             variable_layout_grid.addWidget(self.path_button_VarE,5,3)
-            variable_layout_grid.addWidget(self.template_reset_VarE,5,4)
+            variable_layout_grid.addWidget(self.templateReset_VarE,5,4)
             variable_layout_grid.addWidget(self.link_VarE,5,5)
+
+            # Connections:
+            #### Reset Button:
+            Reset_VarE_button_connect = lambda: self._setProjectTemplate(self.Path_VarE,'Image')
+            self.templateReset_VarE.clicked.connect(Reset_VarE_button_connect)
+
 
 
             # Variable Widgets Variable F
@@ -148,16 +171,23 @@ class setProjectPathUI(QtGui.QDialog):
             self.Path_VarF = QtGui.QLineEdit()
             self.path_button_VarF = QtGui.QPushButton(path_icon, "")
             self.path_button_VarF.setToolTip('Browse for Folder')
-            self.template_reset_VarF = QtGui.QPushButton(template_reset_icon, "")
-            self.template_reset_VarF.setToolTip('Reset to Project Default')
+            self.templateReset_VarF = QtGui.QPushButton(templateReset_icon, "")
+            self.templateReset_VarF.setToolTip('Reset to Project Default')
             self.link_VarF = QtGui.QCheckBox('Relative to Base')
             self.link_VarF.setToolTip('Relative to Base ON will add a $BASE variable to your path. \n If the $BASE Variable exists and you turn it off, the path will be fully resolved')
             variable_layout_grid.addWidget(self.Active_VarF,6,0)
             variable_layout_grid.addWidget(self.Descr_VarF,6,1)
             variable_layout_grid.addWidget(self.Path_VarF,6,2)
             variable_layout_grid.addWidget(self.path_button_VarF,6,3)
-            variable_layout_grid.addWidget(self.template_reset_VarF,6,4)
+            variable_layout_grid.addWidget(self.templateReset_VarF,6,4)
             variable_layout_grid.addWidget(self.link_VarF,6,5)
+
+            # Connections:
+            #### Reset Button:
+            Reset_VarF_button_connect = lambda: self._setProjectTemplate(self.Path_VarF,'Render')
+            self.templateReset_VarF.clicked.connect(Reset_VarF_button_connect)
+
+
 
 
             # Variable Widgets Variable G
@@ -168,16 +198,23 @@ class setProjectPathUI(QtGui.QDialog):
             self.Path_VarG = QtGui.QLineEdit()
             self.path_button_VarG = QtGui.QPushButton(path_icon, "")
             self.path_button_VarG.setToolTip('Browse for Folder')
-            self.template_reset_VarG = QtGui.QPushButton(template_reset_icon, "")
-            self.template_reset_VarG.setToolTip('Reset to Project Default')
+            self.templateReset_VarG = QtGui.QPushButton(templateReset_icon, "")
+            self.templateReset_VarG.setToolTip('Reset to Project Default')
             self.link_VarG = QtGui.QCheckBox('Relative to Base')
             self.link_VarG.setToolTip('Relative to Base ON will add a $BASE variable to your path. \n If the $BASE Variable exists and you turn it off, the path will be fully resolved')
             variable_layout_grid.addWidget(self.Active_VarG,7,0)
             variable_layout_grid.addWidget(self.Descr_VarG,7,1)
             variable_layout_grid.addWidget(self.Path_VarG,7,2)
             variable_layout_grid.addWidget(self.path_button_VarG,7,3)
-            variable_layout_grid.addWidget(self.template_reset_VarG,7,4)
+            variable_layout_grid.addWidget(self.templateReset_VarG,7,4)
             variable_layout_grid.addWidget(self.link_VarG,7,5)
+
+            # Connections:
+            #### Reset Button:
+            Reset_VarG_button_connect = lambda: self._setProjectTemplate(self.Path_VarG,'Archive')
+            self.templateReset_VarG.clicked.connect(Reset_VarG_button_connect)
+
+
 
             asset_group_box.setLayout(variable_layout_grid)
 
@@ -190,16 +227,23 @@ class setProjectPathUI(QtGui.QDialog):
             self.Path_VarH = QtGui.QLineEdit()
             self.path_button_VarH = QtGui.QPushButton(path_icon, "")
             self.path_button_VarH.setToolTip('Browse for Folder')
-            self.template_reset_VarH = QtGui.QPushButton(template_reset_icon, "")
-            self.template_reset_VarH.setToolTip('Reset to Project Default')
+            self.templateReset_VarH = QtGui.QPushButton(templateReset_icon, "")
+            self.templateReset_VarH.setToolTip('Reset to Project Default')
             self.link_VarH = QtGui.QCheckBox('Relative to Base')
             self.link_VarH.setToolTip('Relative to Base ON will add a $BASE variable to your path. \n If the $BASE Variable exists and you turn it off, the path will be fully resolved')
             misc_layout_grid.addWidget(self.Active_VarH,8,0)
             misc_layout_grid.addWidget(self.Descr_VarH,8,1)
             misc_layout_grid.addWidget(self.Path_VarH,8,2)
             misc_layout_grid.addWidget(self.path_button_VarH,8,3)
-            misc_layout_grid.addWidget(self.template_reset_VarH,8,4)
+            misc_layout_grid.addWidget(self.templateReset_VarH,8,4)
             misc_layout_grid.addWidget(self.link_VarH,8,5)
+
+            # Connections:
+            #### Reset Button:
+            Reset_VarH_button_connect = lambda: self._setProjectTemplate(self.Path_VarH,'Shelf')
+            self.templateReset_VarH.clicked.connect(Reset_VarH_button_connect)
+
+
 
 
             # Variable Widgets Variable I
@@ -210,16 +254,23 @@ class setProjectPathUI(QtGui.QDialog):
             self.Path_VarI = QtGui.QLineEdit()
             self.path_button_VarI = QtGui.QPushButton(path_icon, "")
             self.path_button_VarI.setToolTip('Browse for Folder')
-            self.template_reset_VarI = QtGui.QPushButton(template_reset_icon, "")
-            self.template_reset_VarI.setToolTip('Reset to Project Default')
+            self.templateReset_VarI = QtGui.QPushButton(templateReset_icon, "")
+            self.templateReset_VarI.setToolTip('Reset to Project Default')
             self.link_VarI = QtGui.QCheckBox('Relative to Base')
             self.link_VarI.setToolTip('Relative to Base ON will add a $BASE variable to your path. \n If the $BASE Variable exists and you turn it off, the path will be fully resolved')
             misc_layout_grid.addWidget(self.Active_VarI,9,0)
             misc_layout_grid.addWidget(self.Descr_VarI,9,1)
             misc_layout_grid.addWidget(self.Path_VarI,9,2)
             misc_layout_grid.addWidget(self.path_button_VarI,9,3)
-            misc_layout_grid.addWidget(self.template_reset_VarI,9,4)
+            misc_layout_grid.addWidget(self.templateReset_VarI,9,4)
             misc_layout_grid.addWidget(self.link_VarI,9,5)
+
+            # Connections:
+            #### Reset Button:
+            Reset_VarI_button_connect = lambda: self._setProjectTemplate(self.Path_VarI,'Camera')
+            self.templateReset_VarI.clicked.connect(Reset_VarI_button_connect)
+
+
 
             misc_group_box.setLayout(misc_layout_grid)
 
@@ -239,8 +290,6 @@ class setProjectPathUI(QtGui.QDialog):
             window_layout_box.addWidget(misc_group_box)
             window_layout_box.addLayout(button_layout_box)
 
-
-            # self.templateReset_VarA.clicked.connect(self._setProjectTemplate(self.Path_VarA))
 
 
     def _getProjectTemplate(self,pathVariable):
@@ -265,12 +314,11 @@ class setProjectPathUI(QtGui.QDialog):
         elif pathVariable is None:
             return ''
 
-    def _setProjectTemplate(self,obj):
+    def _setProjectTemplate(self, obj, pathVariable):
         """ Gets the default path variable and sets the QLineEditField in Main UI to Value"""
 
         # pathVar = pathVariable
-        path = self._getProjectTemplate('Tex_Export')
-        print path
+        path = self._getProjectTemplate(pathVariable)
         obj.setText(path)
 
 
