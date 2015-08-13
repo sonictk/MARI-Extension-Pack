@@ -74,6 +74,21 @@ def createToolsMenu():
 ######################################################################
 
 
+
+    #  Export Geometry
+
+    UI_path = 'MainWindow/Objects'
+    script_menu_path = 'MainWindow/Scripts/Objects'
+
+    exportUVMask = mari.actions.create ('Export Geometry', 'mari.customScripts.exportGeometry()')
+    mari.menus.addAction(exportUVMask, UI_path, 'Ambient Occlusion')
+    mari.menus.addAction(exportUVMask, script_menu_path)
+
+    icon_filename = 'SaveFileAs.png'
+    icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
+    exportUVMask.setIconPath(icon_path)
+
+
     #  Export UV Mask
 
     UI_path = 'MainWindow/Objects'
@@ -86,6 +101,7 @@ def createToolsMenu():
     icon_filename = 'EdgeMask.png'
     icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
     exportUVMask.setIconPath(icon_path)
+
 
 
     ###  Menu Separators ###

@@ -68,6 +68,7 @@ import SelectionGroups.extPack_matIDfromGroup as matIDFromGroup
 
 # OBJECTS:
 import Object.extPack_export_uv_masks as export_uv_masks
+import Object.extPack_export_geometry as export_geometry
 
 # IMAGE MANAGER:
 import ImageManager.extPack_export_imageMan_images as exportImageManager
@@ -166,6 +167,9 @@ class customScripts():
 
     def exportUVMasks(self):
         export_uv_masks.exportUVMasks()
+
+    def exportGeometry(self):
+        export_geometry.exportGEOs()
 
 
     # --------------------------------------------------------------

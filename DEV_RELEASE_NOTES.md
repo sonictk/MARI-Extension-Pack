@@ -100,6 +100,12 @@ Material Regions are only available in the Nodegraph.
 
 ###Tools:
 
+#####Objects:
+
+######Export Geometry
+
+It is now possible to export your geometry from inside Mari to an OBJ File.
+
 #####Selection Groups:
 
 ######Material ID from Selection Group

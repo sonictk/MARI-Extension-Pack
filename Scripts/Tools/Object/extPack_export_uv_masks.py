@@ -225,7 +225,11 @@ class ExportUVMaskUI(QtGui.QDialog):
         #Add path line input and button, also set text to Mari default path and template
         path_label = QtGui.QLabel('Path:')
         self.path_line_edit = QtGui.QLineEdit()
-        self.path_line_edit.setToolTip('Define your export base path here.\nWhen a $ Variable is found all subfolders will be \ncreated automatically without user prompts\nSupported Variables are: \n\n$ENTITY\n$UDIM\n')
+        self.path_line_edit.setToolTip('Define your export base path here.\
+                                        \nWhen a $ Variable is found all subfolders will be \
+                                        \ncreated automatically without user prompts\nSupported \
+                                        Variables are: \n\n$ENTITY - Entity is a placeholder for your Object Name\
+                                        \n$UDIM - UDIM is a placeholder for your UV Index \n')
 
         path_pixmap = QtGui.QPixmap(mari.resources.path(mari.resources.ICONS) +  os.sep + 'ExportImages.png')
         icon = QtGui.QIcon(path_pixmap)
@@ -242,7 +246,12 @@ class ExportUVMaskUI(QtGui.QDialog):
         #Add Template line input & Reset Template Button
         template_label = QtGui.QLabel('Template:')
         self.template_line_edit = QtGui.QLineEdit()
-        self.template_line_edit.setToolTip('Use this section to define an export template. \nYou can use Variables to create subfolders here as well. \nSupported Variables are: \n\n$ENTITY\n$UDIM\n')
+        self.template_line_edit.setToolTip('Use this section to define an export template. \
+                                            \nYou can use Variables to create subfolders here as well. \
+                                            \nSupported Variables are: \
+                                            \n\n$ENTITY - Entity is a placeholder for your Object Name\
+                                            \n$UDIM - UDIM is a placeholder for your UV Index \n')
+
         self.template_line_edit.setText(self.template)
 
         template_reset_pixmap = QtGui.QPixmap(mari.resources.path(mari.resources.ICONS) + os.sep + 'Reset.png')
