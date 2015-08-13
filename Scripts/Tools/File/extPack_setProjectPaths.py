@@ -1,8 +1,9 @@
 class CloneMergeGUI(QtGui.QDialog):
-    '''GUI to select Clone Merge for selected patches or all patches'''
+    """GUI to set your Project Paths"""
 
     def __init__(self):
-        suitable = [True,True]
+        suitable = _isProjectSuitable()
+
         if suitable[0]:
             super(CloneMergeGUI, self).__init__()
             # Dialog Settings
@@ -48,13 +49,16 @@ class CloneMergeGUI(QtGui.QDialog):
             # Asset Widges
             # Variable Widgets Variable A
             self.Active_VarA = QtGui.QCheckBox()
+            self.Active_VarA.setToolTip('Allows you to activate or deactivate changes to this Default Path')
             self.Descr_VarA = QtGui.QLabel("TEXTURE MAPS (Import)")
+            self.Descr_VarA.setToolTip('The default Path that should be used when Importing Textures')
             self.Path_VarA = QtGui.QLineEdit()
             self.path_button_VarA = QtGui.QPushButton(path_icon, "")
             self.path_button_VarA.setToolTip('Browse for Folder')
             self.template_reset_VarA = QtGui.QPushButton(template_reset_icon, "")
             self.template_reset_VarA.setToolTip('Reset to Project Default')
             self.link_VarA = QtGui.QCheckBox('Relative to Base')
+            self.link_VarA.setToolTip('Relative to Base ON will add a $BASE variable to your path. \n If the $BASE Variable exists and you turn it off, the path will be fully resolved')
             variable_layout_grid.addWidget(self.Active_VarA,2,0)
             variable_layout_grid.addWidget(self.Descr_VarA,2,1)
             variable_layout_grid.addWidget(self.Path_VarA,2,2)
@@ -63,31 +67,18 @@ class CloneMergeGUI(QtGui.QDialog):
             variable_layout_grid.addWidget(self.link_VarA,2,5)
 
 
-            # Variable Widgets Variable B
-            self.Active_VarB = QtGui.QCheckBox()
-            self.Descr_VarB = QtGui.QLabel("TEXTURE MAPS (Import)")
-            self.Path_VarB = QtGui.QLineEdit()
-            self.path_button_VarB = QtGui.QPushButton(path_icon, "")
-            self.path_button_VarB.setToolTip('Browse for Folder')
-            self.template_reset_VarB = QtGui.QPushButton(template_reset_icon, "")
-            self.template_reset_VarB.setToolTip('Reset to Project Default')
-            self.link_VarB = QtGui.QCheckBox('Relative to Base')
-            variable_layout_grid.addWidget(self.Active_VarB,2,0)
-            variable_layout_grid.addWidget(self.Descr_VarB,2,1)
-            variable_layout_grid.addWidget(self.Path_VarB,2,2)
-            variable_layout_grid.addWidget(self.path_button_VarB,2,3)
-            variable_layout_grid.addWidget(self.template_reset_VarB,2,4)
-            variable_layout_grid.addWidget(self.link_VarB,2,5)
-
             # Variable Widgets Variable C
             self.Active_VarC = QtGui.QCheckBox()
+            self.Active_VarC.setToolTip('Allows you to activate or deactivate changes to this Default Path')
             self.Descr_VarC = QtGui.QLabel("TEXTURE MAPS (Export):")
+            self.Descr_VarC.setToolTip('The default Path that should be used when Exporting Textures')
             self.Path_VarC = QtGui.QLineEdit()
             self.path_button_VarC = QtGui.QPushButton(path_icon, "")
             self.path_button_VarC.setToolTip('Browse for Folder')
             self.template_reset_VarC = QtGui.QPushButton(template_reset_icon, "")
             self.template_reset_VarC.setToolTip('Reset to Project Default')
             self.link_VarC = QtGui.QCheckBox('Relative to Base')
+            self.link_VarC.setToolTip('Relative to Base ON will add a $BASE variable to your path. \n If the $BASE Variable exists and you turn it off, the path will be fully resolved')
             variable_layout_grid.addWidget(self.Active_VarC,3,0)
             variable_layout_grid.addWidget(self.Descr_VarC,3,1)
             variable_layout_grid.addWidget(self.Path_VarC,3,2)
@@ -98,13 +89,16 @@ class CloneMergeGUI(QtGui.QDialog):
 
             # Variable Widgets Variable D
             self.Active_VarD = QtGui.QCheckBox()
+            self.Active_VarD.setToolTip('Allows you to activate or deactivate changes to this Default Path')
             self.Descr_VarD = QtGui.QLabel("GEOMETRY (Import):")
+            self.Descr_VarD.setToolTip('The default Path that should be used when Importing new Objects')
             self.Path_VarD = QtGui.QLineEdit()
             self.path_button_VarD = QtGui.QPushButton(path_icon, "")
             self.path_button_VarD.setToolTip('Browse for Folder')
             self.template_reset_VarD = QtGui.QPushButton(template_reset_icon, "")
             self.template_reset_VarD.setToolTip('Reset to Project Default')
             self.link_VarD = QtGui.QCheckBox('Relative to Base')
+            self.link_VarD.setToolTip('Relative to Base ON will add a $BASE variable to your path. \n If the $BASE Variable exists and you turn it off, the path will be fully resolved')
             variable_layout_grid.addWidget(self.Active_VarD,4,0)
             variable_layout_grid.addWidget(self.Descr_VarD,4,1)
             variable_layout_grid.addWidget(self.Path_VarD,4,2)
@@ -114,13 +108,16 @@ class CloneMergeGUI(QtGui.QDialog):
 
             # Variable Widgets Variable E
             self.Active_VarE = QtGui.QCheckBox()
+            self.Active_VarE.setToolTip('Allows you to activate or deactivate changes to this Default Path')
             self.Descr_VarE = QtGui.QLabel("IMAGE MANAGER (Import/Export):")
+            self.Descr_VarE.setToolTip('The default Path that should be used when Importing or Exporting from the Image Manager')
             self.Path_VarE = QtGui.QLineEdit()
             self.path_button_VarE = QtGui.QPushButton(path_icon, "")
             self.path_button_VarE.setToolTip('Browse for Folder')
             self.template_reset_VarE = QtGui.QPushButton(template_reset_icon, "")
             self.template_reset_VarE.setToolTip('Reset to Project Default')
             self.link_VarE = QtGui.QCheckBox('Relative to Base')
+            self.link_VarE.setToolTip('Relative to Base ON will add a $BASE variable to your path. \n If the $BASE Variable exists and you turn it off, the path will be fully resolved')
             variable_layout_grid.addWidget(self.Active_VarE,5,0)
             variable_layout_grid.addWidget(self.Descr_VarE,5,1)
             variable_layout_grid.addWidget(self.Path_VarE,5,2)
@@ -131,13 +128,16 @@ class CloneMergeGUI(QtGui.QDialog):
 
             # Variable Widgets Variable F
             self.Active_VarF = QtGui.QCheckBox()
+            self.Active_VarF.setToolTip('Allows you to activate or deactivate changes to this Default Path')
             self.Descr_VarF = QtGui.QLabel("RENDERS/TURNTABLES (Export):")
+            self.Descr_VarF.setToolTip('The default Path that should be used when doing Screenshots & Turntables')
             self.Path_VarF = QtGui.QLineEdit()
             self.path_button_VarF = QtGui.QPushButton(path_icon, "")
             self.path_button_VarF.setToolTip('Browse for Folder')
             self.template_reset_VarF = QtGui.QPushButton(template_reset_icon, "")
             self.template_reset_VarF.setToolTip('Reset to Project Default')
             self.link_VarF = QtGui.QCheckBox('Relative to Base')
+            self.link_VarF.setToolTip('Relative to Base ON will add a $BASE variable to your path. \n If the $BASE Variable exists and you turn it off, the path will be fully resolved')
             variable_layout_grid.addWidget(self.Active_VarF,6,0)
             variable_layout_grid.addWidget(self.Descr_VarF,6,1)
             variable_layout_grid.addWidget(self.Path_VarF,6,2)
@@ -148,13 +148,16 @@ class CloneMergeGUI(QtGui.QDialog):
 
             # Variable Widgets Variable G
             self.Active_VarG = QtGui.QCheckBox()
+            self.Active_VarG.setToolTip('Allows you to activate or deactivate changes to this Default Path')
             self.Descr_VarG = QtGui.QLabel("ARCHIVE (Import/Export):")
+            self.Descr_VarG.setToolTip('The default Path that should be used when loading or saving an Archive')
             self.Path_VarG = QtGui.QLineEdit()
             self.path_button_VarG = QtGui.QPushButton(path_icon, "")
             self.path_button_VarG.setToolTip('Browse for Folder')
             self.template_reset_VarG = QtGui.QPushButton(template_reset_icon, "")
             self.template_reset_VarG.setToolTip('Reset to Project Default')
             self.link_VarG = QtGui.QCheckBox('Relative to Base')
+            self.link_VarG.setToolTip('Relative to Base ON will add a $BASE variable to your path. \n If the $BASE Variable exists and you turn it off, the path will be fully resolved')
             variable_layout_grid.addWidget(self.Active_VarG,7,0)
             variable_layout_grid.addWidget(self.Descr_VarG,7,1)
             variable_layout_grid.addWidget(self.Path_VarG,7,2)
@@ -167,13 +170,16 @@ class CloneMergeGUI(QtGui.QDialog):
 
             # Variable Widgets Variable H
             self.Active_VarH = QtGui.QCheckBox()
-            self.Descr_VarH = QtGui.QLabel("SHELFS (Import/Export):")
+            self.Active_VarH.setToolTip('Allows you to activate or deactivate changes to this Default Path')
+            self.Descr_VarH = QtGui.QLabel("SHELVES (Import/Export):")
+            self.Descr_VarH.setToolTip('The default Path that should be used when loading or saving Shelves')
             self.Path_VarH = QtGui.QLineEdit()
             self.path_button_VarH = QtGui.QPushButton(path_icon, "")
             self.path_button_VarH.setToolTip('Browse for Folder')
             self.template_reset_VarH = QtGui.QPushButton(template_reset_icon, "")
             self.template_reset_VarH.setToolTip('Reset to Project Default')
             self.link_VarH = QtGui.QCheckBox('Relative to Base')
+            self.link_VarH.setToolTip('Relative to Base ON will add a $BASE variable to your path. \n If the $BASE Variable exists and you turn it off, the path will be fully resolved')
             misc_layout_grid.addWidget(self.Active_VarH,8,0)
             misc_layout_grid.addWidget(self.Descr_VarH,8,1)
             misc_layout_grid.addWidget(self.Path_VarH,8,2)
@@ -184,13 +190,16 @@ class CloneMergeGUI(QtGui.QDialog):
 
             # Variable Widgets Variable I
             self.Active_VarI = QtGui.QCheckBox()
+            self.Active_VarI.setToolTip('Allows you to activate or deactivate changes to this Default Path')
             self.Descr_VarI = QtGui.QLabel("CAM/PROJECTOR (Import/Export):")
+            self.Descr_VarI.setToolTip('The default Path that should be used when Importing or Eporting Cameras or Projectors')
             self.Path_VarI = QtGui.QLineEdit()
             self.path_button_VarI = QtGui.QPushButton(path_icon, "")
             self.path_button_VarI.setToolTip('Browse for Folder')
             self.template_reset_VarI = QtGui.QPushButton(template_reset_icon, "")
             self.template_reset_VarI.setToolTip('Reset to Project Default')
             self.link_VarI = QtGui.QCheckBox('Relative to Base')
+            self.link_VarI.setToolTip('Relative to Base ON will add a $BASE variable to your path. \n If the $BASE Variable exists and you turn it off, the path will be fully resolved')
             misc_layout_grid.addWidget(self.Active_VarI,9,0)
             misc_layout_grid.addWidget(self.Descr_VarI,9,1)
             misc_layout_grid.addWidget(self.Path_VarI,9,2)
@@ -203,7 +212,7 @@ class CloneMergeGUI(QtGui.QDialog):
 
             # APPLY CANCEL BUTTONS
             # Widget OK / Cancel Button
-            self.AllBtn = QtGui.QPushButton('Set Paths')
+            self.AllBtn = QtGui.QPushButton('Set Project')
             self.SelectedBtn = QtGui.QPushButton('Cancel')
             # Add Apply Cancel Buttons to Button Layout
             button_layout_box.addWidget(self.AllBtn)
@@ -216,6 +225,24 @@ class CloneMergeGUI(QtGui.QDialog):
             window_layout_box.addWidget(misc_group_box)
             window_layout_box.addLayout(button_layout_box)
 
-            #
+
+# ------------------------------------------------------------------------------
+def _isProjectSuitable():
+    """Checks project state."""
+    MARI_3_0V1b2_VERSION_NUMBER = 30001202    # see below
+    if mari.app.version().number() >= MARI_3_0V1b2_VERSION_NUMBER:
+
+        if mari.projects.current() is None:
+            mari.utils.message("Please open a project before running.")
+            return False, False
+
+        if mari.app.version().number() >= MARI_3_0V1b2_VERSION_NUMBER:
+            return True, True
+
+        return True, False
+
+    else:
+        mari.utils.message("You can only run this script in Mari 3.0v1 or newer.")
+        return False, False
 
 CloneMergeGUI().exec_()
