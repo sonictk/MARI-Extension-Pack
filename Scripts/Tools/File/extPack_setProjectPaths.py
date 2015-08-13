@@ -1,11 +1,22 @@
-class CloneMergeGUI(QtGui.QDialog):
+# Notes:
+#  Some logic errors in _resetToProjectTemplate: How can you reset to a project default if it was already changed ?
+# Maybe on launch for the first time save out the defaults into separate QSettings Group so it can be recalled later ?
+
+import mari, os
+import PySide.QtGui as QtGui
+import PySide.QtCore as QtCore
+from PySide.QtCore import QSettings
+import inspect
+
+
+
+class setProjectPathUI(QtGui.QDialog):
     """GUI to set your Project Paths"""
 
     def __init__(self):
         suitable = _isProjectSuitable()
-
         if suitable[0]:
-            super(CloneMergeGUI, self).__init__()
+            super(setProjectPathUI, self).__init__()
             # Dialog Settings
             # self.setFixedSize(700, 600)
             self.setWindowTitle('Set Project Default Paths')
@@ -55,16 +66,19 @@ class CloneMergeGUI(QtGui.QDialog):
             self.Path_VarA = QtGui.QLineEdit()
             self.path_button_VarA = QtGui.QPushButton(path_icon, "")
             self.path_button_VarA.setToolTip('Browse for Folder')
-            self.template_reset_VarA = QtGui.QPushButton(template_reset_icon, "")
-            self.template_reset_VarA.setToolTip('Reset to Project Default')
+            self.templateReset_VarA = QtGui.QPushButton(template_reset_icon, "")
+            self.templateReset_VarA.setToolTip('Reset to Project Default')
             self.link_VarA = QtGui.QCheckBox('Relative to Base')
             self.link_VarA.setToolTip('Relative to Base ON will add a $BASE variable to your path. \n If the $BASE Variable exists and you turn it off, the path will be fully resolved')
             variable_layout_grid.addWidget(self.Active_VarA,2,0)
             variable_layout_grid.addWidget(self.Descr_VarA,2,1)
             variable_layout_grid.addWidget(self.Path_VarA,2,2)
             variable_layout_grid.addWidget(self.path_button_VarA,2,3)
-            variable_layout_grid.addWidget(self.template_reset_VarA,2,4)
+            variable_layout_grid.addWidget(self.templateReset_VarA,2,4)
             variable_layout_grid.addWidget(self.link_VarA,2,5)
+
+
+
 
 
             # Variable Widgets Variable C
@@ -226,6 +240,54 @@ class CloneMergeGUI(QtGui.QDialog):
             window_layout_box.addLayout(button_layout_box)
 
 
+            # self.templateReset_VarA.clicked.connect(self._setProjectTemplate(self.Path_VarA))
+
+
+    def _getProjectTemplate(self,pathVariable):
+        """ Returns the default path that was set at project launch"""
+
+        if pathVariable is 'Tex_Export':
+            return mari.resources.path(mari.resources.DEFAULT_EXPORT)
+        elif pathVariable is 'Tex_Import':
+            return mari.resources.path(mari.resources.DEFAULT_IMPORT)
+        elif pathVariable is 'Archive':
+            return mari.resources.path(mari.resources.DEFAULT_ARCHIVE)
+        elif pathVariable is 'Camera':
+            return mari.resources.path(mari.resources.DEFAULT_CAMERA)
+        elif pathVariable is 'Geo':
+            return mari.resources.path(mari.resources.DEFAULT_GEO)
+        elif pathVariable is 'Image':
+            return mari.resources.path(mari.resources.DEFAULT_IMAGE)
+        elif pathVariable is 'Shelf':
+            return mari.resources.path(mari.resources.DEFAULT_SHELF)
+        elif pathVariable is 'Render':
+            return mari.resources.path(mari.resources.DEFAULT_RENDER)
+        elif pathVariable is None:
+            return ''
+
+    def _setProjectTemplate(self,obj):
+        """ Gets the default path variable and sets the QLineEditField in Main UI to Value"""
+
+        # pathVar = pathVariable
+        path = self._getProjectTemplate('Tex_Export')
+        print path
+        obj.setText(path)
+
+
+
+
+
+# class pathProcessing():
+#     """Handles path operations on the individual variable fields"""
+
+#     def __init__(self):
+#         super(pathProcessing, self).__init__()
+
+
+
+
+
+
 # ------------------------------------------------------------------------------
 def _isProjectSuitable():
     """Checks project state."""
@@ -245,4 +307,5 @@ def _isProjectSuitable():
         mari.utils.message("You can only run this script in Mari 3.0v1 or newer.")
         return False, False
 
-CloneMergeGUI().exec_()
+
+setProjectPathUI().exec_()
