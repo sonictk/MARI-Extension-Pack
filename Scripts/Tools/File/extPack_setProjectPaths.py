@@ -532,10 +532,12 @@ class setProjectPathUI(QtGui.QDialog):
             if obj_link is not None:
                 obj_link.setEnabled(True)
 
-    def _checkInput(self,value):
+    def _checkInput(self,text_path,base_link):
         """Checks and resolves the entered path"""
 
-        resolved_val = value.text()
+        resolved_val = text_path.text()
+        base_val = self.Path_Base.text()
+        resolved_val = resolved_val.replace('$BASE', base_val)
         return resolved_val
 
 
@@ -544,35 +546,35 @@ class setProjectPathUI(QtGui.QDialog):
 
         # Set Texture Import Path
         if self.Active_VarA.isChecked:
-            pathA = self._checkInput(self.Path_VarA)
+            pathA = self._checkInput(self.Path_VarA,self.link_VarA)
             mari.resources.setPath(mari.resources.DEFAULT_IMPORT,pathA)
         # Set Texture Export Path
         if self.Active_VarC.isChecked:
-            pathC = self._checkInput(self.Path_VarC)
+            pathC = self._checkInput(self.Path_VarC,self.link_VarC)
             mari.resources.setPath(mari.resources.DEFAULT_EXPORT,pathC)
         # Set Geo Path
         if self.Active_VarD.isChecked:
-            pathD = self._checkInput(self.Path_VarD)
+            pathD = self._checkInput(self.Path_VarD,self.link_VarD)
             mari.resources.setPath(mari.resources.DEFAULT_GEO,pathD)
         # Set Tmage Manager Path
         if self.Active_VarE.isChecked:
-            pathE = self._checkInput(self.Path_VarE)
+            pathE = self._checkInput(self.Path_VarE,self.link_VarE)
             mari.resources.setPath(mari.resources.DEFAULT_IMAGE,pathE)
         # Set Render Path
         if self.Active_VarF.isChecked:
-            pathF = self._checkInput(self.Path_VarF)
+            pathF = self._checkInput(self.Path_VarF,self.link_VarF)
             mari.resources.setPath(mari.resources.DEFAULT_RENDER,pathF)
         # Set Archive Path
         if self.Active_VarG.isChecked:
-            pathG = self._checkInput(self.Path_VarG)
+            pathG = self._checkInput(self.Path_VarG,self.link_VarG)
             mari.resources.setPath(mari.resources.DEFAULT_ARCHIVE,pathG)
         # Set Shelf Path
         if self.Active_VarH.isChecked:
-            pathH = self._checkInput(self.Path_VarH)
+            pathH = self._checkInput(self.Path_VarH,self.link_VarH)
             mari.resources.setPath(mari.resources.DEFAULT_SHELF,pathH)
         # Set Camera Path
         if self.Active_VarI.isChecked:
-            pathI = self._checkInput(self.Path_VarI)
+            pathI = self._checkInput(self.Path_VarI,self.link_VarI)
             mari.resources.setPath(mari.resources.DEFAULT_CAMERA,pathI)
         # Set Texture Flattened Temaplte
         if self.Active_VarJ.isChecked:
