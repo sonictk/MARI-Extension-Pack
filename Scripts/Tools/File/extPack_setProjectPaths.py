@@ -1,6 +1,9 @@
 # Notes:
 #  Some logic errors in _resetToProjectTemplate: How can you reset to a project default if it was already changed ?
 # Maybe on launch for the first time save out the defaults into separate QSettings Group so it can be recalled later ?
+#
+# There are redundant debug print statements in _setPath()
+
 
 import mari, os
 import PySide.QtGui as QtGui
@@ -425,11 +428,15 @@ class setProjectPathUI(QtGui.QDialog):
 
             # APPLY CANCEL BUTTONS
             # Widget OK / Cancel Button
-            self.AllBtn = QtGui.QPushButton('Set Project')
-            self.SelectedBtn = QtGui.QPushButton('Cancel')
+            self.OkBtn = QtGui.QPushButton('Set Project')
+            self.CancelBtn = QtGui.QPushButton('Cancel')
             # Add Apply Cancel Buttons to Button Layout
-            button_layout_box.addWidget(self.AllBtn)
-            button_layout_box.addWidget(self.SelectedBtn)
+            button_layout_box.addWidget(self.OkBtn)
+            button_layout_box.addWidget(self.CancelBtn)
+
+            # Connections:
+            self.OkBtn.clicked.connect(self._setPath)
+            self.CancelBtn.clicked.connect(self.reject)
 
 
             # Add sub Layouts to main Window Box Layout
@@ -525,17 +532,76 @@ class setProjectPathUI(QtGui.QDialog):
             if obj_link is not None:
                 obj_link.setEnabled(True)
 
+    def _checkInput(self,value):
+        """Checks and resolves the entered path"""
+
+        resolved_val = value.text()
+        return resolved_val
 
 
+    def _setPath(self):
+        """ Sets the new value for activated variables"""
+
+        # Set Texture Import Path
+        if self.Active_VarA.isChecked:
+            pathA = self._checkInput(self.Path_VarA)
+            mari.resources.setPath(mari.resources.DEFAULT_IMPORT,pathA)
+        # Set Texture Export Path
+        if self.Active_VarC.isChecked:
+            pathC = self._checkInput(self.Path_VarC)
+            mari.resources.setPath(mari.resources.DEFAULT_EXPORT,pathC)
+        # Set Geo Path
+        if self.Active_VarD.isChecked:
+            pathD = self._checkInput(self.Path_VarD)
+            mari.resources.setPath(mari.resources.DEFAULT_GEO,pathD)
+        # Set Tmage Manager Path
+        if self.Active_VarE.isChecked:
+            pathE = self._checkInput(self.Path_VarE)
+            mari.resources.setPath(mari.resources.DEFAULT_IMAGE,pathE)
+        # Set Render Path
+        if self.Active_VarF.isChecked:
+            pathF = self._checkInput(self.Path_VarF)
+            mari.resources.setPath(mari.resources.DEFAULT_RENDER,pathF)
+        # Set Archive Path
+        if self.Active_VarG.isChecked:
+            pathG = self._checkInput(self.Path_VarG)
+            mari.resources.setPath(mari.resources.DEFAULT_ARCHIVE,pathG)
+        # Set Shelf Path
+        if self.Active_VarH.isChecked:
+            pathH = self._checkInput(self.Path_VarH)
+            mari.resources.setPath(mari.resources.DEFAULT_SHELF,pathH)
+        # Set Camera Path
+        if self.Active_VarI.isChecked:
+            pathI = self._checkInput(self.Path_VarI)
+            mari.resources.setPath(mari.resources.DEFAULT_CAMERA,pathI)
+        # Set Texture Flattened Temaplte
+        if self.Active_VarJ.isChecked:
+            mari.resources.setFlattenedSequenceTemplate(self.Path_VarJ.text())
+        # Set Texture Temaplte
+        if self.Active_VarK.isChecked:
+            mari.resources.setSequenceTemplate(self.Path_VarK.text())
+        # Set PTEX Flattened Temaplte
+        if self.Active_VarL.isChecked:
+            mari.resources.setPtexFlattenedSequenceTemplate(self.Path_VarL.text())
+        # Set PTEX Temaplte
+        if self.Active_VarM.isChecked:
+            mari.resources.setPtexSequenceTemplate(self.Path_VarM.text())
 
 
+        print mari.resources.path(mari.resources.DEFAULT_EXPORT)
+        print mari.resources.path(mari.resources.DEFAULT_IMPORT)
+        print mari.resources.path(mari.resources.DEFAULT_ARCHIVE)
+        print mari.resources.path(mari.resources.DEFAULT_CAMERA)
+        print mari.resources.path(mari.resources.DEFAULT_GEO)
+        print mari.resources.path(mari.resources.DEFAULT_IMAGE)
+        print mari.resources.path(mari.resources.DEFAULT_SHELF)
+        print mari.resources.path(mari.resources.DEFAULT_RENDER)
+        print mari.resources.sequenceTemplate()
+        print mari.resources.flattenedSequenceTemplate()
+        print mari.resources.ptexSequenceTemplate()
+        print mari.resources.ptexFlattenedSequenceTemplate()
 
-# class pathProcessing():
-#     """Handles path operations on the individual variable fields"""
-
-#     def __init__(self):
-#         super(pathProcessing, self).__init__()
-
+        self.accept()
 
 
 
