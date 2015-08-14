@@ -3,6 +3,13 @@
 # Maybe on launch for the first time save out the defaults into separate QSettings Group so it can be recalled later ?
 #
 # There are redundant debug print statements in _setPath()
+# To do:
+# - get rid of print statements in _setPath
+# - check against BASE Variable on execution (error if empty)
+# - folder creation
+# - save template defaults
+# - save user changes
+# - double check os+seps
 
 
 import mari, os
@@ -32,7 +39,7 @@ class setProjectPathUI(QtGui.QDialog):
             misc_layout_grid = QtGui.QGridLayout()
             file_layout_grid = QtGui.QGridLayout()
             button_layout_box = QtGui.QHBoxLayout()
-            base_group_box = QtGui.QGroupBox('Project Base Path')
+            base_group_box = QtGui.QGroupBox('Project Base Path (optional)')
             asset_group_box = QtGui.QGroupBox("Asset Paths")
             misc_group_box = QtGui.QGroupBox("Misc Paths")
             file_group_box = QtGui.QGroupBox("File Templates")
@@ -343,8 +350,6 @@ class setProjectPathUI(QtGui.QDialog):
             self.link_VarH.clicked.connect(Link_VarH_checkbox_connect)
 
 
-
-
             # Variable Widgets Variable I
             self.Active_VarI = QtGui.QCheckBox("CAM/PROJECTOR (Import/Export):")
             self.Active_VarI.setToolTip('The default Path that should be used when Importing or Eporting Cameras or Projectors')
@@ -383,7 +388,6 @@ class setProjectPathUI(QtGui.QDialog):
 
 
             misc_group_box.setLayout(misc_layout_grid)
-
 
 
             # File Template Widgets
@@ -474,11 +478,7 @@ class setProjectPathUI(QtGui.QDialog):
             Reset_VarM_button_connect = lambda: self._setProjectTemplate(self.Path_VarM,'PTEXSequence')
             self.templateReset_VarM.clicked.connect(Reset_VarM_button_connect)
 
-
-
             file_group_box.setLayout(file_layout_grid)
-
-
 
 
             # APPLY CANCEL BUTTONS
@@ -490,7 +490,7 @@ class setProjectPathUI(QtGui.QDialog):
             button_layout_box.addWidget(self.CancelBtn)
 
             # Connections:
-            self.OkBtn.clicked.connect(self._setPath)
+            self.OkBtn.clicked.connect(self._checkInput)
             self.CancelBtn.clicked.connect(self.reject)
 
 
@@ -623,6 +623,7 @@ class setProjectPathUI(QtGui.QDialog):
             # if base path is empty but base variable is foundthrow a user message
             if not base_text and base_var_found:
                 mari.utils.message('The Base Path is empty.\n Unable to resolve $BASE Variable to full Path','Unable to resolve Base Path')
+                base_link.setChecked(True)
                 return
             else:
                 base_find = text.replace('$BASE',base_text)
@@ -631,50 +632,113 @@ class setProjectPathUI(QtGui.QDialog):
 
 
 
-    def _checkInput(self,var_active,text_path,base_link):
+    def _checkInput(self):
         """Checks and resolves the entered path when dialog is accepted"""
 
-        if var_active:
-            resolved_val = text_path.text()
-            base_val = self.Path_Base.text()
-            resolved_val = resolved_val.replace('$BASE', base_val)
-            return resolved_val
+        # Dictionary: Key - Variable Active Field - Variable Path Field - Variable to set - $BASE found - Path Exists
+        var_dict = {
+                    'TEXTURE MAPS (import)' :  [self.Active_VarA, self.Path_VarA, mari.resources.DEFAULT_IMPORT, True,False],
+                    'TEXTURE MAPS (export)' :  [self.Active_VarC, self.Path_VarC, mari.resources.DEFAULT_EXPORT, True,False],
+                    'GEOMETRY (import)'        :  [self.Active_VarD, self.Path_VarD, mari.resources.DEFAULT_GEO,True,False],
+                    'IMAGE MANAGER (import/export)'      :  [self.Active_VarE, self.Path_VarE, mari.resources.DEFAULT_IMAGE,True,False],
+                    'RENDERS/TURNTABLES (export)'     :  [self.Active_VarF, self.Path_VarF, mari.resources.DEFAULT_RENDER,True,False],
+                    'ARCHIVE (import/export)'    :  [self.Active_VarG, self.Path_VarG, mari.resources.DEFAULT_ARCHIVE,True,False],
+                    'SHELVES (import/export)'      :  [self.Active_VarH, self.Path_VarH, mari.resources.DEFAULT_SHELF,True,False],
+                    'CAM/PROJECTOR (import/export)'     :  [self.Active_VarI, self.Path_VarI, mari.resources.DEFAULT_CAMERA,True,False]
+                    }
+
+
+        base_text = self.Path_Base.text()
+        base_found = False
+        base_found_in_var = False
+        base_var_dict = {}
+        base_var_exist_dict = {} #used to give details to the Error UI
+
+        # Checking dictionary for $BASE Variables:
+        for key in var_dict:
+            dict_val_00 = var_dict[key][0] # Is Field Active ?
+            dict_val_01 = var_dict[key][1] # What is the PathText of the Active Field
+            dict_val_02 = var_dict[key][2] # The Variable associated to the Field
+            dict_val_03 = var_dict[key][3] # Is there a $BASE Variable in the Path ?
+            dict_val_04 = var_dict[key][4] # Does the resolved Path exist ?
+
+            if dict_val_00.isChecked(): #Only check active rows
+                row_active = True
+                variable_path = dict_val_01.text()
+                contains_base_val = variable_path.find('$BASE')
+                if contains_base_val is -1:
+                    base_found_in_var = False
+                else:
+                    base_found_in_var = True
+                    base_found = True
+                    base_var_exist_dict[key] = key
+
+                # Set dictionary entries - if the $BASE Variable was found or not and if the row is active
+                # Use old values for other ones
+                base_var_dict[key] = [row_active,dict_val_01,dict_val_02,base_found_in_var,dict_val_04]
+
+
+        # When there are base variables used but the base_path is empty pop a question
+        if base_found and not base_text:
+            # Generating a textmessage for the Details of the Info Box
+            key_list = []
+            for key in base_var_exist_dict:
+                key_list.append(base_var_exist_dict[key])
+
+            info_dialog = InfoUI(key_list)
+            info_dialog.exec_()
+            info_reply = info_dialog.buttonRole(info_dialog.clickedButton())
+            # If User chooses to Ignore problematic paths, we will remove the prolematic ones from the dictionary
+            if info_reply is QtGui.QMessageBox.ButtonRole.AcceptRole:
+                for key in base_var_exist_dict:
+                    base_var_dict.pop(key)
+            else:
+                return
+
+
+
+#
+        # variable_path = dict_val_01.text()
+#
+        # resolved_val = variable_path.replace('$BASE', base_val)
+        # return resolved_val
 
 
     def _setPath(self):
         """ Sets the new value for activated variables"""
 
+
         # Set Texture Import Path
         if self.Active_VarA.isChecked:
-            pathA = self._checkInput(self.Path_VarA,self.link_VarA)
+            pathA = self._checkInput(self.Path_VarA)
             mari.resources.setPath(mari.resources.DEFAULT_IMPORT,pathA)
         # Set Texture Export Path
         if self.Active_VarC.isChecked:
-            pathC = self._checkInput(self.Path_VarC,self.link_VarC)
+            pathC = self._checkInput(self.Path_VarC)
             mari.resources.setPath(mari.resources.DEFAULT_EXPORT,pathC)
         # Set Geo Path
         if self.Active_VarD.isChecked:
-            pathD = self._checkInput(self.Path_VarD,self.link_VarD)
+            pathD = self._checkInput(self.Path_VarD)
             mari.resources.setPath(mari.resources.DEFAULT_GEO,pathD)
         # Set Tmage Manager Path
         if self.Active_VarE.isChecked:
-            pathE = self._checkInput(self.Path_VarE,self.link_VarE)
+            pathE = self._checkInput(self.Path_VarE)
             mari.resources.setPath(mari.resources.DEFAULT_IMAGE,pathE)
         # Set Render Path
         if self.Active_VarF.isChecked:
-            pathF = self._checkInput(self.Path_VarF,self.link_VarF)
+            pathF = self._checkInput(self.Path_VarF)
             mari.resources.setPath(mari.resources.DEFAULT_RENDER,pathF)
         # Set Archive Path
         if self.Active_VarG.isChecked:
-            pathG = self._checkInput(self.Path_VarG,self.link_VarG)
+            pathG = self._checkInput(self.Path_VarG)
             mari.resources.setPath(mari.resources.DEFAULT_ARCHIVE,pathG)
         # Set Shelf Path
         if self.Active_VarH.isChecked:
-            pathH = self._checkInput(self.Path_VarH,self.link_VarH)
+            pathH = self._checkInput(self.Path_VarH)
             mari.resources.setPath(mari.resources.DEFAULT_SHELF,pathH)
         # Set Camera Path
         if self.Active_VarI.isChecked:
-            pathI = self._checkInput(self.Path_VarI,self.link_VarI)
+            pathI = self._checkInput(self.Path_VarI)
             mari.resources.setPath(mari.resources.DEFAULT_CAMERA,pathI)
         # Set Texture Flattened Temaplte
         if self.Active_VarJ.isChecked:
@@ -690,24 +754,41 @@ class setProjectPathUI(QtGui.QDialog):
             mari.resources.setPtexSequenceTemplate(self.Path_VarM.text())
 
 
-        print mari.resources.path(mari.resources.DEFAULT_EXPORT)
-        print mari.resources.path(mari.resources.DEFAULT_IMPORT)
-        print mari.resources.path(mari.resources.DEFAULT_ARCHIVE)
-        print mari.resources.path(mari.resources.DEFAULT_CAMERA)
-        print mari.resources.path(mari.resources.DEFAULT_GEO)
-        print mari.resources.path(mari.resources.DEFAULT_IMAGE)
-        print mari.resources.path(mari.resources.DEFAULT_SHELF)
-        print mari.resources.path(mari.resources.DEFAULT_RENDER)
-        print mari.resources.sequenceTemplate()
-        print mari.resources.flattenedSequenceTemplate()
-        print mari.resources.ptexSequenceTemplate()
-        print mari.resources.ptexFlattenedSequenceTemplate()
+        # print mari.resources.path(mari.resources.DEFAULT_EXPORT)
+        # print mari.resources.path(mari.resources.DEFAULT_IMPORT)
+        # print mari.resources.path(mari.resources.DEFAULT_ARCHIVE)
+        # print mari.resources.path(mari.resources.DEFAULT_CAMERA)
+        # print mari.resources.path(mari.resources.DEFAULT_GEO)
+        # print mari.resources.path(mari.resources.DEFAULT_IMAGE)
+        # print mari.resources.path(mari.resources.DEFAULT_SHELF)
+        # print mari.resources.path(mari.resources.DEFAULT_RENDER)
+        # print mari.resources.sequenceTemplate()
+        # print mari.resources.flattenedSequenceTemplate()
+        # print mari.resources.ptexSequenceTemplate()
+        # print mari.resources.ptexFlattenedSequenceTemplate()
 
         self.accept()
 
 
+# ------------------------------------------------------------------------------
 
+class InfoUI(QtGui.QMessageBox):
+    """Informs the user that a $BASE Variable was used but no Base Path was specified"""
+    def __init__(self,where_do_base_variables_exist, parent=None):
+        super(InfoUI, self).__init__(parent)
 
+        infotxt = '$BASE Variables found in:'
+        base_number = len(where_do_base_variables_exist)
+        for item in where_do_base_variables_exist:
+            infotxt = infotxt + '\n' + item
+
+        # Create info gui
+        self.setWindowTitle('No Base Path specified')
+        self.setText('You are using $BASE Variables in one or more active Fields\nbut no valid Base Path is specified\n\nHow do you wish to proceed ?')
+        self.setInformativeText('Ignore will skip any paths with $BASE Variables')
+        self.setDetailedText(infotxt)
+        self.setStandardButtons(QtGui.QMessageBox.Ignore | QtGui.QMessageBox.Cancel)
+        self.setDefaultButton(QtGui.QMessageBox.Ignore)
 
 # ------------------------------------------------------------------------------
 def _isProjectSuitable():
