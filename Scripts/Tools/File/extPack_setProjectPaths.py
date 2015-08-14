@@ -606,11 +606,14 @@ class setProjectPathUI(QtGui.QDialog):
         the Variable will be replaced in the text field with the full path."""
 
         text = text_path.text()
-        base_text = base_path.text()
+        base_path_text = base_path.text()
+
+        if base_path_text.endswith('/') or base_path_text.endswith('\\'):
+            base_path_text = base_path_text[:-1]
 
         # If it is checked and a path is found that corresponds to Base Path, insert Variable
-        if base_link.isChecked() and base_text:
-            base_find = text.replace(base_text,'$BASE')
+        if base_link.isChecked() and base_path_text:
+            base_find = text.replace(base_path_text,'$BASE')
             text_path.setText(base_find)
 
         # Otherwise if BASE Variable is found and link is unchecked, replace variable with path
@@ -621,19 +624,19 @@ class setProjectPathUI(QtGui.QDialog):
             else: #base is contained in variable path
                 base_var_found = True
             # if base path is empty but base variable is foundthrow a user message
-            if not base_text and base_var_found:
+            if not base_path_text and base_var_found:
                 mari.utils.message('The Base Path is empty.\n Unable to resolve $BASE Variable to full Path','Unable to resolve Base Path')
                 base_link.setChecked(True)
                 return
             else:
-                base_find = text.replace('$BASE',base_text)
+                base_find = text.replace('$BASE',base_path_text)
                 text_path.setText(base_find)
 
 
 
 
     def _checkInput(self):
-        """Checks and resolves the entered path when dialog is accepted"""
+        """Checks and resolves the entered path when dialog is accepted and launches necessary dialogs (create dirs)"""
 
         # Dictionary: Key - Variable Active Field - Variable Path Field - Variable to set - $BASE found - Path Exists
         var_dict = {
@@ -648,11 +651,15 @@ class setProjectPathUI(QtGui.QDialog):
                     }
 
 
-        base_text = self.Path_Base.text()
+        base_path_text = self.Path_Base.text()
+        if base_path_text.endswith('/') or base_path_text.endswith('\\'):
+            base_path_text = base_path_text[:-1]
         base_found = False
         base_found_in_var = False
-        base_var_dict = {}
-        base_var_exist_dict = {} #used to give details to the Error UI
+        base_var_dict = {} # created to Check for $BASE Variables
+        base_var_final_dict = {} # contains the finished list of items that are active, including their states for folderExist & $BASE Var.
+        base_var_exist_dict = {} #used to give details to the Error UI if an invalid $BASE Variable is used
+        var_folder_exist_dict = {} #used to give details to the Error UI what folders need to be created
 
         # Checking dictionary for $BASE Variables:
         for key in var_dict:
@@ -673,19 +680,19 @@ class setProjectPathUI(QtGui.QDialog):
                     base_found = True
                     base_var_exist_dict[key] = key
 
-                # Set dictionary entries - if the $BASE Variable was found or not and if the row is active
+                # Set dictionary entries in new dict- if the $BASE Variable was found or not and if the row is active
                 # Use old values for other ones
                 base_var_dict[key] = [row_active,dict_val_01,dict_val_02,base_found_in_var,dict_val_04]
 
 
         # When there are base variables used but the base_path is empty pop a question
-        if base_found and not base_text:
+        if base_found and not base_path_text:
             # Generating a textmessage for the Details of the Info Box
             key_list = []
             for key in base_var_exist_dict:
                 key_list.append(base_var_exist_dict[key])
 
-            info_dialog = InfoUI(key_list)
+            info_dialog = Base_InfoUI(key_list)
             info_dialog.exec_()
             info_reply = info_dialog.buttonRole(info_dialog.clickedButton())
             # If User chooses to Ignore problematic paths, we will remove the prolematic ones from the dictionary
@@ -695,7 +702,85 @@ class setProjectPathUI(QtGui.QDialog):
             else:
                 return
 
+        # if base_path is not empty but does not exist, throw dialog to create it
+        if base_path_text:
+            if not os.path.exists(base_path_text):
+                title = 'Create Base Directory'
+                text = 'Base Path Subfolder does not exist: \n\n "%s".' %base_path_text
+                info = 'Create the path?'
+                info_dialog = InfoUI(title, text, info)
+                info_dialog.exec_()
+                info_reply = info_dialog.buttonRole(info_dialog.clickedButton())
+                if info_reply is QtGui.QMessageBox.ButtonRole.RejectRole:
+                    return
+                else:
+                    if not os.path.exists(base_path_text):
+                        os.makedirs(base_path_text)
 
+
+        var_missing_folders = False
+
+        # Check all the Subfolders on all active variables
+        for key in base_var_dict:
+            var_folder_exists = False
+            dict_val_00 = base_var_dict[key][0] # Is Field Active ?
+            dict_val_01 = base_var_dict[key][1] # What is the PathText of the Active Field
+            dict_val_02 = base_var_dict[key][2] # The Variable associated to the Field
+            dict_val_03 = base_var_dict[key][3] # Is there a $BASE Variable in the Path ?
+            dict_val_04 = base_var_dict[key][4] # Does the resolved Path exist ?
+
+            if dict_val_00: #Only check active rows
+                if base_path_text.endswith('/') or base_path_text.endswith('\\'):
+                    base_path_text = base_path_text[:-1]
+                dict_val_01_resolve = dict_val_01.text()
+                dict_val_01_resolve = dict_val_01_resolve.replace('$BASE',base_path_text)
+                if os.path.exists(dict_val_01_resolve):
+                    var_folder_exists = True
+                else:
+                    var_folder_exists = False
+                    var_missing_folders = True
+                    var_folder_exist_dict[key] = dict_val_01_resolve
+
+                # Set dictionary entries in new dict- if the $BASE Variable was found or not and if the row is active
+                # Use old values for other ones
+                base_var_final_dict[key] = [dict_val_00,dict_val_01,dict_val_02,dict_val_03,var_folder_exists,dict_val_01_resolve]
+
+
+        # if we came across missing folders throw a dialog:
+        if var_missing_folders:
+            # Generating a textmessage for the Details of the Info Box
+            key_list_B = []
+            for key in var_folder_exist_dict:
+                key_list_B.append(key + ': ' + var_folder_exist_dict[key])
+
+            info_dialog_B = VarDir_InfoUI(key_list_B)
+            info_dialog_B.exec_()
+            info_reply_B = info_dialog_B.buttonRole(info_dialog_B.clickedButton())
+            # If User chooses to create the missing Folders grab the keys from var_folder_exist_dict and the
+            # resolved path from base_var_final_dict and make folders.
+            if info_reply_B is QtGui.QMessageBox.ButtonRole.AcceptRole:
+                for key in var_folder_exist_dict:
+                    path_to_create = base_var_final_dict[key][5]
+                    os.makedirs(path_to_create)
+            else:
+                return
+
+
+
+
+
+
+
+
+
+
+
+
+        # self.accept()
+
+        else:
+            print 'all good'
+            return
 
 #
         # variable_path = dict_val_01.text()
@@ -772,10 +857,10 @@ class setProjectPathUI(QtGui.QDialog):
 
 # ------------------------------------------------------------------------------
 
-class InfoUI(QtGui.QMessageBox):
+class Base_InfoUI(QtGui.QMessageBox):
     """Informs the user that a $BASE Variable was used but no Base Path was specified"""
     def __init__(self,where_do_base_variables_exist, parent=None):
-        super(InfoUI, self).__init__(parent)
+        super(Base_InfoUI, self).__init__(parent)
 
         infotxt = '$BASE Variables found in:'
         base_number = len(where_do_base_variables_exist)
@@ -784,11 +869,51 @@ class InfoUI(QtGui.QMessageBox):
 
         # Create info gui
         self.setWindowTitle('No Base Path specified')
+        self.setIcon(QtGui.QMessageBox.Warning)
         self.setText('You are using $BASE Variables in one or more active Fields\nbut no valid Base Path is specified\n\nHow do you wish to proceed ?')
         self.setInformativeText('Ignore will skip any paths with $BASE Variables')
         self.setDetailedText(infotxt)
         self.setStandardButtons(QtGui.QMessageBox.Ignore | QtGui.QMessageBox.Cancel)
         self.setDefaultButton(QtGui.QMessageBox.Ignore)
+
+# ------------------------------------------------------------------------------
+
+class VarDir_InfoUI(QtGui.QMessageBox):
+    """Informs the user that a $BASE Variable was used but no Base Path was specified"""
+    def __init__(self,which_folders_do_not_exist, parent=None):
+        super(VarDir_InfoUI, self).__init__(parent)
+
+        infotxt = ''
+        base_number = len(which_folders_do_not_exist)
+        for item in which_folders_do_not_exist:
+            infotxt = infotxt + '\n' + item + ' does not exist'
+
+        # Create info gui
+        self.setWindowTitle('Folders do not exist')
+        self.setIcon(QtGui.QMessageBox.Warning)
+        self.setText('Some Variable Folder you specified do not exist (see Details).\n\nDo you wish to create the missing Folders ?')
+        self.setDetailedText(infotxt)
+        self.setStandardButtons(QtGui.QMessageBox.Ok | QtGui.QMessageBox.Cancel)
+        self.setDefaultButton(QtGui.QMessageBox.Ok)
+
+# ------------------------------------------------------------------------------
+
+class InfoUI(QtGui.QMessageBox):
+    """Show the user information for them to make a decision on whether to procede."""
+    def __init__(self, title, text, info=None, details=None, bool_=False, parent=None):
+        super(InfoUI, self).__init__(parent)
+
+        # Create info gui
+        self.setWindowTitle(title)
+        self.setText(text)
+        self.setIcon(QtGui.QMessageBox.Warning)
+        if not info == None:
+            self.setInformativeText(info)
+        if not details == None:
+            self.setDetailedText(details)
+        if not bool_:
+            self.setStandardButtons(QtGui.QMessageBox.Ok | QtGui.QMessageBox.Cancel)
+            self.setDefaultButton(QtGui.QMessageBox.Ok)
 
 # ------------------------------------------------------------------------------
 def _isProjectSuitable():
