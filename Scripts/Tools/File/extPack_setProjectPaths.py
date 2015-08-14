@@ -78,7 +78,7 @@ class setProjectPathUI(QtGui.QDialog):
             self.templateReset_VarA.setToolTip('Reset to Project Default')
             self.link_VarA = QtGui.QCheckBox('Relative to Base')
             self.link_VarA.setCheckable(True)
-            self.link_VarA.setToolTip('Relative to Base ON will add a $BASE variable to your path. \n If the $BASE Variable exists and you turn it off, the path will be fully resolved')
+            self.link_VarA.setToolTip('With RelativeToBase ON, the entered Path will be scanned for similarities to your Base Path.\nIf parts are identical they will be replaced with a $BASE variable.\nIf your Path contains a $BASE Variable and you uncheck RelativeToBase the Path will be fully resolved')
             variable_layout_grid.addWidget(self.Active_VarA,2,0)
             variable_layout_grid.addWidget(self.Path_VarA,2,2)
             variable_layout_grid.addWidget(self.path_button_VarA,2,3)
@@ -101,6 +101,10 @@ class setProjectPathUI(QtGui.QDialog):
             #### Path Field:
             Path_VarA_changed_connect = lambda: self._checkPathForBase(self.Path_VarA,self.link_VarA)
             self.Path_VarA.textChanged.connect(Path_VarA_changed_connect)
+            #### Base Link Field:
+            Link_VarA_checkbox_connect = lambda: self._resolveBASEVariable(self.Path_Base,self.Path_VarA,self.link_VarA)
+            self.link_VarA.clicked.connect(Link_VarA_checkbox_connect)
+
 
 
 
@@ -113,7 +117,7 @@ class setProjectPathUI(QtGui.QDialog):
             self.templateReset_VarC = QtGui.QPushButton(templateReset_icon, "")
             self.templateReset_VarC.setToolTip('Reset to Project Default')
             self.link_VarC = QtGui.QCheckBox('Relative to Base')
-            self.link_VarC.setToolTip('Relative to Base ON will add a $BASE variable to your path. \n If the $BASE Variable exists and you turn it off, the path will be fully resolved')
+            self.link_VarC.setToolTip('With RelativeToBase ON, the entered Path will be scanned for similarities to your Base Path.\nIf parts are identical they will be replaced with a $BASE variable.\nIf your Path contains a $BASE Variable and you uncheck RelativeToBase the Path will be fully resolved')
             variable_layout_grid.addWidget(self.Active_VarC,3,0)
             variable_layout_grid.addWidget(self.Path_VarC,3,2)
             variable_layout_grid.addWidget(self.path_button_VarC,3,3)
@@ -136,6 +140,10 @@ class setProjectPathUI(QtGui.QDialog):
             #### Path Field:
             Path_VarC_changed_connect = lambda: self._checkPathForBase(self.Path_VarC,self.link_VarC)
             self.Path_VarC.textChanged.connect(Path_VarC_changed_connect)
+            #### Base Link Field:
+            Link_VarC_checkbox_connect = lambda: self._resolveBASEVariable(self.Path_Base,self.Path_VarC,self.link_VarC)
+            self.link_VarC.clicked.connect(Link_VarC_checkbox_connect)
+
 
 
 
@@ -149,7 +157,7 @@ class setProjectPathUI(QtGui.QDialog):
             self.templateReset_VarD = QtGui.QPushButton(templateReset_icon, "")
             self.templateReset_VarD.setToolTip('Reset to Project Default')
             self.link_VarD = QtGui.QCheckBox('Relative to Base')
-            self.link_VarD.setToolTip('Relative to Base ON will add a $BASE variable to your path. \n If the $BASE Variable exists and you turn it off, the path will be fully resolved')
+            self.link_VarD.setToolTip('With RelativeToBase ON, the entered Path will be scanned for similarities to your Base Path.\nIf parts are identical they will be replaced with a $BASE variable.\nIf your Path contains a $BASE Variable and you uncheck RelativeToBase the Path will be fully resolved')
             variable_layout_grid.addWidget(self.Active_VarD,4,0)
             variable_layout_grid.addWidget(self.Path_VarD,4,2)
             variable_layout_grid.addWidget(self.path_button_VarD,4,3)
@@ -173,6 +181,10 @@ class setProjectPathUI(QtGui.QDialog):
             #### Path Field:
             Path_VarD_changed_connect = lambda: self._checkPathForBase(self.Path_VarD,self.link_VarD)
             self.Path_VarD.textChanged.connect(Path_VarD_changed_connect)
+            #### Base Link Field:
+            Link_VarD_checkbox_connect = lambda: self._resolveBASEVariable(self.Path_Base,self.Path_VarD,self.link_VarD)
+            self.link_VarD.clicked.connect(Link_VarD_checkbox_connect)
+
 
 
             # Variable Widgets Variable E
@@ -184,7 +196,7 @@ class setProjectPathUI(QtGui.QDialog):
             self.templateReset_VarE = QtGui.QPushButton(templateReset_icon, "")
             self.templateReset_VarE.setToolTip('Reset to Project Default')
             self.link_VarE = QtGui.QCheckBox('Relative to Base')
-            self.link_VarE.setToolTip('Relative to Base ON will add a $BASE variable to your path. \n If the $BASE Variable exists and you turn it off, the path will be fully resolved')
+            self.link_VarE.setToolTip('With RelativeToBase ON, the entered Path will be scanned for similarities to your Base Path.\nIf parts are identical they will be replaced with a $BASE variable.\nIf your Path contains a $BASE Variable and you uncheck RelativeToBase the Path will be fully resolved')
             variable_layout_grid.addWidget(self.Active_VarE,5,0)
             variable_layout_grid.addWidget(self.Path_VarE,5,2)
             variable_layout_grid.addWidget(self.path_button_VarE,5,3)
@@ -207,6 +219,10 @@ class setProjectPathUI(QtGui.QDialog):
             #### Path Field:
             Path_VarE_changed_connect = lambda: self._checkPathForBase(self.Path_VarE,self.link_VarE)
             self.Path_VarE.textChanged.connect(Path_VarE_changed_connect)
+            #### Base Link Field:
+            Link_VarE_checkbox_connect = lambda: self._resolveBASEVariable(self.Path_Base,self.Path_VarE,self.link_VarE)
+            self.link_VarE.clicked.connect(Link_VarE_checkbox_connect)
+
 
 
 
@@ -219,7 +235,7 @@ class setProjectPathUI(QtGui.QDialog):
             self.templateReset_VarF = QtGui.QPushButton(templateReset_icon, "")
             self.templateReset_VarF.setToolTip('Reset to Project Default')
             self.link_VarF = QtGui.QCheckBox('Relative to Base')
-            self.link_VarF.setToolTip('Relative to Base ON will add a $BASE variable to your path. \n If the $BASE Variable exists and you turn it off, the path will be fully resolved')
+            self.link_VarF.setToolTip('With RelativeToBase ON, the entered Path will be scanned for similarities to your Base Path.\nIf parts are identical they will be replaced with a $BASE variable.\nIf your Path contains a $BASE Variable and you uncheck RelativeToBase the Path will be fully resolved')
             variable_layout_grid.addWidget(self.Active_VarF,6,0)
             variable_layout_grid.addWidget(self.Path_VarF,6,2)
             variable_layout_grid.addWidget(self.path_button_VarF,6,3)
@@ -242,6 +258,10 @@ class setProjectPathUI(QtGui.QDialog):
             #### Path Field:
             Path_VarF_changed_connect = lambda: self._checkPathForBase(self.Path_VarF,self.link_VarF)
             self.Path_VarF.textChanged.connect(Path_VarF_changed_connect)
+            #### Base Link Field:
+            Link_VarF_checkbox_connect = lambda: self._resolveBASEVariable(self.Path_Base,self.Path_VarF,self.link_VarF)
+            self.link_VarF.clicked.connect(Link_VarF_checkbox_connect)
+
 
 
 
@@ -255,7 +275,7 @@ class setProjectPathUI(QtGui.QDialog):
             self.templateReset_VarG = QtGui.QPushButton(templateReset_icon, "")
             self.templateReset_VarG.setToolTip('Reset to Project Default')
             self.link_VarG = QtGui.QCheckBox('Relative to Base')
-            self.link_VarG.setToolTip('Relative to Base ON will add a $BASE variable to your path. \n If the $BASE Variable exists and you turn it off, the path will be fully resolved')
+            self.link_VarG.setToolTip('With RelativeToBase ON, the entered Path will be scanned for similarities to your Base Path.\nIf parts are identical they will be replaced with a $BASE variable.\nIf your Path contains a $BASE Variable and you uncheck RelativeToBase the Path will be fully resolved')
             variable_layout_grid.addWidget(self.Active_VarG,7,0)
             variable_layout_grid.addWidget(self.Path_VarG,7,2)
             variable_layout_grid.addWidget(self.path_button_VarG,7,3)
@@ -278,7 +298,9 @@ class setProjectPathUI(QtGui.QDialog):
             #### Path Field:
             Path_VarG_changed_connect = lambda: self._checkPathForBase(self.Path_VarG,self.link_VarG)
             self.Path_VarG.textChanged.connect(Path_VarG_changed_connect)
-
+            #### Base Link Field:
+            Link_VarG_checkbox_connect = lambda: self._resolveBASEVariable(self.Path_Base,self.Path_VarG,self.link_VarG)
+            self.link_VarG.clicked.connect(Link_VarG_checkbox_connect)
 
 
             asset_group_box.setLayout(variable_layout_grid)
@@ -293,7 +315,7 @@ class setProjectPathUI(QtGui.QDialog):
             self.templateReset_VarH = QtGui.QPushButton(templateReset_icon, "")
             self.templateReset_VarH.setToolTip('Reset to Project Default')
             self.link_VarH = QtGui.QCheckBox('Relative to Base')
-            self.link_VarH.setToolTip('Relative to Base ON will add a $BASE variable to your path. \n If the $BASE Variable exists and you turn it off, the path will be fully resolved')
+            self.link_VarH.setToolTip('With RelativeToBase ON, the entered Path will be scanned for similarities to your Base Path.\nIf parts are identical they will be replaced with a $BASE variable.\nIf your Path contains a $BASE Variable and you uncheck RelativeToBase the Path will be fully resolved')
             misc_layout_grid.addWidget(self.Active_VarH,8,0)
             misc_layout_grid.addWidget(self.Path_VarH,8,2)
             misc_layout_grid.addWidget(self.path_button_VarH,8,3)
@@ -316,6 +338,10 @@ class setProjectPathUI(QtGui.QDialog):
             #### Path Field:
             Path_VarH_changed_connect = lambda: self._checkPathForBase(self.Path_VarH,self.link_VarH)
             self.Path_VarH.textChanged.connect(Path_VarH_changed_connect)
+            #### Base Link Field:
+            Link_VarH_checkbox_connect = lambda: self._resolveBASEVariable(self.Path_Base,self.Path_VarH,self.link_VarH)
+            self.link_VarH.clicked.connect(Link_VarH_checkbox_connect)
+
 
 
 
@@ -328,7 +354,7 @@ class setProjectPathUI(QtGui.QDialog):
             self.templateReset_VarI = QtGui.QPushButton(templateReset_icon, "")
             self.templateReset_VarI.setToolTip('Reset to Project Default')
             self.link_VarI = QtGui.QCheckBox('Relative to Base')
-            self.link_VarI.setToolTip('Relative to Base ON will add a $BASE variable to your path. \n If the $BASE Variable exists and you turn it off, the path will be fully resolved')
+            self.link_VarI.setToolTip('With RelativeToBase ON, the entered Path will be scanned for similarities to your Base Path.\nIf parts are identical they will be replaced with a $BASE variable.\nIf your Path contains a $BASE Variable and you uncheck RelativeToBase the Path will be fully resolved')
             misc_layout_grid.addWidget(self.Active_VarI,9,0)
             misc_layout_grid.addWidget(self.Path_VarI,9,2)
             misc_layout_grid.addWidget(self.path_button_VarI,9,3)
@@ -351,6 +377,10 @@ class setProjectPathUI(QtGui.QDialog):
             #### Path Field:
             Path_VarI_changed_connect = lambda: self._checkPathForBase(self.Path_VarI,self.link_VarI)
             self.Path_VarI.textChanged.connect(Path_VarI_changed_connect)
+            #### Base Link Field:
+            Link_VarI_checkbox_connect = lambda: self._resolveBASEVariable(self.Path_Base,self.Path_VarI,self.link_VarI)
+            self.link_VarI.clicked.connect(Link_VarI_checkbox_connect)
+
 
             misc_group_box.setLayout(misc_layout_grid)
 
@@ -559,7 +589,8 @@ class setProjectPathUI(QtGui.QDialog):
 
 
     def _checkPathForBase(self,text_path, base_link):
-        """ Checks the user input while typing if it contains Variable $BASE"""
+        """ Checks the user input while typing if it contains Variable $BASE
+        It it exists, it will auto-activate the corresponding linked to base checkbox """
 
         text = text_path.text()
         base_found = text.find('$BASE')
@@ -569,8 +600,39 @@ class setProjectPathUI(QtGui.QDialog):
             base_link.setChecked(False)
 
 
+
+    def _resolveBASEVariable(self,base_path,text_path,base_link):
+        """ When the user deactivates a base_link checkbox and a $BASE variable is found
+        the Variable will be replaced in the text field with the full path."""
+
+        text = text_path.text()
+        base_text = base_path.text()
+
+        # If it is checked and a path is found that corresponds to Base Path, insert Variable
+        if base_link.isChecked() and base_text:
+            base_find = text.replace(base_text,'$BASE')
+            text_path.setText(base_find)
+
+        # Otherwise if BASE Variable is found and link is unchecked, replace variable with path
+        if not base_link.isChecked():
+            base_search = text.find('$BASE')
+            if base_search is -1: #base is not contained in variable path
+                base_var_found = False
+            else: #base is contained in variable path
+                base_var_found = True
+            # if base path is empty but base variable is foundthrow a user message
+            if not base_text and base_var_found:
+                mari.utils.message('The Base Path is empty.\n Unable to resolve $BASE Variable to full Path','Unable to resolve Base Path')
+                return
+            else:
+                base_find = text.replace('$BASE',base_text)
+                text_path.setText(base_find)
+
+
+
+
     def _checkInput(self,var_active,text_path,base_link):
-        """Checks and resolves the entered path"""
+        """Checks and resolves the entered path when dialog is accepted"""
 
         if var_active:
             resolved_val = text_path.text()
