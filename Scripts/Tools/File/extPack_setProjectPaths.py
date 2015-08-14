@@ -77,6 +77,7 @@ class setProjectPathUI(QtGui.QDialog):
             self.templateReset_VarA = QtGui.QPushButton(templateReset_icon, "")
             self.templateReset_VarA.setToolTip('Reset to Project Default')
             self.link_VarA = QtGui.QCheckBox('Relative to Base')
+            self.link_VarA.setCheckable(True)
             self.link_VarA.setToolTip('Relative to Base ON will add a $BASE variable to your path. \n If the $BASE Variable exists and you turn it off, the path will be fully resolved')
             variable_layout_grid.addWidget(self.Active_VarA,2,0)
             variable_layout_grid.addWidget(self.Path_VarA,2,2)
@@ -97,6 +98,9 @@ class setProjectPathUI(QtGui.QDialog):
             #### Browse Button:
             Browse_VarA_button_connect = lambda: self._browseForDirectory(self.Path_VarA)
             self.path_button_VarA.clicked.connect(Browse_VarA_button_connect)
+            #### Path Field:
+            Path_VarA_changed_connect = lambda: self._checkPathForBase(self.Path_VarA,self.link_VarA)
+            self.Path_VarA.textChanged.connect(Path_VarA_changed_connect)
 
 
 
@@ -129,6 +133,9 @@ class setProjectPathUI(QtGui.QDialog):
             #### Browse Button:
             Browse_VarC_button_connect = lambda: self._browseForDirectory(self.Path_VarC)
             self.path_button_VarC.clicked.connect(Browse_VarC_button_connect)
+            #### Path Field:
+            Path_VarC_changed_connect = lambda: self._checkPathForBase(self.Path_VarC,self.link_VarC)
+            self.Path_VarC.textChanged.connect(Path_VarC_changed_connect)
 
 
 
@@ -163,6 +170,9 @@ class setProjectPathUI(QtGui.QDialog):
             #### Browse Button:
             Browse_VarD_button_connect = lambda: self._browseForDirectory(self.Path_VarD)
             self.path_button_VarD.clicked.connect(Browse_VarD_button_connect)
+            #### Path Field:
+            Path_VarD_changed_connect = lambda: self._checkPathForBase(self.Path_VarD,self.link_VarD)
+            self.Path_VarD.textChanged.connect(Path_VarD_changed_connect)
 
 
             # Variable Widgets Variable E
@@ -194,6 +204,9 @@ class setProjectPathUI(QtGui.QDialog):
             #### Browse Button:
             Browse_VarE_button_connect = lambda: self._browseForDirectory(self.Path_VarE)
             self.path_button_VarE.clicked.connect(Browse_VarE_button_connect)
+            #### Path Field:
+            Path_VarE_changed_connect = lambda: self._checkPathForBase(self.Path_VarE,self.link_VarE)
+            self.Path_VarE.textChanged.connect(Path_VarE_changed_connect)
 
 
 
@@ -226,6 +239,9 @@ class setProjectPathUI(QtGui.QDialog):
             #### Browse Button:
             Browse_VarF_button_connect = lambda: self._browseForDirectory(self.Path_VarF)
             self.path_button_VarF.clicked.connect(Browse_VarF_button_connect)
+            #### Path Field:
+            Path_VarF_changed_connect = lambda: self._checkPathForBase(self.Path_VarF,self.link_VarF)
+            self.Path_VarF.textChanged.connect(Path_VarF_changed_connect)
 
 
 
@@ -259,6 +275,9 @@ class setProjectPathUI(QtGui.QDialog):
             #### Browse Button:
             Browse_VarG_button_connect = lambda: self._browseForDirectory(self.Path_VarG)
             self.path_button_VarG.clicked.connect(Browse_VarG_button_connect)
+            #### Path Field:
+            Path_VarG_changed_connect = lambda: self._checkPathForBase(self.Path_VarG,self.link_VarG)
+            self.Path_VarG.textChanged.connect(Path_VarG_changed_connect)
 
 
 
@@ -294,6 +313,9 @@ class setProjectPathUI(QtGui.QDialog):
             #### Browse Button:
             Browse_VarH_button_connect = lambda: self._browseForDirectory(self.Path_VarH)
             self.path_button_VarH.clicked.connect(Browse_VarH_button_connect)
+            #### Path Field:
+            Path_VarH_changed_connect = lambda: self._checkPathForBase(self.Path_VarH,self.link_VarH)
+            self.Path_VarH.textChanged.connect(Path_VarH_changed_connect)
 
 
 
@@ -326,6 +348,9 @@ class setProjectPathUI(QtGui.QDialog):
             #### Browse Button:
             Browse_VarI_button_connect = lambda: self._browseForDirectory(self.Path_VarI)
             self.path_button_VarI.clicked.connect(Browse_VarI_button_connect)
+            #### Path Field:
+            Path_VarI_changed_connect = lambda: self._checkPathForBase(self.Path_VarI,self.link_VarI)
+            self.Path_VarI.textChanged.connect(Path_VarI_changed_connect)
 
             misc_group_box.setLayout(misc_layout_grid)
 
@@ -532,13 +557,26 @@ class setProjectPathUI(QtGui.QDialog):
             if obj_link is not None:
                 obj_link.setEnabled(True)
 
-    def _checkInput(self,text_path,base_link):
+
+    def _checkPathForBase(self,text_path, base_link):
+        """ Checks the user input while typing if it contains Variable $BASE"""
+
+        text = text_path.text()
+        base_found = text.find('$BASE')
+        if base_found is not -1:
+            base_link.setChecked(True)
+        else:
+            base_link.setChecked(False)
+
+
+    def _checkInput(self,var_active,text_path,base_link):
         """Checks and resolves the entered path"""
 
-        resolved_val = text_path.text()
-        base_val = self.Path_Base.text()
-        resolved_val = resolved_val.replace('$BASE', base_val)
-        return resolved_val
+        if var_active:
+            resolved_val = text_path.text()
+            base_val = self.Path_Base.text()
+            resolved_val = resolved_val.replace('$BASE', base_val)
+            return resolved_val
 
 
     def _setPath(self):
