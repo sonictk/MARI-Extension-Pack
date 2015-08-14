@@ -78,9 +78,15 @@ class setProjectPathUI(QtGui.QDialog):
             variable_layout_grid.addWidget(self.link_VarA,2,5)
 
             # Connections:
+            #### Activate Checkbox:
+            Active_VarA_checkbox_connect = lambda: self._disableUIElements(self.Active_VarA,self.Path_VarA,self.path_button_VarA,self.templateReset_VarA,self.link_VarA)
+            self.Active_VarA.clicked.connect(Active_VarA_checkbox_connect)
             #### Reset Button:
             Reset_VarA_button_connect = lambda: self._setProjectTemplate(self.Path_VarA,'Tex_Import')
             self.templateReset_VarA.clicked.connect(Reset_VarA_button_connect)
+            #### Browse Button:
+            Browse_VarA_button_connect = lambda: self._browseForDirectory(self.Path_VarA)
+            self.path_button_VarA.clicked.connect(Browse_VarA_button_connect)
 
 
 
@@ -104,9 +110,15 @@ class setProjectPathUI(QtGui.QDialog):
             variable_layout_grid.addWidget(self.link_VarC,3,5)
 
             # Connections:
+            #### Activate Checkbox:
+            Active_VarC_checkbox_connect = lambda: self._disableUIElements(self.Active_VarC,self.Path_VarC,self.path_button_VarC,self.templateReset_VarC,self.link_VarC)
+            self.Active_VarC.clicked.connect(Active_VarC_checkbox_connect)
             #### Reset Button:
             Reset_VarC_button_connect = lambda: self._setProjectTemplate(self.Path_VarC,'Tex_Export')
             self.templateReset_VarC.clicked.connect(Reset_VarC_button_connect)
+            #### Browse Button:
+            Browse_VarC_button_connect = lambda: self._browseForDirectory(self.Path_VarC)
+            self.path_button_VarC.clicked.connect(Browse_VarC_button_connect)
 
 
 
@@ -131,10 +143,15 @@ class setProjectPathUI(QtGui.QDialog):
             variable_layout_grid.addWidget(self.link_VarD,4,5)
 
             # Connections:
+            #### Activate Checkbox:
+            Active_VarD_checkbox_connect = lambda: self._disableUIElements(self.Active_VarD,self.Path_VarD,self.path_button_VarD,self.templateReset_VarD,self.link_VarD)
+            self.Active_VarD.clicked.connect(Active_VarD_checkbox_connect)
             #### Reset Button:
             Reset_VarD_button_connect = lambda: self._setProjectTemplate(self.Path_VarD,'Geo')
             self.templateReset_VarD.clicked.connect(Reset_VarD_button_connect)
-
+            #### Browse Button:
+            Browse_VarD_button_connect = lambda: self._browseForDirectory(self.Path_VarD)
+            self.path_button_VarD.clicked.connect(Browse_VarD_button_connect)
 
 
             # Variable Widgets Variable E
@@ -157,9 +174,15 @@ class setProjectPathUI(QtGui.QDialog):
             variable_layout_grid.addWidget(self.link_VarE,5,5)
 
             # Connections:
+            #### Activate Checkbox:
+            Active_VarE_checkbox_connect = lambda: self._disableUIElements(self.Active_VarE,self.Path_VarE,self.path_button_VarE,self.templateReset_VarE,self.link_VarE)
+            self.Active_VarE.clicked.connect(Active_VarE_checkbox_connect)
             #### Reset Button:
             Reset_VarE_button_connect = lambda: self._setProjectTemplate(self.Path_VarE,'Image')
             self.templateReset_VarE.clicked.connect(Reset_VarE_button_connect)
+            #### Browse Button:
+            Browse_VarE_button_connect = lambda: self._browseForDirectory(self.Path_VarE)
+            self.path_button_VarE.clicked.connect(Browse_VarE_button_connect)
 
 
 
@@ -183,9 +206,15 @@ class setProjectPathUI(QtGui.QDialog):
             variable_layout_grid.addWidget(self.link_VarF,6,5)
 
             # Connections:
+            #### Activate Checkbox:
+            Active_VarF_checkbox_connect = lambda: self._disableUIElements(self.Active_VarF,self.Path_VarF,self.path_button_VarF,self.templateReset_VarF,self.link_VarF)
+            self.Active_VarF.clicked.connect(Active_VarF_checkbox_connect)
             #### Reset Button:
             Reset_VarF_button_connect = lambda: self._setProjectTemplate(self.Path_VarF,'Render')
             self.templateReset_VarF.clicked.connect(Reset_VarF_button_connect)
+            #### Browse Button:
+            Browse_VarF_button_connect = lambda: self._browseForDirectory(self.Path_VarF)
+            self.path_button_VarF.clicked.connect(Browse_VarF_button_connect)
 
 
 
@@ -210,9 +239,15 @@ class setProjectPathUI(QtGui.QDialog):
             variable_layout_grid.addWidget(self.link_VarG,7,5)
 
             # Connections:
+            #### Activate Checkbox:
+            Active_VarG_checkbox_connect = lambda: self._disableUIElements(self.Active_VarG,self.Path_VarG,self.path_button_VarG,self.templateReset_VarG,self.link_VarG)
+            self.Active_VarG.clicked.connect(Active_VarG_checkbox_connect)
             #### Reset Button:
             Reset_VarG_button_connect = lambda: self._setProjectTemplate(self.Path_VarG,'Archive')
             self.templateReset_VarG.clicked.connect(Reset_VarG_button_connect)
+            #### Browse Button:
+            Browse_VarG_button_connect = lambda: self._browseForDirectory(self.Path_VarG)
+            self.path_button_VarG.clicked.connect(Browse_VarG_button_connect)
 
 
 
@@ -239,10 +274,15 @@ class setProjectPathUI(QtGui.QDialog):
             misc_layout_grid.addWidget(self.link_VarH,8,5)
 
             # Connections:
+            #### Activate Checkbox:
+            Active_VarH_checkbox_connect = lambda: self._disableUIElements(self.Active_VarH,self.Path_VarH,self.path_button_VarH,self.templateReset_VarH,self.link_VarH)
+            self.Active_VarH.clicked.connect(Active_VarH_checkbox_connect)
             #### Reset Button:
             Reset_VarH_button_connect = lambda: self._setProjectTemplate(self.Path_VarH,'Shelf')
             self.templateReset_VarH.clicked.connect(Reset_VarH_button_connect)
-
+            #### Browse Button:
+            Browse_VarH_button_connect = lambda: self._browseForDirectory(self.Path_VarH)
+            self.path_button_VarH.clicked.connect(Browse_VarH_button_connect)
 
 
 
@@ -266,9 +306,15 @@ class setProjectPathUI(QtGui.QDialog):
             misc_layout_grid.addWidget(self.link_VarI,9,5)
 
             # Connections:
+            #### Activate Checkbox:
+            Active_VarI_checkbox_connect = lambda: self._disableUIElements(self.Active_VarI,self.Path_VarI,self.path_button_VarI,self.templateReset_VarI,self.link_VarI)
+            self.Active_VarI.clicked.connect(Active_VarI_checkbox_connect)
             #### Reset Button:
             Reset_VarI_button_connect = lambda: self._setProjectTemplate(self.Path_VarI,'Camera')
             self.templateReset_VarI.clicked.connect(Reset_VarI_button_connect)
+            #### Browse Button:
+            Browse_VarI_button_connect = lambda: self._browseForDirectory(self.Path_VarI)
+            self.path_button_VarI.clicked.connect(Browse_VarI_button_connect)
 
 
 
@@ -289,6 +335,18 @@ class setProjectPathUI(QtGui.QDialog):
             window_layout_box.addWidget(asset_group_box)
             window_layout_box.addWidget(misc_group_box)
             window_layout_box.addLayout(button_layout_box)
+
+
+
+            # Initialize UI Elements, checks if Variables are set active and if not disables UI elements
+            self._disableUIElements(self.Active_VarA,self.Path_VarA,self.path_button_VarA,self.templateReset_VarA,self.link_VarA)
+            self._disableUIElements(self.Active_VarC,self.Path_VarC,self.path_button_VarC,self.templateReset_VarC,self.link_VarC)
+            self._disableUIElements(self.Active_VarD,self.Path_VarD,self.path_button_VarD,self.templateReset_VarD,self.link_VarD)
+            self._disableUIElements(self.Active_VarE,self.Path_VarE,self.path_button_VarE,self.templateReset_VarE,self.link_VarE)
+            self._disableUIElements(self.Active_VarF,self.Path_VarF,self.path_button_VarF,self.templateReset_VarF,self.link_VarF)
+            self._disableUIElements(self.Active_VarG,self.Path_VarG,self.path_button_VarG,self.templateReset_VarG,self.link_VarG)
+            self._disableUIElements(self.Active_VarH,self.Path_VarH,self.path_button_VarH,self.templateReset_VarH,self.link_VarH)
+            self._disableUIElements(self.Active_VarI,self.Path_VarI,self.path_button_VarI,self.templateReset_VarI,self.link_VarI)
 
 
 
@@ -320,6 +378,34 @@ class setProjectPathUI(QtGui.QDialog):
         # pathVar = pathVariable
         path = self._getProjectTemplate(pathVariable)
         obj.setText(path)
+
+
+    def _browseForDirectory(self, obj):
+        """ Gets a path from a dialog"""
+
+        path = QtGui.QFileDialog.getExistingDirectory(None,"Export Path",obj.text())
+        if path == "":
+            return
+        else:
+            obj.setText(path)
+
+
+    def _disableUIElements(self, obj_active, obj_path,obj_browse,obj_reset,obj_link):
+        """ Disables UI elements if Actvivate checkbox is off"""
+
+        if not obj_active.isChecked():
+            obj_path.setReadOnly(True)
+            obj_path.setEnabled(False)
+            obj_browse.setEnabled(False)
+            obj_reset.setEnabled(False)
+            obj_link.setEnabled(False)
+        else:
+            obj_path.setReadOnly(False)
+            obj_path.setEnabled(True)
+            obj_browse.setEnabled(True)
+            obj_reset.setEnabled(True)
+            obj_link.setEnabled(True)
+
 
 
 
