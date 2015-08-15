@@ -119,8 +119,6 @@ class setProjectPathUI(QtGui.QDialog):
             self.link_VarA.clicked.connect(Link_VarA_checkbox_connect)
 
 
-
-
             # Variable Widgets Variable C
             self.Active_VarC = QtGui.QCheckBox("TEXTURE MAPS (Export):")
             self.Active_VarC.setToolTip('The default Path that should be used when Exporting Textures')
@@ -156,9 +154,6 @@ class setProjectPathUI(QtGui.QDialog):
             #### Base Link Field:
             Link_VarC_checkbox_connect = lambda: self._resolveBASEVariable(self.Path_Base,self.Path_VarC,self.link_VarC)
             self.link_VarC.clicked.connect(Link_VarC_checkbox_connect)
-
-
-
 
 
             # Variable Widgets Variable D
@@ -199,7 +194,6 @@ class setProjectPathUI(QtGui.QDialog):
             self.link_VarD.clicked.connect(Link_VarD_checkbox_connect)
 
 
-
             # Variable Widgets Variable E
             self.Active_VarE = QtGui.QCheckBox("IMAGE MANAGER (Import/Export):")
             self.Active_VarE.setToolTip('The default Path that should be used when Importing or Exporting from the Image Manager')
@@ -237,8 +231,6 @@ class setProjectPathUI(QtGui.QDialog):
             self.link_VarE.clicked.connect(Link_VarE_checkbox_connect)
 
 
-
-
             # Variable Widgets Variable F
             self.Active_VarF = QtGui.QCheckBox("RENDERS/TURNTABLES (Export):")
             self.Active_VarF.setToolTip('The default Path that should be used when doing Screenshots & Turntables')
@@ -274,9 +266,6 @@ class setProjectPathUI(QtGui.QDialog):
             #### Base Link Field:
             Link_VarF_checkbox_connect = lambda: self._resolveBASEVariable(self.Path_Base,self.Path_VarF,self.link_VarF)
             self.link_VarF.clicked.connect(Link_VarF_checkbox_connect)
-
-
-
 
 
             # Variable Widgets Variable G
@@ -507,7 +496,7 @@ class setProjectPathUI(QtGui.QDialog):
             window_layout_box.addWidget(file_group_box)
             window_layout_box.addLayout(button_layout_box)
 
-
+            self._userSettingsLoad()
 
             # Initialize UI Elements, checks if Variables are set active and if not disables UI elements
             self._disableUIElements(self.Active_VarA,self.Path_VarA,self.path_button_VarA,self.templateReset_VarA,self.link_VarA)
@@ -522,6 +511,9 @@ class setProjectPathUI(QtGui.QDialog):
             self._disableUIElements(self.Active_VarK,self.Path_VarK,None,self.templateReset_VarK,None)
             self._disableUIElements(self.Active_VarL,self.Path_VarL,None,self.templateReset_VarL,None)
             self._disableUIElements(self.Active_VarM,self.Path_VarM,None,self.templateReset_VarM,None)
+
+
+
 
 
 
@@ -775,8 +767,11 @@ class setProjectPathUI(QtGui.QDialog):
             # resolved path from base_var_final_dict and make folders.
             if info_reply_B is QtGui.QMessageBox.ButtonRole.AcceptRole:
                 for key in var_folder_exist_dict:
-                    path_to_create = base_var_final_dict[key][5]
-                    os.makedirs(path_to_create)
+                    try:
+                        path_to_create = base_var_final_dict[key][5]
+                        os.makedirs(path_to_create)
+                    except Exception:
+                        pass #assuming that a previous field already created the folder
             else:
                 return
 
@@ -826,29 +821,28 @@ class setProjectPathUI(QtGui.QDialog):
             mari.utils.message('Unable to set sequence templates. Check formatting.')
             pass
 
-
+        self._userSettingsSave()
         self.accept()
 
 
-    # def _settingsSave(self):
-        # """Saves UI Options between sessions."""
+    def _userSettingsSave(self):
+        """Saves UI Options between sessions."""
 
-        # for name, obj in inspect.getmembers(self):
-            # self.SETTINGS.beginGroup("setProjectPaths_" + version)
-            # if isinstance(obj, QtGui.QLineEdit):
-                # state = None
-                # if name is 'template_line_edit':
-                    # state = obj.text()
-                    # self.SETTINGS.setValue(name,state)
+        for name, obj in inspect.getmembers(self):
+            self.SETTINGS.beginGroup("setProjectPaths_" + version)
+            if isinstance(obj, QtGui.QLineEdit):
+                state = None
+                state = obj.text()
+                self.SETTINGS.setValue(name,state)
 
-            # if isinstance(obj, QtGui.QCheckBox):
-                # state = obj.isChecked()
-                # self.SETTINGS.setValue(name,state)
+            if isinstance(obj, QtGui.QCheckBox):
+                state = obj.isChecked()
+                self.SETTINGS.setValue(name,state)
 
-            # self.SETTINGS.endGroup()
+            self.SETTINGS.endGroup()
 
 
-    def _settingsLoad(self):
+    def _userSettingsLoad(self):
         """Loads UI Options between sessions."""
 
 
@@ -864,13 +858,52 @@ class setProjectPathUI(QtGui.QDialog):
 
             if isinstance(obj, QtGui.QLineEdit):
                 state = None
-                if name is 'template_line_edit':
-                    state = unicode(self.SETTINGS.value(name))
-                    if state != 'None':
-                        obj.setText(state)
+                state = unicode(self.SETTINGS.value(name))
+                if state != 'None':
+                    obj.setText(state)
 
             self.SETTINGS.endGroup()
 
+        # if a row is inactive reset it to default automtically
+
+
+
+        # Set Texture Import Path
+        if not self.Active_VarA.isChecked():
+            self._setProjectTemplate(self.Path_VarA,'Tex_Import')
+        # Set Texture Export Path
+        if not self.Active_VarC.isChecked():
+            self._setProjectTemplate(self.Path_VarC,'Tex_Export')
+        # Set Geo Path
+        if not self.Active_VarD.isChecked():
+            self._setProjectTemplate(self.Path_VarD,'Geo')
+        # Set Tmage Manager Path
+        if not self.Active_VarE.isChecked():
+            self._setProjectTemplate(self.Path_VarE,'Image')
+        # Set Render Path
+        if not self.Active_VarF.isChecked():
+            self._setProjectTemplate(self.Path_VarF,'Render')
+        # Set Archive Path
+        if not self.Active_VarG.isChecked():
+            self._setProjectTemplate(self.Path_VarG,'Archive')
+        # Set Shelf Path
+        if not self.Active_VarH.isChecked():
+            self._setProjectTemplate(self.Path_VarH,'Shelf')
+        # Set Camera Path
+        if not self.Active_VarI.isChecked():
+            self._setProjectTemplate(self.Path_VarI,'Camera')
+        # Set Texture Flattened Temaplte
+        if not self.Active_VarJ.isChecked():
+            self._setProjectTemplate(self.Path_VarJ,'Sequence_Flat')
+        # Set Texture Temaplte
+        if not self.Active_VarK.isChecked():
+            self._setProjectTemplate(self.Path_VarK,'Sequence')
+        # Set PTEX Flattened Temaplte
+        if not self.Active_VarL.isChecked():
+            self._setProjectTemplate(self.Path_VarL,'PTEXSequence_Flat')
+        # Set PTEX Temaplte
+        if not self.Active_VarM.isChecked():
+            self._setProjectTemplate(self.Path_VarM,'PTEXSequence')
 
 # ------------------------------------------------------------------------------
 
