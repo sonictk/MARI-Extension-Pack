@@ -113,6 +113,15 @@ Export Geometry will always export the unsubdivided stage (level 0) in case you 
 
 A new tool was added to the 'Selection Group' Palette that will allow you to easily create a materialID channel from your selection groups
 
+#####File:
+
+######Project Paths
+
+'Procet Paths' allows you to configure default paths (Texture Export+Import,Camera Locations, Image Manager defaults etc.)
+and file templates for your project. Paths can be set relative to a project base path, folder creation is supported and
+settings are saved between sessions.
+
+
 
 ##Feature Improvements:
 
