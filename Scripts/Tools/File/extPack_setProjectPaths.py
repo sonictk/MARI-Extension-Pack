@@ -1,13 +1,7 @@
 # Notes:
-#  Some logic errors in _resetToProjectTemplate: How can you reset to a project default if it was already changed ?
-# Maybe on launch for the first time save out the defaults into separate QSettings Group so it can be recalled later ?
-#
 # There are redundant debug print statements in _setPath()
 # To do:
-# - get rid of print statements in _setPath
-# - check against BASE Variable on execution (error if empty)
-# - folder creation
-# - save template defaults
+# - save template defaults - seems to work
 # - save user changes
 # - double check os+seps
 
@@ -18,6 +12,8 @@ import PySide.QtCore as QtCore
 from PySide.QtCore import QSettings
 import inspect
 
+version = '3.0' #UI Version
+
 
 
 class setProjectPathUI(QtGui.QDialog):
@@ -27,6 +23,16 @@ class setProjectPathUI(QtGui.QDialog):
         suitable = _isProjectSuitable()
         if suitable[0]:
             super(setProjectPathUI, self).__init__()
+
+            # Storing Widget Settings between sessions here:
+            user_path = os.path.abspath(mari.resources.path(mari.resources.USER))
+            user_settings_file = 'extPack_settings.conf'
+            user_settings = os.path.join(user_path,user_settings_file)
+            self.SETTINGS = QSettings(user_settings, QSettings.IniFormat)
+
+            # Saving initial Path Settings at Startup of Dialog
+            self._saveStartupTemplate()
+
             # Dialog Settings
             # self.setFixedSize(800, 600)
             self.setWindowTitle('Set Project Default Paths')
@@ -519,35 +525,46 @@ class setProjectPathUI(QtGui.QDialog):
 
 
 
-    def _getProjectTemplate(self,pathVariable):
-        """ Returns the default path that was set at project launch"""
+    def _saveStartupTemplate(self):
+        """ Stores the State of Variables right after launch so we can reset to it via Template Reset Buttons"""
 
-        if pathVariable is 'Tex_Export':
-            return mari.resources.path(mari.resources.DEFAULT_EXPORT)
-        elif pathVariable is 'Tex_Import':
-            return mari.resources.path(mari.resources.DEFAULT_IMPORT)
-        elif pathVariable is 'Archive':
-            return mari.resources.path(mari.resources.DEFAULT_ARCHIVE)
-        elif pathVariable is 'Camera':
-            return mari.resources.path(mari.resources.DEFAULT_CAMERA)
-        elif pathVariable is 'Geo':
-            return mari.resources.path(mari.resources.DEFAULT_GEO)
-        elif pathVariable is 'Image':
-            return mari.resources.path(mari.resources.DEFAULT_IMAGE)
-        elif pathVariable is 'Shelf':
-            return mari.resources.path(mari.resources.DEFAULT_SHELF)
-        elif pathVariable is 'Render':
-            return mari.resources.path(mari.resources.DEFAULT_RENDER)
-        elif pathVariable is 'Sequence':
-            return mari.resources.sequenceTemplate()
-        elif pathVariable is 'Sequence_Flat':
-            return mari.resources.flattenedSequenceTemplate()
-        elif pathVariable is 'PTEXSequence':
-            return mari.resources.ptexSequenceTemplate()
-        elif pathVariable is 'PTEXSequence_Flat':
-            return mari.resources.ptexFlattenedSequenceTemplate()
-        elif pathVariable is None:
-            return ''
+        template_dict = {'Project'    : mari.projects.current().uuid(),
+                         'Tex_Export' : mari.resources.path(mari.resources.DEFAULT_EXPORT),
+                         'Tex_Import' : mari.resources.path(mari.resources.DEFAULT_IMPORT),
+                         'Archive' : mari.resources.path(mari.resources.DEFAULT_ARCHIVE),
+                         'Camera' : mari.resources.path(mari.resources.DEFAULT_CAMERA),
+                         'Geo' : mari.resources.path(mari.resources.DEFAULT_GEO),
+                         'Image' : mari.resources.path(mari.resources.DEFAULT_IMAGE),
+                         'Shelf' : mari.resources.path(mari.resources.DEFAULT_SHELF),
+                         'Render' : mari.resources.path(mari.resources.DEFAULT_RENDER),
+                         'Sequence' : mari.resources.sequenceTemplate(),
+                         'Sequence_Flat' : mari.resources.flattenedSequenceTemplate(),
+                         'PTEXSequence' : mari.resources.ptexSequenceTemplate(),
+                         'PTEXSequence_Flat' : mari.resources.ptexFlattenedSequenceTemplate()
+                        }
+
+        # Reading Project saved in settings file
+        self.SETTINGS.beginGroup("Project_Default_Paths_" + version)
+        project = self.SETTINGS.value('Project')
+        self.SETTINGS.endGroup()
+
+        # if the project saved in the settings file is not the current one, store new defaults
+        if mari.projects.current().uuid() != project:
+            for key in template_dict:
+                self.SETTINGS.beginGroup("Project_Default_Paths_" + version)
+                state = template_dict[key]
+                name = key
+                self.SETTINGS.setValue(name,state)
+                self.SETTINGS.endGroup()
+
+
+    def _getProjectTemplate(self,pathVariable):
+        """ Returns the default path that was set at project launch, saved in extPack settings file"""
+
+        self.SETTINGS.beginGroup("Project_Default_Paths_" + version)
+        state_string = self.SETTINGS.value(pathVariable)
+        self.SETTINGS.endGroup()
+        return state_string
 
     def _setProjectTemplate(self, obj, pathVariable):
         """ Gets the default path variable and sets the QLineEditField in Main UI to Value"""
@@ -631,8 +648,6 @@ class setProjectPathUI(QtGui.QDialog):
             else:
                 base_find = text.replace('$BASE',base_path_text)
                 text_path.setText(base_find)
-
-
 
 
     def _checkInput(self):
@@ -768,8 +783,6 @@ class setProjectPathUI(QtGui.QDialog):
         self._setPath(base_var_final_dict)
 
 
-
-
     def _setPath(self,var_dict):
         """ Sets the new value for activated variables"""
 
@@ -783,9 +796,6 @@ class setProjectPathUI(QtGui.QDialog):
             dict_DIREXIST = var_dict[key][4] # Does the resolved Path exist ?
             dict_RESOLVEDPATH = var_dict[key][5] # Final resolved Path (converted $BASE Variable)
 
-
-
-
             if dict_ACTIVE:
                 try:
                     mari.resources.setPath(dict_VARIABLE,dict_RESOLVEDPATH)
@@ -794,8 +804,72 @@ class setProjectPathUI(QtGui.QDialog):
                     mari.utils.message('Unable to set path for Variable: \n' + key)
                     pass
 
+        # Sequence Templates:
+        try:
+            # Set Texture Flattened Temaplte
+            if self.Active_VarJ.isChecked():
+                mari.resources.setFlattenedSequenceTemplate(self.Path_VarJ.text())
+                print 'Flattened Sequence Template' + ' set to: ' + self.Path_VarJ.text()
+            # Set Texture Temaplte
+            if self.Active_VarK.isChecked():
+                mari.resources.setSequenceTemplate(self.Path_VarK.text())
+                print 'Sequence Template' + ' set to: ' + self.Path_VarK.text()
+            # Set PTEX Flattened Temaplte
+            if self.Active_VarL.isChecked():
+                mari.resources.setPtexFlattenedSequenceTemplate(self.Path_VarL.text())
+                print 'PTEX Flattened Template' + ' set to: ' + self.Path_VarL.text()
+            # Set PTEX Temaplte
+            if self.Active_VarM.isChecked():
+                mari.resources.setPtexSequenceTemplate(self.Path_VarM.text())
+                print 'PTEX Template' + ' set to: ' + self.Path_VarM.text()
+        except Exception:
+            mari.utils.message('Unable to set sequence templates. Check formatting.')
+            pass
+
 
         self.accept()
+
+
+    # def _settingsSave(self):
+        # """Saves UI Options between sessions."""
+
+        # for name, obj in inspect.getmembers(self):
+            # self.SETTINGS.beginGroup("setProjectPaths_" + version)
+            # if isinstance(obj, QtGui.QLineEdit):
+                # state = None
+                # if name is 'template_line_edit':
+                    # state = obj.text()
+                    # self.SETTINGS.setValue(name,state)
+
+            # if isinstance(obj, QtGui.QCheckBox):
+                # state = obj.isChecked()
+                # self.SETTINGS.setValue(name,state)
+
+            # self.SETTINGS.endGroup()
+
+
+    def _settingsLoad(self):
+        """Loads UI Options between sessions."""
+
+
+        for name, obj in inspect.getmembers(self):
+            self.SETTINGS.beginGroup("setProjectPaths_" + version)
+
+            if isinstance(obj, QtGui.QCheckBox):
+                state_string = self.SETTINGS.value(name)
+                if state_string == "true":
+                    obj.setChecked(True)
+                if state_string == "false":
+                    obj.setChecked(False)
+
+            if isinstance(obj, QtGui.QLineEdit):
+                state = None
+                if name is 'template_line_edit':
+                    state = unicode(self.SETTINGS.value(name))
+                    if state != 'None':
+                        obj.setText(state)
+
+            self.SETTINGS.endGroup()
 
 
 # ------------------------------------------------------------------------------
