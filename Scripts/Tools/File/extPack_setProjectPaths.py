@@ -10,6 +10,8 @@
 # ------------------------------------------------------------------------------
 # http://www.jenskafitz.com
 # ------------------------------------------------------------------------------
+# Last Modified: 16 August 2015
+# ------------------------------------------------------------------------------
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
 #
@@ -84,9 +86,13 @@ class setProjectPathUI(QtGui.QDialog):
         templateReset_pixmap = QtGui.QPixmap(mari.resources.path(mari.resources.ICONS) + os.sep + 'Reset.png')
         templateReset_icon = QtGui.QIcon(templateReset_pixmap)
         # Base Widgets
-        self.Descr_BaseInfo =  QtGui.QLabel("Base Path can be used to set paths relative to it by using the Variable $BASE in fields below\ne.g: $BASE\ReferenceImages, $BASE\Model, $BASE\Textures etc.")
+        self.Descr_BaseInfo =  QtGui.QLabel(
+        "Base Path can be used to set paths relative to it by using the Variable $BASE in fields below\n \
+        e.g: $BASE\ReferenceImages, $BASE\Model, $BASE\Textures etc.")
         self.Descr_Base = QtGui.QLabel("Base Path")
         self.Path_Base = QtGui.QLineEdit()
+        self.Path_Base.setToolTip(
+        'Enter a base path to be used in fields with a $BASE Variable.\nFolders do not need to exist.\nIf you enter a Foldername that does not exist, you have the choice to create it.')
         self.path_button_Base = QtGui.QPushButton(path_icon, "")
         self.path_button_Base.setToolTip('Browse for Folder')
         base_layout_grid.addWidget(self.Descr_Base,2,0)
@@ -98,11 +104,13 @@ class setProjectPathUI(QtGui.QDialog):
         Browse_Base_button_connect = lambda: self._browseForDirectory(self.Path_Base)
         self.path_button_Base.clicked.connect(Browse_Base_button_connect)
         base_group_box.setLayout(base_layout_grid)
+
         # Asset Widges
         # Variable Widgets Variable A
         self.Active_VarA = QtGui.QCheckBox("TEXTURE MAPS (Import)")
         self.Active_VarA.setToolTip('The default Path that should be used when Importing Textures')
         self.Path_VarA = QtGui.QLineEdit()
+        self.Path_VarA.setToolTip('Path to be used for Variable.\nIf the path contains folders that do not exist, they can be created for you.\nUse a variable $BASE to set paths relative to Base Path')
         self.path_button_VarA = QtGui.QPushButton(path_icon, "")
         self.path_button_VarA.setToolTip('Browse for Folder')
         self.templateReset_VarA = QtGui.QPushButton(templateReset_icon, "")
@@ -137,6 +145,7 @@ class setProjectPathUI(QtGui.QDialog):
         self.Active_VarC = QtGui.QCheckBox("TEXTURE MAPS (Export):")
         self.Active_VarC.setToolTip('The default Path that should be used when Exporting Textures')
         self.Path_VarC = QtGui.QLineEdit()
+        self.Path_VarC.setToolTip('Path to be used for Variable.\nIf the path contains folders that do not exist, they can be created for you.\nUse a variable $BASE to set paths relative to Base Path')
         self.path_button_VarC = QtGui.QPushButton(path_icon, "")
         self.path_button_VarC.setToolTip('Browse for Folder')
         self.templateReset_VarC = QtGui.QPushButton(templateReset_icon, "")
@@ -170,6 +179,7 @@ class setProjectPathUI(QtGui.QDialog):
         self.Active_VarD = QtGui.QCheckBox("GEOMETRY (Import):")
         self.Active_VarD.setToolTip('The default Path that should be used when Importing new Objects')
         self.Path_VarD = QtGui.QLineEdit()
+        self.Path_VarD.setToolTip('Path to be used for Variable.\nIf the path contains folders that do not exist, they can be created for you.\nUse a variable $BASE to set paths relative to Base Path')
         self.path_button_VarD = QtGui.QPushButton(path_icon, "")
         self.path_button_VarD.setToolTip('Browse for Folder')
         self.templateReset_VarD = QtGui.QPushButton(templateReset_icon, "")
@@ -203,6 +213,7 @@ class setProjectPathUI(QtGui.QDialog):
         self.Active_VarE = QtGui.QCheckBox("IMAGE MANAGER (Import/Export):")
         self.Active_VarE.setToolTip('The default Path that should be used when Importing or Exporting from the Image Manager')
         self.Path_VarE = QtGui.QLineEdit()
+        self.Path_VarE.setToolTip('Path to be used for Variable.\nIf the path contains folders that do not exist, they can be created for you.\nUse a variable $BASE to set paths relative to Base Path')
         self.path_button_VarE = QtGui.QPushButton(path_icon, "")
         self.path_button_VarE.setToolTip('Browse for Folder')
         self.templateReset_VarE = QtGui.QPushButton(templateReset_icon, "")
@@ -236,6 +247,7 @@ class setProjectPathUI(QtGui.QDialog):
         self.Active_VarF = QtGui.QCheckBox("RENDERS/TURNTABLES (Export):")
         self.Active_VarF.setToolTip('The default Path that should be used when doing Screenshots & Turntables')
         self.Path_VarF = QtGui.QLineEdit()
+        self.Path_VarF.setToolTip('Path to be used for Variable.\nIf the path contains folders that do not exist, they can be created for you.\nUse a variable $BASE to set paths relative to Base Path')
         self.path_button_VarF = QtGui.QPushButton(path_icon, "")
         self.path_button_VarF.setToolTip('Browse for Folder')
         self.templateReset_VarF = QtGui.QPushButton(templateReset_icon, "")
@@ -269,6 +281,7 @@ class setProjectPathUI(QtGui.QDialog):
         self.Active_VarG = QtGui.QCheckBox("ARCHIVE (Import/Export):")
         self.Active_VarG.setToolTip('The default Path that should be used when loading or saving an Archive')
         self.Path_VarG = QtGui.QLineEdit()
+        self.Path_VarG.setToolTip('Path to be used for Variable.\nIf the path contains folders that do not exist, they can be created for you.\nUse a variable $BASE to set paths relative to Base Path')
         self.path_button_VarG = QtGui.QPushButton(path_icon, "")
         self.path_button_VarG.setToolTip('Browse for Folder')
         self.templateReset_VarG = QtGui.QPushButton(templateReset_icon, "")
@@ -304,6 +317,7 @@ class setProjectPathUI(QtGui.QDialog):
         self.Active_VarH = QtGui.QCheckBox("SHELVES (Import/Export):")
         self.Active_VarH.setToolTip('The default Path that should be used when loading or saving Shelves')
         self.Path_VarH = QtGui.QLineEdit()
+        self.Path_VarH.setToolTip('Path to be used for Variable.\nIf the path contains folders that do not exist, they can be created for you.\nUse a variable $BASE to set paths relative to Base Path')
         self.path_button_VarH = QtGui.QPushButton(path_icon, "")
         self.path_button_VarH.setToolTip('Browse for Folder')
         self.templateReset_VarH = QtGui.QPushButton(templateReset_icon, "")
@@ -337,6 +351,7 @@ class setProjectPathUI(QtGui.QDialog):
         self.Active_VarI = QtGui.QCheckBox("CAM/PROJECTOR (Import/Export):")
         self.Active_VarI.setToolTip('The default Path that should be used when Importing or Eporting Cameras or Projectors')
         self.Path_VarI = QtGui.QLineEdit()
+        self.Path_VarI.setToolTip('Path to be used for Variable.\nIf the path contains folders that do not exist, they can be created for you.\nUse a variable $BASE to set paths relative to Base Path')
         self.path_button_VarI = QtGui.QPushButton(path_icon, "")
         self.path_button_VarI.setToolTip('Browse for Folder')
         self.templateReset_VarI = QtGui.QPushButton(templateReset_icon, "")
@@ -372,6 +387,7 @@ class setProjectPathUI(QtGui.QDialog):
         self.Active_VarJ = QtGui.QCheckBox("Texture Flattened:")
         self.Active_VarJ.setToolTip('The default file template that should be used for flattened UDIM sequences\nIt is possible to specify subfolders here.\nSupported Variables are: \n\n$ENTITY\n$CHANNEL\n$LAYER\n$UDIM\n$FRAME\n')
         self.Path_VarJ = QtGui.QLineEdit()
+        self.Path_VarJ.setToolTip('The default file template that should be used for flattened UDIM sequences\nIt is possible to specify subfolders here.\nSupported Variables are: \n\n$ENTITY\n$CHANNEL\n$LAYER\n$UDIM\n$FRAME\n')
         self.templateReset_VarJ = QtGui.QPushButton(templateReset_icon, "")
         self.templateReset_VarJ.setToolTip('Reset to Project Default')
         file_layout_grid.addWidget(self.Active_VarJ,9,0)
@@ -390,6 +406,7 @@ class setProjectPathUI(QtGui.QDialog):
         self.Active_VarK = QtGui.QCheckBox("Texture:")
         self.Active_VarK.setToolTip('The default file template that should be used for UDIM (non-flattened) sequences\nIt is possible to specify subfolders here.\nSupported Variables are: \n\n$ENTITY\n$CHANNEL\n$LAYER\n$UDIM\n$FRAME\n')
         self.Path_VarK = QtGui.QLineEdit()
+        self.Path_VarK.setToolTip('The default file template that should be used for UDIM (non-flattened) sequences\nIt is possible to specify subfolders here.\nSupported Variables are: \n\n$ENTITY\n$CHANNEL\n$LAYER\n$UDIM\n$FRAME\n')
         self.templateReset_VarK = QtGui.QPushButton(templateReset_icon, "")
         self.templateReset_VarK.setToolTip('Reset to Project Default')
         file_layout_grid.addWidget(self.Active_VarK,9,3)
@@ -408,6 +425,7 @@ class setProjectPathUI(QtGui.QDialog):
         self.Active_VarL = QtGui.QCheckBox("PTEX Flattened:")
         self.Active_VarL.setToolTip('The default file template that should be used for flattened PTEX\nIt is possible to specify subfolders here.\nSupported Variables are: \n\n$ENTITY\n$CHANNEL\n$LAYER\n$UDIM\n$FRAME\n')
         self.Path_VarL = QtGui.QLineEdit()
+        self.Path_VarL.setToolTip('The default file template that should be used for flattened PTEX\nIt is possible to specify subfolders here.\nSupported Variables are: \n\n$ENTITY\n$CHANNEL\n$LAYER\n$UDIM\n$FRAME\n')
         self.templateReset_VarL = QtGui.QPushButton(templateReset_icon, "")
         self.templateReset_VarL.setToolTip('Reset to Project Default')
         file_layout_grid.addWidget(self.Active_VarL,10,0)
@@ -426,6 +444,7 @@ class setProjectPathUI(QtGui.QDialog):
         self.Active_VarM = QtGui.QCheckBox("PTEX:")
         self.Active_VarM.setToolTip('The default file template that should be used for PTEX (non-flattened) sequences\nIt is possible to specify subfolders here.\nSupported Variables are: \n\n$ENTITY\n$CHANNEL\n$LAYER\n$UDIM\n$FRAME\n')
         self.Path_VarM = QtGui.QLineEdit()
+        self.Path_VarM.setToolTip('The default file template that should be used for PTEX (non-flattened) sequences\nIt is possible to specify subfolders here.\nSupported Variables are: \n\n$ENTITY\n$CHANNEL\n$LAYER\n$UDIM\n$FRAME\n')
         self.templateReset_VarM = QtGui.QPushButton(templateReset_icon, "")
         self.templateReset_VarM.setToolTip('Reset to Project Default')
         file_layout_grid.addWidget(self.Active_VarM,10,3)
