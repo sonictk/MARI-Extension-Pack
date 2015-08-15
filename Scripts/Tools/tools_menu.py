@@ -69,6 +69,27 @@ extPack_icon_path = os.path.join(os.path.dirname(__file__), "Icons")
 
 def createToolsMenu():
 
+
+
+######################################################################
+# FILE
+######################################################################
+
+
+    #  set Project Paths (Paths)
+
+    UI_path = 'MainWindow/File'
+    script_menu_path = 'MainWindow/Scripts/File'
+
+    setProjectPath = mari.actions.create ('Project Paths', 'mari.customScripts.set_project_paths()')
+    mari.menus.addAction(setProjectPath, UI_path, 'Settings')
+    mari.menus.addAction(setProjectPath, script_menu_path)
+
+    icon_filename = 'Folder.png'
+    icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
+    setProjectPath.setIconPath(icon_path)
+
+
 ######################################################################
 # Objects
 ######################################################################

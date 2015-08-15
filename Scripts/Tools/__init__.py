@@ -42,6 +42,10 @@ import mari
 tool_init_version = '3.0'
 
 # ------------------------------------------------------------------------------
+
+# FILE:
+import File.extPack_setProjectPaths as set_project_paths
+
 # PATCHES:
 import Patches.extPack_patch_bake_to_imageman as patch_bake_to_imageman
 
@@ -85,6 +89,12 @@ import Help.extPack_online_help as onlineHelp
 # ------------------------------------------------------------------------------
 
 class customScripts():
+
+    # ------------------------------------------------------------
+    # FILE:
+
+    def set_project_paths(self):
+        set_project_paths.setProjectPath()
 
     # ------------------------------------------------------------
     # PATCHES:
@@ -214,6 +224,9 @@ tools_menu.createToolsMenu()
 
 
 print "Loading Tool Additions ..."
+print '-----------------------------------------'
+print 'File Additions (1):'
+print 'File Menu: Project Paths'
 print '-----------------------------------------'
 print 'Lighting Toolbar Additions (1): '
 print 'Shading Menu: Pause Viewport Update'
