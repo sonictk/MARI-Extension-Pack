@@ -50,7 +50,7 @@ def isolateSelect():
     sel_groups = mari.selection_groups.list()
     isolateSelectState = False
     deactivateViewportToggle = mari.actions.find('/Mari/Canvas/Toggle Shader Compiling')
-    selInvertAction = mari.actions.find('/Mari/Geometry/Selection/Select Invert')
+    selVisibleAction = mari.actions.find('/Mari/Geometry/Selection/Select Visible')
     hideSelAction =  mari.actions.find('/Mari/Geometry/Selection Group/Hide Selection Group')
     showSelAction = mari.actions.find('/Mari/Geometry/Selection Group/Show Selection Group')
 
@@ -59,30 +59,46 @@ def isolateSelect():
         if mari.selection_groups.sceneSelectionMode() == PATCH_Mode or FACE_Mode:
             deactivateViewportToggle.trigger()
 
+            isolate_cur_set = None
+            isolate_vis_set = None
+
             for item in sel_groups:
-                if item.name() == "zz_IsolateSelect":
-                    selectionSet = item
+                if item.name() == "zz_IsolateSelect_current":
+                    isolate_cur_set = item
+                    isolateSelectState = True
+                if item.name() == "zz_IsolateSelect_visible":
+                    isolate_vis_set = item
                     isolateSelectState = True
 
-            if isolateSelectState:
 
-                mari.selection_groups.select(selectionSet)
+            if isolateSelectState:
+                mari.selection_groups.select(isolate_vis_set)
                 showSelAction.trigger()
-                mari.selection_groups.removeSelectionGroup(selectionSet)
+                mari.selection_groups.removeSelectionGroup(isolate_vis_set)
+                mari.selection_groups.select(isolate_cur_set)
+                mari.selection_groups.removeSelectionGroup(isolate_cur_set)
 
             else:
 
-                selInvertAction.trigger()
-                mari.selection_groups.createSelectionGroupFromSelection('zz_IsolateSelect')
+                mari.selection_groups.createSelectionGroupFromSelection('zz_IsolateSelect_current')
+                selVisibleAction.trigger()
+                mari.selection_groups.createSelectionGroupFromSelection('zz_IsolateSelect_visible')
 
                 sel_groups = mari.selection_groups.list()
 
                 for item in sel_groups:
-                    if item.name() == "zz_IsolateSelect":
-                        mari.selection_groups.select(item)
-                        hideSelAction.trigger()
+                    if item.name() == "zz_IsolateSelect_visible":
+                        isolate_vis_set = item
+                    if item.name() == "zz_IsolateSelect_current":
+                        isolate_cur_set = item
 
-                selInvertAction.trigger()
+                mari.selection_groups.select(isolate_cur_set)
+                hideSelAction.trigger()
+                mari.selection_groups.select(isolate_vis_set)
+                hideSelAction.trigger()
+
+                mari.selection_groups.select(isolate_cur_set)
+                showSelAction.trigger()
 
             deactivateViewportToggle.trigger()
 
