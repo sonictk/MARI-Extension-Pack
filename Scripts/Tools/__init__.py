@@ -73,6 +73,7 @@ import SelectionGroups.extPack_matIDfromGroup as matIDFromGroup
 # OBJECTS:
 import Object.extPack_export_uv_masks as export_uv_masks
 import Object.extPack_export_geometry as export_geometry
+import Object.extPack_setSubdivisionLevels as set_subd_level
 
 # IMAGE MANAGER:
 import ImageManager.extPack_export_imageMan_images as exportImageManager
@@ -180,6 +181,18 @@ class customScripts():
 
     def exportGeometry(self):
         export_geometry.exportGEOs()
+
+    def setAllSUBDToHigh(self):
+        set_subd_level.setAllToHighest()
+
+    def setAllSUBDToLow(self):
+        set_subd_level.setAllToLowest()
+
+    def setVisibleSUBDToHigh(self):
+        set_subd_level.setAllVisibleToHighest()
+
+    def setVisibleSUBDToLow(self):
+        set_subd_level.setAllVisibleToLowest()
 
 
     # --------------------------------------------------------------

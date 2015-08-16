@@ -100,12 +100,14 @@ Material Regions are only available in the Nodegraph.
 
 ###Tools:
 
-#####Objects:
+#####File:
 
-######Export Geometry
+######Project Paths
 
-It is now possible to export your geometry from inside Mari to an OBJ File.
-Export Geometry will always export the unsubdivided stage (level 0) in case you have OpenSubD applied.
+'Project Paths' allows you to configure default paths (Texture Export+Import,Camera Locations, Image Manager defaults etc.)
+and file templates for your project. Paths can be set relative to a project base path, folder creation is supported and
+settings are saved between sessions.
+
 
 #####Selection Groups:
 
@@ -113,13 +115,25 @@ Export Geometry will always export the unsubdivided stage (level 0) in case you 
 
 A new tool was added to the 'Selection Group' Palette that will allow you to easily create a materialID channel from your selection groups
 
-#####File:
 
-######Project Paths
+#####Objects:
 
-'Procet Paths' allows you to configure default paths (Texture Export+Import,Camera Locations, Image Manager defaults etc.)
-and file templates for your project. Paths can be set relative to a project base path, folder creation is supported and
-settings are saved between sessions.
+######Export Geometry
+
+It is now possible to export your geometry from inside Mari to an OBJ File.
+Export Geometry will always export the unsubdivided stage (level 0) in case you have OpenSubD applied.
+
+######Subdivision / Set all to Highest + Set all to Lowest
+
+A new submenu was added to the Object menu and right click object dropdown to toggle all objects in your scene
+to their highest or lowest available subdivision levels.
+Locked Objects are respected.
+
+######Subdivision / Set all Visible to Highest + Set all Visible to Lowest
+
+A new submenu was added to the Object menu and right click object dropdown to toggle all visible objects in your scene
+to their highest or lowest available subdivision levels.
+Locked Objects are respected.
 
 
 

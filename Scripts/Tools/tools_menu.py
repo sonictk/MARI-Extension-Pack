@@ -96,6 +96,57 @@ def createToolsMenu():
 
 
 
+    ###  Subdivision ###
+
+    UI_path = 'MainWindow/Objects/' + u'Subdivision'
+    script_menu_path = 'MainWindow/Scripts/Objects/' + u'Subdivision'
+    context_path = 'MriGeoEntity/ItemContext/'  + u'Subdivision'
+
+
+    setAllToHighestSUBD = mari.actions.create('Set all to Highest Level', 'mari.customScripts.setAllSUBDToHigh()')
+    mari.menus.addAction(setAllToHighestSUBD, UI_path, 'Generate')
+    mari.menus.addAction(setAllToHighestSUBD, context_path,'Generate')
+    mari.menus.addAction(setAllToHighestSUBD, script_menu_path)
+
+    icon_filename = 'lighting_flat.png'
+    icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
+    setAllToHighestSUBD.setIconPath(icon_path)
+
+    setAllToLowestSUBD = mari.actions.create('Set all to Lowest Level', 'mari.customScripts.setAllSUBDToLow()')
+    mari.menus.addAction(setAllToLowestSUBD, UI_path)
+    mari.menus.addAction(setAllToLowestSUBD, context_path)
+    mari.menus.addAction(setAllToLowestSUBD, script_menu_path)
+
+    icon_filename = 'SinglePane.png'
+    icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
+    setAllToLowestSUBD.setIconPath(icon_path)
+
+
+    setAllVisibleToHighestSUBD = mari.actions.create('Set all Visible to Highest Level', 'mari.customScripts.setVisibleSUBDToHigh()')
+    mari.menus.addAction(setAllVisibleToHighestSUBD, UI_path)
+    mari.menus.addAction(setAllVisibleToHighestSUBD, context_path)
+    mari.menus.addAction(setAllVisibleToHighestSUBD, script_menu_path)
+
+    icon_filename = 'lighting_flat.png'
+    icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
+    setAllVisibleToHighestSUBD.setIconPath(icon_path)
+
+    setAllVisibleToLowestSUBD = mari.actions.create('Set all Visible to Lowest Level', 'mari.customScripts.setVisibleSUBDToLow()')
+    mari.menus.addAction(setAllVisibleToLowestSUBD, UI_path)
+    mari.menus.addAction(setAllVisibleToLowestSUBD, context_path)
+    mari.menus.addAction(setAllVisibleToLowestSUBD, script_menu_path)
+
+    icon_filename = 'SinglePane.png'
+    icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
+    setAllVisibleToLowestSUBD.setIconPath(icon_path)
+
+
+    ###  Menu Separators ###
+
+    mari.menus.addSeparator(UI_path,'Set all Visible to Highest Level')
+    mari.menus.addSeparator(context_path,'Set all Visible to Highest Level')
+
+
     #  Export Geometry
 
     UI_path = 'MainWindow/Objects'
@@ -122,7 +173,6 @@ def createToolsMenu():
     icon_filename = 'EdgeMask.png'
     icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
     exportUVMask.setIconPath(icon_path)
-
 
 
     ###  Menu Separators ###
