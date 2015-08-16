@@ -46,6 +46,9 @@ tool_init_version = '3.0'
 # FILE:
 import File.extPack_setProjectPaths as set_project_paths
 
+# SELECTION:
+import Selection.extPack_isolateSelect as isolateSelect
+
 # PATCHES:
 import Patches.extPack_patch_bake_to_imageman as patch_bake_to_imageman
 
@@ -96,6 +99,12 @@ class customScripts():
 
     def set_project_paths(self):
         set_project_paths.setProjectPath()
+
+    # ------------------------------------------------------------
+    # SELECTION:
+
+    def isolateSelect(self):
+        isolateSelect.isolateSelect()
 
     # ------------------------------------------------------------
     # PATCHES:
@@ -238,11 +247,14 @@ tools_menu.createToolsMenu()
 
 print "Loading Tool Additions ..."
 print '-----------------------------------------'
+print 'Lighting Toolbar Additions (1): '
+print 'Shading Menu: Pause Viewport Update'
+print '-----------------------------------------'
 print 'File Additions (1):'
 print 'File Menu: Project Paths'
 print '-----------------------------------------'
-print 'Lighting Toolbar Additions (1): '
-print 'Shading Menu: Pause Viewport Update'
+print 'Selection Additions (1):'
+print 'Selection Menu: Isolate Selection'
 print '-----------------------------------------'
 print 'Object Palette Additions (6): '
 print 'Object Menu: Export Geometry'

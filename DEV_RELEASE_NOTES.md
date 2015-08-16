@@ -109,6 +109,18 @@ and file templates for your project. Paths can be set relative to a project base
 settings are saved between sessions.
 
 
+#####Selection:
+
+######Isolate Selection
+
+A new menu item was added to the Selection menu and the right-click viewport menu ('Visibility' submenu) that allows you to isolate
+the visibility of your current selection. Unselected parts of your model will be hidden. Once you toggle back, your original visibility
+states will be restored. A default shortcut CTRL+1, indentical to Mayas 'Isolate Select' has been set as default but can be modifed
+via the Shortcut Editor.
+
+Currently only Face & Patch Selections are supported. Isolate Selection cannot be run to toggle visibilities in object mode.
+
+
 #####Selection Groups:
 
 ######Material ID from Selection Group

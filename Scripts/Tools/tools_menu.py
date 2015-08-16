@@ -91,6 +91,29 @@ def createToolsMenu():
 
 
 ######################################################################
+# Selection
+######################################################################
+
+
+
+    ###  Isolate Select ###
+
+    UI_path = 'MainWindow/Selection'
+    script_menu_path = 'MainWindow/Scripts/Selection'
+    context_path = 'Canvas/Context/Visibility'
+
+    isolateSelect = mari.actions.create('Isolate Selection', 'mari.customScripts.isolateSelect()')
+    isolateSelect.setShortcut('Ctrl+1')
+    mari.menus.addAction(isolateSelect, UI_path, 'Hide Unselected')
+    mari.menus.addAction(isolateSelect, context_path,'Hide Unselected')
+    mari.menus.addAction(isolateSelect, script_menu_path)
+
+    icon_filename = 'ShowAll.png'
+    icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
+    isolateSelect.setIconPath(icon_path)
+
+
+######################################################################
 # Objects
 ######################################################################
 
