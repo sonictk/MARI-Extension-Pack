@@ -1,27 +1,20 @@
-#MARI EXTENSION PACK 2.2 DEVELOPMENT BRANCH
+#MARI EXTENSION PACK 3.0 DEVELOPMENT BRANCH
 
 Copyright (c) 2015 www.mari.ideascale.com. All Rights Reserved.
 
 
 ##Developer Notes for this Branch (Please read):
 
-At the time of writing this the DEV Branch is now based on MARI 3. While Python tools should work in Mari 2.6 Nodes & Shaders will not load in 2.6 due to a change in RegisterCustomShader.py.
-
-Mari 3 is also switching to full on pySide and a higher python version so as development on the next mari extension pack release progresses I assume things will work less and less in 2.6
-
-It is recommended, if you are developing on 2.6, to branch of master and commit to your own created branch so we can cleanly merge it in for Mari 3.
-
-Thanks, Jens
-
+This Branch requires MARI 3.0 !
 
 
 ##Version:
-Extension Pack :  2.2  //  MARI Function Library: 1.12
+Extension Pack :  3.0  //  MARI Function Library: 1.13
 
 
-##What's new in 2.2:
+##What's new in 3.0:
 
-Please refer to DEV_RELEASE_NOTES.md for a list of addition we already made for ExtensionPack 2.2
+Please refer to DEV_RELEASE_NOTES.md for a list of addition we already made for ExtensionPack 3.0
 
 
 ##Info
