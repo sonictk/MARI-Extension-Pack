@@ -4,7 +4,10 @@
 # .Allows you to export your Geometry as OBJs out of MARI
 # ------------------------------------------------------------------------------
 # Written by Jens Kafitz, 2015
+# ------------------------------------------------------------------------------
 # www.jenskafitz.com
+# ------------------------------------------------------------------------------
+# Last Modified: 18 August 2015
 # ------------------------------------------------------------------------------
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -58,12 +61,12 @@ def exportGEOs():
                 export_path = dialog._getExportPathTemplate()
                 path = export_path[0]
                 template = export_path[1]
-                exportMasks(dialog,geo,path,template)
+                exportGeo(dialog,geo,path,template)
 
 
 # ------------------------------------------------------------------------------
-def exportMasks(UI, q_geo_list,path,template):
-        "Export the masks"
+def exportGeo(UI, q_geo_list,path,template):
+        "Export the Geometry"
 
         try:
                 geo_list = q_geo_list.currentGeometry()
@@ -81,8 +84,11 @@ def exportMasks(UI, q_geo_list,path,template):
 
                         UI.close()
 
-                        #Export selected geo UV masks
+                        #Export selected geo
                         for geo in geo_list:
+                                geoVisibility = geo.isVisible()
+                                if geoVisibility is False:
+                                    geo.setVisibility(True)
                                 mari.geo.setCurrent(geo)
                                 geo_name = geo.name()
 
@@ -99,6 +105,8 @@ def exportMasks(UI, q_geo_list,path,template):
 
                                 geo.setSubdivisionLevel(0)
                                 geo.save(export_path_template)
+                                if geoVisibility is False:
+                                    geo.setVisibility(False)
 
 
 
@@ -119,10 +127,7 @@ class exportGEOUI(QtGui.QDialog):
                 super(exportGEOUI, self).__init__(parent)
 
                 # Storing Widget Settings between sessions here:
-                user_path = os.path.abspath(mari.resources.path(mari.resources.USER))
-                user_settings_file = 'extPack_settings.conf'
-                user_settings = os.path.join(user_path,user_settings_file)
-                self.SETTINGS = QSettings(user_settings, QSettings.IniFormat)
+                self.SETTINGS = mari.Settings()
 
                 #Create main dialog, add main layout and set title
                 self._optionsLoad()
@@ -198,7 +203,7 @@ class exportGEOUI(QtGui.QDialog):
                 path_layout = QtGui.QGridLayout()
 
                 #Get mari default path and template
-                self.path = os.path.abspath(mari.resources.path(mari.resources.DEFAULT_EXPORT))
+                self.path = os.path.abspath(mari.resources.path(mari.resources.DEFAULT_GEO))
                 self.template = '$ENTITY.obj'
 
                 #Add path line input and button, also set text to Mari default path and template
@@ -317,26 +322,31 @@ class exportGEOUI(QtGui.QDialog):
                         return
 
                 if not os.path.exists(path_template):
-                        path_string = str(path_template)
-                        if '$' in path_string:
-                                self._optionsSave()
-                                self.accept()
-                        else:
-                                title = 'Create Directories'
-                                text = 'Sub-Folder does not exist "%s".' %os.path.split(path_template)[1]
-                                info = 'Create the path?'
-                                info_dialog = InfoUI(title, text, info)
-                                info_dialog.exec_()
-                                info_reply = info_dialog.buttonRole(info_dialog.clickedButton())
-                                if info_reply is QtGui.QMessageBox.ButtonRole.RejectRole:
-                                        return
-                                else:
-                                        os.makedirs(os.path.split(path_template)[1])
-                                        self._optionsSave()
-                                        self.accept()
-                else:
+                    path_string = str(path_template)
+                    if '$' in path_string:
                         self._optionsSave()
                         self.accept()
+                    else:
+                        title = 'Create Directories'
+                        text = 'Folder does not exist "%s".' %(path_template)
+                        info = 'Create the path?'
+                        info_dialog = InfoUI(title, text, info)
+                        info_dialog.exec_()
+                        info_reply = info_dialog.buttonRole(info_dialog.clickedButton())
+                        if info_reply is QtGui.QMessageBox.ButtonRole.RejectRole:
+                            return
+                        else:
+                            try:
+                                os.makedirs(path_template)
+                                self._optionsSave()
+                                self.accept()
+                            except Exception:
+                                pass # Assuming that a previous channel already created the path
+                                self._optionsSave()
+                                self.accept()
+                else:
+                    self._optionsSave()
+                    self.accept()
 
 
 
@@ -408,6 +418,7 @@ class InfoUI(QtGui.QMessageBox):
                 # Create info gui
                 self.setWindowTitle(title)
                 self.setText(text)
+                self.setIcon(QtGui.QMessageBox.Warning)
                 if not info == None:
                         self.setInformativeText(info)
                 if not details == None:
