@@ -231,14 +231,17 @@ def createToolsMenu():
     UI_path_B = 'MainWindow/&Channels/Export'
     script_menu_path = 'MainWindow/Scripts/Channels/Export'
 
+    ExportSelectedFlattened = mari.actions.create ('Export Custom Channel Selection', 'mari.customScripts.exportSelectedChannelsFlattened()')
     ExportSelected = mari.actions.create ('Export Custom Channel Selection', 'mari.customScripts.exportSelectedChannels()')
-    mari.menus.addAction(ExportSelected, UI_path_A,'Export Current Channel Flattened')
+
+    mari.menus.addAction(ExportSelectedFlattened, UI_path_A,'Export Current Channel Flattened')
     mari.menus.addAction(ExportSelected, UI_path_B,'Export Current Channel')
-    mari.menus.addAction(ExportSelected, script_menu_path)
+    mari.menus.addAction(ExportSelectedFlattened, script_menu_path)
 
     icon_filename = 'ExportImages.png'
     icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
     ExportSelected.setIconPath(icon_path)
+    ExportSelectedFlattened.setIconPath(icon_path)
 
     # --------------------------------------------------------------------
     ###   Save Channel Resolution ###

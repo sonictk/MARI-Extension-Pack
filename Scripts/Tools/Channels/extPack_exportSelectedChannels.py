@@ -59,14 +59,13 @@ USER_ROLE = 34          # PySide.Qt.UserRole
 # ------------------------------------------------------------------------------
 class ExportSelectedChannelsUI(QtGui.QDialog):
     """Export channels from one or more objects."""
-    def __init__(self, bool_, parent=None):
+    def __init__(self, bool_, mode,parent=None):
         super(ExportSelectedChannelsUI, self).__init__(parent)
 
         # Storing Widget Settings between sessions here:
-        user_path = os.path.abspath(mari.resources.path(mari.resources.USER))
-        user_settings_file = 'extPack_settings.conf'
-        user_settings = os.path.join(user_path,user_settings_file)
-        self.SETTINGS = QSettings(user_settings, QSettings.IniFormat)
+        self.SETTINGS = mari.Settings()
+
+        self.dialog_mode = mode
 
         #Set window title and create a main layout
         self._optionsLoad()
@@ -154,9 +153,13 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
         #Add path layout
         path_layout = QtGui.QGridLayout()
 
-        #Get mari default path and template
+        #Get mari default path and template. If dialog is called in mode 'flattened' get flattened Sequence Template, otherwise normal one
         path = os.path.abspath(mari.resources.path(mari.resources.DEFAULT_EXPORT))
-        template = mari.resources.sequenceTemplate()
+        if self.dialog_mode == 'flattened':
+            template = mari.resources.flattenedSequenceTemplate()
+        else:
+            template = mari.resources.sequenceTemplate()
+
         export_path_template = os.path.join(path, template)
 
         #Add path line input and button, also set text to Mari default path and template
@@ -244,8 +247,12 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
         if self.bool_:
             check_box_layout.addWidget(self.export_remove_alpha_box, 1, 2)
 
+        # if dialog is being called in 'flattened' mode:
+        if self.dialog_mode == 'flattened':
+            self.export_flattened_box.setChecked(True)
+        else:
+            self.export_flattened_box.setChecked(False)
 
-        self.export_flattened_box.setChecked(True)
         self.export_small_textures_box.setChecked(True)
         self.export_full_patch_bleed_box.setChecked(True)
         self.export_remove_alpha_box.setChecked(False)
@@ -279,12 +286,18 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
         """Saves UI Options between sessions."""
 
         for name, obj in inspect.getmembers(self):
+
             self.SETTINGS.beginGroup("Export_Selected_Channels_" + version)
             if isinstance(obj, QtGui.QLineEdit):
                 state = None
-                if name is 'template_line_edit':
-                    state = obj.text()
-                    self.SETTINGS.setValue(name,state)
+                if self.dialog_mode == 'flattened':
+                    if name is 'template_line_edit':
+                        state = obj.text()
+                        self.SETTINGS.setValue(name + '_flattened',state)
+                else:
+                    if name is 'template_line_edit':
+                        state = obj.text()
+                        self.SETTINGS.setValue(name,state)
 
             if isinstance(obj, QtGui.QCheckBox):
                 state = obj.isChecked()
@@ -302,15 +315,19 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
 
             if isinstance(obj, QtGui.QCheckBox):
                 state_string = self.SETTINGS.value(name)
-                if state_string == "true":
-                    obj.setChecked(True)
-                if state_string == "false":
-                    obj.setChecked(False)
+                if name != 'export_flattened_box':
+                    if state_string == "true":
+                        obj.setChecked(True)
+                    if state_string == "false":
+                        obj.setChecked(False)
 
             if isinstance(obj, QtGui.QLineEdit):
                 state = None
                 if name is 'template_line_edit':
-                    state = unicode(self.SETTINGS.value(name))
+                    if self.dialog_mode == 'flattened':
+                        state = unicode(self.SETTINGS.value(name + '_flattened'))
+                    else:
+                        state = unicode(self.SETTINGS.value(name))
                     if state != 'None':
                         obj.setText(state)
 
@@ -424,7 +441,7 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
                 self.accept()
             else:
                 title = 'Create Directories'
-                text = 'Sub-Folder does not exist "%s".' %os.path.split(path_template)[1]
+                text = 'Folder does not exist "%s".' %(path_template)
                 info = 'Create the path?'
                 info_dialog = InfoUI(title, text, info)
                 info_dialog.exec_()
@@ -432,9 +449,14 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
                 if info_reply is QtGui.QMessageBox.ButtonRole.RejectRole:
                     return
                 else:
-                    os.makedirs(os.path.split(path_template)[1])
-                    self._optionsSave()
-                    self.accept()
+                    try:
+                        os.makedirs(path_template)
+                        self._optionsSave()
+                        self.accept()
+                    except Exception:
+                        pass # Assuming that a previous channel already created the path
+                        self._optionsSave()
+                        self.accept()
         else:
             self._optionsSave()
             self.accept()
@@ -452,7 +474,11 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
 
     def _resetExportPathTemplate(self):
         ''' reset the path template to whatever is set in the project'''
-        original_template = mari.resources.sequenceTemplate()
+        if self.dialog_mode == 'flattened':
+            original_template = mari.resources.flattenedSequenceTemplate()
+        else:
+            original_template = mari.resources.sequenceTemplate()
+
         self.template_line_edit.setText(original_template)
 
     #Get export everything box is ticked (bool)
@@ -569,6 +595,7 @@ class InfoUI(QtGui.QMessageBox):
         # Create info gui
         self.setWindowTitle(title)
         self.setText(text)
+        self.setIcon(QtGui.QMessageBox.Warning)
         if not info == None:
             self.setInformativeText(info)
         if not details == None:
@@ -698,14 +725,14 @@ def _exportEverything(args_dict):
     mari.utils.message("Export Successful")
 
 # ------------------------------------------------------------------------------
-def exportSelectedChannels():
+def exportSelectedChannels(mode):
     """Export selected channels."""
     suitable = _isProjectSuitable()
     if not suitable[0]:
         return
 
     #Create dialog and execute accordingly
-    dialog = ExportSelectedChannelsUI(suitable[1])
+    dialog = ExportSelectedChannelsUI(suitable[1],mode)
     # dialog.uiSettings_load(dialog, settings)
     if dialog.exec_():
         args_dict = {

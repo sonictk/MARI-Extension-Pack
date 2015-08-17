@@ -124,8 +124,11 @@ class customScripts():
     # ------------------------------------------------------------
     # CHANNELS:
 
+    def exportSelectedChannelsFlattened(self):
+        export_selected_channels.exportSelectedChannels('flattened')
+
     def exportSelectedChannels(self):
-        export_selected_channels.exportSelectedChannels()
+        export_selected_channels.exportSelectedChannels('layered')
 
     def flattenSelectedChannels(self):
         flatten_selected_channels.flattenSelectedChannels()
