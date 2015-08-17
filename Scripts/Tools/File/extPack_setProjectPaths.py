@@ -54,11 +54,9 @@ class setProjectPathUI(QtGui.QDialog):
     """GUI to set your Project Paths"""
     def __init__(self):
         super(setProjectPathUI, self).__init__()
+
         # Storing Widget Settings between sessions here:
-        user_path = os.path.abspath(mari.resources.path(mari.resources.USER))
-        user_settings_file = 'extPack_settings.conf'
-        user_settings = os.path.join(user_path,user_settings_file)
-        self.SETTINGS = QSettings(user_settings, QSettings.IniFormat)
+        self.SETTINGS = mari.Settings()
         # Saving initial Path Settings at Startup of Dialog
 
         lambda: self._saveStartupTemplate()
@@ -512,19 +510,25 @@ class setProjectPathUI(QtGui.QDialog):
                          'PTEXSequence_Flat' : mari.resources.ptexFlattenedSequenceTemplate()
                         }
 
+        project = 'Invalid'
+
         # Reading Project saved in settings file
         self.SETTINGS.beginGroup("Project_Default_Paths_" + version)
         project = self.SETTINGS.value('Project')
+        if project is False:
+            project = "Invalid"
         self.SETTINGS.endGroup()
 
+
         # if the project saved in the settings file is not the current one, store new defaults
-        if mari.projects.current().uuid() != project:
+        if mari.projects.current().uuid() is not project:
             for key in template_dict:
                 self.SETTINGS.beginGroup("Project_Default_Paths_" + version)
                 state = template_dict[key]
                 name = key
                 self.SETTINGS.setValue(name,state)
                 self.SETTINGS.endGroup()
+
 
 
     def _getProjectTemplate(self,pathVariable):

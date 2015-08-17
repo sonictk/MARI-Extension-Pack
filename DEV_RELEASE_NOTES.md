@@ -221,7 +221,13 @@ added to reset the Export File Template to Project Default
 'Export Custom Channel Selection' now uses the default Operation System Dialog for Path Selections instead of the
  limited MARI Default one.
 
- To improve understanding the previous 'DISABLE SMALL TEXTURES' Checkbox is now a 'ENABLE SMALL TEXTURES' checkbox.
+'DISABLE SMALL TEXTURES' Checkbox is now a 'ENABLE SMALL TEXTURES' checkbox to not have double negatives
+
+'Export Custom Channel Selection' now differentiates if it is being launched from 'Export' or 'Export Flattened' Submenu.
+ On ExportFlattened, 'Export Flattened' checkbox is enabled by default and the File Template defaults to the
+ template defined for flattened Textures. When launched from 'Export' submenu, 'Export Flattened' is off by default
+ and file Template defaults to template defined for non-flattened Textures.
+ Templates can be modified by using the new 'Project Paths' tool.
 
 
 ######Export UV Mask
