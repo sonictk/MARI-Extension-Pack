@@ -49,6 +49,7 @@ import PySide.QtCore as QtCore
 from PySide.QtCore import QSettings
 import inspect
 
+
 version = "3.0"         #UI VERSION
 
 USER_ROLE = 32          # PySide.Qt.UserRole
@@ -95,6 +96,9 @@ def exportMasks(UI, q_geo_list,path,template):
             #Export selected geo UV masks
             for geo in geo_list:
                 mari.geo.setCurrent(geo)
+                geoVisibility = geo.isVisible()
+                if geoVisibility is False:
+                    geo.setVisibility(True)
                 geo_name = geo.name()
                 patch_list = geo.patchList()
                 patch_udims = []
@@ -102,28 +106,34 @@ def exportMasks(UI, q_geo_list,path,template):
                     patch_udims.append(int(patch.name()))
                     patch.setSelected(False)
                 for patch in patch_udims:
-                    uv_mask = mari.actions.get('/Mari/Geometry/Patches/UV Mask to Image Manager')
-                    index = patch - 1001
-                    geo.patch(index).setSelected(True)
-                    uv_mask.trigger()
-                    geo.patch(index).setSelected(False)
-                    image_list = mari.images.list()
+                    try:
+                        uv_mask = mari.actions.get('/Mari/Geometry/Patches/UV Mask to Image Manager')
+                        index = patch - 1001
+                        geo.patch(index).setSelected(True)
+                        uv_mask.trigger()
+                        geo.patch(index).setSelected(False)
+                        image_list = mari.images.list()
 
-                    # Checking Path for Variables
-                    # If any $ Variables are found all folder creation will happen automatically
-                    # This is different from cases where a user specifies an explicit subfolder in the path line
-                    # If an explicit subfolder is named a dialog will come up asking to create that folder
-                    # That part is handled as part of the InfoUI() call previously
-                    export_path_template = os.path.join(path, template)
-                    export_path_template = export_path_template.replace('$ENTITY', geo_name)
-                    export_path_template = export_path_template.replace('$UDIM', str(patch))
-                    if not os.path.exists(os.path.split(export_path_template)[0]):
-                        os.makedirs(os.path.split(export_path_template)[0])
+                        # Checking Path for Variables
+                        # If any $ Variables are found all folder creation will happen automatically
+                        # This is different from cases where a user specifies an explicit subfolder in the path line
+                        # If an explicit subfolder is named a dialog will come up asking to create that folder
+                        # That part is handled as part of the InfoUI() call previously
+                        export_path_template = os.path.join(path, template)
+                        export_path_template = export_path_template.replace('$ENTITY', geo_name)
+                        export_path_template = export_path_template.replace('$UDIM', str(patch))
+                        if not os.path.exists(os.path.split(export_path_template)[0]):
+                            os.makedirs(os.path.split(export_path_template)[0])
 
-                    mari.images.saveImages(image_list[-1:], export_path_template)
-                    print export_path_template
-                    index = len(image_list) - 1
-                    image_list[index].close()
+                        mari.images.saveImages(image_list[-1:], export_path_template)
+                        print export_path_template
+                        index = len(image_list) - 1
+                        image_list[index].close()
+                    except Exception:
+                        print export_path_template + ' skipped, Images appear empty'
+                        pass #if it fails I am assuming that the UVs are empty as can be caused by other geo touching the borders
+                if geoVisibility is False:
+                    geo.setVisibility(False)
 
             mari.history.stopMacro()
             deactivateViewportToggle.trigger()
@@ -142,10 +152,7 @@ class ExportUVMaskUI(QtGui.QDialog):
         super(ExportUVMaskUI, self).__init__(parent)
 
         # Storing Widget Settings between sessions here:
-        user_path = os.path.abspath(mari.resources.path(mari.resources.USER))
-        user_settings_file = 'extPack_settings.conf'
-        user_settings = os.path.join(user_path,user_settings_file)
-        self.SETTINGS = QSettings(user_settings, QSettings.IniFormat)
+        self.SETTINGS = mari.Settings()
 
         #Create main dialog, add main layout and set title
         self._optionsLoad()
@@ -357,7 +364,7 @@ class ExportUVMaskUI(QtGui.QDialog):
                 self.accept()
             else:
                 title = 'Create Directories'
-                text = 'Sub-Folder does not exist "%s".' %os.path.split(path_template)[1]
+                text = 'Folder does not exist \n"%s".' %(path_template)
                 info = 'Create the path?'
                 info_dialog = InfoUI(title, text, info)
                 info_dialog.exec_()
@@ -365,9 +372,14 @@ class ExportUVMaskUI(QtGui.QDialog):
                 if info_reply is QtGui.QMessageBox.ButtonRole.RejectRole:
                     return
                 else:
-                    os.makedirs(os.path.split(path_template)[1])
-                    self._optionsSave()
-                    self.accept()
+                    try:
+                        os.makedirs(path_template)
+                        self._optionsSave()
+                        self.accept()
+                    except Exception:
+                        pass # Assuming that a previous channel already created the path
+                        self._optionsSave()
+                        self.accept()
         else:
             self._optionsSave()
             self.accept()
@@ -442,6 +454,7 @@ class InfoUI(QtGui.QMessageBox):
         # Create info gui
         self.setWindowTitle(title)
         self.setText(text)
+        self.setIcon(QtGui.QMessageBox.Warning)
         if not info == None:
             self.setInformativeText(info)
         if not details == None:
