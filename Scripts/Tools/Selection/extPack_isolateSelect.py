@@ -60,6 +60,7 @@ def isolateSelect():
             deactivateViewportToggle.trigger()
 
             isolate_cur_set = None
+            isolate_trig_set = None
             isolate_vis_set = None
 
             for item in sel_groups:
@@ -72,11 +73,21 @@ def isolateSelect():
 
 
             if isolateSelectState:
+                # since users potentially changes selections while Isolate Select is active
+                # I am saving the new selection so it doesn't change
+                mari.selection_groups.createSelectionGroupFromSelection('zz_IsolateSelect_trigger')
+                sel_groups = mari.selection_groups.list()
+                for item in sel_groups:
+                    if item.name() == 'zz_IsolateSelect_trigger':
+                        isolate_trig_set = item
+
                 mari.selection_groups.select(isolate_vis_set)
                 showSelAction.trigger()
                 mari.selection_groups.removeSelectionGroup(isolate_vis_set)
                 mari.selection_groups.select(isolate_cur_set)
                 mari.selection_groups.removeSelectionGroup(isolate_cur_set)
+                mari.selection_groups.select(isolate_trig_set)
+                mari.selection_groups.removeSelectionGroup(isolate_trig_set)
 
             else:
 
