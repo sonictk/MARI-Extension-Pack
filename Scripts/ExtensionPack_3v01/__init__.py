@@ -237,7 +237,7 @@ def detectJTOOLS():
 			for dir in dirs:
 				if dir == 'jtools':
 					jtools_path =  os.path.join(root, dir)
-					init_path = jtools_path + '\\' + '__init__.py'
+					init_path = jtools_path + os.sep + '__init__.py'
 					file_exists = os.path.exists(init_path)
 					if not file_exists:
 						init_path = init_path.replace("\\", "/")
