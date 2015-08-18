@@ -1,6 +1,6 @@
 # --------------------------------------------------------------------
 # Mari Extension Pack GUI Tools
-# Copyright (c) 2015 Mari Ideascale. All Rights Reserved.
+# Copyright (c) 2015 MARI Extension Pack. All Rights Reserved.
 # --------------------------------------------------------------------
 # Written by Jens Kafitz, 2015
 # http://mari.ideascale.com

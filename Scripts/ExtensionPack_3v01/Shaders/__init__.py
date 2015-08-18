@@ -1,6 +1,6 @@
 # ------------------------------------------------------------------------------
 # Mari Shader Library Registration Init
-# Copyright (c) 2015 Mari Ideascale. All Rights Reserved.
+# Copyright (c) 2015 MARI Extension Pack. All Rights Reserved.
 # ------------------------------------------------------------------------------
 # File: __init__.py
 # Description: Initiate file for python to automatically ready directory.

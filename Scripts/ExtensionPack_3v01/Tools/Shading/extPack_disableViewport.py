@@ -1,6 +1,6 @@
 # --------------------------------------------------------------------
 # Disable Viewport
-# Copyright (c) 2015 Mari Ideascale. All Rights Reserved.
+# Copyright (c) 2015 MARI Extension Pack. All Rights Reserved.
 # --------------------------------------------------------------------
 # Written by Jens Kafitz, 2015
 # --------------------------------------------------------------------
