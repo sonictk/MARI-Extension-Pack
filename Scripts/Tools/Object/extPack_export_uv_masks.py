@@ -98,8 +98,6 @@ def exportMasks(UI, ui_mode,q_geo_list,path,template):
             deactivateViewportToggle = mari.actions.find('/Mari/Canvas/Toggle Shader Compiling')
             deactivateViewportToggle.trigger()
 
-            mari.history.startMacro('Export UV Masks')
-
             UI.close()
 
             #Export selected geo UV masks
@@ -135,7 +133,7 @@ def exportMasks(UI, ui_mode,q_geo_list,path,template):
                             os.makedirs(os.path.split(export_path_template)[0])
 
                         mari.images.saveImages(image_list[-1:], export_path_template)
-                        print export_path_template
+                        print 'UV Mask Export ' + export_path_template + ' successful'
                         index = len(image_list) - 1
                         image_list[index].close()
                     except Exception:
@@ -144,14 +142,14 @@ def exportMasks(UI, ui_mode,q_geo_list,path,template):
                 if geoVisibility is False:
                     geo.setVisibility(False)
 
-            mari.history.stopMacro()
+
             deactivateViewportToggle.trigger()
             mari.utils.message("Export UV Masks Complete.",'Export Successful')
 
     except Exception,e:
         print(e)
         mari.utils.message("Export UV Masks failed to complete.")
-        mari.history.stopMacro()
+
         deactivateViewportToggle.trigger()
 
 # ------------------------------------------------------------------------------
