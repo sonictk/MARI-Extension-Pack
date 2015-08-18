@@ -174,21 +174,25 @@ def createToolsMenu():
 
     UI_path = 'MainWindow/Objects'
     script_menu_path = 'MainWindow/Scripts/Objects'
+    context_path = 'MriGeoEntity/ItemContext'
 
-    exportUVMask = mari.actions.create ('Export Geometry', 'mari.customScripts.exportGeometry()')
-    mari.menus.addAction(exportUVMask, UI_path, 'Ambient Occlusion')
-    mari.menus.addAction(exportUVMask, script_menu_path)
+    exportGeo = mari.actions.create ('Export Object', 'mari.customScripts.exportGeometry()')
+    exportGeoLight = mari.actions.create ('Export Object', 'mari.customScripts.exportGeometryLight()')
+    mari.menus.addAction(exportGeo, UI_path, 'Ambient Occlusion')
+    mari.menus.addAction(exportGeoLight, context_path,'Remove Object')
+    mari.menus.addAction(exportGeo, script_menu_path)
 
     icon_filename = 'SaveFileAs.png'
     icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
-    exportUVMask.setIconPath(icon_path)
+    exportGeo.setIconPath(icon_path)
+    exportGeoLight.setIconPath(icon_path)
 
 
     #  Export UV Mask
 
     UI_path = 'MainWindow/Objects'
     script_menu_path = 'MainWindow/Scripts/Objects'
-    context_path = 'MriGeoEntity/ItemContext/'
+    context_path = 'MriGeoEntity/ItemContext'
 
     # One launches full interface where you can select multiple objects, the other just works on current object
     exportUVMask = mari.actions.create ('Export UV Mask', 'mari.customScripts.exportUVMasks()')

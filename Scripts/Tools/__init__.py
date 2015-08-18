@@ -195,7 +195,10 @@ class customScripts():
         export_uv_masks.exportUVMasks('light')
 
     def exportGeometry(self):
-        export_geometry.exportGEOs()
+        export_geometry.exportGEOs('full')
+
+    def exportGeometryLight(self):
+        export_geometry.exportGEOs('light')
 
     def setAllSUBDToHigh(self):
         set_subd_level.setAllToHighest()

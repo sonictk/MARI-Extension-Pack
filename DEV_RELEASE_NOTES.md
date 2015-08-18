@@ -135,6 +135,9 @@ A new tool was added to the 'Selection Group' Palette that will allow you to eas
 It is now possible to export your geometry from inside Mari to an OBJ File.
 Export Geometry will always export the unsubdivided stage (level 0) in case you have OpenSubD applied.
 
+When launched via the 'Object' Menu you are able to select what geometry to export.
+When launched via the right mouse click menu in the object palette, the selected geometry will be exported.
+
 ######Subdivision / Set all to Highest + Set all to Lowest
 
 A new submenu was added to the Object menu and right click object dropdown to toggle all objects in your scene
@@ -240,6 +243,8 @@ If a $Variable is defined as a subfolder, folders will be auto-created. Otherwis
 
 Template Entries are saved between sessions
 
+When launched via the 'Object' Menu you are able to select what geometry to export from.
+When launched via the right mouse click menu in the object palette, the UV Masks from the selected geometry will be exported.
 
 ######Duplicate/Flatten Channel
 

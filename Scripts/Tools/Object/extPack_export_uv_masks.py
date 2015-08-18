@@ -58,7 +58,6 @@ USER_ROLE = 32          # PySide.Qt.UserRole
 # ------------------------------------------------------------------------------
 def exportUVMasks(mode):
     "Export UV masks initialise"
-    global directory
 
     #Check project is suitable
     if not isProjectSuitable():
@@ -133,7 +132,7 @@ def exportMasks(UI, ui_mode,q_geo_list,path,template):
                             os.makedirs(os.path.split(export_path_template)[0])
 
                         mari.images.saveImages(image_list[-1:], export_path_template)
-                        print 'UV Mask Export ' + export_path_template + ' successful'
+                        print 'UV Mask Export to ' + export_path_template + ' successful'
                         index = len(image_list) - 1
                         image_list[index].close()
                     except Exception:
