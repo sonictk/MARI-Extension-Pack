@@ -2,7 +2,7 @@
 # Mari Extension Pack Importer
 # Copyright (c) 2014 Mari Ideascale. All Rights Reserved.
 # ------------------------------------------------------------------------------
-# File: initExtensionPack.py
+# File: __init__.py
 # Description: Main script to import Tools and Shaders and check MARI compatibility
 # ------------------------------------------------------------------------------
 # Author: Jens Kafitz, 2015

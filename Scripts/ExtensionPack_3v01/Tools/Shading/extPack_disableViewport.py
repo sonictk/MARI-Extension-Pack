@@ -3,7 +3,8 @@
 # Copyright (c) 2015 Mari Ideascale. All Rights Reserved.
 # --------------------------------------------------------------------
 # Written by Jens Kafitz, 2015
-# http://mari.ideascale.com
+# --------------------------------------------------------------------
+# http://www.campi3d.com
 # --------------------------------------------------------------------
 # Description: Repackaging toggleShaderCompile action written by the
 # foundry so I can add it to the interface with custom icons & tooltips

@@ -3,9 +3,9 @@
 # ------------------------------------------------------------------------------
 # Will call the online help of MARI EXTENSION PACK
 # ------------------------------------------------------------------------------
-# http://mari.ideascale.com
-# ------------------------------------------------------------------------------
 # Written by Jens Kafitz, 2015
+# ------------------------------------------------------------------------------
+# http://www.campi3d.com
 # ------------------------------------------------------------------------------
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:

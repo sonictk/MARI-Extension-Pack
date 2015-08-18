@@ -4,10 +4,10 @@
 # Will do a Quick Unprojection of the current Channel based on Paint Buffer Dimensions and
 # place the result in the Image Manager
 # ------------------------------------------------------------------------------
-# http://mari.ideascale.com
-# ------------------------------------------------------------------------------
 # Originally written by Antoni Kujawa, 2014
+# ------------------------------------------------------------------------------
 # Extended by Jens Kafitz, 2015
+# http://www.campi3d.com
 # ------------------------------------------------------------------------------
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:

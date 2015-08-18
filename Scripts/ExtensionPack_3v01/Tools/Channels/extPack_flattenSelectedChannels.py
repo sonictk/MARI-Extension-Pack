@@ -5,12 +5,14 @@
 # to the original name. The unflattened Channel is suffixed with _original.
 # coding: utf-8
 # ------------------------------------------------------------------------------
-# Written by Jorel Latraille, 2014
-# Modified by Jens Kafitz, 2015
+# Originally written by Jorel Latraille, 2014
 # ------------------------------------------------------------------------------
-# http://mari.ideascale.com
 # http://www.jorel-latraille.com/
 # http://www.thefoundry.co.uk
+# ------------------------------------------------------------------------------
+# Rewritten & Extended by Jens Kafitz, 2015
+# ------------------------------------------------------------------------------
+# http://www.campi3d.com
 # ------------------------------------------------------------------------------
 # DISCLAIMER & TERMS OF USE:
 #

@@ -6,7 +6,6 @@
 # Written by Jens Kafitz, 2015
 # ------------------------------------------------------------------------------
 # Web: www.campi3d.com
-# Email: MariIdeas@campi3d.com
 # ------------------------------------------------------------------------------
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:

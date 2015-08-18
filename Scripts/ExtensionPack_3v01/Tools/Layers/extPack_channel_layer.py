@@ -4,10 +4,11 @@
 # Channel Layer Tools simplify the process of using the result of a Channel
 # in another Channel. 3 Options exist: Add Channel Layer, Add Channel Layer as Mask, Add grouped Channel Layer Mask
 # ------------------------------------------------------------------------------
-# http://mari.ideascale.com
+# Originally written by Ben Neal, 2014
 # http://bneall.blogspot.de/
 # ------------------------------------------------------------------------------
-# Author: Ben Neal, Jens Kafitz, 2015
+# Rewritten & extended by Jens Kafitz, 2014/15
+# http://www.campi3d.com
 # ------------------------------------------------------------------------------
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
