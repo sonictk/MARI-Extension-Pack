@@ -3,6 +3,12 @@ Copyright (c) 2015 www.mari.ideascale.com. All Rights Reserved.
 
 ##New Features:
 
+###Installation & Deployment:
+
+Extension Pack 3.0 has a new File+Folder Structure within your SCRIPT Directory to make
+it a compact. easy to update package.
+Please refer to HELP/INSTALLATION/ for install instructions
+
 ###Nodes & Shaders:
 
 #####General:
