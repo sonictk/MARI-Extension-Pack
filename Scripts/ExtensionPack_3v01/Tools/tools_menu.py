@@ -3,7 +3,7 @@
 # Copyright (c) 2015 MARI Extension Pack. All Rights Reserved.
 # --------------------------------------------------------------------
 # Written by Jens Kafitz, 2015
-# http://mari.ideascale.com
+# http://www.campi3d.com
 # --------------------------------------------------------------------
 # File: tools_menu.py
 # Description: The following adds custom scripts to the Mari GUI

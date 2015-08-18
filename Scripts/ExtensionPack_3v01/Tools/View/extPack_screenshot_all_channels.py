@@ -4,7 +4,6 @@
 # Will do Screenshots of all Channels and export them based on the path provided
 # in Screenshot Settings
 # ------------------------------------------------------------------------------
-# http://mari.ideascale.com
 # http://cg-cnu.blogspot.in/
 # ------------------------------------------------------------------------------
 # Written by Sreenivas Alapati, 2014

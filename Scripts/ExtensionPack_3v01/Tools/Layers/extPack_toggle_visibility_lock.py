@@ -3,11 +3,11 @@
 # ------------------------------------------------------------------------------
 # Allows the user to affect Visibility & Lock State of multiple selected layers
 # ------------------------------------------------------------------------------
-# http://mari.ideascale.com
-# http://cg-cnu.blogspot.in/
-# ------------------------------------------------------------------------------
 # Written by Sreenivas Alapati, 2014
 # Contributions & Extensions: Jens Kafitz, 2015
+# ------------------------------------------------------------------------------
+# http://cg-cnu.blogspot.in/
+# http://www.campi3d.com
 # ------------------------------------------------------------------------------
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:

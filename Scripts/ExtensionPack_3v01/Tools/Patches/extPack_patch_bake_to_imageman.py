@@ -3,7 +3,7 @@
 # ------------------------------------------------------------------------------
 # Will Bake+Flatten the selected Patches and place the result in the Image Manager
 # ------------------------------------------------------------------------------
-# http://mari.ideascale.com
+# http://www.campi3d.com
 # http://cg-cnu.blogspot.in/
 # ------------------------------------------------------------------------------
 # Written by Sreenivas Alapati, 2014

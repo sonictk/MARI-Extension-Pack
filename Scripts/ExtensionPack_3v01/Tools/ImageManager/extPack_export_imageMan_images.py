@@ -5,11 +5,11 @@
 # If Images have a file format, the file format will be used for export,
 # otherwise TIF Format is used.
 # ------------------------------------------------------------------------------
-# http://mari.ideascale.com
-# http://cg-cnu.blogspot.in/
-# ------------------------------------------------------------------------------
 # Written by Sreenivas Alapati, 2014
 # Modified by Jens Kafitz, 2015
+# ------------------------------------------------------------------------------
+# http://cg-cnu.blogspot.in/
+# http://www.campi3d.com
 # ------------------------------------------------------------------------------
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
