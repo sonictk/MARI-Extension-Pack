@@ -33,7 +33,7 @@ Two new nodes were added to Layerstack & Nodegraph to convert values between RGB
 
 ######Normal Color
 
-A simple node generating a default tangent space normal color
+A simple node generating a default tangent space normal color in sRGB or linear colorspace
 
 
 #####Geometry Nodes:
