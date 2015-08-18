@@ -189,7 +189,10 @@ class customScripts():
     # OBJECTS:
 
     def exportUVMasks(self):
-        export_uv_masks.exportUVMasks()
+        export_uv_masks.exportUVMasks('full')
+
+    def exportUVMasksLight(self):
+        export_uv_masks.exportUVMasks('light')
 
     def exportGeometry(self):
         export_geometry.exportGEOs()

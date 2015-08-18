@@ -56,7 +56,7 @@ USER_ROLE = 32          # PySide.Qt.UserRole
 
 
 # ------------------------------------------------------------------------------
-def exportUVMasks():
+def exportUVMasks(mode):
     "Export UV masks initialise"
     global directory
 
@@ -64,21 +64,30 @@ def exportUVMasks():
     if not isProjectSuitable():
         return False
 
-    dialog = ExportUVMaskUI()
+    dialog = ExportUVMaskUI(mode)
+
+    # Dialogs can be run in two modes: Full and Light.
+    # Light will only work on the current geo.
     if dialog.exec_():
-        geo = dialog.geometry_to_copy_widget
+        if mode == 'light':
+            geo = [mari.geo.current()]
+        else:
+            geo = dialog.geometry_to_copy_widget
         export_path = dialog._getExportPathTemplate()
         path = export_path[0]
         template = export_path[1]
-        exportMasks(dialog,geo,path,template)
+        exportMasks(dialog,mode,geo,path,template)
 
 
 # ------------------------------------------------------------------------------
-def exportMasks(UI, q_geo_list,path,template):
+def exportMasks(UI, ui_mode,q_geo_list,path,template):
     "Export the masks"
 
     try:
-        geo_list = q_geo_list.currentGeometry()
+        if ui_mode == 'light':
+            geo_list = q_geo_list
+        else:
+            geo_list = q_geo_list.currentGeometry()
 
         if len(geo_list) == 0:
             mari.utils.message('Please add at least one Object','No Objects added to Export List')
@@ -148,81 +157,88 @@ def exportMasks(UI, q_geo_list,path,template):
 # ------------------------------------------------------------------------------
 class ExportUVMaskUI(QtGui.QDialog):
     "Copy paint from one or more patches to other patches, for all layers and geometry."
-    def __init__(self, parent=None):
-        super(ExportUVMaskUI, self).__init__(parent)
+    def __init__(self, mode, parent=None):
+        super(ExportUVMaskUI,self).__init__(parent)
 
         # Storing Widget Settings between sessions here:
         self.SETTINGS = mari.Settings()
 
+
         #Create main dialog, add main layout and set title
         self._optionsLoad()
         self.setWindowTitle("Export UV Masks")
+        if mode == 'light':
+            self.setFixedSize(700, 100)
         main_layout = QtGui.QVBoxLayout()
         self.setLayout(main_layout)
 
-        #Create layout for middle section
-        centre_layout = QtGui.QHBoxLayout()
 
-        #Create geometry layout, label, and widget. Finally populate.
-        geo_layout = QtGui.QVBoxLayout()
-        geo_header_layout = QtGui.QHBoxLayout()
-        geo_label = QtGui.QLabel("<strong>Geometry</strong>")
-        geo_list = QtGui.QListWidget()
-        geo_list.setSelectionMode(geo_list.ExtendedSelection)
+        if mode != "light":
+            #Create layout for middle section
+            centre_layout = QtGui.QHBoxLayout()
 
-        filter_box = QtGui.QLineEdit()
-        mari.utils.connect(filter_box.textEdited, lambda: self.updateFilter(filter_box, geo_list))
+            #Create geometry layout, label, and widget. Finally populate.
+            geo_layout = QtGui.QVBoxLayout()
+            geo_header_layout = QtGui.QHBoxLayout()
+            geo_label = QtGui.QLabel("<strong>Geometry</strong>")
+            geo_list = QtGui.QListWidget()
+            geo_list.setSelectionMode(geo_list.ExtendedSelection)
 
-        geo_header_layout.addWidget(geo_label)
-        geo_header_layout.addStretch()
-        geo_search_icon = QtGui.QLabel()
-        search_pixmap = QtGui.QPixmap(mari.resources.path(mari.resources.ICONS) + os.sep + 'Lookup.png')
-        geo_search_icon.setPixmap(search_pixmap)
-        geo_header_layout.addWidget(geo_search_icon)
-        geo_header_layout.addWidget(filter_box)
+            filter_box = QtGui.QLineEdit()
+            mari.utils.connect(filter_box.textEdited, lambda: self.updateFilter(filter_box, geo_list))
 
-        geo = mari.geo.current()
-        for geo_item in mari.geo.list():
-            geo_list.addItem(geo_item.name())
-            geo_list.item(geo_list.count() - 1).setData(USER_ROLE, geo_item)
-            if geo_item is geo:
-                currentGeoRow = geo_list.count()-1
+            geo_header_layout.addWidget(geo_label)
+            geo_header_layout.addStretch()
+            geo_search_icon = QtGui.QLabel()
+            search_pixmap = QtGui.QPixmap(mari.resources.path(mari.resources.ICONS) + os.sep + 'Lookup.png')
+            geo_search_icon.setPixmap(search_pixmap)
+            geo_header_layout.addWidget(geo_search_icon)
+            geo_header_layout.addWidget(filter_box)
 
-        # Set currently active object to selected
-        # Catch errors if a locator is selected
-        if geo is not None:
-            geo_list.setCurrentRow(currentGeoRow)
+            geo = mari.geo.current()
+            for geo_item in mari.geo.list():
+                geo_list.addItem(geo_item.name())
+                geo_list.item(geo_list.count() - 1).setData(USER_ROLE, geo_item)
+                if geo_item is geo:
+                    currentGeoRow = geo_list.count()-1
 
-        geo_layout.addLayout(geo_header_layout)
-        geo_layout.addWidget(geo_list)
+            # Set currently active object to selected
+            # Catch errors if a locator is selected
+            if geo is not None:
+                geo_list.setCurrentRow(currentGeoRow)
 
-        #Create middle button section
-        middle_button_layout = QtGui.QVBoxLayout()
-        add_button = QtGui.QPushButton("+")
-        remove_button = QtGui.QPushButton("-")
-        middle_button_layout.addStretch()
-        middle_button_layout.addWidget(add_button)
-        middle_button_layout.addWidget(remove_button)
-        middle_button_layout.addStretch()
+            geo_layout.addLayout(geo_header_layout)
+            geo_layout.addWidget(geo_list)
 
-        #Add wrapped QtGui.QListWidget with custom functions
-        geometry_to_copy_layout = QtGui.QVBoxLayout()
-        geometry_to_copy_label = QtGui.QLabel("<strong>Geometry to export UV masks from.</strong>")
-        self.geometry_to_copy_widget = GeoToExportList()
-        geometry_to_copy_layout.addWidget(geometry_to_copy_label)
-        geometry_to_copy_layout.addWidget(self.geometry_to_copy_widget)
+            #Create middle button section
+            middle_button_layout = QtGui.QVBoxLayout()
+            add_button = QtGui.QPushButton("+")
+            remove_button = QtGui.QPushButton("-")
+            middle_button_layout.addStretch()
+            middle_button_layout.addWidget(add_button)
+            middle_button_layout.addWidget(remove_button)
+            middle_button_layout.addStretch()
 
-        #Hook up add/remove buttons
-        remove_button.clicked.connect(self.geometry_to_copy_widget.removeGeometry)
-        add_button.clicked.connect(lambda: self.geometry_to_copy_widget.addGeometry(geo_list))
+            #Add wrapped QtGui.QListWidget with custom functions
+            geometry_to_copy_layout = QtGui.QVBoxLayout()
+            geometry_to_copy_label = QtGui.QLabel("<strong>Geometry to export UV masks from.</strong>")
+            self.geometry_to_copy_widget = GeoToExportList()
+            geometry_to_copy_layout.addWidget(geometry_to_copy_label)
+            geometry_to_copy_layout.addWidget(self.geometry_to_copy_widget)
 
-        #Add widgets to centre layout
-        centre_layout.addLayout(geo_layout)
-        centre_layout.addLayout(middle_button_layout)
-        centre_layout.addLayout(geometry_to_copy_layout)
+            #Hook up add/remove buttons
+            remove_button.clicked.connect(self.geometry_to_copy_widget.removeGeometry)
+            add_button.clicked.connect(lambda: self.geometry_to_copy_widget.addGeometry(geo_list))
 
-        #Add centre layout to main layout
-        main_layout.addLayout(centre_layout)
+            #Add widgets to centre layout
+            centre_layout.addLayout(geo_layout)
+            centre_layout.addLayout(middle_button_layout)
+            centre_layout.addLayout(geometry_to_copy_layout)
+
+            #Add centre layout to main layout
+            main_layout.addLayout(centre_layout)
+
+
 
         #Add path layout
         path_layout = QtGui.QGridLayout()
@@ -482,4 +498,4 @@ def isProjectSuitable():
 
 # ------------------------------------------------------------------------------
 if __name__ == "__main__":
-    exportUVMasks()
+    exportUVMasks('full')

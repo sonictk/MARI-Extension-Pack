@@ -188,19 +188,26 @@ def createToolsMenu():
 
     UI_path = 'MainWindow/Objects'
     script_menu_path = 'MainWindow/Scripts/Objects'
+    context_path = 'MriGeoEntity/ItemContext/'
 
+    # One launches full interface where you can select multiple objects, the other just works on current object
     exportUVMask = mari.actions.create ('Export UV Mask', 'mari.customScripts.exportUVMasks()')
+    exportUVMaskLight = mari.actions.create ('Export UV Mask', 'mari.customScripts.exportUVMasksLight()')
+
     mari.menus.addAction(exportUVMask, UI_path, 'Ambient Occlusion')
+    mari.menus.addAction(exportUVMaskLight, context_path,'Ambient Occlusion')
     mari.menus.addAction(exportUVMask, script_menu_path)
 
     icon_filename = 'EdgeMask.png'
     icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
     exportUVMask.setIconPath(icon_path)
+    exportUVMaskLight.setIconPath(icon_path)
 
 
     ###  Menu Separators ###
 
-    mari.menus.addSeparator('MainWindow/Objects','Ambient Occlusion')
+    mari.menus.addSeparator(UI_path,'Ambient Occlusion')
+    mari.menus.addSeparator(context_path,'Ambient Occlusion')
 
 
 
