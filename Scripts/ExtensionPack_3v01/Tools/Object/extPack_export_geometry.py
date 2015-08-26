@@ -108,8 +108,8 @@ def exportGeo(UI, ui_mode,q_geo_list,path,template):
                         if not os.path.exists(os.path.split(export_path_template)[0]):
                                 os.makedirs(os.path.split(export_path_template)[0])
 
-
-                        geo.setSubdivisionLevel(0)
+                        if UI.SubdBox.isChecked():
+                            geo.setSubdivisionLevel(0)
                         geo.save(export_path_template)
                         if geoVisibility is False:
                             geo.setVisibility(False)
@@ -139,7 +139,7 @@ class exportGEOUI(QtGui.QDialog):
         self._optionsLoad()
         self.setWindowTitle("Export Geometry")
         if mode == 'light':
-            self.setFixedSize(700, 100)
+            self.setFixedSize(700, 160)
         main_layout = QtGui.QVBoxLayout()
         self.setLayout(main_layout)
 
@@ -254,6 +254,21 @@ class exportGEOUI(QtGui.QDialog):
 
         #Add browse lines & template to main layout
         main_layout.addLayout(path_layout)
+
+
+        # Add Checkbox Layout & group box
+        chkbox_layout = QtGui.QHBoxLayout()
+        checkbox_group_box = QtGui.QGroupBox("Options")
+
+        #Add Display all Objects check box
+        self.SubdBox = QtGui.QCheckBox('Always save without Subdivision (level0)')
+        self.SubdBox.setToolTip('If ON, all objects are exported at level 0 Subdivision, regardless of their current subd state')
+        self.SubdBox.setChecked(True)
+        chkbox_layout.addWidget(self.SubdBox)
+        checkbox_group_box.setLayout(chkbox_layout)
+
+        main_layout.addWidget(checkbox_group_box)
+
 
         #Add bottom layout.
         bottom_layout = QtGui.QHBoxLayout()

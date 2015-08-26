@@ -136,10 +136,10 @@ A new tool was added to the 'Selection Group' Palette that will allow you to eas
 
 #####Objects:
 
-######Export Geometry
+######Export Object
 
 It is now possible to export your geometry from inside Mari to an OBJ File.
-Export Geometry will always export the unsubdivided stage (level 0) in case you have OpenSubD applied.
+Export Geometry can export either subdivided or unsubdivided geometry if OpenSubd is applied.
 
 When launched via the 'Object' Menu you are able to select what geometry to export.
 When launched via the right mouse click menu in the object palette, the selected geometry will be exported.
