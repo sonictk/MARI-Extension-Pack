@@ -68,20 +68,13 @@ def setAllToHighest():
             locked_ignore = False
 
     for geo in geoList:
+        highLevel = geo.maximumSubdivisionLevel()
         if locked_ignore and geo.isLocked():
             geo.setLocked(False)
-            #Stepping through all subdLevels to get the highest
-            geo.setSubdivisionLevel(0)
-            geo.setSubdivisionLevel(1)
-            geo.setSubdivisionLevel(2)
-            geo.setSubdivisionLevel(3)
+            geo.setSubdivisionLevel(highLevel)
             geo.setLocked(True)
         if  geo.isLocked() is False:
-            #Stepping through all subdLevels to get the highest
-            geo.setSubdivisionLevel(0)
-            geo.setSubdivisionLevel(1)
-            geo.setSubdivisionLevel(2)
-            geo.setSubdivisionLevel(3)
+            geo.setSubdivisionLevel(highLevel)
 
 
 def setAllToLowest():
@@ -137,20 +130,13 @@ def setAllVisibleToHighest():
             locked_ignore = False
 
     for geo in geoList:
+        highLevel = geo.maximumSubdivisionLevel()
         if locked_ignore and geo.isLocked() and geo.isVisible():
             geo.setLocked(False)
-            #Stepping through all subdLevels to get the highest
-            geo.setSubdivisionLevel(0)
-            geo.setSubdivisionLevel(1)
-            geo.setSubdivisionLevel(2)
-            geo.setSubdivisionLevel(3)
+            geo.setSubdivisionLevel(highLevel)
             geo.setLocked(True)
         if geo.isVisible() and (geo.isLocked() is False):
-            #Stepping through all subdLevels to get the highest
-            geo.setSubdivisionLevel(0)
-            geo.setSubdivisionLevel(1)
-            geo.setSubdivisionLevel(2)
-            geo.setSubdivisionLevel(3)
+            geo.setSubdivisionLevel(highLevel)
 
 def setAllVisibleToLowest():
     """Sets all Visible Geo to Lowest SUBD Level"""
