@@ -143,7 +143,7 @@
 
 
                 float lacunarity = #Lacunarity.r*8.0;
-                float offset = clamp(#Offset.r-0.001,0.0,#Offset);
+                float offset = clamp(#Offset.r-0.001,0.0,#Offset.r);
 
                 // compensate for scene size by applying eponential growth
                 float size_pow = (pow(10000.0,#Size.r*#Size.r)-1.0) + 0.0001;
