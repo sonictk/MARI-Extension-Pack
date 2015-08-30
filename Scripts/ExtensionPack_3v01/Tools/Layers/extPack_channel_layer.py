@@ -40,6 +40,7 @@
 
 import mari
 import PySide.QtGui as QtGui
+import os
 
 USER_ROLE = 32          # PySide.Qt.UserRole
 
