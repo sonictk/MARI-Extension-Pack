@@ -84,6 +84,7 @@ def makeChannelLayer(sourceChannel, mode, invert):
     # Existing Layer & BaseMaskStack Variables are used to get & store a layerlist of a maskstack after creation
     # in order to remove auto-created layers later on.
     existingLayer = ()
+    removeExistingLayer = False
     baseMaskStack = None
 
     if mode == 'layer':
@@ -112,6 +113,7 @@ def makeChannelLayer(sourceChannel, mode, invert):
                     layerMaskStack = groupLayer.makeMaskStack()
                     baseMaskStack = layerMaskStack
                     existingLayer = baseMaskStack.layerList()
+                    removeExistingLayer = True
 
                     ## Create Mask Channel Layer
 
@@ -126,9 +128,13 @@ def makeChannelLayer(sourceChannel, mode, invert):
                     if invert:
                         layerMaskStack.createAdjustmentLayer("Invert", "Filter/Invert")
 
-                    # Removes old layers from MaskStack creation. Variable usually empty unless the stack was created by the script
-                    baseMaskStack.removeLayers(existingLayer)
 
+                    # Removes old layers from MaskStack creation. Variable usually empty unless the stack was created by the script
+                    if removeExistingLayer:
+                        baseMaskStack.removeLayers(existingLayer)
+
+                    clearFlags = mari.LayerStack.CLEAR_CURRENT_LAYER_SELECTION |mari.LayerStack.CLEAR_ADJUSTMENT_STACKS | mari.LayerStack.CLEAR_GROUPS | mari.LayerStack.CLEAR_MASK_STACKS
+                    baseMaskStack.clearSelection(clearFlags)
                     mari.history.stopMacro()
 
                 except Exception:
@@ -159,17 +165,20 @@ def makeChannelLayer(sourceChannel, mode, invert):
                     ## New Layer Mask Stack.
                     ## If mask exists convert, if stack exists keep, else make new stack
                     if currentLayer.hasMaskStack():
-                        d
                         layerMaskStack = currentLayer.maskStack()
                         baseMaskStack = layerMaskStack
                         hasMask = True
+                        removeExistingLayer = False
                     elif currentLayer.hasMask():
                         layerMaskStack = currentLayer.makeMaskStack()
                         baseMaskStack = layerMaskStack
                         hasMask = True
+                        removeExistingLayer = False
+
                     else:
                         layerMaskStack = currentLayer.makeMaskStack()
                         baseMaskStack = layerMaskStack
+                        removeExistingLayer = True
                         existingLayer = layerMaskStack.layerList()
                         hasMask = False
 
@@ -189,7 +198,7 @@ def makeChannelLayer(sourceChannel, mode, invert):
 
                             channelLayerName = channel.name()
                             maskChannelLayerName = '%s(Shared Channel)' % channelLayerName
-                            layer = layerMaskStack.createChannelLayer(maskChannelLayerName, channel)
+                            layer = layerMaskStack.createChannelLayer(maskChannelLayerName, channel,None,mari.LayerStack.CLEAR_CURRENT_LAYER_SELECTION)
                             # If layer already had a mask and only one channel layer is added set layer to multiply
                             if hasMask:
                                 layer.setBlendMode(23)
@@ -200,8 +209,10 @@ def makeChannelLayer(sourceChannel, mode, invert):
                                 layer.setBlendMode(27)
 
 
-                        except Exception:
-                            mari.utils.message("Could not add Channel Layer: " + str(channel))
+
+                        except Exception,e:
+                            print(e)
+                            mari.utils.message("Could not add Channel Layer: " + str(channel.name()))
                             pass
 
 
@@ -209,10 +220,15 @@ def makeChannelLayer(sourceChannel, mode, invert):
                         layerMaskStack.createAdjustmentLayer("Invert","Filter/Invert")
 
                     # Removes old layers from MaskStack creation. Variable usually empty unless the stack was created by the script
-                    baseMaskStack.removeLayers(existingLayer)
+                    if removeExistingLayer:
+                        baseMaskStack.removeLayers(existingLayer)
 
-                except Exception:
-                    mari.utils.message("Could not add Channel Layer to: " + str(layer))
+                    clearFlags = mari.LayerStack.CLEAR_CURRENT_LAYER_SELECTION |mari.LayerStack.CLEAR_ADJUSTMENT_STACKS | mari.LayerStack.CLEAR_GROUPS | mari.LayerStack.CLEAR_MASK_STACKS
+                    baseMaskStack.clearSelection(clearFlags)
+
+                except Exception,e:
+                    print(e)
+                    mari.utils.message("Could not add Channel Layer to: " + str(layer.name()))
                     pass
 
 
@@ -271,7 +287,6 @@ class ChannelLayerUI(QtGui.QDialog):
             #Add filter layout and channel list to channel layout
             channel_layout.addLayout(channel_header_layout)
             channel_layout.addWidget(channel_list)
-
 
             #Add widgets to centre layout
             centre_layout.addLayout(channel_layout)
@@ -440,13 +455,14 @@ class getSelectedLayer():
                 tu = stack,layer
                 matchingLayers.append(tu)
             if hasattr(layer, 'layerStack'):
-                matchingLayers.extend(self.cl_getLayerList(layer.layerStack().layerList(),layer.layerStack(),criterionFn))
+                if layer.isChannelLayer():
+                    pass
+                else:
+                    matchingLayers.extend(self.cl_getLayerList(layer.layerStack().layerList(),layer.layerStack(),criterionFn))
             if layer.hasMaskStack():
                 matchingLayers.extend(self.cl_getLayerList(layer.maskStack().layerList(),layer.maskStack(), criterionFn))
             if hasattr(layer, 'hasAdjustmentStack') and layer.hasAdjustmentStack():
                 matchingLayers.extend(self.cl_getLayerList(layer.adjustmentStack().layerList(),layer.adjustmentStack(), criterionFn))
-
-
 
         return matchingLayers
 
