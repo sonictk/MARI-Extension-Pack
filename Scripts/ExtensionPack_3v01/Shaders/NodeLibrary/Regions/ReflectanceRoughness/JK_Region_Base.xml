@@ -53,10 +53,10 @@
         <Input Name="Normal"/>
     </Inputs>
     <Outputs>
-        <Output Name="OUT_A" />
-        <Output Name="OUT_B" />
-        <Output Name="OUT_C" />
-        <Output Name="OUT_D" />
+        <Output Name="OUT_A" PrettyName="Output A"/>
+        <Output Name="OUT_B" PrettyName="Output B"/>
+        <Output Name="OUT_C" PrettyName="Output C"/>
+        <Output Name="OUT_D" PrettyName="Output D"/>
     </Outputs>
     <Attributes>
     <!--===============================================================================================================-->
@@ -96,20 +96,20 @@
         <Context Type="NodeGraphView">
             <Inputs>
 
-                <Input Name="diffuse"><Pos>0,-150</Pos></Input>
+                <Input Name="diffuse"><Pos>70,-150</Pos></Input>
                 <Input Name="specRough"><Pos>-60,-150</Pos></Input>
-                <Input Name="specRefl"><Pos>-150,-150</Pos></Input>
-                <Input Name="specCol"><Pos>-240,-150</Pos></Input>
-                <Input Name="Disp"><Pos>60,-150</Pos></Input>
-                <Input Name="Normal"><Pos>120,-150</Pos></Input>
+                <Input Name="specRefl"><Pos>-120,-150</Pos></Input>
+                <Input Name="specCol"><Pos>-170,-150</Pos></Input>
+                <Input Name="Disp"><Pos>120,-150</Pos></Input>
+                <Input Name="Normal"><Pos>170,-150</Pos></Input>
             </Inputs>
 
             <Outputs>
 
-                <Output Name="OUT_D"><Pos>200,20</Pos></Output>
-                <Output Name="OUT_C"><Pos>200,-20</Pos></Output>
-                <Output Name="OUT_B"><Pos>200,-40</Pos></Output>
-                <Output Name="OUT_A"><Pos>200,-60</Pos></Output>
+                <Output Name="OUT_D"><Pos>170,40</Pos></Output>
+                <Output Name="OUT_C"><Pos>170,20</Pos></Output>
+                <Output Name="OUT_B"><Pos>170,-20</Pos></Output>
+                <Output Name="OUT_A"><Pos>170,-40</Pos></Output>
 
             </Outputs>
         </Context>
