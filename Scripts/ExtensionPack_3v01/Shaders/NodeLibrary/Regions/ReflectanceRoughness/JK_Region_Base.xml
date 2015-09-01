@@ -62,7 +62,6 @@
     <!--===============================================================================================================-->
     <Attribute Name="diffuse_color" PrettyName="Color" Group="Handle Diffuse (RGBA)" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(0.0,0.0,0.0,1.0)</Attribute>
     <Attribute Name="diffuse_float" PrettyName="Float" Group="Handle Diffuse (RGBA)" Type="double">1.0</Attribute>
-    <Attribute Name="diffuse_sRGB" PrettyName="sRgb Input" Group="Handle Diffuse (RGBA)" Type="bool" Min="false" Max="true">false</Attribute>
     <Attribute Name="diffuse_clamp" PrettyName="Clamp Input" Group="Handle Diffuse (RGBA)" Type="bool" Min="false" Max="true">true</Attribute>
      <!--===============================================================================================================-->
     <Attribute Name="roughness_float" PrettyName="Float" Group="Handle Roughness (float)" Type="double">0.3</Attribute>
@@ -73,7 +72,6 @@
     <!--===============================================================================================================-->
     <Attribute Name="specCol_color" PrettyName="Color" Group="Handle Specular Color (RGBA)" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(1,1,1,1)</Attribute>
     <Attribute Name="specCol_float" PrettyName="Float" Group="Handle Specular Color (RGBA)" Type="double">1.0</Attribute>
-    <Attribute Name="specCol_sRGB" PrettyName="sRgb Input" Group="Handle Specular Color (RGBA)" Type="bool" Min="false" Max="true">false</Attribute>
     <Attribute Name="specCol_clamp" PrettyName="Clamp Input" Group="Handle Specular Color (RGBA)" Type="bool" Min="false" Max="true">true</Attribute>
     <!--===============================================================================================================-->
     <Attribute Name="disp_float" PrettyName="Float" Group="Handle Displacement/Bump (float)" Type="double">0.5</Attribute>
@@ -142,12 +140,6 @@
             vec4 disp_handle = #Disp ;
             vec4 normal_handle = #Normal ;
 
-
-
-
-            // sRGB2Linear Conversion where checked
-            if ($diffuse_sRGB) {diffuse_handle.rgb = sRgb2Linear(diffuse_handle.rgb); }
-            if ($specCol_sRGB) {specCol_handle.rgb = sRgb2Linear(specCol_handle.rgb); }
 
 
 

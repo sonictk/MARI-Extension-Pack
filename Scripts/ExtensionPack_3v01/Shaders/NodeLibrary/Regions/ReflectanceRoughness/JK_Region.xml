@@ -73,7 +73,6 @@
     <Attribute Name="diffuse_float" PrettyName="Float" Group="Handle Diffuse (RGBA)" Type="double">1.0</Attribute>
     <Attribute Name="diffuse_mix" PrettyName="Mix" Group="Handle Diffuse (RGBA)" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
     <Attribute Name="diffuse_BlendMode" PrettyName="Mode" Group="Handle Diffuse (RGBA)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
-    <Attribute Name="diffuse_sRGB" PrettyName="sRgb Input" Group="Handle Diffuse (RGBA)" Type="bool" Min="false" Max="true">false</Attribute>
     <Attribute Name="diffuse_clamp" PrettyName="Clamp Input" Group="Handle Diffuse (RGBA)" Type="bool" Min="false" Max="true">true</Attribute>
      <!--===============================================================================================================-->
     <Attribute Name="roughness_Use" PrettyName="On/Off" Group="Handle Roughness (float)" Type="bool" Min="false" Max="true">false</Attribute>
@@ -93,7 +92,6 @@
     <Attribute Name="specCol_float" PrettyName="Float" Group="Handle Specular Color (RGBA)" Type="double">1.0</Attribute>
     <Attribute Name="specCol_mix" PrettyName="Mix" Group="Handle Specular Color (RGBA)" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
     <Attribute Name="specCol_BlendMode" PrettyName="Mode" Group="Handle Specular Color (RGBA)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
-    <Attribute Name="specCol_sRGB" PrettyName="sRgb Input" Group="Handle Specular Color (RGBA)" Type="bool" Min="false" Max="true">false</Attribute>
     <Attribute Name="specCol_clamp" PrettyName="Clamp Input" Group="Handle Specular Color (RGBA)" Type="bool" Min="false" Max="true">true</Attribute>
     <!--===============================================================================================================-->
     <Attribute Name="disp_Use" PrettyName="On/Off" Group="Handle Displacement/Bump (float)" Type="bool" Min="false" Max="true">false</Attribute>
@@ -112,7 +110,6 @@
     <Attribute Name="idPick" PrettyName="On/Off" Group="Material Region ID" Type="bool" Min="false" Max="true">false</Attribute>
     <Attribute Name="idColor" PrettyName="Mask ID" Group="Material Region ID" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(0.0,0.0,0.0,1)</Attribute>
     <Attribute Name="idError" PrettyName="Max Error" Group="Material Region ID" Type="double" Min="0.0" Max="0.5">0.1</Attribute>
-    <Attribute Name="idColor_sRGB" PrettyName="sRgb Input" Group="Material Region ID" Type="bool" Min="false" Max="true">true</Attribute>
     <!--===============================================================================================================-->
 </Attributes>
  <Groups>
@@ -191,12 +188,6 @@
                 vec4 disp_handle = #Disp ;
                 vec4 normal_handle = #Normal ;
                 vec4 idColor_handle = $idColor;
-
-
-                // sRGB2Linear Conversion where checked
-                if ($idColor_sRGB && $idPick){idColor_handle.rgb = sRgb2Linear(idColor_handle.rgb);}
-                if ($diffuse_sRGB) {diffuse_handle.rgb = sRgb2Linear(diffuse_handle.rgb); }
-                if ($specCol_sRGB) {specCol_handle.rgb = sRgb2Linear(specCol_handle.rgb); }
 
 
                 // Blending between clamped and unclamped.
