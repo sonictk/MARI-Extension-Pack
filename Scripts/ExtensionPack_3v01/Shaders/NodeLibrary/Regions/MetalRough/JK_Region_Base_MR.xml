@@ -47,7 +47,7 @@
     <Inputs>
         <Input Name="BaseColor" PrettyName="Base Color" />
         <Input Name="roughness" PrettyName="Roughness"/>
-        <Input Name="metallness" PrettyName="Metal"/>
+        <Input Name="metalness" PrettyName="Metal"/>
         <Input Name="height" PrettyName="Height"/>
         <Input Name="Normal" PrettyName="Normal"/>
     </Inputs>
@@ -87,11 +87,11 @@
         <Context Type="NodeGraphView">
             <Inputs>
 
-                <Input Name="BaseColor"><Pos>70,-150</Pos></Input>
+                <Input Name="BaseColor"><Pos>40,-150</Pos></Input>
                 <Input Name="roughness"><Pos>-60,-150</Pos></Input>
-                <Input Name="metallness"><Pos>-120,-150</Pos></Input>
-                <Input Name="height"><Pos>120,-150</Pos></Input>
-                <Input Name="Normal"><Pos>170,-150</Pos></Input>
+                <Input Name="metalness"><Pos>-120,-150</Pos></Input>
+                <Input Name="height"><Pos>100,-150</Pos></Input>
+                <Input Name="Normal"><Pos>160,-150</Pos></Input>
             </Inputs>
 
             <Outputs>
@@ -107,7 +107,7 @@
                 <Inputs>
                 <Input Name="BaseColor"><Default>$BaseColor_color*vec4($BaseColor_float,$BaseColor_float,$BaseColor_float,1.0)</Default></Input>
                 <Input Name="roughness"><Default>vec4($roughness_float,$roughness_float,$roughness_float,1.0) </Default></Input>
-                <Input Name="metallness"><Default>vec4($metalness_float,$metalness_float,$metalness_float,1.0)</Default></Input>
+                <Input Name="metalness"><Default>vec4($metalness_float,$metalness_float,$metalness_float,1.0)</Default></Input>
                 <Input Name="height"><Default>vec4($height_float,$height_float,$height_float,1.0)</Default></Input>
                 <Input Name="Normal"><Default>$normal_color*vec4($normal_float,$normal_float,$normal_float,1.0)</Default></Input>
                 </Inputs>
@@ -125,7 +125,7 @@
             // Casting # to Variable
             vec4 BaseColor_handle = #BaseColor ;
             vec4 roughness_handle = #roughness ;
-            vec4 metallness_handle = #metallness ;
+            vec4 metalness_handle = #metalness ;
             vec4 height_handle = #height ;
             vec4 normal_handle = #Normal ;
 
@@ -137,7 +137,7 @@
             // not on any values coming from another region
             vec4 BaseColor = mix(BaseColor_handle,clamp(BaseColor_handle,vec4(0.0),vec4(1.0)),float($BaseColor_clamp));
             vec4 roughness = mix(roughness_handle,clamp(roughness_handle,vec4(0.0),vec4(1.0)),float($roughness_clamp));
-            vec4 metallness = mix(metallness_handle,clamp(metallness_handle,vec4(0.0),vec4(1.0)),float($metalness_clamp)););
+            vec4 metalness = mix(metalness_handle,clamp(metalness_handle,vec4(0.0),vec4(1.0)),float($metalness_clamp));
             vec4 height = mix(height_handle,clamp(height_handle,vec4(0.0),vec4(1.0)),float($height_clamp));
             vec4 normal = mix(normal_handle,clamp(normal_handle,vec4(0.0),vec4(1.0)),float($normal_clamp));
 
@@ -146,7 +146,7 @@
 
             // Output to Handles. Roughness,metalness & height are carried on signle variable
             OUT_A = BaseColor;
-            OUT_B = vec4(roughness.r,metallness.r,height.r,1.0);
+            OUT_B = vec4(roughness.r,metalness.r,height.r,1.0);
             OUT_C = normal;
 
 

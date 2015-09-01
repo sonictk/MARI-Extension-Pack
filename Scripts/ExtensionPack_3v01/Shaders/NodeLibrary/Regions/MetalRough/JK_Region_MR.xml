@@ -118,11 +118,11 @@
                 <Input Name="IN_C"><Pos>-170,20</Pos></Input>
                 <Input Name="RegionMask"><Pos>0,150</Pos></Input>
 
-                <Input Name="baseColor"><Pos>70,-150</Pos></Input>
+                <Input Name="baseColor"><Pos>40,-150</Pos></Input>
                 <Input Name="roughness"><Pos>-60,-150</Pos></Input>
                 <Input Name="metalness"><Pos>-120,-150</Pos></Input>
-                <Input Name="height"><Pos>120,-150</Pos></Input>
-                <Input Name="Normal"><Pos>170,-150</Pos></Input>
+                <Input Name="height"><Pos>100,-150</Pos></Input>
+                <Input Name="Normal"><Pos>160,-150</Pos></Input>
 
 
             </Inputs>
@@ -159,8 +159,8 @@
 
 
                  // Initalizing Attributes, necessary since <Default> on INPUTS doesn't do it
-                 vec4 INIT_V4 =   $baseColor_color; INIT_V4 = $specCol_color; INIT_V4 = $normal_color;
-                 float INIT_FL =  $baseColor_float; INIT_FL = $roughness_float; INIT_FL = $metalness_float; INIT_FL = $specCol_float;
+                 vec4 INIT_V4 =   $baseColor_color; INIT_V4 = $normal_color;
+                 float INIT_FL =  $baseColor_float; INIT_FL = $roughness_float; INIT_FL = $metalness_float;
                             INIT_FL = $height_float; INIT_FL = $normal_float;
 
 
