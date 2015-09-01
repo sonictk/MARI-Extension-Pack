@@ -1,11 +1,10 @@
 <!--
-===============================================================================
-== Material Region Dot Reflectance-Roughness
+================================================================================
+== == Material Region Value Selection Reflectance-Roughness
 == Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
 ================================================================================
-== File: JK_Region_Dot.xml
-== Description: A Region compatible node similar to a 'dot' that allows you to branch from this node
-==              It can be used as a convenience connector before separating out values into channels
+== File: JK_RegionSplitter_RR.xml
+== Description: Allows you to extract a value from the Region Chain
 ================================================================================
 == Author: Jens Kafitz
 == Web: www.campi3d.com
@@ -41,64 +40,93 @@
 ================================================================================
 -->
 
-
-
 <Node>
-    <ID>JK_Region_PassThrough_RR</ID>
-    <DefaultName>Material Region Dot (R-R)</DefaultName>
-    <Category>Regions/Reflectance-Roughness/</Category>
+    <ID>JK_RegionSplitter_RR</ID>
+    <DefaultName>Region Value Selector (R-R)</DefaultName>
+    <Category>Material Regions/Reflectance-Roughness/</Category>
     <Inputs>
         <Input Name="IN_A" PrettyName="Input A"/>
         <Input Name="IN_B" PrettyName="Input B"/>
         <Input Name="IN_C" PrettyName="Input C"/>
         <Input Name="IN_D" PrettyName="Input D"/>
     </Inputs>
-    <Outputs>
-        <Output Name="OUT_A" PrettyName="Output A"/>
-        <Output Name="OUT_B" PrettyName="Output B"/>
-        <Output Name="OUT_C" PrettyName="Output C"/>
-        <Output Name="OUT_D" PrettyName="Output D"/>
-    </Outputs>
     <Attributes>
-</Attributes>
- <Groups>
- </Groups>
+    <Attribute Name="Value" PrettyName="Region Value" Group="" Type="stringlist">Please Select,Please Select,Diffuse (RGBA),SpecRoughness (Float),SpecReflectance (Float),SpecColor (RGBA),Displacement/Bump (Float),Normal (RGBA)</Attribute>
+    <Attribute Name="Aclamp" PrettyName="Clamp Attribute Output" Type="bool" Min="false" Max="true">false</Attribute>
+
+    </Attributes>
+
  <Contexts>
         <Context Type="NodeGraphView">
-            <guiNodeClass Type="QString">Dot</guiNodeClass>
             <Inputs>
                 <Input Name="IN_A"><Pos>-170,-40</Pos></Input>
                 <Input Name="IN_B"><Pos>-170,-20</Pos></Input>
                 <Input Name="IN_C"><Pos>-170,20</Pos></Input>
                 <Input Name="IN_D"><Pos>-170,40</Pos></Input>
-                <Input Name="RegionMask"><Pos>0,150</Pos></Input>
-
             </Inputs>
 
             <Outputs>
-                <Output Name="OUT_D"><Pos>170,40</Pos></Output>
-                <Output Name="OUT_C"><Pos>170,20</Pos></Output>
-                <Output Name="OUT_B"><Pos>170,-20</Pos></Output>
-                <Output Name="OUT_A"><Pos>170,-40</Pos></Output>
+                <Output Name="Output"><Pos>200,0</Pos></Output>
             </Outputs>
         </Context>
         <Context Type="GLSL">
             <Shader ShaderType='Fragment'>
                 <Inputs>
-                <Input Name="IN_A"><Default>vec4(0.0)</Default></Input>
-                <Input Name="IN_B"><Default>vec4(0.0)</Default></Input>
-                <Input Name="IN_C"><Default>vec4(0.0)</Default></Input>
-                <Input Name="IN_D"><Default>vec4(0.0)</Default></Input>
+                <Input Name="IN_A"><Default>vec4(1.0)</Default></Input>
+                <Input Name="IN_B"><Default>vec4(1.0)</Default></Input>
+                <Input Name="IN_C"><Default>vec4(1.0)</Default></Input>
+                <Input Name="IN_D"><Default>vec4(1.0)</Default></Input>
                 </Inputs>
+
             </Shader>
             <Shader>
                 <Body><![CDATA[
 
 
-                OUT_A = #IN_A;
-                OUT_B = #IN_B;
-                OUT_C = #IN_C;
-                OUT_D = #IN_D;
+
+
+            vec4 result;
+            float clampMixer = float($Aclamp);
+            vec4 one = vec4(1.0);
+            vec4 zero = vec4(0.0);
+
+            if($Value==0) // Nothing selected
+            {
+              result = vec4(0.0);
+            }
+            else if($Value==1) // Diffuse
+            {
+              result = mix(#IN_A,clamp(#IN_A,zero,one),clampMixer);
+            }
+            else if($Value==2) // SpecRoughness
+            {
+              result = vec4(#IN_B.r,#IN_B.r,#IN_B.r,1.0);
+              result = mix(result,clamp(result,zero,one),clampMixer);
+            }
+            else if($Value==3) // SpecReflectance
+            {
+              result = vec4(#IN_B.g,#IN_B.g,#IN_B.g,1.0);
+              result = mix(result,clamp(result,zero,one),clampMixer);
+            }
+
+            else if($Value==4) // SpecColor
+            {
+              result = #IN_D;
+              result = mix(result,clamp(result,zero,one),clampMixer);
+            }
+
+            else if($Value==5) // DIsplacement
+            {
+              result = vec4(#IN_B.b,#IN_B.b,#IN_B.b,1.0);
+              result = mix(result,clamp(result,zero,one),clampMixer);
+            }
+            else if($Value==6) //Normal
+            {
+              result = #IN_C;
+              result = mix(result,clamp(result,zero,one),clampMixer);
+            }
+
+            Output = result;
 
 
                 ]]></Body>
@@ -106,3 +134,4 @@
         </Context>
     </Contexts>
 </Node>
+

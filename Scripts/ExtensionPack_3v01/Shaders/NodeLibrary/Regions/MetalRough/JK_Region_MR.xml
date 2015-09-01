@@ -1,9 +1,9 @@
 <!--
 ===============================================================================
-== Material Region Reflectance-Roughness
+== Material Region Metal-Rough
 == Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
 ================================================================================
-== File: JK_Region.xml
+== File: JK_Region_MR.xml
 == Description: Material Region to modulate values throughout the flow of the graph
 ================================================================================
 == Author: Jens Kafitz
@@ -41,39 +41,36 @@
 -->
 
 <Node>
-    <ID>JK_Region_RR</ID>
-    <DefaultName>Material Region (R-R)</DefaultName>
-    <Category>Regions/Reflectance-Roughness/</Category>
+    <ID>JK_Region_Metal</ID>
+    <DefaultName>Region (MetalRough)</DefaultName>
+    <Category>Material Regions/Metal-Rough/</Category>
     <Inputs>
         <Input Name="IN_A" PrettyName="Input A"/>
         <Input Name="IN_B" PrettyName="Input B"/>
         <Input Name="IN_C" PrettyName="Input C"/>
-        <Input Name="IN_D" PrettyName="Input D"/>
         <Input Name="RegionMask" />
-        <Input Name="diffuse" />
-        <Input Name="specRough"/>
-        <Input Name="specRefl"/>
-        <Input Name="specCol"/>
-        <Input Name="Disp"/>
+        <Input Name="baseColor" PrettyName="Base Color" />
+        <Input Name="roughness" PrettyName="Roughness"/>
+        <Input Name="metalness" PrettyName="Metal"/>
+        <Input Name="height" PrettyName="Height"/>
         <Input Name="Normal"/>
     </Inputs>
     <Outputs>
         <Output Name="OUT_A" PrettyName="Output A"/>
         <Output Name="OUT_B" PrettyName="Output B"/>
         <Output Name="OUT_C" PrettyName="Output C"/>
-        <Output Name="OUT_D" PrettyName="Output D"/>
         <Output Name="DEBUG" />
     </Outputs>
     <Attributes>
     <Attribute Name="useRegion" PrettyName="Activate Region" Type="bool" Min="false" Max="true">true</Attribute>
-    <Attribute Name="debugmode" PrettyName="Debug Output" Group="" Type="userenum">diffuse,diffuse,Roughness,Reflectance,specCol,Disp,Normal,vec4(0.0),regionMsk_debug,id_mask,Diffuse,Spec Roughness,Spec Reflectance,Spec Color,Displacement,Normal,-------------,Region Mask, Region Mask over ID</Attribute>
+    <Attribute Name="debugmode" PrettyName="Debug Output" Group="" Type="userenum">baseColor,baseColor,roughness,metalness,height,Normal,vec4(0.0),regionMsk_debug,id_mask,Base Color,Roughness,Metal,Height,Normal,-------------,Region Mask, Region Mask over ID</Attribute>
     <!--===============================================================================================================-->
-    <Attribute Name="diffuse_Use" PrettyName="On/Off" Group="Handle Diffuse (RGBA)" Type="bool" Min="false" Max="true">false</Attribute>
-    <Attribute Name="diffuse_color" PrettyName="Color" Group="Handle Diffuse (RGBA)" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(1,1,1,1)</Attribute>
-    <Attribute Name="diffuse_float" PrettyName="Float" Group="Handle Diffuse (RGBA)" Type="double">1.0</Attribute>
-    <Attribute Name="diffuse_mix" PrettyName="Mix" Group="Handle Diffuse (RGBA)" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
-    <Attribute Name="diffuse_BlendMode" PrettyName="Mode" Group="Handle Diffuse (RGBA)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
-    <Attribute Name="diffuse_clamp" PrettyName="Clamp Input" Group="Handle Diffuse (RGBA)" Type="bool" Min="false" Max="true">true</Attribute>
+    <Attribute Name="baseColor_Use" PrettyName="On/Off" Group="Handle Base Color (RGBA)" Type="bool" Min="false" Max="true">false</Attribute>
+    <Attribute Name="baseColor_color" PrettyName="Color" Group="Handle Base Color (RGBA)" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(1,1,1,1)</Attribute>
+    <Attribute Name="baseColor_float" PrettyName="Float" Group="Handle Base Color (RGBA)" Type="double">1.0</Attribute>
+    <Attribute Name="baseColor_mix" PrettyName="Mix" Group="Handle Base Color (RGBA)" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
+    <Attribute Name="baseColor_BlendMode" PrettyName="Mode" Group="Handle Base Color (RGBA)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
+    <Attribute Name="baseColor_clamp" PrettyName="Clamp Input" Group="Handle Base Color (RGBA)" Type="bool" Min="false" Max="true">true</Attribute>
      <!--===============================================================================================================-->
     <Attribute Name="roughness_Use" PrettyName="On/Off" Group="Handle Roughness (float)" Type="bool" Min="false" Max="true">false</Attribute>
     <Attribute Name="roughness_float" PrettyName="Float" Group="Handle Roughness (float)" Type="double">1.0</Attribute>
@@ -81,24 +78,17 @@
     <Attribute Name="roughness_BlendMode" PrettyName="Mode" Group="Handle Roughness (float)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
     <Attribute Name="roughness_clamp" PrettyName="Clamp Input" Group="Handle Roughness (float)" Type="bool" Min="false" Max="true">true</Attribute>
     <!--===============================================================================================================-->
-    <Attribute Name="reflectance_Use" PrettyName="On/Off" Group="Handle Reflectance (float)" Type="bool" Min="false" Max="true">false</Attribute>
-    <Attribute Name="reflectance_float" PrettyName="Float" Group="Handle Reflectance (float)" Type="double">1.0</Attribute>
-    <Attribute Name="reflectance_mix" PrettyName="Mix" Group="Handle Reflectance (float)" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
-    <Attribute Name="reflectance_BlendMode" PrettyName="Mode" Group="Handle Reflectance (float)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
-    <Attribute Name="reflectance_clamp" PrettyName="Clamp Input" Group="Handle Reflectance (float)" Type="bool" Min="false" Max="true">true</Attribute>
+    <Attribute Name="metalness_Use" PrettyName="On/Off" Group="Handle Metal (float)" Type="bool" Min="false" Max="true">false</Attribute>
+    <Attribute Name="metalness_float" PrettyName="Float" Group="Handle Metal (float)" Type="double">1.0</Attribute>
+    <Attribute Name="metalness_mix" PrettyName="Mix" Group="Handle Metal (float)" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
+    <Attribute Name="metalness_BlendMode" PrettyName="Mode" Group="Handle Metal (float)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
+    <Attribute Name="metalness_clamp" PrettyName="Clamp Input" Group="Handle Metal (float)" Type="bool" Min="false" Max="true">true</Attribute>
     <!--===============================================================================================================-->
-    <Attribute Name="specCol_Use" PrettyName="On/Off" Group="Handle Specular Color (RGBA)" Type="bool" Min="false" Max="true">false</Attribute>
-    <Attribute Name="specCol_color" PrettyName="Color" Group="Handle Specular Color (RGBA)" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(1,1,1,1)</Attribute>
-    <Attribute Name="specCol_float" PrettyName="Float" Group="Handle Specular Color (RGBA)" Type="double">1.0</Attribute>
-    <Attribute Name="specCol_mix" PrettyName="Mix" Group="Handle Specular Color (RGBA)" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
-    <Attribute Name="specCol_BlendMode" PrettyName="Mode" Group="Handle Specular Color (RGBA)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
-    <Attribute Name="specCol_clamp" PrettyName="Clamp Input" Group="Handle Specular Color (RGBA)" Type="bool" Min="false" Max="true">true</Attribute>
-    <!--===============================================================================================================-->
-    <Attribute Name="disp_Use" PrettyName="On/Off" Group="Handle Displacement/Bump (float)" Type="bool" Min="false" Max="true">false</Attribute>
-    <Attribute Name="disp_float" PrettyName="Float" Group="Handle Displacement/Bump (float)" Type="double">1.0</Attribute>
-    <Attribute Name="disp_mix" PrettyName="Mix" Group="Handle Displacement/Bump (float)" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
-    <Attribute Name="disp_BlendMode" PrettyName="Mode" Group="Handle Displacement/Bump (float)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
-    <Attribute Name="disp_clamp" PrettyName="Clamp Input" Group="Handle Displacement/Bump (float)" Type="bool" Min="false" Max="true">false</Attribute>
+    <Attribute Name="height_Use" PrettyName="On/Off" Group="Handle Height (float)" Type="bool" Min="false" Max="true">false</Attribute>
+    <Attribute Name="height_float" PrettyName="Float" Group="Handle Height (float)" Type="double">1.0</Attribute>
+    <Attribute Name="height_mix" PrettyName="Mix" Group="Handle Height (float)" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
+    <Attribute Name="height_BlendMode" PrettyName="Mode" Group="Handle Height (float)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
+    <Attribute Name="height_clamp" PrettyName="Clamp Input" Group="Handle Height (float)" Type="bool" Min="false" Max="true">false</Attribute>
     <!--===============================================================================================================-->
     <Attribute Name="normal_Use" PrettyName="On/Off" Group="Handle Normal (RGBA)" Type="bool" Min="false" Max="true">false</Attribute>
     <Attribute Name="normal_color" PrettyName="Color" Group="Handle Normal (RGBA)" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(0.216,0.216,1.0,1.0)</Attribute>
@@ -113,11 +103,10 @@
     <!--===============================================================================================================-->
 </Attributes>
  <Groups>
-     <Group Name="Handle Diffuse (RGBA)" Expanded="false"></Group>
+     <Group Name="Handle baseColor (RGBA)" Expanded="false"></Group>
      <Group Name="Handle Roughness (float)" Expanded="false"></Group>
-     <Group Name="Handle Reflectance (float)" Expanded="false"></Group>
-     <Group Name="Handle Specular Color (RGBA)" Expanded="false"></Group>
-     <Group Name="Handle Displacement/Bump (float)" Expanded="false"></Group>
+     <Group Name="Handle Metalness (float)" Expanded="false"></Group>
+     <Group Name="Handle Height (float)" Expanded="false"></Group>
      <Group Name="Handle Normal (RGBA)" Expanded="false"></Group>
      <Group Name="Material Region ID" Expanded="false"></Group>
  </Groups>
@@ -127,21 +116,18 @@
                 <Input Name="IN_A"><Pos>-170,-40</Pos></Input>
                 <Input Name="IN_B"><Pos>-170,-20</Pos></Input>
                 <Input Name="IN_C"><Pos>-170,20</Pos></Input>
-                <Input Name="IN_D"><Pos>-170,40</Pos></Input>
                 <Input Name="RegionMask"><Pos>0,150</Pos></Input>
 
-                <Input Name="diffuse"><Pos>70,-150</Pos></Input>
-                <Input Name="specRough"><Pos>-60,-150</Pos></Input>
-                <Input Name="specRefl"><Pos>-120,-150</Pos></Input>
-                <Input Name="specCol"><Pos>-170,-150</Pos></Input>
-                <Input Name="Disp"><Pos>120,-150</Pos></Input>
+                <Input Name="baseColor"><Pos>70,-150</Pos></Input>
+                <Input Name="roughness"><Pos>-60,-150</Pos></Input>
+                <Input Name="metalness"><Pos>-120,-150</Pos></Input>
+                <Input Name="height"><Pos>120,-150</Pos></Input>
                 <Input Name="Normal"><Pos>170,-150</Pos></Input>
 
 
             </Inputs>
 
             <Outputs>
-                <Output Name="OUT_D"><Pos>170,40</Pos></Output>
                 <Output Name="OUT_C"><Pos>170,20</Pos></Output>
                 <Output Name="OUT_B"><Pos>170,-20</Pos></Output>
                 <Output Name="OUT_A"><Pos>170,-40</Pos></Output>
@@ -152,17 +138,15 @@
         <Context Type="GLSL">
             <Shader ShaderType='Fragment'>
                 <Inputs>
-                <Input Name="diffuse"><Default>$diffuse_color*vec4($diffuse_float,$diffuse_float,$diffuse_float,1.0)</Default></Input>
-                <Input Name="specRough"><Default>vec4($roughness_float,$roughness_float,$roughness_float,1.0) </Default></Input>
-                <Input Name="specRefl"><Default>vec4($reflectance_float,$reflectance_float,$reflectance_float,1.0)</Default></Input>
-                <Input Name="specCol"><Default>$specCol_color*vec4($specCol_float,$specCol_float,$specCol_float,1.0)</Default></Input>
-                <Input Name="Disp"><Default>vec4($disp_float,$disp_float,$disp_float,1.0)</Default></Input>
+                <Input Name="baseColor"><Default>$baseColor_color*vec4($baseColor_float,$baseColor_float,$baseColor_float,1.0)</Default></Input>
+                <Input Name="roughness"><Default>vec4($roughness_float,$roughness_float,$roughness_float,1.0) </Default></Input>
+                <Input Name="metalness"><Default>vec4($metalness_float,$metalness_float,$metalness_float,1.0)</Default></Input>
+                <Input Name="height"><Default>vec4($height_float,$height_float,$height_float,1.0)</Default></Input>
                 <Input Name="Normal"><Default>$normal_color*vec4($normal_float,$normal_float,$normal_float,1.0)</Default></Input>
 
                 <Input Name="IN_A"><Default>vec4(0.0)</Default></Input>
                 <Input Name="IN_B"><Default>vec4(0.0)</Default></Input>
                 <Input Name="IN_C"><Default>vec4(0.0)</Default></Input>
-                <Input Name="IN_D"><Default>vec4(1.0)</Default></Input>
                 <Input Name="RegionMask"><Default>vec4(1.0)</Default></Input>
                 </Inputs>
 
@@ -175,29 +159,27 @@
 
 
                  // Initalizing Attributes, necessary since <Default> on INPUTS doesn't do it
-                 vec4 INIT_V4 =   $diffuse_color; INIT_V4 = $specCol_color; INIT_V4 = $normal_color;
-                 float INIT_FL =  $diffuse_float; INIT_FL = $roughness_float; INIT_FL = $reflectance_float; INIT_FL = $specCol_float;
-                            INIT_FL = $disp_float; INIT_FL = $normal_float;
+                 vec4 INIT_V4 =   $baseColor_color; INIT_V4 = $specCol_color; INIT_V4 = $normal_color;
+                 float INIT_FL =  $baseColor_float; INIT_FL = $roughness_float; INIT_FL = $metalness_float; INIT_FL = $specCol_float;
+                            INIT_FL = $height_float; INIT_FL = $normal_float;
 
 
                 // Casting # to Variable
-                vec4 diffuse_handle = #diffuse ;
-                vec4 specRough_handle = #specRough ;
-                vec4 specRefl_handle = #specRefl ;
-                vec4 specCol_handle = #specCol ;
-                vec4 disp_handle = #Disp ;
+                vec4 baseColor_handle = #baseColor ;
+                vec4 roughness_handle = #roughness ;
+                vec4 metalness_handle = #metalness ;
+                vec4 height_handle = #height ;
                 vec4 normal_handle = #Normal ;
                 vec4 idColor_handle = $idColor;
 
 
                 // Blending between clamped and unclamped.
-                // CLamping here is only done directly on the region input (diffuse, specRough etc.)
+                // CLamping here is only done directly on the region input (baseColor, roughness etc.)
                 // not on any values coming from another region
-                vec4 diffuse_clamp = mix(diffuse_handle,clamp(diffuse_handle,vec4(0.0),vec4(1.0)),float($diffuse_clamp));
-                vec4 specRough_clamp = mix(specRough_handle,clamp(specRough_handle,vec4(0.0),vec4(1.0)),float($roughness_clamp));
-                vec4 specRefl_clamp = mix(specRefl_handle,clamp(specRefl_handle,vec4(0.0),vec4(1.0)),float($reflectance_clamp));
-                vec4 specCol_clamp = mix(specCol_handle,clamp(specCol_handle,vec4(0.0),vec4(1.0)),float($specCol_clamp));
-                vec4 disp_clamp = mix(disp_handle,clamp(disp_handle,vec4(0.0),vec4(1.0)),float($disp_clamp));
+                vec4 baseColor_clamp = mix(baseColor_handle,clamp(baseColor_handle,vec4(0.0),vec4(1.0)),float($baseColor_clamp));
+                vec4 roughness_clamp = mix(roughness_handle,clamp(roughness_handle,vec4(0.0),vec4(1.0)),float($roughness_clamp));
+                vec4 metalness_clamp = mix(metalness_handle,clamp(metalness_handle,vec4(0.0),vec4(1.0)),float($metalness_clamp));
+                vec4 height_clamp = mix(height_handle,clamp(height_handle,vec4(0.0),vec4(1.0)),float($height_clamp));
                 vec4 normal_clamp = mix(normal_handle,clamp(normal_handle,vec4(0.0),vec4(1.0)),float($normal_clamp));
                 float regionmask = $idPick ? col2Mask(#RegionMask,idColor_handle,$idError) : #RegionMask.r ;
                 vec4 id_mask = mix(#RegionMask,vec4(regionmask),regionmask*float($idPick));
@@ -209,32 +191,29 @@
 
 
                 // setting regionmask to 0 for values that are turned Off
-                float diffuse_mix = (regionmask*$diffuse_mix) * float($diffuse_Use);
+                float baseColor_mix = (regionmask*$baseColor_mix) * float($baseColor_Use);
                 float roughness_mix = (regionmask*$roughness_mix) * float($roughness_Use);
-                float reflectance_mix = (regionmask*$reflectance_mix) * float($reflectance_Use);
-                float specCol_mix = (regionmask*$specCol_mix) * float($specCol_Use);
-                float disp_mix = (regionmask*$disp_mix) * float($disp_Use);
+                float metalness_mix = (regionmask*$metalness_mix) * float($metalness_Use);
+                float height_mix = (regionmask*$height_mix) * float($height_Use);
                 float normal_mix = (regionmask*$normal_mix) * float($normal_Use);
 
 
                 // Blending Values within the Region (RegionInput from other region and each Attribute)
-                vec4 diffuse = $diffuse_BlendMode(#IN_A,diffuse_clamp,diffuse_mix);
+                vec4 baseColor = $baseColor_BlendMode(#IN_A,baseColor_clamp,baseColor_mix);
                 vec4 roughness_Handle = vec4(#IN_B.r,#IN_B.r,#IN_B.r,1.0);
-                vec4 Roughness = $roughness_BlendMode(roughness_Handle,specRough_clamp,roughness_mix);
-                vec4 Reflectance_Handle = vec4(#IN_B.g,#IN_B.g,#IN_B.g,1.0);
-                vec4 Reflectance = $reflectance_BlendMode(Reflectance_Handle,specRefl_clamp,reflectance_mix);
-                vec4 specCol = $specCol_BlendMode(#IN_D,specCol_clamp,specCol_mix);
-                vec4 disp_Handle = vec4(#IN_B.b,#IN_B.b,#IN_B.b,1.0);
-                vec4 Disp = $disp_BlendMode(disp_Handle,disp_clamp,disp_mix);
+                vec4 roughness = $roughness_BlendMode(roughness_Handle,roughness_clamp,roughness_mix);
+                vec4 metalness_Handle = vec4(#IN_B.g,#IN_B.g,#IN_B.g,1.0);
+                vec4 metalness = $metalness_BlendMode(metalness_Handle,metalness_clamp,metalness_mix);
+                vec4 height_Handle = vec4(#IN_B.b,#IN_B.b,#IN_B.b,1.0);
+                vec4 height = $height_BlendMode(height_Handle,height_clamp,height_mix);
                 vec4 Normal = $normal_BlendMode(#IN_C,normal_clamp,normal_mix);
 
 
 
-                // Output to Handles. Roughness,reflectance & disp are carried on signle variable
-                OUT_A = diffuse;
-                OUT_B = vec4(Roughness.r,Reflectance.r,Disp.r,1.0);
+                // Output to Handles. Roughness,metalness & height are carried on signle variable
+                OUT_A = baseColor;
+                OUT_B = vec4(roughness.r,metalness.r,height.r,1.0);
                 OUT_C = Normal;
-                OUT_D = specCol;
                 DEBUG = $debugmode;
 
 
