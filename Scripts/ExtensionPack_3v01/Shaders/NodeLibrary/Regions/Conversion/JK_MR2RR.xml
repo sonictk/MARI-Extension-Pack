@@ -64,6 +64,8 @@
     <Attribute Name="diffuseMix" PrettyName="Metal Diffuse Weight" Group="Metal Weights" Type="double" Min="0.0" Max="1.0">0.0</Attribute>
     <Attribute Name="specColorMix" PrettyName="Metal SpecColor Weight" Group="Metal Weights" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
     <Attribute Name="specReflMix" PrettyName="Metal SpecRefl Weight" Group="Metal Weights" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
+    <Attribute Name="rough2Gloss" PrettyName="Roughness to Glossiness" Group="Roughness to Glossiness" Type="bool" Min="false" Max="true">false</Attribute>
+
     </Attributes>
 
  <Contexts>
@@ -116,11 +118,14 @@
                 vec4 weighted_diffuse_metal = mix(#in_baseColor,weighted_diffuse,#in_metalness.r);
                 vec4 weighted_specCol_metal = mix(vec4(1.0),weighted_specCol,#in_metalness.r);
 
+                float rough2gloss = float($rough2Gloss);
+                vec3 roughness = mix(#in_roughness.rgb,vec3(1.0)-#in_roughness.rgb,vec3(rough2gloss));
+
 
                 out_diffuse = weighted_diffuse_metal;
                 out_specCol = weighted_specCol_metal;
                 out_specRefl = vec4(refl_conv,refl_conv,refl_conv,1.0);
-                out_specRough = #in_roughness;
+                out_specRough = vec4(roughness,1.0);
                 out_disp = #in_height;
                 out_normal = #in_normal;
 
