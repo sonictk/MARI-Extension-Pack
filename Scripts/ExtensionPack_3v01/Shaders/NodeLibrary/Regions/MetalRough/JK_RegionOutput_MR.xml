@@ -53,6 +53,7 @@
         <Output Name="baseColor" PrettyName="Out BaseColor"/>
         <Output Name="roughness" PrettyName="Out Roughness"/>
         <Output Name="metalness" PrettyName="Out Metal"/>
+        <Output Name="specular" PrettyName="Out F0Specular"/>
         <Output Name="height" PrettyName="Out Height"/>
         <Output Name="normal" PrettyName="Out Normal"/>
     </Outputs>
@@ -68,9 +69,10 @@
             </Inputs>
 
             <Outputs>
-                <Output Name="baseColor"><Pos>170,20</Pos></Output>
+                <Output Name="baseColor"><Pos>170,-60</Pos></Output>
                 <Output Name="roughness"><Pos>170,-40</Pos></Output>
                 <Output Name="metalness"><Pos>170,-20</Pos></Output>
+                <Output Name="specular"><Pos>170,20</Pos></Output>
                 <Output Name="height"><Pos>170,40</Pos></Output>
                 <Output Name="normal"><Pos>170,60</Pos></Output>
             </Outputs>
@@ -93,6 +95,7 @@
             baseColor = #IN_A;
             roughness = vec4(#IN_B.r,#IN_B.r,#IN_B.r,1.0);
             metalness = vec4(#IN_B.g,#IN_B.g,#IN_B.g,1.0);
+            specular = vec4(#IN_B.a,#IN_B.a,#IN_B.a,1.0);
             height = vec4(#IN_B.b,#IN_B.b,#IN_B.b,1.0);
             normal = #IN_C;
 

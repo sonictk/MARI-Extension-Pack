@@ -48,6 +48,7 @@
         <Input Name="in_baseColor" PrettyName="Base Color" />
         <Input Name="in_roughness" PrettyName="Roughness"/>
         <Input Name="in_metalness" PrettyName="Metal"/>
+        <Input Name="in_specular" PrettyName="F0Specular"/>
         <Input Name="in_height" PrettyName="Height"/>
         <Input Name="in_normal" PrettyName="Normal"/>
     </Inputs>
@@ -69,10 +70,11 @@
         <Context Type="NodeGraphView">
             <Inputs>
                 <Input Name="in_baseColor"><Pos>-170,-60</Pos></Input>
-                <Input Name="in_roughness"><Pos>-170,40</Pos></Input>
-                <Input Name="in_metalness"><Pos>-170,20</Pos></Input>
-                <Input Name="in_height"><Pos>-170,-20</Pos></Input>
-                <Input Name="in_normal"><Pos>-170,-40</Pos></Input>
+                <Input Name="in_roughness"><Pos>-170,-40</Pos></Input>
+                <Input Name="in_metalness"><Pos>-170,-20</Pos></Input>
+                <Input Name="in_specular"><Pos>-170,20</Pos></Input>
+                <Input Name="in_height"><Pos>-170,40</Pos></Input>
+                <Input Name="in_normal"><Pos>-170,60</Pos></Input>
             </Inputs>
 
             <Outputs>
@@ -92,6 +94,7 @@
                 <Input Name="in_baseColor"><Default>vec4(0.0,0.0,0.0,1.0)</Default></Input>
                 <Input Name="in_roughness"><Default>vec4(0.0,0.0,0.0,1.0)</Default></Input>
                 <Input Name="in_metalness"><Default>vec4(0.0,0.0,0.0,1.0)</Default></Input>
+                <Input Name="in_specular"><Default>vec4(0.5,0.5,0.5,1.0)</Default></Input>
                 <Input Name="in_height"><Default>vec4(0.0,0.0,0.0,1.0)</Default></Input>
                 <Input Name="in_normal"><Default>vec4(0.0,0.0,0.0,1.0)</Default></Input>
                 </Inputs>
@@ -100,7 +103,7 @@
             <Shader>
                 <Body><![CDATA[
 
-                float s0_refl = 0.04;
+                float s0_refl = 0.08 * #in_specular.r;
                 float refl = #in_baseColor.r * $specReflMix;
                 float refl_conv = mix(s0_refl,refl,#in_metalness.r);
 
