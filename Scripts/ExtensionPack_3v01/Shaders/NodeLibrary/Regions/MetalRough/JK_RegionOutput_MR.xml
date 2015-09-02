@@ -1,11 +1,10 @@
 <!--
-===============================================================================
-== Material Region Dot Reflectance-Roughness
+================================================================================
+== == Material Region Value Output Metal-Rough
 == Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
 ================================================================================
-== File: JK_Region_Dot_RR.xml
-== Description: A Region compatible node similar to a 'dot' that allows you to branch from this node
-==              It can be used as a convenience connector before separating out values into channels
+== File: JK_RegionOutput_MR.xml
+== Description: Allows you to extract a value from the Region Chain
 ================================================================================
 == Author: Jens Kafitz
 == Web: www.campi3d.com
@@ -41,64 +40,61 @@
 ================================================================================
 -->
 
-
-
 <Node>
-    <ID>JK_Region_PassThrough_RR</ID>
-    <DefaultName>Region Dot (R-R)</DefaultName>
-    <Category>Material Regions/Reflectance-Roughness/</Category>
+    <ID>JK_RegionSplitter_Metal</ID>
+    <DefaultName>Region Output (MetalRough)</DefaultName>
+    <Category>Material Regions/Metal-Rough/</Category>
     <Inputs>
         <Input Name="IN_A" PrettyName="Input A"/>
         <Input Name="IN_B" PrettyName="Input B"/>
         <Input Name="IN_C" PrettyName="Input C"/>
-        <Input Name="IN_D" PrettyName="Input D"/>
     </Inputs>
     <Outputs>
-        <Output Name="OUT_A" PrettyName="Output A"/>
-        <Output Name="OUT_B" PrettyName="Output B"/>
-        <Output Name="OUT_C" PrettyName="Output C"/>
-        <Output Name="OUT_D" PrettyName="Output D"/>
+        <Output Name="baseColor" PrettyName="Out BaseColor"/>
+        <Output Name="roughness" PrettyName="Out Roughness"/>
+        <Output Name="metalness" PrettyName="Out Metal"/>
+        <Output Name="height" PrettyName="Out Height"/>
+        <Output Name="normal" PrettyName="Out Normal"/>
     </Outputs>
     <Attributes>
-</Attributes>
- <Groups>
- </Groups>
+    </Attributes>
+
  <Contexts>
         <Context Type="NodeGraphView">
-            <guiNodeClass Type="QString">Dot</guiNodeClass>
             <Inputs>
                 <Input Name="IN_A"><Pos>-170,-40</Pos></Input>
                 <Input Name="IN_B"><Pos>-170,-20</Pos></Input>
                 <Input Name="IN_C"><Pos>-170,20</Pos></Input>
-                <Input Name="IN_D"><Pos>-170,40</Pos></Input>
-                <Input Name="RegionMask"><Pos>0,150</Pos></Input>
-
             </Inputs>
 
             <Outputs>
-                <Output Name="OUT_D"><Pos>170,40</Pos></Output>
-                <Output Name="OUT_C"><Pos>170,20</Pos></Output>
-                <Output Name="OUT_B"><Pos>170,-20</Pos></Output>
-                <Output Name="OUT_A"><Pos>170,-40</Pos></Output>
+                <Output Name="baseColor"><Pos>170,20</Pos></Output>
+                <Output Name="roughness"><Pos>170,-40</Pos></Output>
+                <Output Name="metalness"><Pos>170,-20</Pos></Output>
+                <Output Name="height"><Pos>170,40</Pos></Output>
+                <Output Name="normal"><Pos>170,60</Pos></Output>
             </Outputs>
+
         </Context>
         <Context Type="GLSL">
             <Shader ShaderType='Fragment'>
                 <Inputs>
-                <Input Name="IN_A"><Default>vec4(0.0)</Default></Input>
-                <Input Name="IN_B"><Default>vec4(0.0)</Default></Input>
-                <Input Name="IN_C"><Default>vec4(0.0)</Default></Input>
-                <Input Name="IN_D"><Default>vec4(0.0)</Default></Input>
+                <Input Name="IN_A"><Default>vec4(1.0)</Default></Input>
+                <Input Name="IN_B"><Default>vec4(1.0)</Default></Input>
+                <Input Name="IN_C"><Default>vec4(1.0)</Default></Input>
                 </Inputs>
+
             </Shader>
             <Shader>
                 <Body><![CDATA[
 
 
-                OUT_A = #IN_A;
-                OUT_B = #IN_B;
-                OUT_C = #IN_C;
-                OUT_D = #IN_D;
+
+            baseColor = #IN_A;
+            roughness = vec4(#IN_B.r,#IN_B.r,#IN_B.r,1.0);
+            metalness = vec4(#IN_B.g,#IN_B.g,#IN_B.g,1.0);
+            height = vec4(#IN_B.b,#IN_B.b,#IN_B.b,1.0);
+            normal = #IN_C;
 
 
                 ]]></Body>
@@ -106,3 +102,4 @@
         </Context>
     </Contexts>
 </Node>
+

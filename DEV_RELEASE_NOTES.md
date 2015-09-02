@@ -92,8 +92,7 @@ The Mix Slider will always be evaluated regardless of the Mix Noodle being mappe
 ######Material Regions
 
 New nodes were added as part of the implementation of 'Material Regions'.
-Material Region Base, Material Region, Material Region Pass Through and
-Material Region Value Selector.
+Region Base, Region and Region Output
 
 Different Material Region Presets for different workflows (Roughness/Reflectance, Metallness/Roughness, SpecularGlossiness) are available.
 
@@ -101,7 +100,7 @@ Material Regions are a powerful way to layer different materials on top of each 
 performance is kept high by only passing a 'finished' channel to one shader
 instead of layereing multiple shaders on top of each other.
 
-Material Regions are only available in the Nodegraph.
+Material Regions are only available in the advanced Nodegraph (Preferences/Nodegraph/Enable Advanced Nodegraph)
 
 
 ###Tools:
