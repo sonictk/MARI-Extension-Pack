@@ -187,7 +187,7 @@
                 vec4 specCol_handle = #specCol ;
                 vec4 disp_handle = #Disp ;
                 vec4 normal_handle = #Normal ;
-                vec4 idColor_handle = $idColor;
+                vec4 idColor_handle = sRgb2Linear($idColor);
 
 
                 // Blending between clamped and unclamped.
@@ -200,7 +200,7 @@
                 vec4 disp_clamp = mix(disp_handle,clamp(disp_handle,vec4(0.0),vec4(1.0)),float($disp_clamp));
                 vec4 normal_clamp = mix(normal_handle,clamp(normal_handle,vec4(0.0),vec4(1.0)),float($normal_clamp));
                 float regionmask = $idPick ? col2Mask(#RegionMask,idColor_handle,$idError) : #RegionMask.r ;
-                vec4 id_mask = mix(#RegionMask,vec4(regionmask),regionmask*float($idPick));
+                vec4 id_mask = mix(#RegionMask,vec4(regionmask,regionmask,regionmask,1.0),regionmask*float($idPick));
                 regionmask = clamp(regionmask,0.0,1.0);
                 // casting as new variable for DEBUG handle purposes only
                 vec4 regionMsk_debug = vec4(regionmask,regionmask,regionmask,1.0);
