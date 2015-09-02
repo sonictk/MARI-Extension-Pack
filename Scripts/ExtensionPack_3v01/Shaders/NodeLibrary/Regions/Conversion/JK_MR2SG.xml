@@ -1,9 +1,9 @@
 <!--
 ================================================================================
-== Conversion Metal-Rough workflow to Roughness-Reflectance Workflow
+== Conversion Metal-Rough workflow to SoecGlossiness Workflow
 == Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
 ================================================================================
-== File: JK_MR2RR.xml
+== File: JK_MR2SG.xml
 == Description: Converts Outputs between two different workflows
 ================================================================================
 == Author: Jens Kafitz
@@ -41,8 +41,8 @@
 -->
 
 <Node>
-    <ID>JK_MR2RR</ID>
-    <DefaultName>PBR MetalRough to ReflectanceRoughness</DefaultName>
+    <ID>JK_MR2SG</ID>
+    <DefaultName>PBR MetalRough to SpecGlossiness</DefaultName>
     <Category>Material Regions/Conversion/</Category>
     <Inputs>
         <Input Name="in_baseColor" PrettyName="Base Color" />
@@ -54,16 +54,12 @@
     </Inputs>
     <Outputs>out_
         <Output Name="out_diffuse" PrettyName="Diffuse" />
-        <Output Name="out_specRough" PrettyName="SpecRough"/>
-        <Output Name="out_specRefl" PrettyName="SpecRefl" />
-        <Output Name="out_specCol" PrettyName="SpecColor"/>
-        <Output Name="out_disp" PrettyName="Displacement"/>
+        <Output Name="out_glossiness" PrettyName="Glossiness"/>
+        <Output Name="out_specular" PrettyName="Specular" />
+        <Output Name="out_height" PrettyName="Height"/>
         <Output Name="out_normal" PrettyName="Normal" />
     </Outputs>
     <Attributes>
-    <Attribute Name="diffuseMix" PrettyName="Metal Diffuse Weight" Group="Metal Weights" Type="double" Min="0.0" Max="1.0">0.0</Attribute>
-    <Attribute Name="specColorMix" PrettyName="Metal SpecColor Weight" Group="Metal Weights" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
-    <Attribute Name="specReflMix" PrettyName="Metal SpecRefl Weight" Group="Metal Weights" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
     </Attributes>
 
  <Contexts>
@@ -79,10 +75,9 @@
 
             <Outputs>
                 <Output Name="out_diffuse"><Pos>170,-60</Pos></Output>
-                <Output Name="out_specRough"><Pos>170,40</Pos></Output>
-                <Output Name="out_specRefl"><Pos>170,20</Pos></Output>
-                <Output Name="out_specCol"><Pos>170,60</Pos></Output>
-                <Output Name="out_disp"><Pos>170,-40</Pos></Output>
+                <Output Name="out_glossiness"><Pos>170,40</Pos></Output>
+                <Output Name="out_specular"><Pos>170,20</Pos></Output>
+                <Output Name="out_height"><Pos>170,-40</Pos></Output>
                 <Output Name="out_normal"><Pos>170,-20</Pos></Output>
 
             </Outputs>
@@ -103,25 +98,17 @@
             <Shader>
                 <Body><![CDATA[
 
-                vec4 baseValue = mriRgb2Hsv(#in_baseColor);
-                float s0_refl = 0.08 * #in_specular.r;
-                float refl = baseValue.b * $specReflMix;
-                float refl_conv = mix(s0_refl,refl,#in_metalness.r);
+                vec4 glossiness = vec4(1.0) - #in_roughness;
+                glossiness = vec4(glossiness.r,glossiness.g,glossiness.b,1.0);
 
+                vec4 diffuse = mix(#in_baseColor,vec4(0.0,0.0,0.0,1.0),#in_metalness);
+                float f0Specular = 0.08 * #in_specular.r;
+                vec4 specular = mix(vec4(f0Specular),#in_baseColor,#in_metalness.r);
 
-                vec4 weighted_diffuse = mix(#in_baseColor,vec4(0.0,0.0,0.0,1.0),vec4(1.0) - vec4($diffuseMix));
-                vec4 weighted_specCol = mix(#in_baseColor,vec4(1.0,1.0,1.0,1.0),vec4(1.0-$specColorMix));
-
-
-                vec4 weighted_diffuse_metal = mix(#in_baseColor,weighted_diffuse,#in_metalness.r);
-                vec4 weighted_specCol_metal = mix(vec4(1.0),weighted_specCol,#in_metalness.r);
-
-
-                out_diffuse = weighted_diffuse_metal;
-                out_specCol = weighted_specCol_metal;
-                out_specRefl = vec4(refl_conv,refl_conv,refl_conv,1.0);
-                out_specRough = #in_roughness;
-                out_disp = #in_height;
+                out_diffuse = vec4(diffuse.rgb,1.0);
+                out_glossiness = glossiness;
+                out_specular = vec4(specular.rgb,1.0);
+                out_height = #in_height;
                 out_normal = #in_normal;
 
                 ]]></Body>

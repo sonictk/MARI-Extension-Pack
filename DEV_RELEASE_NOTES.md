@@ -87,7 +87,8 @@ etc. when you don't need them. For convenience a color A and color B can be set 
 if the corresponding handles are mapped in the nodegraph.
 The Mix Slider will always be evaluated regardless of the Mix Noodle being mapped (in which case it's an added multiplier)
 
-#####Region Nodes (Nodegraph only):
+
+#####Region Nodes (Advanced Nodegraph only):
 
 ######Material Regions
 
@@ -101,6 +102,10 @@ performance is kept high by only passing a 'finished' channel to one shader
 instead of layereing multiple shaders on top of each other.
 
 Material Regions are only available in the advanced Nodegraph (Preferences/Nodegraph/Enable Advanced Nodegraph)
+
+######PBR Workflow Conversion Nodes
+
+Two new nodes were added to convert Outputs from a Metal-Roughness workflow to a Reflectance/Roughness or Specular/Glossiness workflow.
 
 
 ###Tools:
