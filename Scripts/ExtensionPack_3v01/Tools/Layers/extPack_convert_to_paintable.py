@@ -203,10 +203,10 @@ def convertChannelLayer(layerselection,layername,channelselection):
     blendType = layer.blendType()
     visibility =layer.isVisible()
     colorTag = layer.colorTag()
-    swizzle_r = layer.swizzle(0)
-    swizzle_g = layer.swizzle(1)
-    swizzle_b = layer.swizzle(2)
-    swizzle_a = layer.swizzle(3)
+    swizzle_r = layer.swizzle(mari.Layer.SWIZZLE_DST_RED)
+    swizzle_g = layer.swizzle(mari.Layer.SWIZZLE_DST_GREEN)
+    swizzle_b = layer.swizzle(mari.Layer.SWIZZLE_DST_BLUE)
+    swizzle_a = layer.swizzle(mari.Layer.SWIZZLE_DST_ALPHA)
 
 
     # 'Convert to paintable' Channel Layer Style
@@ -225,10 +225,10 @@ def convertChannelLayer(layerselection,layername,channelselection):
     new_layer.setBlendType(blendType)
     new_layer.setVisibility(visibility)
     new_layer.setColorTag(colorTag)
-    new_layer.setSwizzle(0,swizzle_r)
-    new_layer.setSwizzle(1,swizzle_g)
-    new_layer.setSwizzle(2,swizzle_b)
-    new_layer.setSwizzle(3,swizzle_a)
+    new_layer.setSwizzle(mari.Layer.SWIZZLE_DST_RED,swizzle_r)
+    new_layer.setSwizzle(mari.Layer.SWIZZLE_DST_GREEN,swizzle_g)
+    new_layer.setSwizzle(mari.Layer.SWIZZLE_DST_BLUE,swizzle_b)
+    new_layer.setSwizzle(mari.Layer.SWIZZLE_DST_ALPHA,swizzle_a)
     new_layer.setName(layername)
 
     # if channel layer has mask stack, mask or adjustment stack reassign it from out templayer and close out templayer
