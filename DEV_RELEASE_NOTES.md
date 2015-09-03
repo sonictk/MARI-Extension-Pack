@@ -323,6 +323,10 @@ caused by a Channel Layer in the Layerstack.
 but error when merging. 'Clone & Merge Layers' will now unlock any locked layers after duplication so it can run correctly.
 
 
+######Convert to Paintable
+
+'Convert to Paintable' when run on a grouped Channel Layer would not error out
+
 ######Add Channel Mask / Add Channel Mask (grouped)
 
 'Add Channel Mask' would cause a program crash in Mari 3.0

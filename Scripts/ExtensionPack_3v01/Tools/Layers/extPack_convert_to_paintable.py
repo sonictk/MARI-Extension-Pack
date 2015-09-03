@@ -125,7 +125,6 @@ def convertChannelLayer(layerselection,layername,channelselection):
     layer = layerselection
     selected_channel = channelselection
 
-
     _hasMaskStack = False
     _hasMask = False
     _hasAdjStack = False
@@ -134,7 +133,6 @@ def convertChannelLayer(layerselection,layername,channelselection):
     layer_mask = ()
     layer_adjStack = ()
     channelLayer_name = layer
-    selected_channel.clearSelection(1)
     selected_channel.clearSelection(2)
     selected_channel.clearSelection(4)
     channelLayer_name.setSelected(True)
@@ -257,6 +255,7 @@ def convertChannelLayer(layerselection,layername,channelselection):
 
         # closing temp layer with backup adjustment stack
         adjstack_save.close()
+
 
 
 # ------------------------------------------------------------------------------
