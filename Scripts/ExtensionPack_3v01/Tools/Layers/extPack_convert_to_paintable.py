@@ -133,8 +133,6 @@ def convertChannelLayer(layerselection,layername,channelselection):
     layer_mask = ()
     layer_adjStack = ()
     channelLayer_name = layer
-    selected_channel.clearSelection(2)
-    selected_channel.clearSelection(4)
     channelLayer_name.setSelected(True)
 
 
