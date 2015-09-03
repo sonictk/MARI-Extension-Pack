@@ -151,8 +151,7 @@ def clone_merge_layers(mode):
     if not suitable[0]:
           return
 
-    deactivateViewportToggle = mari.actions.find('/Mari/Canvas/Toggle Shader Compiling')
-    deactivateViewportToggle.trigger()
+    locked_layers = False
 
     geo_data = findLayerSelection()
     # Geo Data = 0 current geo, 1 current channel , 2 current layer, 3 current selection list
@@ -164,6 +163,9 @@ def clone_merge_layers(mode):
 
     patches = list(curGeo.patchList())
     unSelPatches = [ patch for patch in patches if not patch.isSelected() ]
+
+    deactivateViewportToggle = mari.actions.find('/Mari/Canvas/Toggle Shader Compiling')
+    deactivateViewportToggle.trigger()
 
     mari.app.setWaitCursor()
     mari.history.startMacro('Clone & Merge Layers')
@@ -189,7 +191,8 @@ def clone_merge_layers(mode):
     for layer in nested_layers:
         if layer.isChannelLayer():
             channelLayerLst.append(layer.channel())
-
+        if layer.isLocked():
+            layer.setLocked(False)
 
     mergeAction = mari.actions.find('/Mari/Layers/Merge Layers')
     mergeAction.trigger()

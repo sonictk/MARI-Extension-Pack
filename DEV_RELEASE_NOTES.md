@@ -317,6 +317,11 @@ caused by a Channel Layer in the Layerstack.
  Metadata added to Channels to determine what textures have changed between exports are no longer visible to the user
  in the 'Channel' Info Section
 
+######Clone & Merge Layers
+
+'Clone & Merge Layers' when executed on a selection containing a locked layer would duplicate the selection in the stack
+but error when merging. 'Clone & Merge Layers' will now unlock any locked layers after duplication so it can run correctly.
+
 
 ######Add Channel Mask / Add Channel Mask (grouped)
 
