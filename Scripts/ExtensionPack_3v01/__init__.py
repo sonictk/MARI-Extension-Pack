@@ -570,7 +570,6 @@ def extPackLoad():
 print '-----------------------------------------'
 print "MARI Extension Pack: "+ current_extension_pack
 print '-----------------------------------------'
-print "http://www.jenskafitz.con"
-print '-----------------------------------------'
+
 
 extPackLoad()
