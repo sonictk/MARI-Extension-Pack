@@ -118,6 +118,20 @@ Two new nodes were added to convert Outputs from a Metal-Roughness workflow to a
 and file templates for your project. Paths can be set relative to a project base path, folder creation is supported and
 settings are saved between sessions.
 
+###Channel:
+
+######Duplicate Channel
+
+A new option 'Duplicate Channel' was added to the Channels Menu.
+'Duplicate Channel' - other than Mari's Default Copy/Paste of Channels - will create a true
+duplicate of the source channel.
+
+- Channel Layers will be linked to original channel and channel duplication is avoided
+- Internal Sharing of layers from one point of the layerstack to another is kept without referencing original src channel
+- External Sharing of Layers (layers from 2nd channel shared into src channel) is maintained
+  and direct links to 2nd channel are restored in duplicate channel
+- Mixed or combined Internal & External Sharing is maintained without referencing original src channel
+
 
 #####Selection:
 
@@ -325,7 +339,10 @@ but error when merging. 'Clone & Merge Layers' will now unlock any locked layers
 
 ######Convert to Paintable
 
-'Convert to Paintable' when run on a grouped Channel Layer would not error out
+'Convert to Paintable' when run on a Channel Layer that was within a shared group would error out
+
+'Convert to Paintable' when run on a Channel Layer with a disabled adjustment stack would not set
+the Adjustment Stack to disabled on the resulting paintable layer
 
 ######Add Channel Mask / Add Channel Mask (grouped)
 

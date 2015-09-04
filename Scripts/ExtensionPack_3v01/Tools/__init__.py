@@ -66,6 +66,7 @@ import Layers.extPack_convert_to_paintable as convert_to_paintable
 import Channels.extPack_exportSelectedChannels as export_selected_channels
 import Channels.extPack_flattenSelectedChannels as flatten_selected_channels
 import Channels.extPack_channelTemplate as channel_template
+import Channels.extPack_duplicateChannel as duplicate_channel
 
 # SHADERS:
 import Shaders.extPack_set_all_current_shader as setAllCurrentShader
@@ -141,6 +142,9 @@ class customScripts():
 
     def channel_template_set(self):
         channel_template.setChannelFromTemplate()
+
+    def duplicate_channel(self):
+        duplicate_channel.duplicateChannel()
 
     # ------------------------------------------------------------
     # LAYERS:
@@ -273,11 +277,12 @@ print 'Object Menu: Subdivision/Set all to Lowest Level'
 print 'Object Menu: Subdivision/Set all visible to Highest Level'
 print 'Object Menu: Subdivision/Set all visible to Lowest Level'
 print '-----------------------------------------'
-print 'Channel Palette Additions (4): '
+print 'Channel Palette Additions (5): '
 print 'Channel Menu: Export Custom Selection'
 print 'Channel Menu: Duplicate & Flatten'
 print 'Channel Menu: Resize/Save Channel Resolution'
 print 'Channel Menu: Resize/Load Channel Resolution'
+print 'Channel Menu: Duplicate'
 print '-----------------------------------------'
 print 'Layer Palette Additions (7): '
 print 'Layer Menu: Add Channel Layer'

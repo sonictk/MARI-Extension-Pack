@@ -304,6 +304,21 @@ def createToolsMenu():
     icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
     newChannelFromTemplate.setIconPath(icon_path)
 
+# --------------------------------------------------------------------
+
+    ###   Duplicate Channels ###
+
+    UI_path = 'MainWindow/&Channels'
+    script_menu_path = 'MainWindow/Scripts/Channels'
+
+    DuplicateChannel = mari.actions.create ('Duplicate', 'mari.customScripts.duplicate_channel()')
+    mari.menus.addAction(DuplicateChannel, UI_path, 'Cut')
+    mari.menus.addAction(DuplicateChannel, script_menu_path)
+
+    icon_filename = 'DuplicateChannel.png'
+    icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
+    DuplicateChannel.setIconPath(icon_path)
+
 
 
 ######################################################################
