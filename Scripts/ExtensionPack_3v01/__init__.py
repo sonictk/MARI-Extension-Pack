@@ -46,11 +46,13 @@ current_extension_pack = "3.0"
 
 
 # SCRIPT DIRECTORY PATH(S)
-base_path = os.curdir
+base_path = mari.resources.path(mari.resources.USER_SCRIPTS)
+
+
 if mari.app.version().isWindows():
-    base_path = base_path.split(';')
+		base_path = base_path.split(';')
 else:
-    base_path = base_path.split(':')
+		base_path = base_path.split(':')
 
 
 
@@ -82,7 +84,7 @@ illegalShaders = ["JK_AlbedoWarning.xml","initShaders.py","initShaders.pyc"]
 illegal_Modules = ["import channel_template","import convert_selected_to_paintable","import export_image_manager_images",
 				"import export_selected_channels","import export_uv_masks","import flatten_selected_channels","import layer_visibility",
 				"import set_all_current_shader"
-			    ]
+					]
 
 
 # Blacklist of Functions within JTOOLS INIT
@@ -116,23 +118,23 @@ illegal_Func = ["def convertSelectedToPaintable(self):","convert_selected_to_pai
 
 
 def checkMariVersion():
-    "Checks if Mari Version is compatible"
-    MARI_3_0v1_VERSION_NUMBER =   30001202 #MARI 3.0v1
+		"Checks if Mari Version is compatible"
+		MARI_3_0v1_VERSION_NUMBER =   30001202 #MARI 3.0v1
 
-    if mari.app.version().number() >=  MARI_3_0v1_VERSION_NUMBER:
+		if mari.app.version().number() >=  MARI_3_0v1_VERSION_NUMBER:
 
-		return True, True
+			return True, True
 
-    else:
-        mari.utils.message("Mari Version not compatible with MARI Extension Pack " + current_extension_pack)
-        return False, False
+		else:
+				mari.utils.message("Mari Version not compatible with MARI Extension Pack " + current_extension_pack)
+				return False, False
 
 
 
 # ------------------------------------------------------------------------------
 
 def detectScriptConflict():
-	'''Finds existing copies from the blacklist of script files from ideascale'''
+	'''Finds existing copies from the blacklist of script files'''
 
 	script_error_dict = {}
 	shader_error_dict = {}
@@ -233,6 +235,7 @@ def detectJTOOLS():
 	module_path = ''
 
 	for scriptpath in base_path:
+
 		for root, dirs, files in os.walk(scriptpath):
 			for dir in dirs:
 				if dir == 'jtools':
@@ -260,7 +263,7 @@ def detectJTOOLS():
 						print 'JTOOLS __init__.py could not be found.'
 						print 'If you encounter an error in the Python Console'
 						print 'it is recommended to download the latest version from'
-						print 'http://mari.ideascale.com'
+						print 'http://www.jorel-latraille.com/'
 
 					print ''
 
@@ -518,7 +521,6 @@ def extPackLoad():
 
 	jtools = detectJTOOLS()
 
-
 	if script_version[0] or jtools[1]:
 		# Location of JTOOLS INIT, empty if it doesn't exist
 		jtools_path = jtools[1]
@@ -554,7 +556,7 @@ def extPackLoad():
 	print '#####################################################'
 	print 'Mari Extension Pack ' + current_extension_pack + ' finished loading successfully'
 	print '#####################################################'
-	print '            http://mari.ideascale.com'
+	print '            http://www.jenskafitz.com'
 	print ''
 
 
@@ -568,7 +570,7 @@ def extPackLoad():
 print '-----------------------------------------'
 print "MARI Extension Pack: "+ current_extension_pack
 print '-----------------------------------------'
-print "http://mari.ideascale.com"
+print "http://www.jenskafitz.con"
 print '-----------------------------------------'
 
 extPackLoad()
