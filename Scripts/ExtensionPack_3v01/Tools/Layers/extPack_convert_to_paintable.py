@@ -170,6 +170,7 @@ def convertChannelLayer(layerselection,layername,channelselection):
         # to keep it through the merge process. In the end reassigning the adjstack
         # and closing layer
         _hasAdjStack = True
+        _hasActiveAdjStack = layer.isAdjustmentStackEnabled()
 
         # finding the layerstack and contents of the layerstack that make up the adjustment stack on the channel layer
         source_adj_stack = layer.adjustmentStack()
@@ -185,7 +186,6 @@ def convertChannelLayer(layerselection,layername,channelselection):
         target_adj_stack = adjstack_save.adjustmentStack()
         for adjustment in adjustments_inSrc_stack:
             target_adj_stack.moveLayer(adjustment)
-
 
 
 
@@ -251,8 +251,11 @@ def convertChannelLayer(layerselection,layername,channelselection):
         for adjustment in adjustments_inTrgt_stack:
             newlayer_adj_stack.moveLayer(adjustment)
 
+        newlayer_adj_stack.setAdjustmentStackEnabled(_hasActiveAdjStack)
+
         # closing temp layer with backup adjustment stack
         adjstack_save.close()
+
 
 
 
