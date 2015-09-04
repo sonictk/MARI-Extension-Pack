@@ -251,7 +251,7 @@ def convertChannelLayer(layerselection,layername,channelselection):
         for adjustment in adjustments_inTrgt_stack:
             newlayer_adj_stack.moveLayer(adjustment)
 
-        newlayer_adj_stack.setAdjustmentStackEnabled(_hasActiveAdjStack)
+        new_layer.setAdjustmentStackEnabled(_hasActiveAdjStack)
 
         # closing temp layer with backup adjustment stack
         adjstack_save.close()
