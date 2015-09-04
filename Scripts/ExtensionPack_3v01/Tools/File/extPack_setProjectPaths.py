@@ -59,7 +59,7 @@ class setProjectPathUI(QtGui.QDialog):
         self.SETTINGS = mari.Settings()
         # Saving initial Path Settings at Startup of Dialog
 
-        lambda: self._saveStartupTemplate()
+        self._saveStartupTemplate()
 
         # Dialog Settings
         # self.setFixedSize(800, 600)
@@ -510,18 +510,23 @@ class setProjectPathUI(QtGui.QDialog):
                          'PTEXSequence_Flat' : mari.resources.ptexFlattenedSequenceTemplate()
                         }
 
-        project = 'Invalid'
+        project = None
 
         # Reading Project saved in settings file
         self.SETTINGS.beginGroup("Project_Default_Paths_" + version)
         project = self.SETTINGS.value('Project')
-        if project is False:
-            project = "Invalid"
         self.SETTINGS.endGroup()
 
+        if project is None:
+            for key in template_dict:
+                self.SETTINGS.beginGroup("Project_Default_Paths_" + version)
+                state = template_dict[key]
+                name = key
+                self.SETTINGS.setValue(name,state)
+                self.SETTINGS.endGroup()
 
         # if the project saved in the settings file is not the current one, store new defaults
-        if mari.projects.current().uuid() is not project:
+        if mari.projects.current().uuid() != project:
             for key in template_dict:
                 self.SETTINGS.beginGroup("Project_Default_Paths_" + version)
                 state = template_dict[key]
