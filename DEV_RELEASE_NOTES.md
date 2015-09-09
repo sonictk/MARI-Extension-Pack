@@ -221,15 +221,20 @@ into the final calculation of the curvature.
 Paintable Gabor Noise no longer appears under 'Adjustments'
 and has been moved to Procedurals/Custom/Gabor/
 
+######FBM+
+FBM+ now uses a different algorithm, giving more predicatable results with less
+overall 'flowing' of features across the surface when changing sliders
+
 
 ######Custom Object Normal
 
 Custom Obect Normal has been renamed to Custom Surface Normal to be in line
 wit Maris Vocabulary.
 
-######FBM+
-FBM+ now uses a different algorithm, giving more predicatable results with less
-overall 'flowing' of features across the surface when changing sliders
+
+######Faloff Map
+
+The 'Falloff Map' Node has been removed since it no longer serves any purpose.
 
 
 ###Tools:
