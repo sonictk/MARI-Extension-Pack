@@ -128,7 +128,7 @@ def exportGeo(UI, ui_mode,q_geo_list,path,template):
 
 # ------------------------------------------------------------------------------
 class exportGEOUI(QtGui.QDialog):
-    "Copy paint from one or more patches to other patches, for all layers and geometry."
+    "Export Geoemtry."
     def __init__(self, mode, parent=None):
         super(exportGEOUI, self).__init__(parent)
 
