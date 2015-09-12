@@ -389,6 +389,46 @@ def createToolsMenu():
 
     # --------------------------------------------------------------------
 
+    ### Pin Layers
+
+    UI_path = 'MainWindow/&Layers/' + u'Pin'
+
+    quickPinLayer = mari.actions.create('Quick Pin Layer(s)', None)
+    pinLayer = mari.actions.create('Pin Layer(s) to Collection', None)
+    manageCollections = mari.actions.create('Manage Collections',None)
+    empty = mari.actions.create('Do nothing',None)
+
+    # mari.menus.addSeparator(UI_path,'Remove Layers')
+
+    mari.menus.addAction(quickPinLayer,UI_path,'Cut')
+    mari.menus.addAction(pinLayer,UI_path)
+    mari.menus.addAction(manageCollections,UI_path)
+    mari.menus.addAction(empty,UI_path)
+    mari.menus.addSeparator(UI_path,'Do nothing')
+    mari.menus.removeAction(empty,UI_path)
+
+
+    icon_filename = 'Painting.png'
+    icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
+    quickPinLayer.setIconPath(icon_path)
+    pinLayer.setIconPath(icon_path)
+
+    icon_filename = 'Folder.png'
+    icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
+    manageCollections.setIconPath(icon_path)
+
+    UI_path = 'MainWindow/&Layers/' + u'Add Pinned Layer'
+    emptyQuick = mari.actions.create('No Layer pinned',None)
+    mari.menus.addAction(empty,UI_path,'Add Adjustment Layer')
+    UI_path_quick = 'MainWindow/&Layers/' + u'Add Pinned Layer/Quick Pins'
+    mari.menus.addAction(emptyQuick,UI_path_quick)
+    mari.menus.removeAction(empty,UI_path)
+
+
+
+    # --------------------------------------------------------------------
+
+
     ###  Toggle Layer Visbility ###
 
     UI_path = 'MainWindow/&Layers/' + u'Visibility + Lock'
@@ -677,6 +717,18 @@ def createToolsMenu():
     ###  Menu Separators ###
 
     mari.menus.addSeparator(UI_path,'Export Selection')
+
+
+######################################################################
+# Shelves
+######################################################################
+
+    #  Export selected Shelves
+
+    UI_path = '/Mari/Palettes/Shelf'
+    script_menu_path = 'MainWindow/Scripts/Shelves'
+
+
 
 
 ######################################################################
