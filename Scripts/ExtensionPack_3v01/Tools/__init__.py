@@ -61,6 +61,8 @@ import Layers.extPack_channel_layer as channel_layer
 import Layers.extPack_clone_merge_layers as clone_merge_layers
 import Layers.extPack_toggle_visibility_lock as toggle_layer_visibility_lock
 import Layers.extPack_convert_to_paintable as convert_to_paintable
+import Layers.extPack_pinnedLayers as pinned_layers
+
 
 # CHANNELS:
 import Channels.extPack_exportSelectedChannels as export_selected_channels
@@ -176,6 +178,13 @@ class customScripts():
 
     def convertToPaintable(self):
         convert_to_paintable.convertToPaintable()
+
+
+    def quickPin(self):
+        pinned_layers.AddQuickPin()
+
+    def triggerQuickPin(self,layerName,project_uuid,layer_uuid):
+        pinned_layers.triggerQuickPin(layerName,project_uuid,layer_uuid)
 
     # --------------------------------------------------------------
     # SHADERS:

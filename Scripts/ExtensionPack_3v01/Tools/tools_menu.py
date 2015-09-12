@@ -393,7 +393,7 @@ def createToolsMenu():
 
     UI_path = 'MainWindow/&Layers/' + u'Pin'
 
-    quickPinLayer = mari.actions.create('Quick Pin Layer(s)', None)
+    quickPinLayer = mari.actions.create('Quick Pin Layer(s)', 'mari.customScripts.quickPin()')
     pinLayer = mari.actions.create('Pin Layer(s) to Collection', None)
     manageCollections = mari.actions.create('Manage Collections',None)
     empty = mari.actions.create('Do nothing',None)
