@@ -82,6 +82,8 @@ def createToolsMenu():
     script_menu_path = 'MainWindow/Scripts/File'
 
     setProjectPath = mari.actions.create ('Project Paths', 'mari.customScripts.set_project_paths()')
+    mari.actions.addToSet('RequiresProject',setProjectPath)
+
     mari.menus.addAction(setProjectPath, UI_path, 'Settings')
     mari.menus.addAction(setProjectPath, script_menu_path)
 
@@ -103,6 +105,7 @@ def createToolsMenu():
     context_path = 'Canvas/Context/Visibility'
 
     isolateSelect = mari.actions.create('Isolate Selection', 'mari.customScripts.isolateSelect()')
+    mari.actions.addToSet('RequiresProject',isolateSelect)
     isolateSelect.setShortcut('Ctrl+1')
     mari.menus.addAction(isolateSelect, UI_path, 'Hide Unselected')
     mari.menus.addAction(isolateSelect, context_path,'Hide Unselected')
@@ -127,6 +130,7 @@ def createToolsMenu():
 
 
     setAllToHighestSUBD = mari.actions.create('Set all to Highest Level', 'mari.customScripts.setAllSUBDToHigh()')
+    mari.actions.addToSet('RequiresProject',setAllToHighestSUBD)
     mari.menus.addAction(setAllToHighestSUBD, UI_path, 'Generate')
     mari.menus.addAction(setAllToHighestSUBD, context_path,'Generate')
     mari.menus.addAction(setAllToHighestSUBD, script_menu_path)
@@ -136,6 +140,7 @@ def createToolsMenu():
     setAllToHighestSUBD.setIconPath(icon_path)
 
     setAllToLowestSUBD = mari.actions.create('Set all to Lowest Level', 'mari.customScripts.setAllSUBDToLow()')
+    mari.actions.addToSet('RequiresProject',setAllToLowestSUBD)
     mari.menus.addAction(setAllToLowestSUBD, UI_path)
     mari.menus.addAction(setAllToLowestSUBD, context_path)
     mari.menus.addAction(setAllToLowestSUBD, script_menu_path)
@@ -146,6 +151,7 @@ def createToolsMenu():
 
 
     setAllVisibleToHighestSUBD = mari.actions.create('Set all Visible to Highest Level', 'mari.customScripts.setVisibleSUBDToHigh()')
+    mari.actions.addToSet('RequiresProject',setAllVisibleToHighestSUBD)
     mari.menus.addAction(setAllVisibleToHighestSUBD, UI_path)
     mari.menus.addAction(setAllVisibleToHighestSUBD, context_path)
     mari.menus.addAction(setAllVisibleToHighestSUBD, script_menu_path)
@@ -155,6 +161,7 @@ def createToolsMenu():
     setAllVisibleToHighestSUBD.setIconPath(icon_path)
 
     setAllVisibleToLowestSUBD = mari.actions.create('Set all Visible to Lowest Level', 'mari.customScripts.setVisibleSUBDToLow()')
+    mari.actions.addToSet('RequiresProject',setAllVisibleToLowestSUBD)
     mari.menus.addAction(setAllVisibleToLowestSUBD, UI_path)
     mari.menus.addAction(setAllVisibleToLowestSUBD, context_path)
     mari.menus.addAction(setAllVisibleToLowestSUBD, script_menu_path)
@@ -177,7 +184,9 @@ def createToolsMenu():
     context_path = 'MriGeoEntity/ItemContext'
 
     exportGeo = mari.actions.create ('Export Object', 'mari.customScripts.exportGeometry()')
+    mari.actions.addToSet('RequiresProject',exportGeo)
     exportGeoLight = mari.actions.create ('Export Object', 'mari.customScripts.exportGeometryLight()')
+    mari.actions.addToSet('RequiresProject',exportGeoLight)
     mari.menus.addAction(exportGeo, UI_path, 'Ambient Occlusion')
     mari.menus.addAction(exportGeoLight, context_path,'Remove Object')
     mari.menus.addAction(exportGeo, script_menu_path)
@@ -196,7 +205,10 @@ def createToolsMenu():
 
     # One launches full interface where you can select multiple objects, the other just works on current object
     exportUVMask = mari.actions.create ('Export UV Mask', 'mari.customScripts.exportUVMasks()')
+    mari.actions.addToSet('RequiresProject',exportUVMask)
     exportUVMaskLight = mari.actions.create ('Export UV Mask', 'mari.customScripts.exportUVMasksLight()')
+    mari.actions.addToSet('RequiresProject',exportUVMaskLight)
+
 
     mari.menus.addAction(exportUVMask, UI_path, 'Ambient Occlusion')
     mari.menus.addAction(exportUVMaskLight, context_path,'Ambient Occlusion')
@@ -226,6 +238,8 @@ def createToolsMenu():
     script_menu_path = 'MainWindow/Scripts/Channels'
 
     DuplicateFlatten = mari.actions.create ('Duplicate && Flatten', 'mari.customScripts.flattenSelectedChannels()')
+    mari.actions.addToSet('RequiresProject',DuplicateFlatten)
+
     mari.menus.addAction(DuplicateFlatten, UI_path, 'Flatten')
     mari.menus.addAction(DuplicateFlatten, script_menu_path)
 
@@ -244,6 +258,9 @@ def createToolsMenu():
 
     ExportSelectedFlattened = mari.actions.create ('Export Custom Channel Selection', 'mari.customScripts.exportSelectedChannelsFlattened()')
     ExportSelected = mari.actions.create ('Export Custom Channel Selection', 'mari.customScripts.exportSelectedChannels()')
+    mari.actions.addToSet('RequiresProject',ExportSelectedFlattened)
+    mari.actions.addToSet('RequiresProject',ExportSelected)
+
 
     mari.menus.addAction(ExportSelectedFlattened, UI_path_A,'Export Current Channel Flattened')
     mari.menus.addAction(ExportSelected, UI_path_B,'Export Current Channel')
@@ -261,6 +278,7 @@ def createToolsMenu():
     script_menu_path = 'MainWindow/Scripts/Channels/Template'
 
     getChannelTemplate = mari.actions.create ('Save Channel Resolution ', 'mari.customScripts.channel_template_get()')
+    mari.actions.addToSet('RequiresProject',getChannelTemplate)
 
     mari.menus.addAction(getChannelTemplate, UI_path)
     mari.menus.addAction(getChannelTemplate, script_menu_path)
@@ -277,6 +295,8 @@ def createToolsMenu():
     script_menu_path = 'MainWindow/Scripts/Channels/Template'
 
     setChannelTemplate = mari.actions.create ('Load Channel Resolution', 'mari.customScripts.channel_template_set()')
+    mari.actions.addToSet('RequiresProject', setChannelTemplate)
+
 
     mari.menus.addAction(setChannelTemplate, UI_path)
     mari.menus.addAction(setChannelTemplate, script_menu_path)
@@ -296,6 +316,8 @@ def createToolsMenu():
     script_menu_path = 'MainWindow/Scripts/Channels/Template'
 
     newChannelFromTemplate = mari.actions.create ('Create Channel from Resolution', 'mari.customScripts.channel_template_create()')
+    mari.actions.addToSet('RequiresProject',newChannelFromTemplate)
+
 
     # mari.menus.addAction(newChannelFromTemplate, UI_path)
     mari.menus.addAction(newChannelFromTemplate, script_menu_path)
@@ -312,6 +334,8 @@ def createToolsMenu():
     script_menu_path = 'MainWindow/Scripts/Channels'
 
     DuplicateChannel = mari.actions.create ('Duplicate', 'mari.customScripts.duplicate_channel()')
+    mari.actions.addToSet('RequiresProject',DuplicateChannel)
+
     mari.menus.addAction(DuplicateChannel, UI_path, 'Cut')
     mari.menus.addAction(DuplicateChannel, script_menu_path)
 
@@ -332,6 +356,8 @@ def createToolsMenu():
     script_menu_path = 'MainWindow/Scripts/Layers'
 
     chanLayer = mari.actions.create('Add Channel Layer', 'mari.customScripts.ChannelLayerUI_layer()')
+    mari.actions.addToSet('RequiresProject',chanLayer)
+
     mari.menus.addAction(chanLayer, UI_path, 'Add Adjustment Layer')
     mari.menus.addAction(chanLayer, script_menu_path)
 
@@ -348,6 +374,8 @@ def createToolsMenu():
     script_menu_path = 'MainWindow/Scripts/Layers'
 
     MergeDuplicate = mari.actions.create('Clone && Merge Layers', 'mari.customScripts.CloneMerge()')
+    mari.actions.addToSet('RequiresProject',MergeDuplicate)
+
     mari.menus.addAction(MergeDuplicate, UI_path,'Transfer')
     mari.menus.addAction(MergeDuplicate, script_menu_path)
 
@@ -372,6 +400,8 @@ def createToolsMenu():
     script_menu_path = 'MainWindow/Scripts/Layers'
 
     BatchConvertToPaintable = mari.actions.create ('Convert To Paintable', 'mari.customScripts.convertToPaintable()')
+    mari.actions.addToSet('RequiresProject',BatchConvertToPaintable)
+
     mari.menus.addAction(BatchConvertToPaintable, UI_path,'Sharing')
     mari.menus.addAction(BatchConvertToPaintable, script_menu_path)
 
@@ -393,19 +423,25 @@ def createToolsMenu():
 
     UI_path = 'MainWindow/&Layers/' + u'Pin'
 
-    quickPinLayer = mari.actions.create('Quick Pin Layer(s)', 'mari.customScripts.quickPin()')
-    pinLayer = mari.actions.create('Pin Layer(s) to Collection', None)
-    manageCollections = mari.actions.create('Manage Collections',None)
-    empty = mari.actions.create('Do nothing',None)
+    quickPinLayer = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/Quick Pin Layer', 'mari.customScripts.quickPin()')
+    pinLayer = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/Pin Layer to Collection', None)
+    manageCollections = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/Clear Collection',None)
+    emptyQuick = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/No Quick Pins',None)
+    emptyCol = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/No Collection Pins',None)
+
+    mari.actions.addToSet('RequiresProject',quickPinLayer)
+    mari.actions.addToSet('RequiresProject',pinLayer)
+    mari.actions.addToSet('RequiresProject',manageCollections)
+
 
     # mari.menus.addSeparator(UI_path,'Remove Layers')
 
     mari.menus.addAction(quickPinLayer,UI_path,'Cut')
     mari.menus.addAction(pinLayer,UI_path)
     mari.menus.addAction(manageCollections,UI_path)
-    mari.menus.addAction(empty,UI_path)
-    mari.menus.addSeparator(UI_path,'Do nothing')
-    mari.menus.removeAction(empty,UI_path)
+    mari.menus.addAction(emptyQuick,UI_path)
+    mari.menus.addSeparator(UI_path,'No Quick Pins')
+    mari.menus.removeAction(emptyQuick,UI_path)
 
 
     icon_filename = 'Painting.png'
@@ -418,11 +454,10 @@ def createToolsMenu():
     manageCollections.setIconPath(icon_path)
 
     UI_path = 'MainWindow/&Layers/' + u'Add Pinned Layer'
-    emptyQuick = mari.actions.create('No Layer pinned',None)
-    mari.menus.addAction(empty,UI_path,'Add Adjustment Layer')
-    UI_path_quick = 'MainWindow/&Layers/' + u'Add Pinned Layer/Quick Pins'
-    mari.menus.addAction(emptyQuick,UI_path_quick)
-    mari.menus.removeAction(empty,UI_path)
+    mari.menus.addAction(emptyQuick,UI_path,'Add Adjustment Layer')
+    mari.menus.addSeparator(UI_path)
+    mari.menus.addAction(emptyCol,UI_path)
+
 
 
 
@@ -436,6 +471,8 @@ def createToolsMenu():
 
 
     toggleSelVisibility = mari.actions.create('Toggle Selected Visibility', 'mari.customScripts.toggleSelVisibility()')
+    mari.actions.addToSet('RequiresProject',toggleSelVisibility)
+
     mari.menus.addAction(toggleSelVisibility, UI_path, 'Remove Layers')
     mari.menus.addAction(toggleSelVisibility, script_menu_path)
 
@@ -445,6 +482,8 @@ def createToolsMenu():
 
 
     toggleUnselVisibility = mari.actions.create('Toggle Unselected Visibility', 'mari.customScripts.toggleUnselVisibility()')
+    mari.actions.addToSet('RequiresProject',toggleUnselVisibility)
+
     mari.menus.addAction(toggleUnselVisibility, UI_path)
     mari.menus.addAction(toggleUnselVisibility, script_menu_path)
 
@@ -462,6 +501,8 @@ def createToolsMenu():
     script_menu_path = 'MainWindow/Scripts/Layers/Visibility + Lock'
 
     toggleSelLock = mari.actions.create('Toggle Selected Lock', 'mari.customScripts.toggleSelLock()')
+    mari.actions.addToSet('RequiresProject',toggleSelLock)
+
     mari.menus.addAction(toggleSelLock, UI_path)
     mari.menus.addAction(toggleSelLock, script_menu_path)
 
@@ -471,6 +512,8 @@ def createToolsMenu():
 
 
     toggleUnselLock = mari.actions.create('Toggle Unselected Lock', 'mari.customScripts.toggleUnselLock()')
+    mari.actions.addToSet('RequiresProject',toggleUnselLock)
+
     mari.menus.addAction(toggleUnselLock, UI_path)
     mari.menus.addAction(toggleUnselLock, script_menu_path)
 
@@ -495,6 +538,8 @@ def createToolsMenu():
     script_menu_path = 'MainWindow/Scripts/Layers/Layer Mask'
 
     chanMask = mari.actions.create('Add Channel Mask', 'mari.customScripts.ChannelLayerUI_layermask()')
+    mari.actions.addToSet('RequiresProject',chanMask)
+
     mari.menus.addAction(chanMask, UI_path)
     mari.menus.addAction(chanMask, script_menu_path)
 
@@ -509,6 +554,8 @@ def createToolsMenu():
     script_menu_path = 'MainWindow/Scripts/Layers/Layer Mask'
 
     chanMaskGrp = mari.actions.create('Add grouped Channel Mask', 'mari.customScripts.ChannelLayerUI_maskgroup()')
+    mari.actions.addToSet('RequiresProject',chanMaskGrp)
+
     mari.menus.addAction(chanMaskGrp, UI_path)
     mari.menus.addAction(chanMaskGrp, script_menu_path)
 
@@ -529,6 +576,8 @@ def createToolsMenu():
     script_menu_path = 'MainWindow/Scripts/Patches'
 
     PatchToImageMgr= mari.actions.create('Patch to Image Manager', 'mari.customScripts.patch_bake_to_imageman()')
+    mari.actions.addToSet('RequiresProject',PatchToImageMgr)
+
     mari.menus.addAction(PatchToImageMgr, UI_path,'UV Mask to Image Manager')
     mari.menus.addAction(PatchToImageMgr, script_menu_path)
 
@@ -557,6 +606,8 @@ def createToolsMenu():
     script_menu_path = 'MainWindow/Scripts/Camera'
 
     ChannelToImageMgr = mari.actions.create('Quick Unproject Channel', 'mari.customScripts.unproject_channel_to_imageman()')
+    mari.actions.addToSet('RequiresProject',ChannelToImageMgr)
+
     mari.menus.addAction(ChannelToImageMgr, script_menu_path)
     mari.menus.addAction(ChannelToImageMgr, UI_path,'Camera Left')
 
@@ -573,6 +624,8 @@ def createToolsMenu():
     script_menu_path = 'MainWindow/Scripts/Camera'
 
     LayerToImageMgr = mari.actions.create('Quick Unproject Layer', 'mari.customScripts.unproject_layer_to_imageman()')
+    mari.actions.addToSet('RequiresProject',LayerToImageMgr)
+
     mari.menus.addAction(LayerToImageMgr, UI_path,'Camera Left')
     mari.menus.addAction(LayerToImageMgr, script_menu_path)
 
@@ -601,6 +654,8 @@ def createToolsMenu():
     script_menu_path = 'MainWindow/Scripts/View'
 
     screenshotChannels = mari.actions.create('Screenshot All Channels','mari.customScripts.screenshot_all_channels()')
+    mari.actions.addToSet('RequiresProject',screenshotChannels)
+
     mari.menus.addAction(screenshotChannels, UI_path, 'Screenshot Settings')
     mari.menus.addAction(screenshotChannels, script_menu_path)
 
@@ -620,6 +675,8 @@ def createToolsMenu():
 
     action_viewportDisable = mari.actions.create("Pause Viewport Update", "mari.customScripts.disableViewport()")
     action_viewportDisable.setCheckable(True)
+    mari.actions.addToSet('RequiresProject',action_viewportDisable)
+
 
     mari.menus.addAction(action_viewportDisable, script_menu_path)
     mari.menus.addAction(action_viewportDisable, UI_path, 'Toggle Wireframe')
@@ -662,6 +719,9 @@ def createToolsMenu():
         "Sync Object Shaders", "mari.customScripts.setAllObjectsToShader()"
         )
 
+    mari.actions.addToSet('RequiresProject',syncObjectShaders)
+
+
     syncObjectShaders.setStatusTip('Sync your Shader Selection across all Objects')
     syncObjectShaders.setToolTip('Sync Object Shader Selection')
     syncObjectShaders.setWhatsThis('Sync Object Shader Selection between Objects')
@@ -683,7 +743,10 @@ def createToolsMenu():
 
     UI_path_B = 'MriGeometrySelectionGroup/Panel'
     script_menu_path = 'MainWindow/Scripts/Selection Groups'
+
     matIdFromGroup = mari.actions.create("MaterialID from Selection Groups", "mari.customScripts.matIDFromGroup()")
+    mari.actions.addToSet('RequiresProject',matIdFromGroup)
+
 
     matIdFromGroup.setStatusTip('Create a MaterialID Channel from Selection Groups')
     matIdFromGroup.setToolTip('Create a MaterialID Channel from Selection Groups')
@@ -706,28 +769,19 @@ def createToolsMenu():
     UI_path = 'MriImageManager/ItemContext'
     script_menu_path = 'MainWindow/Scripts/Image Manager'
 
-    exportUVMask = mari.actions.create ('Export Selection', 'mari.customScripts.exportImageManager()')
-    mari.menus.addAction(exportUVMask, UI_path)
-    mari.menus.addAction(exportUVMask, script_menu_path)
+    exportImageMan = mari.actions.create ('Export Selection', 'mari.customScripts.exportImageManager()')
+    mari.actions.addToSet('RequiresProject',exportImageMan)
+
+    mari.menus.addAction(exportImageMan, UI_path)
+    mari.menus.addAction(exportImageMan, script_menu_path)
 
     icon_filename = 'ExtractImage.png'
     icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
-    exportUVMask.setIconPath(icon_path)
+    exportImageMan.setIconPath(icon_path)
 
     ###  Menu Separators ###
 
     mari.menus.addSeparator(UI_path,'Export Selection')
-
-
-######################################################################
-# Shelves
-######################################################################
-
-    #  Export selected Shelves
-
-    UI_path = '/Mari/Palettes/Shelf'
-    script_menu_path = 'MainWindow/Scripts/Shelves'
-
 
 
 
@@ -751,3 +805,19 @@ def createToolsMenu():
     ###  Menu Separators ###
 
     mari.menus.addSeparator(UI_path,'Release Notes')
+
+
+
+
+######################################################################
+# DISABLE ELEMENTS WHEN NO PROJECT IS OPEN
+######################################################################
+
+
+    if mari.projects.current() is None:
+        mari.actions.disableSet('RequiresProject')
+    else:
+        mari.actions.enableSet('RequiresProject')
+
+    mari.utils.connect(mari.projects.opened, lambda: mari.actions.enableSet('RequiresProject'))
+    mari.utils.connect(mari.projects.closed, lambda: mari.actions.disableSet('RequiresProject'))

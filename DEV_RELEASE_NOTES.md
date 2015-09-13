@@ -313,6 +313,9 @@ Unrpojected Images will always be square with a 1:1 Pixel Aspect Ratio.
 
 ###Tools:
 
+######General
+
+Tool Menu Entries were not deactivated when no project was open
 
 ######Pause Viewport Update
 
