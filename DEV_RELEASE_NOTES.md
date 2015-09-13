@@ -325,6 +325,9 @@ Tool Menu Entries were not deactivated when no project was open
 
 The icon for 'Pause Viewport Update' would not be found on MARI Configurations with multiple Script Paths.
 
+It was possible for the Enabled/Disabled state of the Icon to fall out of sync with the Viewport when the action
+was triggered via scripts.
+
 
 ######Export Custom Channel Selection
 

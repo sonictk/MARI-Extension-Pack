@@ -41,20 +41,48 @@ import mari
 
 
 def _isProjectSuitable():
-	if mari.projects.current() is None:
-		mari.utils.message("Please open a project before running.")
-		return False, False
+    if mari.projects.current() is None:
+        mari.utils.message("Please open a project before running.")
+        return False, False
 
-	else:
-		return True,True
+    else:
+        return True,True
 
 
-def disableViewport():
-	suitable = _isProjectSuitable()
-	if not suitable[0]:
-		action = mari.actions.find('/Mari/Scripts/Pause Viewport Update')
-		action.setChecked(False)
-		return
 
-	disableViewport = mari.actions.get('/Mari/Canvas/Toggle Shader Compiling')
-	disableViewport.trigger()
+def toggleViewport():
+    """Disables or enables Viewport"""
+
+    suitable = _isProjectSuitable()
+
+    action = mari.actions.find("/Mari/MARI Extension Pack/Shading/Pause Viewport Update")
+
+    if not suitable[0]:
+        action.setChecked(False)
+        return
+
+    if action.isChecked() is False:
+            mari.canvases.setPauseShaderCompiles(False)
+    else:
+            mari.canvases.setPauseShaderCompiles(True)
+
+
+def toggleDisableViewportIcon():
+    """This is triggered directly by the viewport signal to ensure icon state is always correct"""
+
+    iconAction = mari.actions.find('/Mari/MARI Extension Pack/Shading/Pause Viewport Update')
+    if iconAction.isChecked() is True:
+        iconAction.setChecked(False)
+    else:
+        iconAction.setChecked(True)
+
+
+def disableViewport(mode):
+    """Determine if only icon needs changing or full action"""
+
+    if mode == 'iconOnly':
+        toggleDisableViewportIcon()
+    else:
+        toggleViewport()
+
+

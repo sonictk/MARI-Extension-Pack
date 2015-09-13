@@ -423,15 +423,18 @@ def createToolsMenu():
 
     UI_path = 'MainWindow/&Layers/' + u'Pin'
 
-    quickPinLayer = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/Quick Pin Layer', 'mari.customScripts.quickPin()')
-    pinLayer = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/Pin Layer to Collection', None)
+    quickPinLayer = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/Quick Pin', 'mari.customScripts.quickPin()')
+    pinLayer = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/Pin to Collection', None)
     manageCollections = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/Clear Collection',None)
-    emptyQuick = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/No Quick Pins',None)
+
+    emptyQuick = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/Quick Pin (empty)',None)
     emptyCol = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/No Collection Pins',None)
 
     mari.actions.addToSet('RequiresProject',quickPinLayer)
     mari.actions.addToSet('RequiresProject',pinLayer)
     mari.actions.addToSet('RequiresProject',manageCollections)
+    mari.actions.addToSet('RequiresProject',emptyQuick)
+    mari.actions.addToSet('RequiresProject',emptyCol)
 
 
     # mari.menus.addSeparator(UI_path,'Remove Layers')
@@ -440,7 +443,7 @@ def createToolsMenu():
     mari.menus.addAction(pinLayer,UI_path)
     mari.menus.addAction(manageCollections,UI_path)
     mari.menus.addAction(emptyQuick,UI_path)
-    mari.menus.addSeparator(UI_path,'No Quick Pins')
+    mari.menus.addSeparator(UI_path,'Quick Pin (empty)')
     mari.menus.removeAction(emptyQuick,UI_path)
 
 
@@ -673,7 +676,7 @@ def createToolsMenu():
     script_menu_path = 'MainWindow/Scripts/Shading'
     UI_path = 'MainWindow/&Shading'
 
-    action_viewportDisable = mari.actions.create("/Mari/MARI Extension Pack/Shading/Pause Viewport Update", "mari.customScripts.disableViewport()")
+    action_viewportDisable = mari.actions.create("/Mari/MARI Extension Pack/Shading/Pause Viewport Update", "mari.customScripts.disableViewport('full')")
     action_viewportDisable.setCheckable(True)
     mari.actions.addToSet('RequiresProject',action_viewportDisable)
 
@@ -691,13 +694,17 @@ def createToolsMenu():
     action_viewportDisable.setToolTip('Pause Viewport Update')
     action_viewportDisable.setWhatsThis('Pause Viewport Update. A repackaged toggleShaderCompile action')
 
-
     # Adding to default lighting toolbar
     lightingToolbar = mari.app.findToolBar('Lighting')
     isLocked = lightingToolbar.isLocked()
     lightingToolbar.setLocked(False)
-    lightingToolbar.addAction('/Mari/Scripts/Pause Viewport Update', [0,0], False)
+    lightingToolbar.addAction('/Mari/MARI Extension Pack/Shading/Pause Viewport Update', [0,0], False)
     lightingToolbar.setLocked(isLocked)
+
+    # Hooking up a signal directly to the viewport
+    toggleCompileAction = mari.actions.get('/Mari/Canvas/Toggle Shader Compiling')
+    mari.utils.connect(toggleCompileAction.triggered,lambda: mari.customScripts.disableViewport('iconOnly'))
+
 
     ###  Menu Separators ###
 

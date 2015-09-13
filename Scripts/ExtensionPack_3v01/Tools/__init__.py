@@ -242,9 +242,8 @@ class customScripts():
     # --------------------------------------------------------------
     # SHADING:
 
-    def disableViewport(self):
-        disableViewport.disableViewport()
-
+    def disableViewport(self,mode):
+        disableViewport.disableViewport(mode)
 
     # --------------------------------------------------------------
     # HELP:
