@@ -239,6 +239,10 @@ The 'Falloff Map' Node has been removed since it no longer serves any purpose.
 
 ###Tools:
 
+######General
+
+Extension Pack Tools are now grouped under a logical 'MARI Extension Pack' Group in the Hotkey Editor
+
 
 ######Export Custom Channel Selection
 
@@ -399,6 +403,13 @@ the path '/Filter/' in the CATEGORY section of the xml file
 
 This allows for placement of adjustment files in other locations as the
 Adjustment Layer Submenu.
+
+
+######New Action Paths
+
+Extension Pack Tool Actions have been moved out of /Mari/Scripts/ and into /Mari/MARI Extension Pack/.
+If you are using any Extension Pack Actions in your own scripts you need to update to the new path.
+
 
 ######New Functions
 
