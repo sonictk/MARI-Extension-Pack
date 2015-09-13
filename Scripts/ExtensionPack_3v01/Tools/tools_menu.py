@@ -48,13 +48,14 @@ CHANNELS,LAYERS,PATCHES etc.
 Items are placed within existing Menus (UI_Path) and a copy is placed
 in a common Script Menu (script_menu_path)
 
-Shortcut Bindings are available but not necessarily set.'''
+
+Please note that Shortcuts should NOT be set as part of the action creation
+Shortcuts are defined in bulk at the very end of the function by passing the shortcut
+to set and the action path to a shortcut check function that ensures that User
+set shortcuts are respected'''
 
 
 # --------------------------------------------------------------------
-
-
-
 
 
 import mari
@@ -62,14 +63,30 @@ import os
 
 tool_menu_version = '3.0'
 
-
 # Icon Path for custom icons
 extPack_icon_path = os.path.join(os.path.dirname(__file__), "Icons")
 
 
+
+def setShortCutifEmpty(shortcut,actionpath):
+    ''' Checks if User assigned Shortcut or shortcut clash exists'''
+
+    try:
+        # if a shortcut exists this won't error
+        mari.actions.shortcut(actionpath)
+        shortcutIsSet = True
+    except Exception:
+        shortcutIsSet = False
+        pass
+
+    if shortcutIsSet == False and mari.actions.shortcutIsInUse(shortcut) == False:
+        action = mari.actions.get(actionpath)
+        action.setShortcut(shortcut)
+
+
+
 def createToolsMenu():
-
-
+    '''Adds all Extension Pack Elements to UI'''
 
 ######################################################################
 # FILE
@@ -106,7 +123,7 @@ def createToolsMenu():
 
     isolateSelect = mari.actions.create('/Mari/MARI Extension Pack/Selection/Isolate Selection', 'mari.customScripts.isolateSelect()')
     mari.actions.addToSet('RequiresProject',isolateSelect)
-    isolateSelect.setShortcut('Ctrl+1')
+
     mari.menus.addAction(isolateSelect, UI_path, 'Hide Unselected')
     mari.menus.addAction(isolateSelect, context_path,'Hide Unselected')
     mari.menus.addAction(isolateSelect, script_menu_path)
@@ -382,7 +399,6 @@ def createToolsMenu():
     icon_filename = 'AddChannel.png'
     icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
     MergeDuplicate.setIconPath(icon_path)
-    MergeDuplicate.setShortcut('Ctrl+Shift+E')
 
 
     # --------------------------------------------------------------------
@@ -423,44 +439,44 @@ def createToolsMenu():
 
     UI_path = 'MainWindow/&Layers/' + u'Pin'
 
-    quickPinLayer = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/Quick Pin', 'mari.customScripts.quickPin()')
-    pinLayer = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/Pin to Collection', None)
+    # Actions for Saving and managing pins
+    quickPinLayer = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/Save Quick Pin', 'mari.customScripts.quickPin()')
+    pinCollectionLayer = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/Pin to Collection', None)
     manageCollections = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/Clear Collection',None)
 
-    emptyQuick = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/Quick Pin (empty)',None)
-    emptyCol = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/No Collection Pins',None)
+    # Actions for Adding pinned Layers
+    quickPinInsert = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/Pins/Quick Pin',None)
+    emptyCol = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/Pins/No Collection Pins',None)
+
 
     mari.actions.addToSet('RequiresProject',quickPinLayer)
-    mari.actions.addToSet('RequiresProject',pinLayer)
+    mari.actions.addToSet('RequiresProject',pinCollectionLayer)
     mari.actions.addToSet('RequiresProject',manageCollections)
-    mari.actions.addToSet('RequiresProject',emptyQuick)
+    mari.actions.addToSet('RequiresProject',quickPinInsert)
     mari.actions.addToSet('RequiresProject',emptyCol)
 
 
-    # mari.menus.addSeparator(UI_path,'Remove Layers')
-
     mari.menus.addAction(quickPinLayer,UI_path,'Cut')
-    mari.menus.addAction(pinLayer,UI_path)
+    mari.menus.addAction(pinCollectionLayer,UI_path)
     mari.menus.addAction(manageCollections,UI_path)
-    mari.menus.addAction(emptyQuick,UI_path)
-    mari.menus.addSeparator(UI_path,'Quick Pin (empty)')
-    mari.menus.removeAction(emptyQuick,UI_path)
+    mari.menus.addAction(quickPinInsert,UI_path)
+    mari.menus.addSeparator(UI_path,'Save Quick Pin')
+    mari.menus.removeAction(quickPinInsert,UI_path)
 
 
     icon_filename = 'Painting.png'
     icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
     quickPinLayer.setIconPath(icon_path)
-    pinLayer.setIconPath(icon_path)
+    pinCollectionLayer.setIconPath(icon_path)
 
     icon_filename = 'Folder.png'
     icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
     manageCollections.setIconPath(icon_path)
 
     UI_path = 'MainWindow/&Layers/' + u'Add Pinned Layer'
-    mari.menus.addAction(emptyQuick,UI_path,'Add Adjustment Layer')
+    mari.menus.addAction(quickPinInsert,UI_path,'Add Adjustment Layer')
     mari.menus.addSeparator(UI_path)
     mari.menus.addAction(emptyCol,UI_path)
-
 
 
 
@@ -687,7 +703,6 @@ def createToolsMenu():
     icon_filename = 'extPack_disableViewport.png'
     icon_path = extPack_icon_path + os.sep +  icon_filename
     action_viewportDisable.setIconPath(icon_path)
-    action_viewportDisable.setShortcut('Ctrl+Space')
 
 
     action_viewportDisable.setStatusTip('Pause Viewport Update. This can help speed up operations by not having to wait for the viewport to update.')
@@ -815,7 +830,6 @@ def createToolsMenu():
 
 
 
-
 ######################################################################
 # DISABLE ELEMENTS WHEN NO PROJECT IS OPEN
 ######################################################################
@@ -828,3 +842,29 @@ def createToolsMenu():
 
     mari.utils.connect(mari.projects.opened, lambda: mari.actions.enableSet('RequiresProject'))
     mari.utils.connect(mari.projects.closed, lambda: mari.actions.disableSet('RequiresProject'))
+
+
+
+######################################################################
+# LOAD USER SHORTCUTS OVERWRITING ANY DEFAULT ONES FOR EXT PACK ACTIONS
+######################################################################
+
+    mari.actions.loadUserShortcuts()
+
+    setShortCutifEmpty('Ctrl+1','/Mari/MARI Extension Pack/Selection/Isolate Selection')
+    setShortCutifEmpty('Ctrl+Shift+E','/Mari/MARI Extension Pack/Layers/Clone && Merge Layers')
+    setShortCutifEmpty('Ctrl+Alt+C','/Mari/MARI Extension Pack/Layers/Pin Layers/Save Quick Pin')
+    setShortCutifEmpty('Ctrl+Alt+V','/Mari/MARI Extension Pack/Layers/Pin Layers/Pins/Quick Pin')
+    setShortCutifEmpty('Ctrl+Space',"/Mari/MARI Extension Pack/Shading/Pause Viewport Update")
+
+
+
+
+
+
+
+
+
+
+
+

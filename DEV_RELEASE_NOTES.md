@@ -321,6 +321,9 @@ Unrpojected Images will always be square with a 1:1 Pixel Aspect Ratio.
 
 Tool Menu Entries were not deactivated when no project was open
 
+User-set Hotkeys for MARI Extension Pack Tools would get discarded after Mari closed.
+
+
 ######Pause Viewport Update
 
 The icon for 'Pause Viewport Update' would not be found on MARI Configurations with multiple Script Paths.

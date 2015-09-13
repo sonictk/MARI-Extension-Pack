@@ -180,11 +180,17 @@ class customScripts():
         convert_to_paintable.convertToPaintable()
 
 
+    # Pinned Layers
+
     def quickPin(self):
         pinned_layers.AddQuickPin()
 
     def triggerQuickPin(self,layerName,project_uuid,layer_uuid):
         pinned_layers.triggerQuickPin(layerName,project_uuid,layer_uuid)
+
+    def emptyQuickPin(self):
+        pinned_layers.emptyQuickPin()
+
 
     # --------------------------------------------------------------
     # SHADERS:
