@@ -152,6 +152,33 @@ Currently only Face & Patch Selections are supported. Isolate Selection cannot b
 A new tool was added to the 'Selection Group' Palette that will allow you to easily create a materialID channel from your selection groups
 
 
+#####Layers:
+
+######Pinned Layers
+
+A bookmarking system for layer selections was implemented.
+Pinned Layers simplify the way of sharing a layer or group into a different channel or stack.
+Pinned Layers have two modes - Quick Pins & Collection Pin
+
+- Quick Pins:
+  Quick Pins can be used to quickly mark one or more layers for a sharing operation.
+  It works similar to a copy+paste operation but instead of pasting a duplicate of a layer, it creates
+  a shared layer of the original at your target location.
+  The same layer can be 'pasted' multiple times in different places.
+
+  A quick pin can be stored via the Option Layer/Pin/Save Quick Pin, then inserted into the stack by using the
+  Layer/Add Pinned Layer/Quick Pin option.
+  For convenience the default hotkeys CTRL+ALT+S and CTRL+ALT+V were set to save+insert a Quick Pin.
+
+- Collection Pins
+  Collection Pins are useful if you need to repeatedly have access to the same layers for sharing.
+  While Quick Pins work like a one time clipboard, Collection Pins allow you to pin layers or groups
+  to the Layer/Add Pinned Layer/ Menu for later access
+
+- Manage Collections
+  The Layer/Pin/Manage Collections options allows you to remove pinned collection layers from you pinned layers list.
+
+
 #####Objects:
 
 ######Export Object
