@@ -80,6 +80,7 @@ def findLayerUUID(UUID):
 
     return layerTarget
 
+# ------------------------------------------------------------------------------
 
 def findLayerSelection():
     """Searches for the current selection if mari.current.layer is not the same as layer.isSelected"""
@@ -131,8 +132,16 @@ def findLayerSelection():
 
 # ------------------------------------------------------------------------------
 
-def AddQuickPin():
-    """Adds a Layer to the Quick Pins"""
+def emptyQuickPin():
+    """ Executed if no layer has been pinned but user triggers quick pin"""
+
+    mari.utils.message('You do not have a Layer added as a Quick Pin','No Layer pinned yet')
+    return
+
+# ------------------------------------------------------------------------------
+
+def addQuickPin():
+    """Adds a Layer selection to the Quick Pin"""
 
     # Find selected layers
     selection = findLayerSelection()
@@ -140,9 +149,6 @@ def AddQuickPin():
 
     # find project uuid
     projectUUID = str(mari.current.project().uuid())
-
-    # UI Path for Quick Pins
-    UI_path = 'MainWindow/&Layers/' + u'Add Pinned Layer'
 
     layerUUID = []
     layerName = []
@@ -159,37 +165,37 @@ def AddQuickPin():
     loadQuickPin = mari.actions.find('/Mari/MARI Extension Pack/Layers/Pin Layers/Pins/Quick Pin')
     loadQuickPin.setScript('mari.customScripts.triggerQuickPin(' + LayerIDString + ')' )
 
-# ------------------------------------------------------------------------------
-
-def emptyQuickPin():
-    """ Triggered when the Quick Pin loaded is unassigned """
-
-    mari.utils.message('The Quick Pin link is empty.\n Use "Layer/Pin/Save Quick Pin" first','No Layer pinned yet')
 
 # ------------------------------------------------------------------------------
 
 
 def triggerQuickPin(layerName,project_uuid,layer_uuid):
-    """Adds a shared layer from the Quick Pins and removes the Action associated with it later on"""
+    """Adds shared layers from the Quick Pin"""
 
     if project_uuid != mari.current.project().uuid():
-        mari.utils.message('This Layer does not belong to this project','Layer in different project')
+        mari.utils.message('You do not have a layer pinned yet','No pinned Layers found')
         return
 
     # Find selected layers
     selection = findLayerSelection()
     curLayer = selection[1]
     curChannel = selection[2]
+    layerCount = 0
 
-    # Dodgy reformatting of the layer_uuids in case multiple layers were selected
+    # Reformatting of the layer_uuids in case multiple layers were selected
     # CBB but works for now.
     layer_uuid_list = layer_uuid.replace("['","")
     layer_uuid_list = layer_uuid_list.replace("]","")
     layer_uuid_list = layer_uuid_list.replace("'","")
     layer_uuid_list = layer_uuid_list.replace(" ","")
     layer_uuid_list = layer_uuid_list.split(",")
-    # Reversing list
-    # layer_uuid_list_rev = layer_uuid_list[::-1]
+
+    layer_name_list = layerName.replace("['","")
+    layer_name_list = layer_name_list.replace("]","")
+    layer_name_list = layer_name_list.replace("'","")
+    layer_name_list = layer_name_list.replace(" ","")
+    layer_name_list = layer_name_list.split(",")
+
 
     for uuid in layer_uuid_list:
 
@@ -197,16 +203,76 @@ def triggerQuickPin(layerName,project_uuid,layer_uuid):
 
         if layertoShare is not None:
             curChannel.shareLayer(layertoShare,curLayer)
-            # curLayer = mari.current.layer()
+            layerCount += 1
 
         else:
-            mari.utils.message('Could not find layer associated to Quick Pin: '+ layerName,'A problem occurred')
+            mari.utils.message('Could not find layer associated to Quick Pin: '+ layer_name_list[layerCount],'Process did not complete')
             return
 
+# ------------------------------------------------------------------------------
+
+def checkCollectionPins():
+    """ Returns the first action under the separator"""
+
+    actionList = mari.menus.actions('MainWindow','&Layers','Add Pinned Layer')
+    return actionList[1]
+
+# ------------------------------------------------------------------------------
 
 
-    # # Setting the Load Quick Pin to empty
-    # loadQuickPin = mari.actions.find('/Mari/MARI Extension Pack/Layers/Pin Layers/Pins/Quick Pin')
-    # loadQuickPin.setScript('mari.customScripts.emptyQuickPin()')
+def addCollectionPin():
+    """Adds a Layer selection to the Collection Pins
+        Collection Pins are sticky pins that do stay around till the user removes them """
 
 
+    # Find selected layers
+    selection = findLayerSelection()
+    layerSelection = selection[3]
+
+    # find project uuid
+    projectUUID = str(mari.current.project().uuid())
+
+
+    for layer in layerSelection:
+
+        layerName = str( layer.name() )
+        layerUUID = str(layer.uuid() )
+
+        # Build the unique string for the layer identifier
+        LayerIDString = '"' + layerName +'"'+ ',' +'"' + projectUUID +'"'+ ',' +'"'+ layerUUID +'"'
+
+        # checking the menu items in the AddPinnedLayer Submenu in order to correctly insert the layer in the top position
+        # and remove the NoCollectionPin Item if necessary
+        previousAction = checkCollectionPins()
+
+        # creating an action associated with the layer
+        UI_path = 'MainWindow/&Layers/' + u'Add Pinned Layer'
+        collectionLayerAction = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/Pins/' + layerName,'mari.customScripts.triggerCollectionPin(' + LayerIDString + ')' )
+        mari.menus.addAction(collectionLayerAction,UI_path,previousAction.name())
+
+        if previousAction.name() == 'No Collection Pins':
+            mari.menus.removeAction(previousAction,UI_path)
+
+# ------------------------------------------------------------------------------
+
+
+def triggerCollectionPin(layerName,project_uuid,layer_uuid):
+    """ Executes the sharing operation on a collection pin"""
+
+    if project_uuid != mari.current.project().uuid():
+            mari.utils.message('The Layer associated to this pin is in another project','Layer Pin refers to different project')
+            return
+
+    # Find selected layers
+    selection = findLayerSelection()
+    curLayer = selection[1]
+    curChannel = selection[2]
+
+    layertoShare = findLayerUUID(layer_uuid)
+
+    if layertoShare is not None:
+        curChannel.shareLayer(layertoShare,curLayer)
+
+    else:
+        mari.utils.message('Could not find layer associated to Collection Pin: '+ layerName,'Process did not complete')
+        return

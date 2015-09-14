@@ -441,11 +441,11 @@ def createToolsMenu():
 
     # Actions for Saving and managing pins
     quickPinLayer = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/Save Quick Pin', 'mari.customScripts.quickPin()')
-    pinCollectionLayer = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/Pin to Collection', None)
+    pinCollectionLayer = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/Pin to Collection', 'mari.customScripts.collectionPin()')
     manageCollections = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/Clear Collection',None)
 
     # Actions for Adding pinned Layers
-    quickPinInsert = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/Pins/Quick Pin',None)
+    quickPinInsert = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/Pins/Quick Pin','mari.customScripts.emptyPin()')
     emptyCol = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/Pins/No Collection Pins',None)
 
 
@@ -459,9 +459,6 @@ def createToolsMenu():
     mari.menus.addAction(quickPinLayer,UI_path,'Cut')
     mari.menus.addAction(pinCollectionLayer,UI_path)
     mari.menus.addAction(manageCollections,UI_path)
-    mari.menus.addAction(quickPinInsert,UI_path)
-    mari.menus.addSeparator(UI_path,'Save Quick Pin')
-    mari.menus.removeAction(quickPinInsert,UI_path)
 
 
     icon_filename = 'Painting.png'

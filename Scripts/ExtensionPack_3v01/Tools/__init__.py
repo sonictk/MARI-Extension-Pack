@@ -179,18 +179,22 @@ class customScripts():
     def convertToPaintable(self):
         convert_to_paintable.convertToPaintable()
 
+    # Pinned Layers:
 
-    # Pinned Layers
+    def emptyPin(self):
+        pinned_layers.emptyQuickPin()
 
     def quickPin(self):
-        pinned_layers.AddQuickPin()
+        pinned_layers.addQuickPin()
 
     def triggerQuickPin(self,layerName,project_uuid,layer_uuid):
         pinned_layers.triggerQuickPin(layerName,project_uuid,layer_uuid)
 
-    def emptyQuickPin(self):
-        pinned_layers.emptyQuickPin()
+    def collectionPin(self):
+        pinned_layers.addCollectionPin()
 
+    def triggerCollectionPin(self,layerName,project_uuid,layer_uuid):
+        pinned_layers.triggerCollectionPin(layerName,project_uuid,layer_uuid)
 
     # --------------------------------------------------------------
     # SHADERS:
@@ -298,7 +302,11 @@ print 'Channel Menu: Resize/Save Channel Resolution'
 print 'Channel Menu: Resize/Load Channel Resolution'
 print 'Channel Menu: Duplicate'
 print '-----------------------------------------'
-print 'Layer Palette Additions (7): '
+print 'Layer Palette Additions (11): '
+print 'Layer Menu: Add Pinned Layer'
+print 'Layer Menu: Pin/Save Quick Pin'
+print 'Layer Menu: Pin/Pin to Collection'
+print 'Layer Menu: Pin/Manage Collection Pins'
 print 'Layer Menu: Add Channel Layer'
 print 'Layer Menu: Layer Mask/Add Mask/Add Channel Mask'
 print 'Layer Menu: Layer Mask/Add Mask/Add Channel Mask (Group)'
