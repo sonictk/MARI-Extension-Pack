@@ -38,6 +38,7 @@
 import mari
 import PySide.QtGui as QtGui
 import PySide.QtCore as QtCore
+import os
 
 
 # ------------------------------------------------------------------------------
@@ -183,9 +184,7 @@ def addQuickPin():
     loadQuickPin = mari.actions.find('/Mari/MARI Extension Pack/Layers/Pin Layers/Pins/Quick Pin')
     loadQuickPin.setScript('mari.customScripts.triggerQuickPin(' + LayerIDString + ')' )
 
-
 # ------------------------------------------------------------------------------
-
 
 def triggerQuickPin(layerName,project_uuid,layer_uuid):
     """Adds shared layers from the Quick Pin"""
@@ -236,6 +235,34 @@ def checkCollectionPins():
     actionList = mari.menus.actions('MainWindow','&Layers','Add Pinned Layer')
     return actionList
 
+# ------------------------------------------------------------------------------
+
+def setCollectionPinIcon(Layer):
+    """ Determines what Icon Type to set on the Collection Pin"""
+
+    mariResourcePath = mari.resources.path(mari.resources.ICONS)
+    iconPath = ''
+
+    if Layer.isPaintableLayer():
+        icon_filename = 'Painting.16x16.png'
+        iconPath = mariResourcePath + os.sep +  icon_filename
+    elif Layer.isProceduralLayer():
+        icon_filename = 'AddNoise.16x16.png'
+        iconPath = mariResourcePath + os.sep +  icon_filename
+    elif Layer.isChannelLayer():
+        icon_filename = 'Channel.16x16.png'
+        iconPath = mariResourcePath + os.sep +  icon_filename
+    elif Layer.isGroupLayer():
+        icon_filename = 'Folder.16x16.png'
+        iconPath = mariResourcePath + os.sep +  icon_filename
+    elif Layer.isGraphLayer():
+        icon_filename = 'NodeGraph.16x16.png'
+        iconPath = mariResourcePath + os.sep +  icon_filename
+    elif Layer.isAdjustmentLayer():
+        icon_filename = 'ColorCurves.16x16.png'
+        iconPath = mariResourcePath + os.sep +  icon_filename
+
+    return iconPath
 
 # ------------------------------------------------------------------------------
 
@@ -244,9 +271,7 @@ def duplicatePinName(duplicate_name):
 
     mari.utils.message('A collection pin with the selected Layer Name already exists\n\nPIN NAME EXISTS: '+duplicate_name +'\n\nRemove the Pin or rename the new Layer to be pinned.','Duplicate Pin Name')
 
-
 # ------------------------------------------------------------------------------
-
 
 def addCollectionPin():
     """Adds a Layer selection to the Collection Pins
@@ -296,6 +321,10 @@ def addCollectionPin():
             # creating an action associated with the layer
             UI_path = 'MainWindow/&Layers/' + u'Add Pinned Layer'
             collectionLayerAction = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/Pins/' + layerName,'mari.customScripts.triggerCollectionPin(' + LayerIDString + ')' )
+
+            icon_path = setCollectionPinIcon(layer)
+            collectionLayerAction.setIconPath(icon_path)
+
             mari.menus.addAction(collectionLayerAction,UI_path,previousAction.name())
 
             # if the placeholder action exists, remove it
@@ -338,7 +367,6 @@ def updateCollectionPin(layer_uuid,oldname,newname,project_uuid):
 
         # remove old action from menu
         mari.menus.removeAction(oldaction,UI_path)
-
 
 # ------------------------------------------------------------------------------
 

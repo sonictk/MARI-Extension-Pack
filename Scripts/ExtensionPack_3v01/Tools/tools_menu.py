@@ -461,12 +461,16 @@ def createToolsMenu():
     mari.menus.addAction(manageCollections,UI_path)
 
 
-    icon_filename = 'Painting.png'
+    icon_filename = 'running-icon.16x16.png'
     icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
     quickPinLayer.setIconPath(icon_path)
+    quickPinInsert.setIconPath(icon_path)
+
+    icon_filename = 'script.16x16.png'
+    icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
     pinCollectionLayer.setIconPath(icon_path)
 
-    icon_filename = 'Folder.png'
+    icon_filename = 'Folder.16x16.png'
     icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
     manageCollections.setIconPath(icon_path)
 
