@@ -61,6 +61,8 @@ import Layers.extPack_channel_layer as channel_layer
 import Layers.extPack_clone_merge_layers as clone_merge_layers
 import Layers.extPack_toggle_visibility_lock as toggle_layer_visibility_lock
 import Layers.extPack_convert_to_paintable as convert_to_paintable
+import Layers.extPack_pinnedLayers as pinned_layers
+
 
 # CHANNELS:
 import Channels.extPack_exportSelectedChannels as export_selected_channels
@@ -177,6 +179,23 @@ class customScripts():
     def convertToPaintable(self):
         convert_to_paintable.convertToPaintable()
 
+    # Pinned Layers:
+
+    def emptyPin(self):
+        pinned_layers.emptyQuickPin()
+
+    def quickPin(self):
+        pinned_layers.addQuickPin()
+
+    def triggerQuickPin(self,layerName,project_uuid,layer_uuid):
+        pinned_layers.triggerQuickPin(layerName,project_uuid,layer_uuid)
+
+    def collectionPin(self):
+        pinned_layers.addCollectionPin()
+
+    def triggerCollectionPin(self,layerName,project_uuid,layer_uuid):
+        pinned_layers.triggerCollectionPin(layerName,project_uuid,layer_uuid)
+
     # --------------------------------------------------------------
     # SHADERS:
 
@@ -233,9 +252,8 @@ class customScripts():
     # --------------------------------------------------------------
     # SHADING:
 
-    def disableViewport(self):
-        disableViewport.disableViewport()
-
+    def disableViewport(self,mode):
+        disableViewport.disableViewport(mode)
 
     # --------------------------------------------------------------
     # HELP:
@@ -284,7 +302,11 @@ print 'Channel Menu: Resize/Save Channel Resolution'
 print 'Channel Menu: Resize/Load Channel Resolution'
 print 'Channel Menu: Duplicate'
 print '-----------------------------------------'
-print 'Layer Palette Additions (7): '
+print 'Layer Palette Additions (11): '
+print 'Layer Menu: Add Pinned Layer'
+print 'Layer Menu: Pin/Save Quick Pin'
+print 'Layer Menu: Pin/Pin to Collection'
+print 'Layer Menu: Pin/Manage Collection Pins'
 print 'Layer Menu: Add Channel Layer'
 print 'Layer Menu: Layer Mask/Add Mask/Add Channel Mask'
 print 'Layer Menu: Layer Mask/Add Mask/Add Channel Mask (Group)'
