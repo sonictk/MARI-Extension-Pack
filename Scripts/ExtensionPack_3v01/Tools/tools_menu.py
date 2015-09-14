@@ -855,6 +855,15 @@ def createToolsMenu():
     setShortCutifEmpty('Ctrl+Space',"/Mari/MARI Extension Pack/Shading/Pause Viewport Update")
 
 
+# -----------------------------------------------------------------------------------------------------
+
+# The following line just makes sure that the RequiresProject set is enabled.
+# This usually happens automatically but not when working in python using mari.utils.reloadAll() out of a project
+
+if mari.projects.current() is not None:
+    mari.actions.enableSet('RequiresProject')
+
+
 
 
 
