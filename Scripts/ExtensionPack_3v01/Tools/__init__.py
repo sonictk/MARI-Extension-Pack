@@ -148,6 +148,7 @@ class customScripts():
     def duplicate_channel(self):
         duplicate_channel.duplicateChannel()
 
+
     # ------------------------------------------------------------
     # LAYERS:
 
@@ -190,11 +191,11 @@ class customScripts():
     def triggerQuickPin(self,layerName,project_uuid,layer_uuid):
         pinned_layers.triggerQuickPin(layerName,project_uuid,layer_uuid)
 
-    def collectionPin(self):
-        pinned_layers.addCollectionPin()
+    def collectionPin(self,mode):
+        pinned_layers.addCollectionPin(mode)
 
-    def triggerCollectionPin(self,layerName,project_uuid,layer_uuid):
-        pinned_layers.triggerCollectionPin(layerName,project_uuid,layer_uuid)
+    def triggerCollectionPin(self,layerType,layerName,project_uuid,layer_uuid):
+        pinned_layers.triggerCollectionPin(layerType,layerName,project_uuid,layer_uuid)
 
     # --------------------------------------------------------------
     # SHADERS:

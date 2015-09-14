@@ -360,6 +360,31 @@ def createToolsMenu():
     icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
     DuplicateChannel.setIconPath(icon_path)
 
+# --------------------------------------------------------------------
+
+    ###   Pin to Collection ###
+
+    UI_path = 'MainWindow/&Channels/' + u'Pin'
+
+    # Actions for Saving and managing pins
+
+    # quickPinLayer = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/Save Quick Pin', 'mari.customScripts.quickPin()')
+    pinCollectionChannel = mari.actions.create('/Mari/MARI Extension Pack/Channels/Pin Channels/Pin to Collection', 'mari.customScripts.collectionPin("channel")')
+
+    # Actions for Adding pinned Layers
+    # mari.actions.addToSet('RequiresProject',quickPinLayer)
+    mari.actions.addToSet('RequiresProject',pinCollectionChannel)
+
+    # mari.menus.addAction(quickPinLayer,UI_path,'Cut')
+    mari.menus.addAction(pinCollectionChannel,UI_path)
+
+    # icon_filename = 'linked.16x16.png'
+    # icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
+    # quickPinLayer.setIconPath(icon_path)
+
+    icon_filename = 'script.16x16.png'
+    icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
+    pinCollectionChannel.setIconPath(icon_path)
 
 
 ######################################################################
@@ -378,7 +403,7 @@ def createToolsMenu():
     mari.menus.addAction(chanLayer, UI_path, 'Add Adjustment Layer')
     mari.menus.addAction(chanLayer, script_menu_path)
 
-    icon_filename = 'linked.png'
+    icon_filename = 'Channel.16x16.png'
     icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
     chanLayer.setIconPath(icon_path)
 
@@ -441,7 +466,7 @@ def createToolsMenu():
 
     # Actions for Saving and managing pins
     quickPinLayer = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/Save Quick Pin', 'mari.customScripts.quickPin()')
-    pinCollectionLayer = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/Pin to Collection', 'mari.customScripts.collectionPin()')
+    pinCollectionLayer = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/Pin to Collection', 'mari.customScripts.collectionPin("layer")')
     manageCollections = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/Clear Collection',None)
 
     # Actions for Adding pinned Layers
@@ -461,7 +486,7 @@ def createToolsMenu():
     mari.menus.addAction(manageCollections,UI_path)
 
 
-    icon_filename = 'running-icon.16x16.png'
+    icon_filename = 'linked.16x16.png'
     icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
     quickPinLayer.setIconPath(icon_path)
     quickPinInsert.setIconPath(icon_path)
@@ -563,7 +588,7 @@ def createToolsMenu():
     mari.menus.addAction(chanMask, UI_path)
     mari.menus.addAction(chanMask, script_menu_path)
 
-    icon_filename = 'linked.png'
+    icon_filename = 'Channel.16x16.png'
     icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
     chanMask.setIconPath(icon_path)
 

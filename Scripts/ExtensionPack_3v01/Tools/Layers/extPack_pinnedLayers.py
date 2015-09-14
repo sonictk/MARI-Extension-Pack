@@ -39,6 +39,7 @@ import mari
 import PySide.QtGui as QtGui
 import PySide.QtCore as QtCore
 import os
+import ast
 
 
 # ------------------------------------------------------------------------------
@@ -80,7 +81,7 @@ def getLayerList(layer_list, criterionFn):
     return matching
 # ------------------------------------------------------------------------------
 
-def findLayerUUID(UUID):
+def findLayerUUID(layertype,UUID):
     """Looks for a layer based on its uuid"""
 
     curGeo = mari.geo.current()
@@ -89,12 +90,16 @@ def findLayerUUID(UUID):
 
     for channel in channels:
 
-        chn_layerList = channel.layerList()
-        layers = getLayerList(chn_layerList,returnTrue)
+        if layertype ==  '1': #channel mode
+            if channel.uuid() == UUID:
+                layerTarget = channel
+        else:
+            chn_layerList = channel.layerList()
+            layers = getLayerList(chn_layerList,returnTrue)
 
-        for layer in layers:
-            if layer.uuid() == UUID:
-                layerTarget = layer
+            for layer in layers:
+                if layer.uuid() == UUID:
+                    layerTarget = layer
 
 
     return layerTarget
@@ -178,7 +183,7 @@ def addQuickPin():
         layerUUID.append( str(layer.uuid()) )
 
     # Build the unique string for the layer identifier
-    LayerIDString = '"' + str(layerName) +'"'+ ',' +'"' + projectUUID +'"'+ ',' +'"'+ str(layerUUID) +'"'
+    LayerIDString = '"' + str(layerName) +'"'+ ',' +'"' + str(projectUUID) +'"'+ ',' +'"'+ str(layerUUID) +'"'
 
     # Replacing the existing action script with the new one for the current quick pin
     loadQuickPin = mari.actions.find('/Mari/MARI Extension Pack/Layers/Pin Layers/Pins/Quick Pin')
@@ -200,20 +205,8 @@ def triggerQuickPin(layerName,project_uuid,layer_uuid):
     layerCount = 0
 
     # Reformatting of the layer_uuids in case multiple layers were selected
-    # CBB but works for now.
-    # Try ast.literal_eval(STRING) instead
-    layer_uuid_list = layer_uuid.replace("['","")
-    layer_uuid_list = layer_uuid_list.replace("]","")
-    layer_uuid_list = layer_uuid_list.replace("'","")
-    layer_uuid_list = layer_uuid_list.replace(" ","")
-    layer_uuid_list = layer_uuid_list.split(",")
-
-    layer_name_list = layerName.replace("['","")
-    layer_name_list = layer_name_list.replace("]","")
-    layer_name_list = layer_name_list.replace("'","")
-    layer_name_list = layer_name_list.replace(" ","")
-    layer_name_list = layer_name_list.split(",")
-
+    layer_uuid_list = ast.literal_eval(layer_uuid)
+    layer_name_list = ast.literal_eval(layerName)
 
     for uuid in layer_uuid_list:
 
@@ -237,13 +230,16 @@ def checkCollectionPins():
 
 # ------------------------------------------------------------------------------
 
-def setCollectionPinIcon(Layer):
+def setCollectionPinIcon(LayerType,Layer):
     """ Determines what Icon Type to set on the Collection Pin"""
 
     mariResourcePath = mari.resources.path(mari.resources.ICONS)
     iconPath = ''
 
-    if Layer.isPaintableLayer():
+    if LayerType == '1': #Channel
+        icon_filename = 'Channel.16x16.png'
+        iconPath = mariResourcePath + os.sep +  icon_filename
+    elif Layer.isPaintableLayer():
         icon_filename = 'Painting.16x16.png'
         iconPath = mariResourcePath + os.sep +  icon_filename
     elif Layer.isProceduralLayer():
@@ -273,17 +269,20 @@ def duplicatePinName(duplicate_name):
 
 # ------------------------------------------------------------------------------
 
-def addCollectionPin():
+def addCollectionPin(mode):
     """Adds a Layer selection to the Collection Pins
         Collection Pins are sticky pins that do stay around till the user removes them """
 
-
-    # Find selected layers
-    selection = findLayerSelection()
-    layerSelection = selection[3]
-
     # find project uuid
     projectUUID = str(mari.current.project().uuid())
+
+    # Find selected layers
+
+    if mode == 'channel':
+        layerSelection = [mari.current.channel()]
+    else:
+        findSelection = findLayerSelection()
+        layerSelection = findSelection[3]
 
 
     for layer in layerSelection:
@@ -297,6 +296,17 @@ def addCollectionPin():
         layerPrettyName = layer.name()
         layerName = str( layerPrettyName )
         layerUUID = str(layer.uuid() )
+
+        if hasattr(layer, 'isChannelLayer'):
+            if layer.isChannelLayer():
+                layerType = '1' #Type Channel
+                layerPrettyName = layer.channel().name()
+                layerName = str( layer.channel().name() )
+                layerUUID = str( layer.channel().uuid() )
+        elif mode == 'channel':
+            layerType = '1' #Type Channel
+        else:
+            layerType = '0' #Type Layer
 
         # Checking for duplicate Pin Names first
         for pin in collectionPins:
@@ -313,7 +323,7 @@ def addCollectionPin():
         if duplicateNotFound:
 
             # Build the unique string for the layer identifier
-            LayerIDString = '"' + layerName +'"'+ ',' +'"' + projectUUID +'"'+ ',' +'"'+ layerUUID +'"'
+            LayerIDString = '"' + str(layerType) + '"'+ ',' +'"' + str(layerName) + '"'+ ',' +'"' + str(projectUUID) +'"'+ ',' +'"'+ str(layerUUID) +'"'
 
             # first collection pin in the list
             previousAction = collectionPins[1]
@@ -322,7 +332,7 @@ def addCollectionPin():
             UI_path = 'MainWindow/&Layers/' + u'Add Pinned Layer'
             collectionLayerAction = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/Pins/' + layerName,'mari.customScripts.triggerCollectionPin(' + LayerIDString + ')' )
 
-            icon_path = setCollectionPinIcon(layer)
+            icon_path = setCollectionPinIcon(layerType,layer)
             collectionLayerAction.setIconPath(icon_path)
 
             mari.menus.addAction(collectionLayerAction,UI_path,previousAction.name())
@@ -333,7 +343,7 @@ def addCollectionPin():
 
 # ------------------------------------------------------------------------------
 
-def updateCollectionPin(layer_uuid,oldname,newname,project_uuid):
+def updateCollectionPin(layerType,layer_uuid,oldname,layerobj,newname,project_uuid):
     """ Updates the Name of a collection pin if the source layer has changed in name"""
 
 
@@ -357,10 +367,13 @@ def updateCollectionPin(layer_uuid,oldname,newname,project_uuid):
         oldaction = mari.actions.find('/Mari/MARI Extension Pack/Layers/Pin Layers/Pins/'+ oldname)
 
         # Build the unique string for the layer identifier
-        LayerIDString = '"' + newname +'"'+ ',' +'"' + project_uuid +'"'+ ',' +'"'+ layer_uuid +'"'
+        LayerIDString = '"' + str(layerType) +'"'+ ',' +'"' + str(newname) +'"'+ ',' +'"' + str(project_uuid) +'"'+ ',' +'"'+ str(layer_uuid) +'"'
 
         # Create a new action with the correct name
         newaction = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/Pins/' + newname,'mari.customScripts.triggerCollectionPin(' + LayerIDString + ')' )
+
+        icon_path = setCollectionPinIcon(layerType,layerobj)
+        newaction.setIconPath(icon_path)
 
         # insert new action into menu above old action
         mari.menus.addAction(newaction,UI_path,oldname)
@@ -370,7 +383,7 @@ def updateCollectionPin(layer_uuid,oldname,newname,project_uuid):
 
 # ------------------------------------------------------------------------------
 
-def triggerCollectionPin(layerName,project_uuid,layer_uuid):
+def triggerCollectionPin(layertype,layerName,project_uuid,layer_uuid):
     """ Executes the sharing operation on a collection pin"""
 
     current_project_uuid = mari.current.project().uuid()
@@ -384,7 +397,7 @@ def triggerCollectionPin(layerName,project_uuid,layer_uuid):
     curLayer = selection[1]
     curChannel = selection[2]
 
-    layertoShare = findLayerUUID(layer_uuid)
+    layertoShare = findLayerUUID(layertype,layer_uuid)
 
 
     if layertoShare is not None:
@@ -400,13 +413,17 @@ def triggerCollectionPin(layerName,project_uuid,layer_uuid):
             info_reply = info_dialog.buttonRole(info_dialog.clickedButton())
             # If User chooses to Ignore problematic paths, we will remove the prolematic ones from the dictionary
             if info_reply is QtGui.QMessageBox.ButtonRole.YesRole:
-                updateCollectionPin(layer_uuid,layerName,layerShareName,current_project_uuid)
+                updateCollectionPin(layertype,layer_uuid,layerName,layertoShare,layerShareName,current_project_uuid)
             else:
                 pass
 
-        #  share the layer from the pin
-        curChannel.shareLayer(layertoShare,curLayer)
+        #  share the layer from the pin or create channel layer from original chanel
+        if layertype == '0':
+            curChannel.shareLayer(layertoShare,curLayer)
+        else:
+            curChannel.createChannelLayer(layerShareName,layertoShare,curLayer)
 
     else:
-        mari.utils.message('Could not find layer associated to Collection Pin: '+ layerName,'Process did not complete')
+        mari.utils.message('Could not find layer associated to Collection Pin: \n\nMissing or deleted Layer for Pin:  '+ layerName +'\n\nThe broken Collection Pin was removed from the menu','Process did not complete')
+        mari.menus.removeAction('MainWindow/&Layers/Add Pinned Layer/'+layerName )
         return
