@@ -118,21 +118,6 @@ Two new nodes were added to convert Outputs from a Metal-Roughness workflow to a
 and file templates for your project. Paths can be set relative to a project base path, folder creation is supported and
 settings are saved between sessions.
 
-###Channel:
-
-######Duplicate Channel
-
-A new option 'Duplicate Channel' was added to the Channels Menu.
-'Duplicate Channel' - other than Mari's Default Copy/Paste of Channels - will create a true
-duplicate of the source channel.
-
-- Channel Layers will be linked to original channel and channel duplication is avoided
-- Internal Sharing of layers from one point of the layerstack to another is kept without referencing original src channel
-- External Sharing of Layers (layers from 2nd channel shared into src channel) is maintained
-  and direct links to 2nd channel are restored in duplicate channel
-- Mixed or combined Internal & External Sharing is maintained without referencing original src channel
-
-
 #####Selection:
 
 ######Isolate Selection
@@ -181,6 +166,28 @@ Pinned Layers have two modes - Quick Pins & Collection Pin
 
 - Manage Collections
   The Layer/Pin/Manage Collections options allows you to remove pinned collection layers from you pinned layers list.
+
+
+###Channel:
+
+######Duplicate Channel
+
+A new option 'Duplicate Channel' was added to the Channels Menu.
+'Duplicate Channel' - other than Mari's Default Copy/Paste of Channels - will create a true
+duplicate of the source channel.
+
+- Channel Layers will be linked to original channel and channel duplication is avoided
+- Internal Sharing of layers from one point of the layerstack to another is kept without referencing original src channel
+- External Sharing of Layers (layers from 2nd channel shared into src channel) is maintained
+  and direct links to 2nd channel are restored in duplicate channel
+- Mixed or combined Internal & External Sharing is maintained without referencing original src channel
+
+
+######Pin Channel
+
+A bookmarking system for channels & layers was implemented to make it easier to access frequently used channels
+for sharing (channel layer creation).Options are the same as in the new 'Pinned Layers' system allowing you to 'Quick pin'
+a channel or pin it to a collection for later use.
 
 
 #####Objects:
@@ -421,7 +428,6 @@ in Mari Extension Pack 2.1
 
 Image Manager'/'Export Selection' cancel button will now more reliably cancel exports since the export thread
 is now checking for a user executed cancel after every image export.
-
 
 
 ##Developer Notes:
