@@ -84,6 +84,8 @@ class EditPin_UI(QtGui.QDialog):
         #Create filter box for channel list
         action_filter_box = QtGui.QLineEdit()
         # mari.utils.connect(action_filter_box.textEdited, None)
+        mari.utils.connect(action_filter_box.textEdited, lambda: self.updateActionFilter(action_filter_box, action_list))
+
 
         #Create layout and icon/label for channel filter
         action_header_layout.addWidget(action_label)
@@ -106,15 +108,15 @@ class EditPin_UI(QtGui.QDialog):
 
         #Create button layout and hook them up
         button_layout = QtGui.QHBoxLayout()
-        ok_button = QtGui.QPushButton("&OK")
+        removeButton = QtGui.QPushButton("Remove Pin")
         cancel_button = QtGui.QPushButton("&Cancel")
         button_layout.addStretch()
-        button_layout.addWidget(ok_button)
+        button_layout.addWidget(removeButton)
         button_layout.addWidget(cancel_button)
 
 
         # Hook up OK/Cancel button clicked signal to accept/reject slot
-        ok_button.clicked.connect(lambda: self.runCreate(action_list))
+        removeButton.clicked.connect(lambda: self.runRemove(action_list))
         cancel_button.clicked.connect(self.reject)
 
         #Add layouts to main layout and dialog
@@ -126,6 +128,15 @@ class EditPin_UI(QtGui.QDialog):
 
     def populateActionList(self,action_list):
         """Add collection pins to pin list"""
+
+        actions = checkCollectionPins()
+        for action in actions:
+            if action.name() == 'Quick Pin':
+                pass
+            else:
+                action_list.addItem(action.name())
+                action_list.item(action_list.count() - 1).setData(USER_ROLE, action)
+
         return action_list
     # ------------------------------------------------------------------------------
 
@@ -153,9 +164,34 @@ class EditPin_UI(QtGui.QDialog):
 
     # ------------------------------------------------------------------------------
 
-    def runCreate(self,action_list):
+    def runRemove(self,action_list):
         "execute removal of pins"
+        selected_action = self.selectedAction(action_list)
+        self.removePins(selected_action)
         self.close()
+
+    # ------------------------------------------------------------------------------
+
+    def removePins(self,actions):
+        "removes a bunch of actions from the menu"
+
+        UI_path = 'MainWindow/&Layers/' + u'Add Pinned Layer'
+        for action in actions:
+            mari.menus.removeAction(action,UI_path)
+
+        self.addPlaceholderPin()
+
+
+    # ------------------------------------------------------------------------------
+
+    def addPlaceholderPin(self):
+        "adds a placeholder collection pin in case no other collection pin exists"
+
+        collectionPins = checkCollectionPins()
+        if len(collectionPins) == 1:
+            placeholder = mari.actions.find('/Mari/MARI Extension Pack/Layers/Pin Layers/Pins/No Collection Pins')
+            UI_path = 'MainWindow/&Layers/' + u'Add Pinned Layer'
+            mari.menus.addAction(placeholder,UI_path)
 
 # ------------------------------------------------------------------------------
 def returnTrue(layer):
