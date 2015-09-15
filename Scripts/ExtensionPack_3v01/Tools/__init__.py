@@ -185,11 +185,11 @@ class customScripts():
     def emptyPin(self):
         pinned_layers.emptyQuickPin()
 
-    def quickPin(self):
-        pinned_layers.addQuickPin()
+    def quickPin(self,mode):
+        pinned_layers.addQuickPin(mode)
 
-    def triggerQuickPin(self,layerName,project_uuid,layer_uuid):
-        pinned_layers.triggerQuickPin(layerName,project_uuid,layer_uuid)
+    def triggerQuickPin(self,layerType,layerName,project_uuid,layer_uuid):
+        pinned_layers.triggerQuickPin(layerType,layerName,project_uuid,layer_uuid)
 
     def collectionPin(self,mode):
         pinned_layers.addCollectionPin(mode)

@@ -368,19 +368,19 @@ def createToolsMenu():
 
     # Actions for Saving and managing pins
 
-    # quickPinLayer = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/Save Quick Pin', 'mari.customScripts.quickPin()')
+    quickPinChannel = mari.actions.create('/Mari/MARI Extension Pack/Channels/Pin Channels/Save Quick Pin', 'mari.customScripts.quickPin("channel")')
     pinCollectionChannel = mari.actions.create('/Mari/MARI Extension Pack/Channels/Pin Channels/Pin to Collection', 'mari.customScripts.collectionPin("channel")')
 
     # Actions for Adding pinned Layers
-    # mari.actions.addToSet('RequiresProject',quickPinLayer)
+    mari.actions.addToSet('RequiresProject',quickPinChannel)
     mari.actions.addToSet('RequiresProject',pinCollectionChannel)
 
-    # mari.menus.addAction(quickPinLayer,UI_path,'Cut')
+    mari.menus.addAction(quickPinChannel,UI_path,'Duplicate')
     mari.menus.addAction(pinCollectionChannel,UI_path)
 
-    # icon_filename = 'linked.16x16.png'
-    # icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
-    # quickPinLayer.setIconPath(icon_path)
+    icon_filename = 'linked.16x16.png'
+    icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
+    quickPinChannel.setIconPath(icon_path)
 
     icon_filename = 'script.16x16.png'
     icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
@@ -465,7 +465,7 @@ def createToolsMenu():
     UI_path = 'MainWindow/&Layers/' + u'Pin'
 
     # Actions for Saving and managing pins
-    quickPinLayer = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/Save Quick Pin', 'mari.customScripts.quickPin()')
+    quickPinLayer = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/Save Quick Pin', 'mari.customScripts.quickPin("layer")')
     pinCollectionLayer = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/Pin to Collection', 'mari.customScripts.collectionPin("layer")')
     manageCollections = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/Clear Collection',None)
 
