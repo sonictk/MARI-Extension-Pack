@@ -41,6 +41,9 @@ import PySide.QtCore as QtCore
 import os
 import ast
 
+USER_ROLE = 32      # PySide.Qt.UserRole
+version = "3.0"     #UI VERSION
+
 
 # ------------------------------------------------------------------------------
 
@@ -56,6 +59,103 @@ class InfoUI(QtGui.QMessageBox):
         self.setStandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)
         self.setDefaultButton(QtGui.QMessageBox.Yes)
 
+# ------------------------------------------------------------------------------
+
+class EditPin_UI(QtGui.QDialog):
+    '''GUI to edit existing Pins '''
+    def __init__(self):
+        super(EditPin_UI, self).__init__()
+        self.setFixedSize(340, 400)
+        #Set window title and create a main layout
+        title = "Edit Pins"
+        self.setWindowTitle(title)
+        main_layout = QtGui.QVBoxLayout()
+
+        #Create layout for middle section
+        centre_layout = QtGui.QHBoxLayout()
+
+        #Create channel layout, label, and widget. Finally populate.
+        action_layout = QtGui.QVBoxLayout()
+        action_header_layout = QtGui.QHBoxLayout()
+        action_label = QtGui.QLabel("<strong>Collection Pins</strong>")
+        action_list = QtGui.QListWidget()
+        action_list.setSelectionMode(action_list.ExtendedSelection)
+
+        #Create filter box for channel list
+        action_filter_box = QtGui.QLineEdit()
+        # mari.utils.connect(action_filter_box.textEdited, None)
+
+        #Create layout and icon/label for channel filter
+        action_header_layout.addWidget(action_label)
+        action_header_layout.addStretch()
+        action_search_icon = QtGui.QLabel()
+        search_pixmap = QtGui.QPixmap(mari.resources.path(mari.resources.ICONS) + os.sep + 'Lookup.png')
+        action_search_icon.setPixmap(search_pixmap)
+        action_header_layout.addWidget(action_search_icon)
+        action_header_layout.addWidget(action_filter_box)
+
+        #Populate Channel List, channellist gets full channel list from project and amount of channels on current object (which sit at the top of the list)
+        action_list= self.populateActionList(action_list)
+
+        #Add filter layout and channel list to channel layout
+        action_layout.addLayout(action_header_layout)
+        action_layout.addWidget(action_list)
+
+        #Add widgets to centre layout
+        centre_layout.addLayout(action_layout)
+
+        #Create button layout and hook them up
+        button_layout = QtGui.QHBoxLayout()
+        ok_button = QtGui.QPushButton("&OK")
+        cancel_button = QtGui.QPushButton("&Cancel")
+        button_layout.addStretch()
+        button_layout.addWidget(ok_button)
+        button_layout.addWidget(cancel_button)
+
+
+        # Hook up OK/Cancel button clicked signal to accept/reject slot
+        ok_button.clicked.connect(lambda: self.runCreate(action_list))
+        cancel_button.clicked.connect(self.reject)
+
+        #Add layouts to main layout and dialog
+        main_layout.addLayout(centre_layout)
+        main_layout.addLayout(button_layout)
+        self.setLayout(main_layout)
+
+    # ------------------------------------------------------------------------------
+
+    def populateActionList(self,action_list):
+        """Add collection pins to pin list"""
+        return action_list
+    # ------------------------------------------------------------------------------
+
+    def updateActionFilter(self,action_filter_box, action_list):
+        "For each item in the list display, set it to hidden if it doesn't match the filter text."
+
+        match_words = action_filter_box.text().lower().split()
+
+        for item_index in range(action_list.count()):
+            item = action_list.item(item_index)
+            item_text_lower = item.text().lower()
+            matches = all([word in item_text_lower for word in match_words])
+            item.setHidden(not matches)
+
+    # ------------------------------------------------------------------------------
+
+    def selectedAction(self,action_list):
+        "get action selection"
+
+        multiSelection = []
+        for item in action_list.selectedItems():
+            multiSelection.append(item.data(USER_ROLE))
+
+        return multiSelection
+
+    # ------------------------------------------------------------------------------
+
+    def runCreate(self,action_list):
+        "execute removal of pins"
+        self.close()
 
 # ------------------------------------------------------------------------------
 def returnTrue(layer):
@@ -467,3 +567,6 @@ def triggerCollectionPin(layertype,layerName,project_uuid,layer_uuid):
         mari.utils.message('Could not find layer associated to Collection Pin: \n\nMissing or deleted Layer for Pin:  '+ layerName +'\n\nThe broken Collection Pin was removed from the menu','Process did not complete')
         mari.menus.removeAction('MainWindow/&Layers/Add Pinned Layer/'+layerName )
         return
+
+# ------------------------------------------------------------------------------
+

@@ -467,7 +467,7 @@ def createToolsMenu():
     # Actions for Saving and managing pins
     quickPinLayer = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/Save Quick Pin', 'mari.customScripts.quickPin("layer")')
     pinCollectionLayer = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/Pin to Collection', 'mari.customScripts.collectionPin("layer")')
-    manageCollections = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/Clear Collection',None)
+    manageCollections = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/Edit Collection Pins', 'mari.customScripts.manageCollectionPins()')
 
     # Actions for Adding pinned Layers
     quickPinInsert = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/Pins/Quick Pin','mari.customScripts.emptyPin()')

@@ -197,6 +197,9 @@ class customScripts():
     def triggerCollectionPin(self,layerType,layerName,project_uuid,layer_uuid):
         pinned_layers.triggerCollectionPin(layerType,layerName,project_uuid,layer_uuid)
 
+    def manageCollectionPins(self):
+        pinned_layers.EditPin_UI().exec_()
+
     # --------------------------------------------------------------
     # SHADERS:
 
