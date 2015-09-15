@@ -141,7 +141,7 @@ publish/
 #!**/packages/repositories.config
 
 # and except ftrack packages
-!ftrackapidev/lib/requests/packages/**
+!ftrackPlugin/lib/requests/packages/**
 
 # Windows Azure Build Output
 csx/
@@ -199,27 +199,25 @@ FakesAssemblies/
 *.idea
 *.pyc
 
-# ignore virtualenvs
-virtualenv/
-venv/
+# ignore submodule
+lib/sid0_ntfs
 
 # ignore sphinx build 
 docs/_build/
 docs/build/
 
-# Ignore Build directories
-dist/
+# ignore pythoscope code trees and pickle files
+.pythoscope/code-trees
+.pythoscope/*.pickle
 
-# Ignore PyInstaller manifest files
-*.spec
+# ignore python virtualenvs
+virtualenv
+venv
 
-# Ignore submodule
-Scripts/.git
-
-# Ignore documentation
-Scripts_Docs
-
-# Ignore specific files
+# Ignore Mari workspace files
 /DT3D_MariLibraryV1.0.jpg
 /gViewBookmark.prefs
 /gViewConfig.prefs
+logs
+Script_docs
+Scripts_docs
