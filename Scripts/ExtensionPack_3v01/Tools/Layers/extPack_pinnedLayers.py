@@ -181,7 +181,7 @@ class EditPin_UI(QtGui.QDialog):
         for action in actions:
             layerName = action.name()
             mari.menus.removeAction(action,UI_path)
-            actionXML('removeAction',layerName,None,None)
+            actionXML('removeAction',layerName,None,None,None,None)
 
         self.addPlaceholderPin()
 
@@ -202,26 +202,29 @@ class EditPin_UI(QtGui.QDialog):
 class actionXML(object):
     """ Read,writes and removes actions to and from the projects collection pin xml"""
 
-    def __init__(self,mode,name,actionpath,actionscript):
+    def __init__(self,mode,name,uuid,layertype,actionpath,actionscript):
         self.xmlFile = self.getProjectPath()
         if mode == 'addAction':
-            self.saveActionToFile(name,actionpath,actionscript)
+            self.saveActionToFile(name,uuid,layertype,actionpath,actionscript)
         if mode == 'removeAction':
             self.removeActionFromFile(name)
         if mode == 'restoreAction':
             self.restoreProjectActions()
     # ------------------------------------------------------------------------------
 
-    def saveActionToFile(self,name,actionpath,actionscript):
+    def saveActionToFile(self,name,uuid,layertype,actionpath,actionscript):
         "stores a new action to be launched on project open"
 
         data = {}
 
         if os.path.exists(self.xmlFile):
             with open(self.xmlFile, "r") as jsonFile:
-                data = json.load(jsonFile)
+                try:
+                    data = json.load(jsonFile)
+                except Exception:
+                    pass
 
-        data[name] = actionpath + ',' + actionscript
+        data[name] = uuid,layertype,actionscript
 
         with open(self.xmlFile, "w+") as jsonFile:
             jsonFile.write(json.dumps(data))
@@ -235,9 +238,11 @@ class actionXML(object):
 
         if os.path.exists(self.xmlFile):
             with open(self.xmlFile, "r") as jsonFile:
-                data = json.load(jsonFile)
-
-        data.pop(name,0)
+                try:
+                    data = json.load(jsonFile)
+                    data.pop(name,0)
+                except Exception:
+                    pass
 
         with open(self.xmlFile, "w+") as jsonFile:
             jsonFile.write(json.dumps(data))
@@ -246,10 +251,43 @@ class actionXML(object):
     # ------------------------------------------------------------------------------
 
     def restoreProjectActions(self):
-        "restores any previous pins on project load, removing other ones"
-        return
+        "restores any previous pins on project load, removing other ones from previous open project"
 
-        # remember to also clear quick pins !
+        data = {}
+        UI_path = 'MainWindow/&Layers/' + u'Add Pinned Layer'
+
+        # Clearing any qiick pins from previous projects
+        loadQuickPin = mari.actions.find('/Mari/MARI Extension Pack/Layers/Pin Layers/Pins/Quick Pin')
+        loadQuickPin.setScript('mari.customScripts.emptyPin()')
+
+
+        if os.path.exists(self.xmlFile):
+            with open(self.xmlFile, "r") as jsonFile:
+                try:
+                    data = json.load(jsonFile)
+                except Exception:
+                    pass
+
+            for action in data:
+                action_string = data[action][2]
+                uuid = data[action][0]
+                layerType = data[action][1]
+
+                # recreating layer actions, setting icon and adding to AddPinnedLayer Menu
+                layer = findLayerUUID(layerType,uuid)
+                if layer != None:
+                    collectionLayerAction = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/Pins/' + action,action_string)
+                    icon_path = setCollectionPinIcon(layerType,layer)
+                    collectionLayerAction.setIcon(icon_path)
+                    mari.menus.addAction(collectionLayerAction,UI_path)
+
+            # Checking if placeholder is still around and removing if collection pins exist
+            collectionPins = checkCollectionPins()
+            if len(collectionPins) > 2:
+                for pin in collectionPins:
+                    if pin.name() == 'No Collection Pins':
+                        mari.menus.removeAction(pin,UI_path)
+
 
     # ------------------------------------------------------------------------------
 
@@ -257,9 +295,13 @@ class actionXML(object):
         "resolves the path to the xml file used to store actions for a project"
 
         global JSON_FILE
-        project = mari.current.project().uuid()
-        cachePath = mari.projects.cachePath()
-        json_path = cachePath + os.sep + project + os.sep + JSON_FILE
+
+        # Going the complicated way instead to retrieve the path instead of using cachePath() in case there are multiple cache directories:
+        project = mari.current.project()
+        project_info = project.info()
+        project_file = project_info.projectPath()
+        project_path = os.path.split(project_file)[0]
+        json_path = os.path.join(project_path,JSON_FILE)
 
         return json_path
 
@@ -468,6 +510,23 @@ def checkCollectionPins():
 
 # ------------------------------------------------------------------------------
 
+def clearPins():
+    """ Clears the list of collection pins and adds a placeholder"""
+
+    collectionPins = checkCollectionPins()
+    UI_path = 'MainWindow/&Layers/' + u'Add Pinned Layer'
+    for pin in collectionPins:
+        if pin.name() == 'Quick Pin':
+            pass
+        else:
+            mari.menus.removeAction(pin,UI_path)
+
+    placeholder = mari.actions.find('/Mari/MARI Extension Pack/Layers/Pin Layers/Pins/No Collection Pins')
+    mari.menus.addAction(placeholder,UI_path)
+
+
+# ------------------------------------------------------------------------------
+
 def setCollectionPinIcon(LayerType,Layer):
     """ Determines what Icon Type to set on the Collection Pin"""
 
@@ -476,25 +535,25 @@ def setCollectionPinIcon(LayerType,Layer):
 
     if LayerType == '1': #Channel
         icon_filename = 'Channel.16x16.png'
-        iconPath = mariResourcePath + os.sep +  icon_filename
+        iconPath = os.path.join(mariResourcePath,icon_filename)
     elif Layer.isPaintableLayer():
         icon_filename = 'Painting.16x16.png'
-        iconPath = mariResourcePath + os.sep +  icon_filename
+        iconPath = os.path.join(mariResourcePath,icon_filename)
     elif Layer.isProceduralLayer():
         icon_filename = 'AddNoise.16x16.png'
-        iconPath = mariResourcePath + os.sep +  icon_filename
+        iconPath = os.path.join(mariResourcePath,icon_filename)
     elif Layer.isChannelLayer():
         icon_filename = 'Channel.16x16.png'
-        iconPath = mariResourcePath + os.sep +  icon_filename
+        iconPath = os.path.join(mariResourcePath,icon_filename)
     elif Layer.isGroupLayer():
         icon_filename = 'Folder.16x16.png'
-        iconPath = mariResourcePath + os.sep +  icon_filename
+        iconPath = os.path.join(mariResourcePath,icon_filename)
     elif Layer.isGraphLayer():
         icon_filename = 'NodeGraph.16x16.png'
-        iconPath = mariResourcePath + os.sep +  icon_filename
+        iconPath = os.path.join(mariResourcePath,icon_filename)
     elif Layer.isAdjustmentLayer():
         icon_filename = 'ColorCurves.16x16.png'
-        iconPath = mariResourcePath + os.sep +  icon_filename
+        iconPath = os.path.join(mariResourcePath,icon_filename)
 
     return iconPath
 
@@ -572,7 +631,7 @@ def addCollectionPin(mode):
             action_path = '/Mari/MARI Extension Pack/Layers/Pin Layers/Pins/' + layerName
             action_script = 'mari.customScripts.triggerCollectionPin(' + LayerIDString + ')'
             collectionLayerAction = mari.actions.create(action_path,action_script)
-            actionXML('addAction',layerName,action_path,action_script)
+            actionXML('addAction',layerName,layerUUID,layerType,action_path,action_script)
             icon_path = setCollectionPinIcon(layerType,layer)
             collectionLayerAction.setIconPath(icon_path)
 
@@ -617,7 +676,7 @@ def updateCollectionPin(layerType,layer_uuid,oldname,layerobj,newname,project_uu
         new_action_path = '/Mari/MARI Extension Pack/Layers/Pin Layers/Pins/' + newname
         new_action_script = 'mari.customScripts.triggerCollectionPin(' + LayerIDString + ')'
         newaction = mari.actions.create(new_action_path,new_action_script )
-        actionXML('addAction',newname,new_action_path,new_action_script)
+        actionXML('addAction',newname,layer_uuid,layerType,new_action_path,new_action_script)
 
         icon_path = setCollectionPinIcon(layerType,layerobj)
         newaction.setIconPath(icon_path)
@@ -627,7 +686,7 @@ def updateCollectionPin(layerType,layer_uuid,oldname,layerobj,newname,project_uu
 
         # remove old action from menu and json
         mari.menus.removeAction(oldaction,UI_path)
-        actionXML('removeAction',oldname,None,None)
+        actionXML('removeAction',oldname,None,None,None,None)
 
 # ------------------------------------------------------------------------------
 
@@ -679,7 +738,7 @@ def triggerCollectionPin(layertype,layerName,project_uuid,layer_uuid):
         # if layer does not exist anymore, throw warning then remove obsolete action from menu and json file
         mari.utils.message('Could not find layer associated to Collection Pin: \n\nMissing or deleted Layer for Pin:  '+ layerName +'\n\nThe broken Collection Pin was removed from the menu','Process did not complete')
         mari.menus.removeAction('MainWindow/&Layers/Add Pinned Layer/'+layerName )
-        actionXML('removeAction',layerName,None,None)
+        actionXML('removeAction',layerName,None,None,None,None)
         return
 
 # ------------------------------------------------------------------------------

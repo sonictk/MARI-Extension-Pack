@@ -200,6 +200,12 @@ class customScripts():
     def manageCollectionPins(self):
         pinned_layers.EditPin_UI().exec_()
 
+    def restoreProjectPins(self):
+        pinned_layers.actionXML('restoreAction',None,None,None,None,None)
+
+    def clearCollectionPins(self):
+        pinned_layers.clearPins()
+
     # --------------------------------------------------------------
     # SHADERS:
 

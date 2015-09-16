@@ -41,18 +41,27 @@
 # --------------------------------------------------------------------
 
 
-'''The following adds new functionality to the MARI Gui.
+'''
+
+The following adds new functionality to the MARI Gui.
 Items are grouped by the standard MARI Menus they appear in such as
 CHANNELS,LAYERS,PATCHES etc.
 
 Items are placed within existing Menus (UI_Path) and a copy is placed
 in a common Script Menu (script_menu_path)
 
+actionScripts are accessing customScript class defined in __init__ file.
+
+A global extPack_icon_path variable exists for Icons places in the ExtPack Icon Folder.
 
 Please note that Shortcuts should NOT be set as part of the action creation
 Shortcuts are defined in bulk at the very end of the function by passing the shortcut
 to set and the action path to a shortcut check function that ensures that User
-set shortcuts are respected'''
+set shortcuts are respected
+
+The very end of the file is reserved for signal connections
+
+'''
 
 
 # --------------------------------------------------------------------
@@ -63,7 +72,7 @@ import os
 
 tool_menu_version = '3.0'
 
-# Icon Path for custom icons
+# Global Icon Path for custom icons
 extPack_icon_path = os.path.join(os.path.dirname(__file__), "Icons")
 
 
@@ -365,6 +374,7 @@ def createToolsMenu():
     ###   Pin to Collection ###
 
     UI_path = 'MainWindow/&Channels/' + u'Pin'
+    script_menu_path = 'MainWindow/Scripts/Channels/' + u'Pin'
 
     # Actions for Saving and managing pins
 
@@ -376,7 +386,9 @@ def createToolsMenu():
     mari.actions.addToSet('RequiresProject',pinCollectionChannel)
 
     mari.menus.addAction(quickPinChannel,UI_path,'Duplicate')
+    mari.menus.addAction(quickPinChannel,script_menu_path)
     mari.menus.addAction(pinCollectionChannel,UI_path)
+    mari.menus.addAction(pinCollectionChannel,script_menu_path)
 
     icon_filename = 'linked.16x16.png'
     icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
@@ -463,6 +475,7 @@ def createToolsMenu():
     ### Pin Layers
 
     UI_path = 'MainWindow/&Layers/' + u'Pin'
+    script_menu_path = 'MainWindow/Scripts/Layers/' + u'Pin'
 
     # Actions for Saving and managing pins
     quickPinLayer = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/Save Quick Pin', 'mari.customScripts.quickPin("layer")')
@@ -482,8 +495,11 @@ def createToolsMenu():
 
 
     mari.menus.addAction(quickPinLayer,UI_path,'Cut')
+    mari.menus.addAction(quickPinLayer,script_menu_path)
     mari.menus.addAction(pinCollectionLayer,UI_path)
+    mari.menus.addAction(pinCollectionLayer,script_menu_path)
     mari.menus.addAction(manageCollections,UI_path)
+    mari.menus.addAction(manageCollections,script_menu_path)
 
 
     icon_filename = 'linked.16x16.png'
@@ -855,22 +871,6 @@ def createToolsMenu():
     mari.menus.addSeparator(UI_path,'Release Notes')
 
 
-
-######################################################################
-# DISABLE ELEMENTS WHEN NO PROJECT IS OPEN
-######################################################################
-
-
-    if mari.projects.current() is None:
-        mari.actions.disableSet('RequiresProject')
-    else:
-        mari.actions.enableSet('RequiresProject')
-
-    mari.utils.connect(mari.projects.opened, lambda: mari.actions.enableSet('RequiresProject'))
-    mari.utils.connect(mari.projects.closed, lambda: mari.actions.disableSet('RequiresProject'))
-
-
-
 ######################################################################
 # LOAD USER SHORTCUTS OVERWRITING ANY DEFAULT ONES FOR EXT PACK ACTIONS
 ######################################################################
@@ -884,10 +884,36 @@ def createToolsMenu():
     setShortCutifEmpty('Ctrl+Space',"/Mari/MARI Extension Pack/Shading/Pause Viewport Update")
 
 
-# -----------------------------------------------------------------------------------------------------
+######################################################################
+# PROJECT SIGNAL ATTACHMENTS
+######################################################################
 
-# The following line just makes sure that the RequiresProject set is enabled.
-# This usually happens automatically but not when working in python using mari.utils.reloadAll() out of a project
+    # Disable Elements when no project is open, this is done by toggling the 'RequiresProject' set on or off
+
+    if mari.projects.current() is None:
+        mari.actions.disableSet('RequiresProject')
+    else:
+        mari.actions.enableSet('RequiresProject')
+
+    mari.utils.connect(mari.projects.opened, lambda: mari.actions.enableSet('RequiresProject'))
+    mari.utils.connect(mari.projects.closed, lambda: mari.actions.disableSet('RequiresProject'))
+
+    # -------------------------------------------------------------------------
+
+    #  Restore Collection Pins when project loaded, clear them if project closed
+
+    mari.utils.connect(mari.projects.opened, lambda: mari.customScripts.restoreProjectPins())
+    mari.utils.connect(mari.projects.closed, lambda: mari.customScripts.clearCollectionPins())
+
+
+
+######################################################################
+# DEBUGGING HELPER
+######################################################################
+
+# The following line just makes sure that the RequiresProject set is enabled at all times a project is open.
+# This usually happens automatically but when working in python console using mari.utils.reloadAll() out of a project
+# after reloading scripts the set isn't enabled.
 
 if mari.projects.current() is not None:
     mari.actions.enableSet('RequiresProject')
