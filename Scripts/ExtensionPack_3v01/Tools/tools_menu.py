@@ -905,6 +905,12 @@ def createToolsMenu():
     mari.utils.connect(mari.projects.opened, lambda: mari.customScripts.restoreProjectPins())
     mari.utils.connect(mari.projects.closed, lambda: mari.customScripts.clearCollectionPins())
 
+    # -------------------------------------------------------------------------
+
+    #  Restore User Set Project Paths on project Load
+
+    mari.utils.connect(mari.projects.opened, lambda: mari.customScripts.restore_project_paths())
+
 
 
 ######################################################################

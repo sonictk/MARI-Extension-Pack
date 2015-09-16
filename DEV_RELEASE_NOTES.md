@@ -115,8 +115,15 @@ Two new nodes were added to convert Outputs from a Metal-Roughness workflow to a
 ######Project Paths
 
 'Project Paths' allows you to configure default paths (Texture Export+Import,Camera Locations, Image Manager defaults etc.)
-and file templates for your project. Paths can be set relative to a project base path, folder creation is supported and
-settings are saved between sessions.
+and file templates for your project.
+Paths can be set relative to a project base path, folder creation is supported.
+
+Paths are saved with the project and restored on project load, so you only need to configure your project once and on
+the next project open you will find it how you left it.
+
+The last used settings (from whenever you last launched Set Project paths) are preset on open.
+This allows you to configure your paths relative to a changing base path and on a newly created project you then only need to set
+the base path instead of all individual paths each time.
 
 #####Selection:
 

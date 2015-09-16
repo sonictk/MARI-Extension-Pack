@@ -103,6 +103,9 @@ class customScripts():
     def set_project_paths(self):
         set_project_paths.setProjectPath()
 
+    def restore_project_paths(self):
+        set_project_paths.restoreProjectPaths()
+
     # ------------------------------------------------------------
     # SELECTION:
 

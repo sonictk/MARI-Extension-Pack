@@ -45,10 +45,14 @@ import PySide.QtGui as QtGui
 import PySide.QtCore as QtCore
 from PySide.QtCore import QSettings
 import inspect
+import json
 
+JSON_FILE = 'ProjectPaths_ExtPack_3v0.json'
 version = '3.0' #UI Version
 
-
+#  TO DO
+#  Move save StartupTemplate out of class
+#  Hook StartupTemplate save to ProjectLoad Signal
 
 class setProjectPathUI(QtGui.QDialog):
     """GUI to set your Project Paths"""
@@ -58,8 +62,6 @@ class setProjectPathUI(QtGui.QDialog):
         # Storing Widget Settings between sessions here:
         self.SETTINGS = mari.Settings()
         # Saving initial Path Settings at Startup of Dialog
-
-        self._saveStartupTemplate()
 
         # Dialog Settings
         # self.setFixedSize(800, 600)
@@ -106,13 +108,13 @@ class setProjectPathUI(QtGui.QDialog):
         # Asset Widges
         # Variable Widgets Variable A
         self.Active_VarA = QtGui.QCheckBox("TEXTURE MAPS (Import)")
-        self.Active_VarA.setToolTip('The default Path that should be used when Importing Textures')
+        self.Active_VarA.setToolTip('The default Path that should be used when Importing Textures.\nBy toggling this off the path field will be reset to whatever path is currently set')
         self.Path_VarA = QtGui.QLineEdit()
         self.Path_VarA.setToolTip('Path to be used for Variable.\nIf the path contains folders that do not exist, they can be created for you.\nUse a variable $BASE to set paths relative to Base Path')
         self.path_button_VarA = QtGui.QPushButton(path_icon, "")
         self.path_button_VarA.setToolTip('Browse for Folder')
         self.templateReset_VarA = QtGui.QPushButton(templateReset_icon, "")
-        self.templateReset_VarA.setToolTip('Reset to Project Default')
+        self.templateReset_VarA.setToolTip('Reset to Project Default\nThis will reset the path field to the path that was active on project open\nbut BEFORE the projects original setProjectPath settings were restored.\n\nIf in your pipeline you have automatic ways of setting the paths\nthis will restore to their state')
         self.link_VarA = QtGui.QCheckBox('Relative to Base')
         self.link_VarA.setCheckable(True)
         self.link_VarA.setToolTip('With RelativeToBase ON, the entered Path will be scanned for similarities to your Base Path.\nIf parts are identical they will be replaced with a $BASE variable.\nIf your Path contains a $BASE Variable and you uncheck RelativeToBase the Path will be fully resolved')
@@ -141,13 +143,13 @@ class setProjectPathUI(QtGui.QDialog):
         self.link_VarA.clicked.connect(Link_VarA_checkbox_connect)
         # Variable Widgets Variable C
         self.Active_VarC = QtGui.QCheckBox("TEXTURE MAPS (Export):")
-        self.Active_VarC.setToolTip('The default Path that should be used when Exporting Textures')
+        self.Active_VarC.setToolTip('The default Path that should be used when Exporting Textures.\nBy toggling this off the path field will be reset to whatever path is currently set')
         self.Path_VarC = QtGui.QLineEdit()
         self.Path_VarC.setToolTip('Path to be used for Variable.\nIf the path contains folders that do not exist, they can be created for you.\nUse a variable $BASE to set paths relative to Base Path')
         self.path_button_VarC = QtGui.QPushButton(path_icon, "")
         self.path_button_VarC.setToolTip('Browse for Folder')
         self.templateReset_VarC = QtGui.QPushButton(templateReset_icon, "")
-        self.templateReset_VarC.setToolTip('Reset to Project Default')
+        self.templateReset_VarC.setToolTip('Reset to Project Default\nThis will reset the path field to the path that was active on project open\nbut BEFORE the projects original setProjectPath settings were restored.\n\nIf in your pipeline you have automatic ways of setting the paths\nthis will restore to their state')
         self.link_VarC = QtGui.QCheckBox('Relative to Base')
         self.link_VarC.setToolTip('With RelativeToBase ON, the entered Path will be scanned for similarities to your Base Path.\nIf parts are identical they will be replaced with a $BASE variable.\nIf your Path contains a $BASE Variable and you uncheck RelativeToBase the Path will be fully resolved')
         variable_layout_grid.addWidget(self.Active_VarC,3,0)
@@ -175,13 +177,13 @@ class setProjectPathUI(QtGui.QDialog):
         self.link_VarC.clicked.connect(Link_VarC_checkbox_connect)
         # Variable Widgets Variable D
         self.Active_VarD = QtGui.QCheckBox("GEOMETRY (Import):")
-        self.Active_VarD.setToolTip('The default Path that should be used when Importing new Objects')
+        self.Active_VarD.setToolTip('The default Path that should be used when Importing new Objects.\nBy toggling this off the path field will be reset to whatever path is currently set')
         self.Path_VarD = QtGui.QLineEdit()
         self.Path_VarD.setToolTip('Path to be used for Variable.\nIf the path contains folders that do not exist, they can be created for you.\nUse a variable $BASE to set paths relative to Base Path')
         self.path_button_VarD = QtGui.QPushButton(path_icon, "")
         self.path_button_VarD.setToolTip('Browse for Folder')
         self.templateReset_VarD = QtGui.QPushButton(templateReset_icon, "")
-        self.templateReset_VarD.setToolTip('Reset to Project Default')
+        self.templateReset_VarD.setToolTip('Reset to Project Default\nThis will reset the path field to the path that was active on project open\nbut BEFORE the projects original setProjectPath settings were restored.\n\nIf in your pipeline you have automatic ways of setting the paths\nthis will restore to their state')
         self.link_VarD = QtGui.QCheckBox('Relative to Base')
         self.link_VarD.setToolTip('With RelativeToBase ON, the entered Path will be scanned for similarities to your Base Path.\nIf parts are identical they will be replaced with a $BASE variable.\nIf your Path contains a $BASE Variable and you uncheck RelativeToBase the Path will be fully resolved')
         variable_layout_grid.addWidget(self.Active_VarD,4,0)
@@ -209,13 +211,13 @@ class setProjectPathUI(QtGui.QDialog):
         self.link_VarD.clicked.connect(Link_VarD_checkbox_connect)
         # Variable Widgets Variable E
         self.Active_VarE = QtGui.QCheckBox("IMAGE MANAGER (Import/Export):")
-        self.Active_VarE.setToolTip('The default Path that should be used when Importing or Exporting from the Image Manager')
+        self.Active_VarE.setToolTip('The default Path that should be used when Importing or Exporting from the Image Manager.\nBy toggling this off the path field will be reset to whatever path is currently set')
         self.Path_VarE = QtGui.QLineEdit()
         self.Path_VarE.setToolTip('Path to be used for Variable.\nIf the path contains folders that do not exist, they can be created for you.\nUse a variable $BASE to set paths relative to Base Path')
         self.path_button_VarE = QtGui.QPushButton(path_icon, "")
         self.path_button_VarE.setToolTip('Browse for Folder')
         self.templateReset_VarE = QtGui.QPushButton(templateReset_icon, "")
-        self.templateReset_VarE.setToolTip('Reset to Project Default')
+        self.templateReset_VarE.setToolTip('Reset to Project Default\nThis will reset the path field to the path that was active on project open\nbut BEFORE the projects original setProjectPath settings were restored.\n\nIf in your pipeline you have automatic ways of setting the paths\nthis will restore to their state')
         self.link_VarE = QtGui.QCheckBox('Relative to Base')
         self.link_VarE.setToolTip('With RelativeToBase ON, the entered Path will be scanned for similarities to your Base Path.\nIf parts are identical they will be replaced with a $BASE variable.\nIf your Path contains a $BASE Variable and you uncheck RelativeToBase the Path will be fully resolved')
         variable_layout_grid.addWidget(self.Active_VarE,5,0)
@@ -243,13 +245,13 @@ class setProjectPathUI(QtGui.QDialog):
         self.link_VarE.clicked.connect(Link_VarE_checkbox_connect)
         # Variable Widgets Variable F
         self.Active_VarF = QtGui.QCheckBox("RENDERS/TURNTABLES (Export):")
-        self.Active_VarF.setToolTip('The default Path that should be used when doing Screenshots & Turntables')
+        self.Active_VarF.setToolTip('The default Path that should be used when doing Screenshots & Turntables.\nBy toggling this off the path field will be reset to whatever path is currently set')
         self.Path_VarF = QtGui.QLineEdit()
         self.Path_VarF.setToolTip('Path to be used for Variable.\nIf the path contains folders that do not exist, they can be created for you.\nUse a variable $BASE to set paths relative to Base Path')
         self.path_button_VarF = QtGui.QPushButton(path_icon, "")
         self.path_button_VarF.setToolTip('Browse for Folder')
         self.templateReset_VarF = QtGui.QPushButton(templateReset_icon, "")
-        self.templateReset_VarF.setToolTip('Reset to Project Default')
+        self.templateReset_VarF.setToolTip('Reset to Project Default\nThis will reset the path field to the path that was active on project open\nbut BEFORE the projects original setProjectPath settings were restored.\n\nIf in your pipeline you have automatic ways of setting the paths\nthis will restore to their state')
         self.link_VarF = QtGui.QCheckBox('Relative to Base')
         self.link_VarF.setToolTip('With RelativeToBase ON, the entered Path will be scanned for similarities to your Base Path.\nIf parts are identical they will be replaced with a $BASE variable.\nIf your Path contains a $BASE Variable and you uncheck RelativeToBase the Path will be fully resolved')
         variable_layout_grid.addWidget(self.Active_VarF,6,0)
@@ -277,13 +279,13 @@ class setProjectPathUI(QtGui.QDialog):
         self.link_VarF.clicked.connect(Link_VarF_checkbox_connect)
         # Variable Widgets Variable G
         self.Active_VarG = QtGui.QCheckBox("ARCHIVE (Import/Export):")
-        self.Active_VarG.setToolTip('The default Path that should be used when loading or saving an Archive')
+        self.Active_VarG.setToolTip('The default Path that should be used when loading or saving an Archive.\nBy toggling this off the path field will be reset to whatever path is currently set')
         self.Path_VarG = QtGui.QLineEdit()
         self.Path_VarG.setToolTip('Path to be used for Variable.\nIf the path contains folders that do not exist, they can be created for you.\nUse a variable $BASE to set paths relative to Base Path')
         self.path_button_VarG = QtGui.QPushButton(path_icon, "")
         self.path_button_VarG.setToolTip('Browse for Folder')
         self.templateReset_VarG = QtGui.QPushButton(templateReset_icon, "")
-        self.templateReset_VarG.setToolTip('Reset to Project Default')
+        self.templateReset_VarG.setToolTip('Reset to Project Default\nThis will reset the path field to the path that was active on project open\nbut BEFORE the projects original setProjectPath settings were restored.\n\nIf in your pipeline you have automatic ways of setting the paths\nthis will restore to their state')
         self.link_VarG = QtGui.QCheckBox('Relative to Base')
         self.link_VarG.setToolTip('With RelativeToBase ON, the entered Path will be scanned for similarities to your Base Path.\nIf parts are identical they will be replaced with a $BASE variable.\nIf your Path contains a $BASE Variable and you uncheck RelativeToBase the Path will be fully resolved')
         variable_layout_grid.addWidget(self.Active_VarG,7,0)
@@ -313,13 +315,13 @@ class setProjectPathUI(QtGui.QDialog):
         # MISC Widgets
         # Variable Widgets Variable H
         self.Active_VarH = QtGui.QCheckBox("SHELVES (Import/Export):")
-        self.Active_VarH.setToolTip('The default Path that should be used when loading or saving Shelves')
+        self.Active_VarH.setToolTip('The default Path that should be used when loading or saving Shelves.\nBy toggling this off the path field will be reset to whatever path is currently set')
         self.Path_VarH = QtGui.QLineEdit()
         self.Path_VarH.setToolTip('Path to be used for Variable.\nIf the path contains folders that do not exist, they can be created for you.\nUse a variable $BASE to set paths relative to Base Path')
         self.path_button_VarH = QtGui.QPushButton(path_icon, "")
         self.path_button_VarH.setToolTip('Browse for Folder')
         self.templateReset_VarH = QtGui.QPushButton(templateReset_icon, "")
-        self.templateReset_VarH.setToolTip('Reset to Project Default')
+        self.templateReset_VarH.setToolTip('Reset to Project Default\nThis will reset the path field to the path that was active on project open\nbut BEFORE the projects original setProjectPath settings were restored.\n\nIf in your pipeline you have automatic ways of setting the paths\nthis will restore to their state')
         self.link_VarH = QtGui.QCheckBox('Relative to Base')
         self.link_VarH.setToolTip('With RelativeToBase ON, the entered Path will be scanned for similarities to your Base Path.\nIf parts are identical they will be replaced with a $BASE variable.\nIf your Path contains a $BASE Variable and you uncheck RelativeToBase the Path will be fully resolved')
         misc_layout_grid.addWidget(self.Active_VarH,8,0)
@@ -347,13 +349,13 @@ class setProjectPathUI(QtGui.QDialog):
         self.link_VarH.clicked.connect(Link_VarH_checkbox_connect)
         # Variable Widgets Variable I
         self.Active_VarI = QtGui.QCheckBox("CAM/PROJECTOR (Import/Export):")
-        self.Active_VarI.setToolTip('The default Path that should be used when Importing or Eporting Cameras or Projectors')
+        self.Active_VarI.setToolTip('The default Path that should be used when Importing or Eporting Cameras or Projectors.\nBy toggling this off the path field will be reset to whatever path is currently set')
         self.Path_VarI = QtGui.QLineEdit()
         self.Path_VarI.setToolTip('Path to be used for Variable.\nIf the path contains folders that do not exist, they can be created for you.\nUse a variable $BASE to set paths relative to Base Path')
         self.path_button_VarI = QtGui.QPushButton(path_icon, "")
         self.path_button_VarI.setToolTip('Browse for Folder')
         self.templateReset_VarI = QtGui.QPushButton(templateReset_icon, "")
-        self.templateReset_VarI.setToolTip('Reset to Project Default')
+        self.templateReset_VarI.setToolTip('Reset to Project Default\nThis will reset the path field to the path that was active on project open\nbut BEFORE the projects original setProjectPath settings were restored.\n\nIf in your pipeline you have automatic ways of setting the paths\nthis will restore to their state')
         self.link_VarI = QtGui.QCheckBox('Relative to Base')
         self.link_VarI.setToolTip('With RelativeToBase ON, the entered Path will be scanned for similarities to your Base Path.\nIf parts are identical they will be replaced with a $BASE variable.\nIf your Path contains a $BASE Variable and you uncheck RelativeToBase the Path will be fully resolved')
         misc_layout_grid.addWidget(self.Active_VarI,9,0)
@@ -387,7 +389,7 @@ class setProjectPathUI(QtGui.QDialog):
         self.Path_VarJ = QtGui.QLineEdit()
         self.Path_VarJ.setToolTip('The default file template that should be used for flattened UDIM sequences\nIt is possible to specify subfolders here.\nSupported Variables are: \n\n$ENTITY\n$CHANNEL\n$LAYER\n$UDIM\n$FRAME\n')
         self.templateReset_VarJ = QtGui.QPushButton(templateReset_icon, "")
-        self.templateReset_VarJ.setToolTip('Reset to Project Default')
+        self.templateReset_VarJ.setToolTip('Reset to Project Default\nThis will reset the path field to the path that was active on project open\nbut BEFORE the projects original setProjectPath settings were restored.\n\nIf in your pipeline you have automatic ways of setting the paths\nthis will restore to their state')
         file_layout_grid.addWidget(self.Active_VarJ,9,0)
         file_layout_grid.addWidget(self.Path_VarJ,9,1)
         file_layout_grid.addWidget(self.templateReset_VarJ,9,2)
@@ -406,7 +408,7 @@ class setProjectPathUI(QtGui.QDialog):
         self.Path_VarK = QtGui.QLineEdit()
         self.Path_VarK.setToolTip('The default file template that should be used for UDIM (non-flattened) sequences\nIt is possible to specify subfolders here.\nSupported Variables are: \n\n$ENTITY\n$CHANNEL\n$LAYER\n$UDIM\n$FRAME\n')
         self.templateReset_VarK = QtGui.QPushButton(templateReset_icon, "")
-        self.templateReset_VarK.setToolTip('Reset to Project Default')
+        self.templateReset_VarK.setToolTip('Reset to Project Default\nThis will reset the path field to the path that was active on project open\nbut BEFORE the projects original setProjectPath settings were restored.\n\nIf in your pipeline you have automatic ways of setting the paths\nthis will restore to their state')
         file_layout_grid.addWidget(self.Active_VarK,9,3)
         file_layout_grid.addWidget(self.Path_VarK,9,4)
         file_layout_grid.addWidget(self.templateReset_VarK,9,5)
@@ -425,7 +427,7 @@ class setProjectPathUI(QtGui.QDialog):
         self.Path_VarL = QtGui.QLineEdit()
         self.Path_VarL.setToolTip('The default file template that should be used for flattened PTEX\nIt is possible to specify subfolders here.\nSupported Variables are: \n\n$ENTITY\n$CHANNEL\n$LAYER\n$UDIM\n$FRAME\n')
         self.templateReset_VarL = QtGui.QPushButton(templateReset_icon, "")
-        self.templateReset_VarL.setToolTip('Reset to Project Default')
+        self.templateReset_VarL.setToolTip('Reset to Project Default\nThis will reset the path field to the path that was active on project open\nbut BEFORE the projects original setProjectPath settings were restored.\n\nIf in your pipeline you have automatic ways of setting the paths\nthis will restore to their state')
         file_layout_grid.addWidget(self.Active_VarL,10,0)
         file_layout_grid.addWidget(self.Path_VarL,10,1)
         file_layout_grid.addWidget(self.templateReset_VarL,10,2)
@@ -444,7 +446,7 @@ class setProjectPathUI(QtGui.QDialog):
         self.Path_VarM = QtGui.QLineEdit()
         self.Path_VarM.setToolTip('The default file template that should be used for PTEX (non-flattened) sequences\nIt is possible to specify subfolders here.\nSupported Variables are: \n\n$ENTITY\n$CHANNEL\n$LAYER\n$UDIM\n$FRAME\n')
         self.templateReset_VarM = QtGui.QPushButton(templateReset_icon, "")
-        self.templateReset_VarM.setToolTip('Reset to Project Default')
+        self.templateReset_VarM.setToolTip('Reset to Project Default\nThis will reset the path field to the path that was active on project open\nbut BEFORE the projects original setProjectPath settings were restored.\n\nIf in your pipeline you have automatic ways of setting the paths\nthis will restore to their state')
         file_layout_grid.addWidget(self.Active_VarM,10,3)
         file_layout_grid.addWidget(self.Path_VarM,10,4)
         file_layout_grid.addWidget(self.templateReset_VarM,10,5)
@@ -474,7 +476,11 @@ class setProjectPathUI(QtGui.QDialog):
         window_layout_box.addWidget(misc_group_box)
         window_layout_box.addWidget(file_group_box)
         window_layout_box.addLayout(button_layout_box)
+
+        # loading user settings from config (last user modifications) and setting base path to per project if exists
         self._userSettingsLoad()
+        self._perProjectBasePathLoad(self.Path_Base)
+
         # Initialize UI Elements, checks if Variables are set active and if not disables UI elements
         self._disableUIElements(self.Active_VarA,self.Path_VarA,self.path_button_VarA,self.templateReset_VarA,self.link_VarA)
         self._disableUIElements(self.Active_VarC,self.Path_VarC,self.path_button_VarC,self.templateReset_VarC,self.link_VarC)
@@ -489,67 +495,45 @@ class setProjectPathUI(QtGui.QDialog):
         self._disableUIElements(self.Active_VarL,self.Path_VarL,None,self.templateReset_VarL,None)
         self._disableUIElements(self.Active_VarM,self.Path_VarM,None,self.templateReset_VarM,None)
 
-
-
-
-    def _saveStartupTemplate(self):
-        """ Stores the State of Variables right after launch so we can reset to it via Template Reset Buttons"""
-
-        template_dict = {'Project'    : mari.projects.current().uuid(),
-                         'Tex_Export' : mari.resources.path(mari.resources.DEFAULT_EXPORT),
-                         'Tex_Import' : mari.resources.path(mari.resources.DEFAULT_IMPORT),
-                         'Archive' : mari.resources.path(mari.resources.DEFAULT_ARCHIVE),
-                         'Camera' : mari.resources.path(mari.resources.DEFAULT_CAMERA),
-                         'Geo' : mari.resources.path(mari.resources.DEFAULT_GEO),
-                         'Image' : mari.resources.path(mari.resources.DEFAULT_IMAGE),
-                         'Shelf' : mari.resources.path(mari.resources.DEFAULT_SHELF),
-                         'Render' : mari.resources.path(mari.resources.DEFAULT_RENDER),
-                         'Sequence' : mari.resources.sequenceTemplate(),
-                         'Sequence_Flat' : mari.resources.flattenedSequenceTemplate(),
-                         'PTEXSequence' : mari.resources.ptexSequenceTemplate(),
-                         'PTEXSequence_Flat' : mari.resources.ptexFlattenedSequenceTemplate()
-                        }
-
-        project = None
-
-        # Reading Project saved in settings file
-        self.SETTINGS.beginGroup("Project_Default_Paths_" + version)
-        project = self.SETTINGS.value('Project')
-        self.SETTINGS.endGroup()
-
-        if project is None:
-            for key in template_dict:
-                self.SETTINGS.beginGroup("Project_Default_Paths_" + version)
-                state = template_dict[key]
-                name = key
-                self.SETTINGS.setValue(name,state)
-                self.SETTINGS.endGroup()
-
-        # if the project saved in the settings file is not the current one, store new defaults
-        if mari.projects.current().uuid() != project:
-            for key in template_dict:
-                self.SETTINGS.beginGroup("Project_Default_Paths_" + version)
-                state = template_dict[key]
-                name = key
-                self.SETTINGS.setValue(name,state)
-                self.SETTINGS.endGroup()
-
-
-
     def _getProjectTemplate(self,pathVariable):
-        """ Returns the default path that was set at project launch, saved in extPack settings file"""
+        """ Returns the default path that was set at project launch, saved in extPack json file of project"""
 
-        self.SETTINGS.beginGroup("Project_Default_Paths_" + version)
-        state_string = self.SETTINGS.value(pathVariable)
-        self.SETTINGS.endGroup()
+        state_string = readXMLValue('Default',pathVariable)
         return state_string
+
 
     def _setProjectTemplate(self, obj, pathVariable):
         """ Gets the default path variable and sets the QLineEditField in Main UI to Value"""
 
-        # pathVar = pathVariable
         path = self._getProjectTemplate(pathVariable)
         obj.setText(path)
+
+
+    def _setCurrentTemplateToField(self,obj,pathVariable):
+        """
+        Sets the currently active variable path to a text field
+        This is not the same as the project Template but gives whatever
+        is currently set - user edited or not
+        """
+
+        current_template_dict = {'Project'    : mari.projects.current().uuid(),
+                                 'Tex_Export' : mari.resources.path(mari.resources.DEFAULT_EXPORT),
+                                 'Tex_Import' : mari.resources.path(mari.resources.DEFAULT_IMPORT),
+                                 'Archive' : mari.resources.path(mari.resources.DEFAULT_ARCHIVE),
+                                 'Camera' : mari.resources.path(mari.resources.DEFAULT_CAMERA),
+                                 'Geo' : mari.resources.path(mari.resources.DEFAULT_GEO),
+                                 'Image' : mari.resources.path(mari.resources.DEFAULT_IMAGE),
+                                 'Shelf' : mari.resources.path(mari.resources.DEFAULT_SHELF),
+                                 'Render' : mari.resources.path(mari.resources.DEFAULT_RENDER),
+                                 'Sequence' : mari.resources.sequenceTemplate(),
+                                 'Sequence_Flat' : mari.resources.flattenedSequenceTemplate(),
+                                 'PTEXSequence' : mari.resources.ptexSequenceTemplate(),
+                                 'PTEXSequence_Flat' : mari.resources.ptexFlattenedSequenceTemplate()
+                                }
+
+        for key in current_template_dict:
+            if key == pathVariable:
+                obj.setText(current_template_dict[key])
 
 
     def _browseForDirectory(self, obj):
@@ -582,6 +566,50 @@ class setProjectPathUI(QtGui.QDialog):
             if obj_link is not None:
                 obj_link.setEnabled(True)
 
+        self._resetDisabledToCurrent()
+
+
+    def _resetDisabledToCurrent(self):
+        """ Resets disabled Path Fields to the current state of the variable. Sort of like reset to current variable"""
+
+        # if a row is inactive reset it to default automtically:
+        # Set Texture Import Path
+        if not self.Active_VarA.isChecked():
+            self._setCurrentTemplateToField(self.Path_VarA,'Tex_Import')
+        # Set Texture Export Path
+        if not self.Active_VarC.isChecked():
+            self._setCurrentTemplateToField(self.Path_VarC,'Tex_Export')
+        # Set Geo Path
+        if not self.Active_VarD.isChecked():
+            self._setCurrentTemplateToField(self.Path_VarD,'Geo')
+        # Set Tmage Manager Path
+        if not self.Active_VarE.isChecked():
+            self._setCurrentTemplateToField(self.Path_VarE,'Image')
+        # Set Render Path
+        if not self.Active_VarF.isChecked():
+            self._setCurrentTemplateToField(self.Path_VarF,'Render')
+        # Set Archive Path
+        if not self.Active_VarG.isChecked():
+            self._setCurrentTemplateToField(self.Path_VarG,'Archive')
+        # Set Shelf Path
+        if not self.Active_VarH.isChecked():
+            self._setCurrentTemplateToField(self.Path_VarH,'Shelf')
+        # Set Camera Path
+        if not self.Active_VarI.isChecked():
+            self._setCurrentTemplateToField(self.Path_VarI,'Camera')
+        # Set Texture Flattened Temaplte
+        if not self.Active_VarJ.isChecked():
+            self._setCurrentTemplateToField(self.Path_VarJ,'Sequence_Flat')
+        # Set Texture Temaplte
+        if not self.Active_VarK.isChecked():
+            self._setCurrentTemplateToField(self.Path_VarK,'Sequence')
+        # Set PTEX Flattened Temaplte
+        if not self.Active_VarL.isChecked():
+            self._setCurrentTemplateToField(self.Path_VarL,'PTEXSequence_Flat')
+        # Set PTEX Temaplte
+        if not self.Active_VarM.isChecked():
+            self._setCurrentTemplateToField(self.Path_VarM,'PTEXSequence')
+
 
     def _checkPathForBase(self,text_path, base_link):
         """ Checks the user input while typing if it contains Variable $BASE
@@ -593,7 +621,6 @@ class setProjectPathUI(QtGui.QDialog):
             base_link.setChecked(True)
         else:
             base_link.setChecked(False)
-
 
 
     def _resolveBASEVariable(self,base_path,text_path,base_link):
@@ -761,6 +788,10 @@ class setProjectPathUI(QtGui.QDialog):
             else:
                 return
 
+        # if a base path is used store it to json file for later use
+        if base_found:
+            self._perProjectBasePathSave(base_path_text)
+
         self._setPath(base_var_final_dict)
 
 
@@ -780,6 +811,7 @@ class setProjectPathUI(QtGui.QDialog):
             if dict_ACTIVE:
                 try:
                     mari.resources.setPath(dict_VARIABLE,dict_RESOLVEDPATH)
+                    actionXML('addPath','UserDefined',dict_VARIABLE,dict_RESOLVEDPATH)
                     print dict_VARIABLE + ' set to: ' + dict_RESOLVEDPATH
                 except Exception:
                     mari.utils.message('Unable to set path for Variable: \n' + key)
@@ -790,18 +822,22 @@ class setProjectPathUI(QtGui.QDialog):
             # Set Texture Flattened Temaplte
             if self.Active_VarJ.isChecked():
                 mari.resources.setFlattenedSequenceTemplate(self.Path_VarJ.text())
+                actionXML('addPath','UserDefined','Sequence_Flat',self.Path_VarJ.text())
                 print 'Flattened Sequence Template' + ' set to: ' + self.Path_VarJ.text()
             # Set Texture Temaplte
             if self.Active_VarK.isChecked():
                 mari.resources.setSequenceTemplate(self.Path_VarK.text())
+                actionXML('addPath','UserDefined','Sequence',self.Path_VarK.text())
                 print 'Sequence Template' + ' set to: ' + self.Path_VarK.text()
             # Set PTEX Flattened Temaplte
             if self.Active_VarL.isChecked():
                 mari.resources.setPtexFlattenedSequenceTemplate(self.Path_VarL.text())
+                actionXML('addPath','UserDefined','PTEXSequence_Flat',self.Path_VarL.text())
                 print 'PTEX Flattened Template' + ' set to: ' + self.Path_VarL.text()
             # Set PTEX Temaplte
             if self.Active_VarM.isChecked():
                 mari.resources.setPtexSequenceTemplate(self.Path_VarM.text())
+                actionXML('addPath','UserDefined','PTEXSequence',self.Path_VarM.text())
                 print 'PTEX Template' + ' set to: ' + self.Path_VarM.text()
         except Exception:
             mari.utils.message('Unable to set sequence templates. Check formatting.')
@@ -812,7 +848,7 @@ class setProjectPathUI(QtGui.QDialog):
 
 
     def _userSettingsSave(self):
-        """Saves UI Options between sessions."""
+        """Saves UI Options between sessions into MARI Config."""
 
         for name, obj in inspect.getmembers(self):
             self.SETTINGS.beginGroup("setProjectPaths_" + version)
@@ -827,9 +863,11 @@ class setProjectPathUI(QtGui.QDialog):
 
             self.SETTINGS.endGroup()
 
+        # saving $BASE Path to json file
+
 
     def _userSettingsLoad(self):
-        """Loads UI Options between sessions."""
+        """Loads UI Options between sessions from MARI Config"""
 
 
         for name, obj in inspect.getmembers(self):
@@ -850,43 +888,205 @@ class setProjectPathUI(QtGui.QDialog):
 
             self.SETTINGS.endGroup()
 
-        # if a row is inactive reset it to default automtically:
-        # Set Texture Import Path
-        if not self.Active_VarA.isChecked():
-            self._setProjectTemplate(self.Path_VarA,'Tex_Import')
-        # Set Texture Export Path
-        if not self.Active_VarC.isChecked():
-            self._setProjectTemplate(self.Path_VarC,'Tex_Export')
-        # Set Geo Path
-        if not self.Active_VarD.isChecked():
-            self._setProjectTemplate(self.Path_VarD,'Geo')
-        # Set Tmage Manager Path
-        if not self.Active_VarE.isChecked():
-            self._setProjectTemplate(self.Path_VarE,'Image')
-        # Set Render Path
-        if not self.Active_VarF.isChecked():
-            self._setProjectTemplate(self.Path_VarF,'Render')
-        # Set Archive Path
-        if not self.Active_VarG.isChecked():
-            self._setProjectTemplate(self.Path_VarG,'Archive')
-        # Set Shelf Path
-        if not self.Active_VarH.isChecked():
-            self._setProjectTemplate(self.Path_VarH,'Shelf')
-        # Set Camera Path
-        if not self.Active_VarI.isChecked():
-            self._setProjectTemplate(self.Path_VarI,'Camera')
-        # Set Texture Flattened Temaplte
-        if not self.Active_VarJ.isChecked():
-            self._setProjectTemplate(self.Path_VarJ,'Sequence_Flat')
-        # Set Texture Temaplte
-        if not self.Active_VarK.isChecked():
-            self._setProjectTemplate(self.Path_VarK,'Sequence')
-        # Set PTEX Flattened Temaplte
-        if not self.Active_VarL.isChecked():
-            self._setProjectTemplate(self.Path_VarL,'PTEXSequence_Flat')
-        # Set PTEX Temaplte
-        if not self.Active_VarM.isChecked():
-            self._setProjectTemplate(self.Path_VarM,'PTEXSequence')
+        self._resetDisabledToCurrent()
+
+    def _perProjectBasePathSave(self,base_path):
+        """
+        When the user accepts the dialog and is using a $BASE Variable anywhere
+        the BasePath is saved to json file so I can restore the Path to the
+        BasePath Textfield the next time the Project & setprojectpaths is opened
+
+        """
+
+        actionXML('addPath','BASE_PATH_SETTING','SetProjectPath_BASE',base_path)
+
+
+    def _perProjectBasePathLoad(self,base_path):
+        """
+        Checks if this project already had custom project paths set that involved a $BASE Variable
+        If one is found, the path of $BASE is restored, otherwise the last used one is used that was
+        saved as part of _userSettingsSave/Loads
+
+        """
+
+        savedBasePath = readXMLValue('BASE_PATH_SETTING','SetProjectPath_BASE')
+        if savedBasePath is not None:
+            base_path.setText(savedBasePath)
+
+
+# ------------------------------------------------------------------------------
+
+class actionXML(object):
+    """
+     Read,writes and removes paths to and from the projects project path json file
+     var_type determines type of variable: user set variable or project default
+     variable is the type of path to be set and path the new path for the variable
+
+    """
+
+    def __init__(self,mode,var_type,variable,path):
+        self.xmlFile = getProjectPath()
+        if mode == 'addPath':
+            self.savePathToFile(var_type,variable,path)
+        if mode == 'removePath':
+            self.removePathFromFile(var_type,variable)
+    # ------------------------------------------------------------------------------
+
+    def savePathToFile(self,var_type,variable,path):
+        "stores a specifc project path for a given variable"
+
+        data = {}
+
+        if os.path.exists(self.xmlFile):
+            with open(self.xmlFile, "r") as jsonFile:
+                try:
+                    data = json.load(jsonFile)
+                except Exception:
+                    pass
+
+        key = variable + '-' + var_type
+        data[key] = var_type,variable,path
+
+        with open(self.xmlFile, "w+") as jsonFile:
+            jsonFile.write(json.dumps(data))
+
+    # ------------------------------------------------------------------------------
+
+    def removePathFromFile(self,var_type,variable):
+        "removes a variable from the json file"
+
+        data = {}
+
+        if os.path.exists(self.xmlFile):
+            with open(self.xmlFile, "r") as jsonFile:
+                try:
+                    data = json.load(jsonFile)
+                    key = variable + '-' + var_type
+                    data.pop(key,0)
+                except Exception:
+                    pass
+
+        with open(self.xmlFile, "w+") as jsonFile:
+            jsonFile.write(json.dumps(data))
+
+
+    # ------------------------------------------------------------------------------
+
+
+def readXMLValue(var_type,variable):
+    """ Returns a specific variable path from the Project Path json file"""
+
+    xmlFile = getProjectPath()
+    data = {}
+    path = None
+
+    if os.path.exists(xmlFile):
+        with open(xmlFile, "r") as jsonFile:
+            try:
+                data = json.load(jsonFile)
+                key = variable + '-' + var_type
+                path = data[key][2]
+            except Exception:
+                pass
+
+    return path
+
+# ------------------------------------------------------------------------------
+
+class restoreProjectPaths(object):
+    """
+    Sets the project paths back to the way they were when the project closed
+    Also handles saving of project default paths before SetProjectPath changes
+    """
+    def __init__(self):
+        startupTemplate = self._saveStartupTemplate()
+        restoreChanges = self._restorePreviousPaths()
+
+    def _saveStartupTemplate(self):
+        """ Stores the State of Variables right after project launch so we can reset to it via Template Reset Buttons"""
+
+        template_dict = {'Project'    : mari.projects.current().uuid(),
+                         'Tex_Export' : mari.resources.path(mari.resources.DEFAULT_EXPORT),
+                         'Tex_Import' : mari.resources.path(mari.resources.DEFAULT_IMPORT),
+                         'Archive' : mari.resources.path(mari.resources.DEFAULT_ARCHIVE),
+                         'Camera' : mari.resources.path(mari.resources.DEFAULT_CAMERA),
+                         'Geo' : mari.resources.path(mari.resources.DEFAULT_GEO),
+                         'Image' : mari.resources.path(mari.resources.DEFAULT_IMAGE),
+                         'Shelf' : mari.resources.path(mari.resources.DEFAULT_SHELF),
+                         'Render' : mari.resources.path(mari.resources.DEFAULT_RENDER),
+                         'Sequence' : mari.resources.sequenceTemplate(),
+                         'Sequence_Flat' : mari.resources.flattenedSequenceTemplate(),
+                         'PTEXSequence' : mari.resources.ptexSequenceTemplate(),
+                         'PTEXSequence_Flat' : mari.resources.ptexFlattenedSequenceTemplate()
+                        }
+
+
+        for key in template_dict:
+            actionXML('addPath','Default',key,template_dict[key])
+
+    def _restorePreviousPaths(self):
+        """ If the user had made any changes to project paths when the project was last open, this restores the paths """
+
+        xmlFile = getProjectPath()
+        data = {}
+
+        # Variable dictionary. There are some that return nothing since there is no variable for them
+        # but I am just including them in the dict so no key error occurs and doing a try except routine around them.
+        var_dict = {
+                    'MARI_DEFAULT_IMPORT_PATH'     :  mari.resources.DEFAULT_IMPORT,
+                    'MARI_DEFAULT_EXPORT_PATH'     :  mari.resources.DEFAULT_EXPORT,
+                    'MARI_DEFAULT_GEOMETRY_PATH'   :  mari.resources.DEFAULT_GEO,
+                    'MARI_DEFAULT_IMAGE_PATH'      :  mari.resources.DEFAULT_IMAGE,
+                    'MARI_DEFAULT_RENDER_PATH'     :  mari.resources.DEFAULT_RENDER,
+                    'MARI_DEFAULT_ARCHIVE_PATH'    :  mari.resources.DEFAULT_ARCHIVE,
+                    'MARI_DEFAULT_SHELF_PATH'      :  mari.resources.DEFAULT_SHELF,
+                    'MARI_DEFAULT_CAMERA_PATH'     :  mari.resources.DEFAULT_CAMERA,
+                    'Sequence_Flat'                :  'INVALID',    #included to avoid key errors
+                    'Sequence'                     :  'INVALID',    #included to avoid key errors
+                    'PTEXSequence_Flat'            :  'INVALID',    #included to avoid key errors
+                    'PTEXSequence'                 :  'INVALID'    #included to avoid key errors
+                    }
+
+        if os.path.exists(xmlFile):
+            with open(xmlFile, "r") as jsonFile:
+                try:
+                    data = json.load(jsonFile)
+                except Exception:
+                    pass
+
+        for key in data:
+            if data[key][0] == 'UserDefined':
+                varToSet = var_dict[data[key][1]]
+                try:
+                    mari.resources.setPath(varToSet,data[key][2])
+                except Exception:
+                    pass
+
+                # checking sequence templates that don't have MARI variables
+                if data[key][1] == 'Sequence_Flat':
+                    mari.resources.setFlattenedSequenceTemplate(data[key][2])
+                elif data[key][1] == 'Sequence':
+                    mari.resources.setSequenceTemplate(data[key][2])
+                elif data[key][1] == 'PTEXSequence_Flat':
+                    mari.resources.setPtexFlattenedSequenceTemplate(data[key][2])
+                elif data[key][1] == 'PTEXSequence':
+                    mari.resources.setPtexSequenceTemplate(data[key][2])
+
+# ------------------------------------------------------------------------------
+
+def getProjectPath():
+    "resolves the path to the xml file used to store actions for a project"
+
+    global JSON_FILE
+
+    # Going the complicated way instead to retrieve the path instead of using cachePath() in case there are multiple cache directories:
+    project = mari.current.project()
+    project_info = project.info()
+    project_file = project_info.projectPath()
+    project_path = os.path.split(project_file)[0]
+    json_path = os.path.join(project_path,JSON_FILE)
+
+    return json_path
 
 # ------------------------------------------------------------------------------
 
