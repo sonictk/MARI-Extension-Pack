@@ -159,7 +159,9 @@ Pinned Layers have two modes - Quick Pins & Collection Pin
   Collection Pins are useful if you need to repeatedly have access to the same layers for sharing.
   While Quick Pins work like a one time clipboard, Collection Pins allow you to pin layers or groups
   to the Menu for later access. For each selected layer or group, one Collection Pin
-  will be added to the 'Layer/Add Pinned Layer' Menu
+  will be added to the 'Layer/Add Pinned Layer' Menu.
+
+  Collection Pins are stored per project and will be restored on project loading.
 
   Please note, Collection Pins require a unique name. It is not supported to add two layers with the same name
   as different pins
