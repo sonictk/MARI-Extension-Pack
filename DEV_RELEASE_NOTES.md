@@ -166,8 +166,8 @@ Pinned Layers have two modes - Quick Pins & Collection Pin
   Please note, Collection Pins require a unique name. It is not supported to add two layers with the same name
   as different pins
 
-- Manage Collections
-  The Layer/Pin/Manage Collections options allows you to remove pinned collection layers from you pinned layers list.
+- Edit Collection Pins
+  The Layer/Pin/Edit Collection Pins options allows you to remove pinned collection layers from the pinned layers list.
 
 
 ###Channel:
