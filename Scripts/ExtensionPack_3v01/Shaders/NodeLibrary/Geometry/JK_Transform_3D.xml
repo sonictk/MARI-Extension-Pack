@@ -1,6 +1,6 @@
 <!--
 ================================================================================
-== Transform Coordinates 3D
+== Manifold 3D
 == Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
 ================================================================================
 == File: JK_Transform_3D.xml
@@ -42,7 +42,7 @@
 
 <Node>
     <ID>JK_Transform3D</ID>
-    <DefaultName>Transform Coordinates (3D)</DefaultName>
+    <DefaultName>Manifold (3D)</DefaultName>
     <Category>Geometry/Custom/</Category>
     <Inputs>
         <Input Name="Coordinates" PrettyName="3D Coordinates"></Input>

@@ -53,7 +53,7 @@
     </Tags>
     <Inputs>
         <Input Name="Input" PrettyName="Painted Flow" PreferredInput='1'/>
-        <Input Name="Transform" PrettyName="Transform Coordinates" />
+        <Input Name="Transform" PrettyName="Manifold" />
         <Input Name="Frequency" />
         <Input Name="Bandwidth" />
         <Input Name="Truncate" />

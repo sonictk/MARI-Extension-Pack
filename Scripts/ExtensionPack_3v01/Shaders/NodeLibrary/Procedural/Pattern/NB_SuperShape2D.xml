@@ -49,7 +49,7 @@
     <DefaultName>SuperShape 2D</DefaultName>
     <Category>Procedural/Custom/Pattern/</Category>
         <Inputs>
-        <Input Name="Transform" PrettyName="Transform Coordinates (UV)"></Input>
+        <Input Name="Transform" PrettyName="Manifold (UV)"></Input>
         <Input Name="A" ></Input>
         <Input Name="B" ></Input>
         <Input Name="M" ></Input>

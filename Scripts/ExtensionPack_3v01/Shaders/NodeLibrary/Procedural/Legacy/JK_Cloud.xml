@@ -46,7 +46,7 @@
     <DefaultName>Legacy Cloud</DefaultName>
     <Category>Procedural/Custom/Noise/</Category>
     <Inputs>
-        <Input Name="Transform" PrettyName="Transform Coordinates"></Input>
+        <Input Name="Transform" PrettyName="Manifold"></Input>
         <Input Name="Size"></Input>
         <Input Name="Roughness"></Input>
     </Inputs>

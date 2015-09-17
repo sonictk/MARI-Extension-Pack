@@ -45,7 +45,7 @@
     <DefaultName>Vec FBM</DefaultName>
     <Category>Procedural/Custom/FBM/</Category>
     <Inputs>
-        <Input Name="Transform" PrettyName="Transform Coordinates"></Input>
+        <Input Name="Transform" PrettyName="Manifold"></Input>
         <Input Name="Size" ></Input>
         <Input Name="Octaves" ></Input>
         <Input Name="Lacunarity" ></Input>

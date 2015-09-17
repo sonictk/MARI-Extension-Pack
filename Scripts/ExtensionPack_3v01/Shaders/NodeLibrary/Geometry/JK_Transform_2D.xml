@@ -1,6 +1,6 @@
 <!--
 ================================================================================
-== Transform Coordinates UV
+== Manifold UV
 == Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
 ================================================================================
 == File: JK_Transform_2D.xml
@@ -42,7 +42,7 @@
 
 <Node>
     <ID>JK_Transform2D</ID>
-    <DefaultName>Transform Coordinates (UV)</DefaultName>
+    <DefaultName>Manifold (UV)</DefaultName>
     <Category>Geometry/Custom/</Category>
     <Inputs>
         <Input Name="Coordinates" PrettyName="2D Coordinates"></Input>
