@@ -58,6 +58,7 @@ def isolateSelect():
     if mari.selection_groups.sceneSelectionMode() != OBJ_Mode:
         if mari.selection_groups.sceneSelectionMode() == PATCH_Mode or FACE_Mode:
             deactivateViewportToggle.trigger()
+            mari.history.startMacro('Toggle Isolate Selection')
 
             isolate_cur_set = None
             isolate_trig_set = None
@@ -111,6 +112,7 @@ def isolateSelect():
                 mari.selection_groups.select(isolate_cur_set)
                 showSelAction.trigger()
 
+            mari.history.stopMacro()
             deactivateViewportToggle.trigger()
 
     else:
