@@ -137,7 +137,7 @@
                 float INIT = $frequency; INIT = $impulses ; INIT = $bandwidth; INIT = $truncate;
 
 
-                float bandwidth = #Bandwidth*5.0;
+                float bandwidth = #Bandwidth.r*5.0;
 
                 // compensate for scene size by applying eponential growth
                 float freq_pow = (pow(#Frequency.r,#Frequency.r)-1.0) + 0.01;
