@@ -533,27 +533,31 @@ def setCollectionPinIcon(LayerType,Layer):
     mariResourcePath = mari.resources.path(mari.resources.ICONS)
     iconPath = ''
 
-    if LayerType == '1': #Channel
+    if LayerType == '1' and hasattr(Layer,'isChannelLayer') is False: #Channel
         icon_filename = 'Channel.16x16.png'
         iconPath = os.path.join(mariResourcePath,icon_filename)
-    elif Layer.isPaintableLayer():
-        icon_filename = 'Painting.16x16.png'
-        iconPath = os.path.join(mariResourcePath,icon_filename)
-    elif Layer.isProceduralLayer():
-        icon_filename = 'AddNoise.16x16.png'
-        iconPath = os.path.join(mariResourcePath,icon_filename)
-    elif Layer.isChannelLayer():
-        icon_filename = 'Channel.16x16.png'
-        iconPath = os.path.join(mariResourcePath,icon_filename)
-    elif Layer.isGroupLayer():
-        icon_filename = 'Folder.16x16.png'
-        iconPath = os.path.join(mariResourcePath,icon_filename)
-    elif Layer.isGraphLayer():
-        icon_filename = 'NodeGraph.16x16.png'
-        iconPath = os.path.join(mariResourcePath,icon_filename)
-    elif Layer.isAdjustmentLayer():
-        icon_filename = 'ColorCurves.16x16.png'
-        iconPath = os.path.join(mariResourcePath,icon_filename)
+    else:
+        if Layer.isPaintableLayer():
+            icon_filename = 'Painting.16x16.png'
+            iconPath = os.path.join(mariResourcePath,icon_filename)
+        elif Layer.isChannelLayer():
+            icon_filename = 'Channel.16x16.png'
+            iconPath = os.path.join(mariResourcePath,icon_filename)
+        elif Layer.isProceduralLayer():
+            icon_filename = 'AddNoise.16x16.png'
+            iconPath = os.path.join(mariResourcePath,icon_filename)
+        elif Layer.isChannelLayer():
+            icon_filename = 'Channel.16x16.png'
+            iconPath = os.path.join(mariResourcePath,icon_filename)
+        elif Layer.isGroupLayer():
+            icon_filename = 'Folder.16x16.png'
+            iconPath = os.path.join(mariResourcePath,icon_filename)
+        elif Layer.isGraphLayer():
+            icon_filename = 'NodeGraph.16x16.png'
+            iconPath = os.path.join(mariResourcePath,icon_filename)
+        elif Layer.isAdjustmentLayer():
+            icon_filename = 'ColorCurves.16x16.png'
+            iconPath = os.path.join(mariResourcePath,icon_filename)
 
     return iconPath
 
@@ -632,13 +636,14 @@ def addCollectionPin(mode):
             action_script = 'mari.customScripts.triggerCollectionPin(' + LayerIDString + ')'
             collectionLayerAction = mari.actions.create(action_path,action_script)
             actionXML('addAction',layerName,layerUUID,layerType,action_path,action_script)
-            icon_path = setCollectionPinIcon(layerType,layer)
-            collectionLayerAction.setIconPath(icon_path)
 
             if previousActionExists:
                 mari.menus.addAction(collectionLayerAction,UI_path,previousAction.name())
             else:
                 mari.menus.addAction(collectionLayerAction,UI_path)
+
+            icon_path = setCollectionPinIcon(layerType,layer)
+            collectionLayerAction.setIconPath(icon_path)
 
             # if the placeholder action exists, remove it
             if placeholderExists:
