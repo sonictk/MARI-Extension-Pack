@@ -533,15 +533,12 @@ def setCollectionPinIcon(LayerType,Layer):
     mariResourcePath = mari.resources.path(mari.resources.ICONS)
     iconPath = ''
 
-    if LayerType == '1' and hasattr(Layer,'isChannelLayer') is False: #Channel
+    if LayerType == '1': #Channel
         icon_filename = 'Channel.16x16.png'
         iconPath = os.path.join(mariResourcePath,icon_filename)
     else:
         if Layer.isPaintableLayer():
             icon_filename = 'Painting.16x16.png'
-            iconPath = os.path.join(mariResourcePath,icon_filename)
-        elif Layer.isChannelLayer():
-            icon_filename = 'Channel.16x16.png'
             iconPath = os.path.join(mariResourcePath,icon_filename)
         elif Layer.isProceduralLayer():
             icon_filename = 'AddNoise.16x16.png'
@@ -599,12 +596,14 @@ def addCollectionPin(mode):
         layerName = str( layerPrettyName )
         layerUUID = str(layer.uuid() )
 
-        if hasattr(layer, 'isChannelLayer'):
-            if layer.isChannelLayer():
+        if mode != 'channel':
+            if layer.isChannelLayer() is True:
                 layerType = '1' #Type Channel
                 layerPrettyName = layer.channel().name()
                 layerName = str( layer.channel().name() )
                 layerUUID = str( layer.channel().uuid() )
+            else:
+                layerType = '0'
 
         # Checking for duplicate Pin Names first
         for pin in collectionPins:
