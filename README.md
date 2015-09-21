@@ -51,12 +51,7 @@ http://www.campi3d.com/External/MariExtensionPack/userGuide30/SDK.html
 
 
 
-##Development 2.1 & 3.0
-
-- Jens Kafitz, *www.campi3d.com // MariIdeas@campi3d.com*
-
-
-##Contributors (2.0,1.5)
+##Contributors
 
 
 ####PYTHON DEVELOPMENT
