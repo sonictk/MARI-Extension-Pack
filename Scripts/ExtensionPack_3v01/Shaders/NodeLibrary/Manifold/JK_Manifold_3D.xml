@@ -3,7 +3,7 @@
 == Manifold 3D
 == Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
 ================================================================================
-== File: JK_Transform_3D.xml
+== File: JK_Manifold_3D.xml
 == Description: Transform Input Values used for coordinates such as Normal or Position
 ================================================================================
 == Author: Jens Kafitz
@@ -43,7 +43,7 @@
 <Node>
     <ID>JK_Transform3D</ID>
     <DefaultName>Manifold (3D)</DefaultName>
-    <Category>Geometry/Custom/</Category>
+    <Category>Manifold/</Category>
     <Inputs>
         <Input Name="Coordinates" PrettyName="3D Coordinates"></Input>
         <Input Name="Scale" ></Input>

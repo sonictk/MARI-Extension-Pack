@@ -3,7 +3,7 @@
 == Manifold UV
 == Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
 ================================================================================
-== File: JK_Transform_2D.xml
+== File: JK_Manifold_2D.xml
 == Description: Transform Input Values used for coordinates such as UVs
 ================================================================================
 == Author: Jens Kafitz
@@ -43,7 +43,7 @@
 <Node>
     <ID>JK_Transform2D</ID>
     <DefaultName>Manifold (UV)</DefaultName>
-    <Category>Geometry/Custom/</Category>
+    <Category>Manifold/</Category>
     <Inputs>
         <Input Name="Coordinates" PrettyName="2D Coordinates"></Input>
         <Input Name="Scale" ></Input>
