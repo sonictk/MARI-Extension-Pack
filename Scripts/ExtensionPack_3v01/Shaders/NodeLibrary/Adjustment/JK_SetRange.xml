@@ -43,7 +43,7 @@
 <Node>
     <ID>Set Range</ID>
     <DefaultName>Set Range</DefaultName>
-    <Category>Filter/Custom/Color Correction/</Category>
+    <Category>Filter/Custom/Histogram/</Category>
     <Tags>
         <Tag>_adjustment</Tag>
     </Tags>
