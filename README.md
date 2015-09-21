@@ -1,20 +1,28 @@
-#MARI EXTENSION PACK 3.0 DEVELOPMENT BRANCH
+#MARI EXTENSION PACK 3.0
 
-Copyright (c) 2015 www.mari.ideascale.com. All Rights Reserved.
-
-
-##Developer Notes for this Branch (Please read):
-
-This Branch requires MARI 3.0 !
-
+Copyright (c) 2015 www.jenskafitz.com. All Rights Reserved.
 
 ##Version:
 Extension Pack :  3.0  //  MARI Function Library: 1.13
 
+##Requirements:
+
+Mari 3.0v1 or higher. MARI Indie is not supported
+
 
 ##What's new in 3.0:
 
-Please refer to DEV_RELEASE_NOTES.md for a list of addition we already made for ExtensionPack 3.0
+http://www.campi3d.com/External/MariExtensionPack/userGuide30/WhatsnewinExtensionPack30.html
+
+
+##Documentation
+
+Complete online help is available here
+
+http://www.campi3d.com/External/MariExtensionPack/userGuide30/MARIEXTENSIONPACK1.html
+
+The raw authoring files are located in the Help folder.
+HelpNDoc Personal Learning Edition (free) was used to author the help.
 
 
 ##Info
@@ -39,21 +47,16 @@ so we have some sort of easy way to assemble release information.
 
 Refer to SDK site of the help
 
-http://www.campi3d.com/External/MariExtensionPack/userGuide21/SDK.html
+http://www.campi3d.com/External/MariExtensionPack/userGuide30/SDK.html
 
 
-##Documentation
 
-Complete online help is available here
+##Development 2.1 & 3.0
 
-http://www.campi3d.com/External/MariExtensionPack/userGuide21/MARIEXTENSIONPACK1.html
-
-
-The raw authoring files are located in the Help folder.
-HelpNDoc Personal Learning Edition (free) was used to author the help.
+- Jens Kafitz, *www.campi3d.com // MariIdeas@campi3d.com*
 
 
-##Contributors
+##Contributors (2.0,1.5)
 
 
 ####PYTHON DEVELOPMENT
