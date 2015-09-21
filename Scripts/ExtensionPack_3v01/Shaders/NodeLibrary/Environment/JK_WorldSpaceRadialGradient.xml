@@ -1,9 +1,9 @@
 <!--
 ================================================================================
-== Object Space Radial Gradient
+== World Space Radial Gradient
 == Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
 ================================================================================
-== File: JK_ObjectSpaceRadialGradient.xml
+== File: JK_WorldSpaceRadialGradient.xml
 == Description: Generates a radial gradient around a defined pivot
 ================================================================================
 == Author: Jens Kafitz
@@ -41,9 +41,9 @@
 -->
 
 <Node>
-    <ID>JK_ObjectSpaceRadialGradient</ID>
-    <DefaultName>Object Space Radial Gradient</DefaultName>
-    <Category>Geometry/Custom/</Category>
+    <ID>JK_WorldSpaceRadialGradient</ID>
+    <DefaultName>World Space Radial Gradient</DefaultName>
+    <Category>Environment/Custom/</Category>
     <Inputs>
         <Input Name="Transform" PrettyName="Manifold"></Input>
     </Inputs>
