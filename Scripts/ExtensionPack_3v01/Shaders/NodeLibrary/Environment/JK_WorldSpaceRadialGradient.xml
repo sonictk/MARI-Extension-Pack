@@ -53,7 +53,7 @@
         <Attribute Name="colorB" PrettyName="Color B" Group="Color" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(0,0,0,1)</Attribute>
         <Attribute Name="Invert" PrettyName="Invert" Group="Color" Type="bool" Min="false" Max="true" Description="Inverts the Noise result before ColorA+B are applied" >false</Attribute>
         <!--===============================================================================================================-->
-        <Attribute Name="Size" PrettyName="Size" Group="Modifiers" Type="double" Logarithmic="1" Min="1.0" Max="1000">100</Attribute>
+        <Attribute Name="Size" PrettyName="Size" Group="Modifiers" Type="double" Logarithmic="1" Min="0.0" Max="1000">100</Attribute>
         <Attribute Name="Intensity" PrettyName="Intensity" Group="Modifiers" Type="double" Min="0.0" Max="1.0">0.5</Attribute>
         <Attribute Name="Map" PrettyName="Gradient Curve" Group="Modifiers" Type="curve"></Attribute>
         <!--===============================================================================================================-->

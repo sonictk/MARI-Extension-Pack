@@ -42,7 +42,7 @@
 
 <Node>
     <ID>JK_Transform3D</ID>
-    <DefaultName>Manifold (3D)</DefaultName>
+    <DefaultName>Manifold 3D</DefaultName>
     <Category>Manifold/</Category>
     <Inputs>
         <Input Name="Coordinates" PrettyName="3D Coordinates"></Input>
