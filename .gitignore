@@ -218,6 +218,7 @@ venv
 /DT3D_MariLibraryV1.0.jpg
 /gViewBookmark.prefs
 /gViewConfig.prefs
-logs
-Script_docs
-Scripts_docs
+logs/
+Script_docs/
+Scripts_docs/
+Archives/
