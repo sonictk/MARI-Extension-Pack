@@ -103,7 +103,7 @@
     <!--===============================================================================================================-->
 </Attributes>
  <Groups>
-     <Group Name="Handle baseColor (RGBA)" Expanded="false"></Group>
+     <Group Name="Handle Base Color (RGBA)" Expanded="false"></Group>
      <Group Name="Handle Glossiness (float)" Expanded="false"></Group>
      <Group Name="Handle Specular (float)" Expanded="false"></Group>
      <Group Name="Handle Height (float)" Expanded="false"></Group>
