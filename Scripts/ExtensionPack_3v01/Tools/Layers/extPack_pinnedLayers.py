@@ -323,8 +323,6 @@ def getLayerList(layer_list, criterionFn):
             matching.extend(getLayerList(layer.maskStack().layerList(), criterionFn))
         if hasattr(layer, 'hasAdjustmentStack') and layer.hasAdjustmentStack():
             matching.extend(getLayerList(layer.adjustmentStack().layerList(), criterionFn))
-        if layer.isGroupLayer():
-            matching.extend(getLayerList(layer.layerStack().layerList(), criterionFn))
 
     return matching
 # ------------------------------------------------------------------------------
