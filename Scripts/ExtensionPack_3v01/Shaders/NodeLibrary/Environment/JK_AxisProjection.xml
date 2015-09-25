@@ -123,7 +123,7 @@
     float UI = $worldScale; UI = $Angle; UI = $UOffset; UI = $VOffset; UI = $UScale; UI = $VScale;
 
     // Input Handles
-    float WorldScale = $worldScale;
+    float WorldScale = #WorldScale.r;
     float Angle = #Angle.r;
     float UOffset = #UVOffset.r;
     float VOffset = #UVOffset.g;
