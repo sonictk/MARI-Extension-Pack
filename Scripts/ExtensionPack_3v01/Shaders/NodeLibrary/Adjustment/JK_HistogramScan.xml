@@ -111,7 +111,7 @@
     if( $clamp)
     {
             // Clamp to 0-1 range
-            levelled.rgb = clamp( levelled.rgb, vec3( 0), vec3( 1));
+            levelled.rgb = clamp( levelled.rgb, vec3(0.0), vec3(1.0));
     }
 
     Output.rgb = clamp(vec3(1.0)-levelled.rgb,vec3(0.0),vec3(1.0));
