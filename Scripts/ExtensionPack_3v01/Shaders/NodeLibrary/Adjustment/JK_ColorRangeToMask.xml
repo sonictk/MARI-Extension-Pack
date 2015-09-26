@@ -164,15 +164,15 @@
                 float DistanceG = length( input_mix_smart.rgb - trhsv_input_7.rgb);
                 float DistanceH = length( input_mix_smart.rgb - trhsv_input_8.rgb);
 
-                float MaskAdd1 = clamp( 2 * ($globFuzz - (DistanceA / $FuzzinessA)), 0.0, 1.0);
-                float MaskAdd2 = clamp( 2 * ($globFuzz - (DistanceB / $FuzzinessB)), 0.0, 1.0);
-                float MaskAdd3 = clamp( 2 * ($globFuzz - (DistanceC / $FuzzinessC)), 0.0, 1.0);
-                float MaskAdd4 = clamp( 2 * ($globFuzz - (DistanceD / $FuzzinessD)), 0.0, 1.0);
+                float MaskAdd1 = clamp( 2.0 * ($globFuzz - (DistanceA / $FuzzinessA)), 0.0, 1.0);
+                float MaskAdd2 = clamp( 2.0 * ($globFuzz - (DistanceB / $FuzzinessB)), 0.0, 1.0);
+                float MaskAdd3 = clamp( 2.0 * ($globFuzz - (DistanceC / $FuzzinessC)), 0.0, 1.0);
+                float MaskAdd4 = clamp( 2.0 * ($globFuzz - (DistanceD / $FuzzinessD)), 0.0, 1.0);
 
-                float MaskSub5 = clamp( 2 * ($globFuzz - (DistanceE / $FuzzinessE)), 0.0, 1.0);
-                float MaskSub6 = clamp( 2 * ($globFuzz - (DistanceF / $FuzzinessF)), 0.0, 1.0);
-                float MaskSub7 = clamp( 2 * ($globFuzz - (DistanceG / $FuzzinessG)), 0.0, 1.0);
-                float MaskSub8 = clamp( 2 * ($globFuzz - (DistanceH / $FuzzinessH)), 0.0, 1.0);
+                float MaskSub5 = clamp( 2.0 * ($globFuzz - (DistanceE / $FuzzinessE)), 0.0, 1.0);
+                float MaskSub6 = clamp( 2.0 * ($globFuzz - (DistanceF / $FuzzinessF)), 0.0, 1.0);
+                float MaskSub7 = clamp( 2.0 * ($globFuzz - (DistanceG / $FuzzinessG)), 0.0, 1.0);
+                float MaskSub8 = clamp( 2.0 * ($globFuzz - (DistanceH / $FuzzinessH)), 0.0, 1.0);
 
                 float MaskAdd[4] = float[4](MaskAdd1,MaskAdd2,MaskAdd3,MaskAdd4);
                 float MaskSub[4] = float[4](MaskSub5,MaskSub6,MaskSub7,MaskSub8);
