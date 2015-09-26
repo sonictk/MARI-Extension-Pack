@@ -152,7 +152,7 @@
                 <Input Name="metalness"><Default>vec4($metalness_float,$metalness_float,$metalness_float,1.0)</Default></Input>
                 <Input Name="specular"><Default>vec4($specular_float,$specular_float,$specular_float,1.0)</Default></Input>
                 <Input Name="height"><Default>vec4($height_float,$height_float,$height_float,1.0)</Default></Input>
-                <Input Name="Normal"><Default>$normal_color*vec4($normal_float,$normal_float,$normal_float,1.0)</Default></Input>
+                <Input Name="normal"><Default>$normal_color*vec4($normal_float,$normal_float,$normal_float,1.0)</Default></Input>
 
                 <Input Name="IN_A"><Default>vec4(0.0)</Default></Input>
                 <Input Name="IN_B"><Default>vec4(0.0)</Default></Input>
