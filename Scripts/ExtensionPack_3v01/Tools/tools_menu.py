@@ -280,6 +280,8 @@ def createToolsMenu():
     # Added twice to main interface to maintain existing logic
     UI_path_A = 'MainWindow/&Channels/Export Flattened'
     UI_path_B = 'MainWindow/&Channels/Export'
+    Context_path_A = 'Canvas/Context/Export Flattened'
+    Context_path_B = 'Canvas/Context/Export'
     script_menu_path = 'MainWindow/Scripts/Channels/Export'
 
     ExportSelectedFlattened = mari.actions.create ('/Mari/MARI Extension Pack/Channels/Export Custom Channel Selection', 'mari.customScripts.exportSelectedChannelsFlattened()')
@@ -288,8 +290,10 @@ def createToolsMenu():
     mari.actions.addToSet('RequiresProject',ExportSelected)
 
 
-    mari.menus.addAction(ExportSelectedFlattened, UI_path_A,'Export Current Channel Flattened')
-    mari.menus.addAction(ExportSelected, UI_path_B,'Export Current Channel')
+    mari.menus.addAction(ExportSelectedFlattened, UI_path_A,'Export All Channels Flattened')
+    mari.menus.addAction(ExportSelected, UI_path_B,'Export All Channels')
+    mari.menus.addAction(ExportSelectedFlattened, Context_path_A,'Export All Channels Flattened')
+    mari.menus.addAction(ExportSelected, Context_path_B,'Export All Channels')
     mari.menus.addAction(ExportSelectedFlattened, script_menu_path)
 
     icon_filename = 'ExportImages.png'
