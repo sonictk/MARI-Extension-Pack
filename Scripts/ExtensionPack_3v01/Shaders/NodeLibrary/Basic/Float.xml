@@ -43,12 +43,12 @@
   <Cost>0.001</Cost>
   <CostDescription>Trivial operation</CostDescription>
   <Attributes>
-        <Attribute Name="Float_Field" PrettyName="Float" Group="" Type="float" >1.0</Attribute>
-        <Attribute Name="Integer" PrettyName="Integer" Group="" Type="int">1</Attribute>
-        <Attribute Name="Float_0to1" PrettyName="0 - 1" Group="" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
-        <Attribute Name="Float_0to10" PrettyName="0 - 10" Group="" Type="double" Min="0.0" Max="10.0">1.0</Attribute>
-        <Attribute Name="Float_0to100" PrettyName="0 - 100" Group="" Type="double" Min="0.0" Max="100.0">1.0</Attribute>
-        <Attribute Name="Float_0to1000" PrettyName="0 - 1000" Group="" Type="double" Min="0.0" Max="1000.0">1.0</Attribute>
+        <Attribute Name="Float_Field" PrettyName="Float" Group="" Type="float" >0.0</Attribute>
+        <Attribute Name="Integer" PrettyName="Integer" Group="" Type="int">0</Attribute>
+        <Attribute Name="Float_0to1" PrettyName="0 - 1" Group="" Type="double" Min="0.0" Max="1.0">0.0</Attribute>
+        <Attribute Name="Float_0to10" PrettyName="0 - 10" Group="" Type="double" Min="0.0" Max="10.0">0.0</Attribute>
+        <Attribute Name="Float_0to100" PrettyName="0 - 100" Group="" Type="double" Min="0.0" Max="100.0">0.0</Attribute>
+        <Attribute Name="Float_0to1000" PrettyName="0 - 1000" Group="" Type="double" Min="0.0" Max="1000.0">0.0</Attribute>
 
   </Attributes>
   <Contexts>
@@ -56,7 +56,7 @@
         <Shader>
            <Body><![CDATA[
 
-                float OutValue = $Float_Field * $Float_0to1 * $Float_0to10 * $Float_0to100 * $Float_0to1000 * float($Integer);
+                float OutValue = ($Float_Field + $Float_0to1 + $Float_0to10 + $Float_0to100 + $Float_0to1000 + float($Integer));
                 Output = vec4(OutValue,OutValue,OutValue,1.0);
            ]]>
            </Body>
