@@ -91,7 +91,6 @@
                 <Body><![CDATA[
 
 
-
             baseColor = #IN_A;
             roughness = vec4(#IN_B.r,#IN_B.r,#IN_B.r,1.0);
             metalness = vec4(#IN_B.g,#IN_B.g,#IN_B.g,1.0);
