@@ -101,12 +101,12 @@
     <Attribute Name="height_BlendMode" PrettyName="Mode" Group="Handle Height (float)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
     <Attribute Name="height_clamp" PrettyName="Clamp Input" Group="Handle Height (float)" Type="bool" Min="false" Max="true">false</Attribute>
     <!--===============================================================================================================-->
-    <Attribute Name="normal_Use" PrettyName="On/Off" Group="Handle Normal (RGBA)" Type="bool" Min="false" Max="true">false</Attribute>
-    <Attribute Name="normal_color" PrettyName="Color" Group="Handle Normal (RGBA)" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(0.216,0.216,1.0,1.0)</Attribute>
-    <Attribute Name="normal_float" PrettyName="Float" Group="Handle Normal (RGBA)" Type="double">1.0</Attribute>
-    <Attribute Name="normal_mix" PrettyName="Mix" Group="Handle Normal (RGBA)" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
-    <Attribute Name="normal_BlendMode" PrettyName="Mode" Group="Handle Normal (RGBA)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
-    <Attribute Name="normal_clamp" PrettyName="Clamp Input" Group="Handle Normal (RGBA)" Type="bool" Min="false" Max="true">true</Attribute>
+    <Attribute Name="normal_Use" PrettyName="On/Off" Group="Handle Normal (RGB)" Type="bool" Min="false" Max="true">false</Attribute>
+    <Attribute Name="normal_color" PrettyName="Color" Group="Handle Normal (RGB)" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(0.216,0.216,1.0,1.0)</Attribute>
+    <Attribute Name="normal_float" PrettyName="Float" Group="Handle Normal (RGB)" Type="double">1.0</Attribute>
+    <Attribute Name="normal_mix" PrettyName="Mix" Group="Handle Normal (RGB)" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
+    <Attribute Name="normal_BlendMode" PrettyName="Mode" Group="Handle Normal (RGB)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
+    <Attribute Name="normal_clamp" PrettyName="Clamp Input" Group="Handle Normal (RGB)" Type="bool" Min="false" Max="true">true</Attribute>
     <!--===============================================================================================================-->
     <Attribute Name="idPick" PrettyName="On/Off" Group="Material Region ID" Type="bool" Min="false" Max="true">false</Attribute>
     <Attribute Name="idColor" PrettyName="Mask ID" Group="Material Region ID" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(0.0,0.0,0.0,1)</Attribute>
@@ -218,39 +218,35 @@
                                                     );
 
 
-                material_attribute_mask = (regionmask*$roughness_mix) * float($roughness_Use);
 
                 vec4 roughness = $roughness_BlendMode(
-                                                        mix(roughness_Handle,roughness_Handle * vec4($roughness_mult),material_attribute_mask),
+                                                        mix(roughness_Handle,roughness_Handle * vec4($roughness_mult),(regionmask*$roughness_mix) * float($roughness_Use)),
                                                         mix(#roughness,clamp(#roughness,vec4(0.0),vec4(1.0)),float($roughness_clamp)),
-                                                        material_attribute_mask
+                                                        (regionmask*$roughness_mix) * float($roughness_Use)
                                                     );
 
 
-                material_attribute_mask = (regionmask*$metalness_mix) * float($metalness_Use);
 
                 vec4 metalness = $metalness_BlendMode(
-                                                        mix(metalness_Handle,metalness_Handle * vec4($metalness_mult),material_attribute_mask),
+                                                        mix(metalness_Handle,metalness_Handle * vec4($metalness_mult),(regionmask*$metalness_mix) * float($metalness_Use)),
                                                         mix(#metalness,clamp(#metalness,vec4(0.0),vec4(1.0)),float($metalness_clamp)),
-                                                        material_attribute_mask
+                                                        (regionmask*$metalness_mix) * float($metalness_Use)
                                                      );
 
 
-                material_attribute_mask = (regionmask*$specular_mix) * float($specular_Use);
 
                 vec4 specular =   $specular_BlendMode(
-                                                        mix(specular_Handle,specular_Handle * vec4($specular_mult),material_attribute_mask),
+                                                        mix(specular_Handle,specular_Handle * vec4($specular_mult),(regionmask*$specular_mix) * float($specular_Use)),
                                                         mix(#specular,clamp(#specular,vec4(0.0),vec4(1.0)),float($specular_clamp)),
-                                                        material_attribute_mask
+                                                        (regionmask*$specular_mix) * float($specular_Use)
                                                      );
 
 
-                material_attribute_mask = (regionmask*$height_mix) * float($height_Use);
 
                 vec4 height =      $height_BlendMode(
-                                                        mix(height_Handle,height_Handle * vec4($height_mult),material_attribute_mask),
+                                                        mix(height_Handle,height_Handle * vec4($height_mult),(regionmask*$height_mix) * float($height_Use)),
                                                         mix(#height,clamp(#height,vec4(0.0),vec4(1.0)),float($height_clamp)),
-                                                        material_attribute_mask
+                                                        (regionmask*$height_mix) * float($height_Use)
                                                     );
 
 
@@ -261,9 +257,6 @@
                 OUT_B = vec4(roughness.r,metalness.r,height.r,specular.r);
                 OUT_C = vec4(Normal.rgb,clamp(regionmask + #IN_C.a,0.0,1.0));
                 DEBUG = $debugmode;
-
-
-
 
 
                 ]]></Body>

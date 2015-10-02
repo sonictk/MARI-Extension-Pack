@@ -204,38 +204,35 @@
                                                      );
 
 
-                material_attribute_mask = (regionmask*$glossiness_mix) * float($glossiness_Use);
 
 
                 vec4 glossiness = $glossiness_BlendMode(
-                                                        mix(glossiness_Handle, glossiness_Handle * vec4($glossiness_mult),material_attribute_mask),
+                                                        mix(glossiness_Handle, glossiness_Handle * vec4($glossiness_mult),(regionmask*$glossiness_mix) * float($glossiness_Use)),
                                                         mix(#glossiness,clamp(#glossiness,vec4(0.0),vec4(1.0)),float($glossiness_clamp)),
-                                                        material_attribute_mask
+                                                        (regionmask*$glossiness_mix) * float($glossiness_Use)
                                                         );
 
 
-                material_attribute_mask = (regionmask*$specular_mix) * float($specular_Use);
 
                 vec4 specular =     $specular_BlendMode(
-                                                        mix(specular_Handle,specular_Handle * vec4($specular_mult),material_attribute_mask),
+                                                        mix(specular_Handle,specular_Handle * vec4($specular_mult),(regionmask*$specular_mix) * float($specular_Use)),
                                                         mix(#specular,clamp(#specular,vec4(0.0),vec4(1.0)),float($specular_clamp)),
-                                                        material_attribute_mask
+                                                        (regionmask*$specular_mix) * float($specular_Use)
                                                         );
 
 
-                material_attribute_mask = (regionmask*$height_mix) * float($height_Use);
 
                 vec4 height =       $height_BlendMode(
-                                                        mix(height_Handle,height_Handle * vec4($height_mult),material_attribute_mask),
+                                                        mix(height_Handle,height_Handle * vec4($height_mult),(regionmask*$height_mix) * float($height_Use)),
                                                         mix(#height,clamp(#height,vec4(0.0),vec4(1.0)),float($height_clamp)),
-                                                        material_attribute_mask
+                                                        (regionmask*$height_mix) * float($height_Use)
                                                      );
 
                 // Output to Handles. Glossiness,specular & height are carried on signle variable
                 // The combined Alpha of this region and all previous regions is carried over in OUT_B.alpha
                 OUT_A = baseColor;
                 OUT_B = vec4(glossiness.r,specular.r,height.r,clamp(regionmask + #IN_B.a,0.0,1.0));
-                OUT_C = vec4(Normal.rgb,1.0);
+                OUT_C = vec4(Normal);
                 DEBUG = $debugmode;
 
 
