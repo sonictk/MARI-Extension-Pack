@@ -1,16 +1,16 @@
 <!--
 ================================================================================
-== == Material Region Value Output Metal-Rough
+== == Material Region Merget Specular-Glossiness
 == Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
 ================================================================================
-== File: JK_RegionOutput_MR.xml
-== Description: Allows you to extract a value from the Region Chain
+== File: JK_RegionMerge_SG.xml
+== Description: Allows you to merge two different region chains
 ================================================================================
 == Author: Jens Kafitz
 == Web: www.campi3d.com
 == Email: MariIdeas@campi3d.com
 ================================================================================
-== Modified Date: September, 3 2015
+== Modified Date: September, 27 2015
 ================================================================================
 == Redistribution and use in source and binary forms, with or without
 == modification, are permitted provided that the following conditions are met:
@@ -41,22 +41,21 @@
 -->
 
 <Node>
-    <ID>JK_RegionSplitter_Metal</ID>
-    <DefaultName>Region Output (MetalRough)</DefaultName>
-    <Category>Material Regions/Metal-Rough/</Category>
+    <ID>JK_RegionMerge_Glossiness</ID>
+    <DefaultName>Region Merge (SpecGloss)</DefaultName>
+    <Category>Material Regions/Specular-Glossiness/</Category>
     <Inputs>
-        <Input Name="IN_A" PrettyName="Input A"/>
-        <Input Name="IN_B" PrettyName="Input B"/>
-        <Input Name="IN_C" PrettyName="Input C"/>
+        <Input Name="IN1_A" PrettyName="Input Region 1_A"/>
+        <Input Name="IN1_B" PrettyName="Input Region 1_B"/>
+        <Input Name="IN1_C" PrettyName="Input Region 1_C"/>
+        <Input Name="IN2_A" PrettyName="Input Region 2_A"/>
+        <Input Name="IN2_B" PrettyName="Input Region 2_B"/>
+        <Input Name="IN2_C" PrettyName="Input Region 2_C"/>
     </Inputs>
     <Outputs>
-        <Output Name="baseColor" PrettyName="Out BaseColor"/>
-        <Output Name="roughness" PrettyName="Out Roughness"/>
-        <Output Name="metalness" PrettyName="Out Metal"/>
-        <Output Name="specular" PrettyName="Out F0Specular"/>
-        <Output Name="height" PrettyName="Out Height"/>
-        <Output Name="normal" PrettyName="Out Normal"/>
-        <Output Name="mask" PrettyName="Out Mask"/>
+        <Output Name="OUT_A" PrettyName="Output A"/>
+        <Output Name="OUT_B" PrettyName="Output B"/>
+        <Output Name="OUT_C" PrettyName="Output C"/>
     </Outputs>
     <Attributes>
     </Attributes>
@@ -64,19 +63,18 @@
  <Contexts>
         <Context Type="NodeGraphView">
             <Inputs>
-                <Input Name="IN_A"><Pos>-170,-40</Pos></Input>
-                <Input Name="IN_B"><Pos>-170,-20</Pos></Input>
-                <Input Name="IN_C"><Pos>-170,20</Pos></Input>
+                <Input Name="IN1_A"><Pos>-170,-80</Pos></Input>
+                <Input Name="IN1_B"><Pos>-170,-50</Pos></Input>
+                <Input Name="IN1_C"><Pos>-170,-20</Pos></Input>
+                <Input Name="IN2_A"><Pos>-170,20</Pos></Input>
+                <Input Name="IN2_B"><Pos>-170,50</Pos></Input>
+                <Input Name="IN2_C"><Pos>-170,80</Pos></Input>
             </Inputs>
 
             <Outputs>
-                <Output Name="baseColor"><Pos>170,-60</Pos></Output>
-                <Output Name="roughness"><Pos>170,-40</Pos></Output>
-                <Output Name="metalness"><Pos>170,-20</Pos></Output>
-                <Output Name="specular"><Pos>170,20</Pos></Output>
-                <Output Name="height"><Pos>170,40</Pos></Output>
-                <Output Name="normal"><Pos>170,60</Pos></Output>
-                <Output Name="mask"><Pos>70,70</Pos></Output>
+                <Output Name="OUT_C"><Pos>170,20</Pos></Output>
+                <Output Name="OUT_B"><Pos>170,-20</Pos></Output>
+                <Output Name="OUT_A"><Pos>170,-40</Pos></Output>
             </Outputs>
 
         </Context>
@@ -93,14 +91,9 @@
                 <Body><![CDATA[
 
 
-            baseColor = #IN_A;
-            roughness = vec4(#IN_B.r,#IN_B.r,#IN_B.r,1.0);
-            metalness = vec4(#IN_B.g,#IN_B.g,#IN_B.g,1.0);
-            specular = vec4(#IN_B.a,#IN_B.a,#IN_B.a,1.0);
-            height = vec4(#IN_B.b,#IN_B.b,#IN_B.b,1.0);
-            normal = vec4(#IN_C.rgb,1.0);
-            mask = vec4(#IN_C.a,#IN_C.a,#IN_C.a,1.0);
-
+            OUT_A = Comp_Default(#IN1_A,#IN2_A,#IN2_B.a);
+            OUT_B = Comp_Default(#IN1_B,#IN2_B,#IN2_B.a);
+            OUT_C = Comp_Default(#IN1_C,#IN2_C,#IN2_B.a);
 
                 ]]></Body>
             </Shader>

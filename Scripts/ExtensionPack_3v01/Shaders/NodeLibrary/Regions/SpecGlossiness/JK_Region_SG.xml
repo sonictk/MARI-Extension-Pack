@@ -73,19 +73,22 @@
     <Attribute Name="baseColor_clamp" PrettyName="Clamp Input" Group="Handle Base Color (RGBA)" Type="bool" Min="false" Max="true">true</Attribute>
      <!--===============================================================================================================-->
     <Attribute Name="glossiness_Use" PrettyName="On/Off" Group="Handle Glossiness (float)" Type="bool" Min="false" Max="true">false</Attribute>
-    <Attribute Name="glossiness_float" PrettyName="Float" Group="Handle Glossiness (float)" Type="double">1.0</Attribute>
+    <Attribute Name="glossiness_float" PrettyName="Float" Group="Handle Glossiness (float)" Type="double">0.5</Attribute>
+    <Attribute Name="glossiness_mult" PrettyName="Input Multiplier" Group="Handle Glossiness (float)" Type="double">1.0</Attribute>
     <Attribute Name="glossiness_mix" PrettyName="Mix" Group="Handle Glossiness (float)" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
     <Attribute Name="glossiness_BlendMode" PrettyName="Mode" Group="Handle Glossiness (float)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
     <Attribute Name="glossiness_clamp" PrettyName="Clamp Input" Group="Handle Glossiness (float)" Type="bool" Min="false" Max="true">true</Attribute>
     <!--===============================================================================================================-->
     <Attribute Name="specular_Use" PrettyName="On/Off" Group="Handle Specular (float)" Type="bool" Min="false" Max="true">false</Attribute>
-    <Attribute Name="specular_float" PrettyName="Float" Group="Handle Specular (float)" Type="double">1.0</Attribute>
+    <Attribute Name="specular_float" PrettyName="Float" Group="Handle Specular (float)" Type="double">0.5</Attribute>
+    <Attribute Name="specular_mult" PrettyName="Input Multiplier" Group="Handle Specular (float)" Type="double">1.0</Attribute>
     <Attribute Name="specular_mix" PrettyName="Mix" Group="Handle Specular (float)" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
     <Attribute Name="specular_BlendMode" PrettyName="Mode" Group="Handle Specular (float)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
     <Attribute Name="specular_clamp" PrettyName="Clamp Input" Group="Handle Specular (float)" Type="bool" Min="false" Max="true">true</Attribute>
     <!--===============================================================================================================-->
     <Attribute Name="height_Use" PrettyName="On/Off" Group="Handle Height (float)" Type="bool" Min="false" Max="true">false</Attribute>
-    <Attribute Name="height_float" PrettyName="Float" Group="Handle Height (float)" Type="double">1.0</Attribute>
+    <Attribute Name="height_float" PrettyName="Float" Group="Handle Height (float)" Type="double">0.0</Attribute>
+    <Attribute Name="height_mult" PrettyName="Input Multiplier" Group="Handle Height (float)" Type="double">1.0</Attribute>
     <Attribute Name="height_mix" PrettyName="Mix" Group="Handle Height (float)" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
     <Attribute Name="height_BlendMode" PrettyName="Mode" Group="Handle Height (float)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
     <Attribute Name="height_clamp" PrettyName="Clamp Input" Group="Handle Height (float)" Type="bool" Min="false" Max="true">false</Attribute>
@@ -145,7 +148,7 @@
                 <Input Name="Normal"><Default>$normal_color*vec4($normal_float,$normal_float,$normal_float,1.0)</Default></Input>
 
                 <Input Name="IN_A"><Default>vec4(0.0)</Default></Input>
-                <Input Name="IN_B"><Default>vec4(0.0)</Default></Input>
+                <Input Name="IN_B"><Default>vec4(0.5,0.5,0.0,0.0)</Default></Input>
                 <Input Name="IN_C"><Default>vec4(0.0)</Default></Input>
                 <Input Name="RegionMask"><Default>vec4(1.0)</Default></Input>
                 </Inputs>
@@ -158,29 +161,17 @@
                 <Body><![CDATA[
 
 
-                 // Initalizing Attributes, necessary since <Default> on INPUTS doesn't do it
-                 vec4 INIT_V4 =   $baseColor_color; INIT_V4 = $normal_color;
-                 float INIT_FL =  $baseColor_float; INIT_FL = $glossiness_float; INIT_FL = $specular_float;
-                            INIT_FL = $height_float; INIT_FL = $normal_float;
-
+                // DO NOT DELETE THE FOLLOWING COMMENT LINE - USED TO INITIALIZE SLIDERS:
+                // $baseColor_color; $normal_color;
+                // $baseColor_float; $glossiness_float; $specular_float; $height_float; $normal_float;
+                // $glossiness_mult; $specular_mult; height_mult;
 
                 // Casting # to Variable
-                vec4 baseColor_handle = #baseColor ;
-                vec4 glossiness_handle = #glossiness ;
-                vec4 specular_handle = #specular ;
-                vec4 height_handle = #height ;
-                vec4 normal_handle = #Normal ;
                 vec4 idColor_handle = sRgb2Linear($idColor);
+                vec4 glossiness_Handle = vec4(#IN_B.r,#IN_B.r,#IN_B.r,1.0);
+                vec4 specular_Handle = vec4(#IN_B.g,#IN_B.g,#IN_B.g,1.0);
+                vec4 height_Handle = vec4(#IN_B.b,#IN_B.b,#IN_B.b,1.0);
 
-
-                // Blending between clamped and unclamped.
-                // CLamping here is only done directly on the region input (baseColor, glossiness etc.)
-                // not on any values coming from another region
-                vec4 baseColor_clamp = mix(baseColor_handle,clamp(baseColor_handle,vec4(0.0),vec4(1.0)),float($baseColor_clamp));
-                vec4 glossiness_clamp = mix(glossiness_handle,clamp(glossiness_handle,vec4(0.0),vec4(1.0)),float($glossiness_clamp));
-                vec4 specular_clamp = mix(specular_handle,clamp(specular_handle,vec4(0.0),vec4(1.0)),float($specular_clamp));
-                vec4 height_clamp = mix(height_handle,clamp(height_handle,vec4(0.0),vec4(1.0)),float($height_clamp));
-                vec4 normal_clamp = mix(normal_handle,clamp(normal_handle,vec4(0.0),vec4(1.0)),float($normal_clamp));
                 float regionmask = $idPick ? col2Mask(#RegionMask,idColor_handle,$idError) : #RegionMask.r ;
                 vec4 id_mask = mix(#RegionMask,vec4(regionmask,regionmask,regionmask,1.0),regionmask*float($idPick));
                 regionmask = clamp(regionmask,0.0,1.0);
@@ -189,31 +180,62 @@
                 regionmask = regionmask * float($useRegion);
 
 
-
-                // setting regionmask to 0 for values that are turned Off
-                float baseColor_mix = (regionmask*$baseColor_mix) * float($baseColor_Use);
-                float glossiness_mix = (regionmask*$glossiness_mix) * float($glossiness_Use);
-                float specular_mix = (regionmask*$specular_mix) * float($specular_Use);
-                float height_mix = (regionmask*$height_mix) * float($height_Use);
-                float normal_mix = (regionmask*$normal_mix) * float($normal_Use);
-
-
-                // Blending Values within the Region (RegionInput from other region and each Attribute)
-                vec4 baseColor = $baseColor_BlendMode(#IN_A,baseColor_clamp,baseColor_mix);
-                vec4 glossiness_Handle = vec4(#IN_B.r,#IN_B.r,#IN_B.r,1.0);
-                vec4 glossiness = $glossiness_BlendMode(glossiness_Handle,glossiness_clamp,glossiness_mix);
-                vec4 specular_Handle = vec4(#IN_B.g,#IN_B.g,#IN_B.g,1.0);
-                vec4 specular = $specular_BlendMode(specular_Handle,specular_clamp,specular_mix);
-                vec4 height_Handle = vec4(#IN_B.b,#IN_B.b,#IN_B.b,1.0);
-                vec4 height = $height_BlendMode(height_Handle,height_clamp,height_mix);
-                vec4 Normal = $normal_BlendMode(#IN_C,normal_clamp,normal_mix);
+                // At the cost of readability I am not casting variables to save varyings, since they became a bottleneck while working
+                // Each attribute is blendes using the user-chosen Blendmode Blendmode(A,B,Mix)
+                // A - A is the incoming Attribute from the previous region. On FLOAT Values an additional Multiplier is evaluated
+                // to be able to gain the incoming Attribute (for height for example)
+                // B - B is the Attribute from the current Region, either Clamped or unclamped, depending on user choice
+                // MIX - The Mix value is determined by 1) Is the region on, 2) is the material attribute on 3) what is the 'mix' value in the ui
 
 
+                float material_attribute_mask;
+
+                vec4 baseColor = $baseColor_BlendMode(
+                                                        #IN_A,
+                                                        mix(#baseColor,clamp(#baseColor,vec4(0.0),vec4(1.0)),float($baseColor_clamp)),
+                                                        (regionmask*$baseColor_mix) * float($baseColor_Use)
+                                                     );
+
+
+                vec4 Normal =       $normal_BlendMode(
+                                                        #IN_C,
+                                                        mix(#Normal,clamp(#Normal,vec4(0.0),vec4(1.0)),float($normal_clamp)),
+                                                        (regionmask*$normal_mix) * float($normal_Use)
+                                                     );
+
+
+                material_attribute_mask = (regionmask*$glossiness_mix) * float($glossiness_Use);
+
+
+                vec4 glossiness = $glossiness_BlendMode(
+                                                        mix(glossiness_Handle, glossiness_Handle * vec4($glossiness_mult),material_attribute_mask),
+                                                        mix(#glossiness,clamp(#glossiness,vec4(0.0),vec4(1.0)),float($glossiness_clamp)),
+                                                        material_attribute_mask
+                                                        );
+
+
+                material_attribute_mask = (regionmask*$specular_mix) * float($specular_Use);
+
+                vec4 specular =     $specular_BlendMode(
+                                                        mix(specular_Handle,specular_Handle * vec4($specular_mult),material_attribute_mask),
+                                                        mix(#specular,clamp(#specular,vec4(0.0),vec4(1.0)),float($specular_clamp)),
+                                                        material_attribute_mask
+                                                        );
+
+
+                material_attribute_mask = (regionmask*$height_mix) * float($height_Use);
+
+                vec4 height =       $height_BlendMode(
+                                                        mix(height_Handle,height_Handle * vec4($height_mult),material_attribute_mask),
+                                                        mix(#height,clamp(#height,vec4(0.0),vec4(1.0)),float($height_clamp)),
+                                                        material_attribute_mask
+                                                     );
 
                 // Output to Handles. Glossiness,specular & height are carried on signle variable
+                // The combined Alpha of this region and all previous regions is carried over in OUT_B.alpha
                 OUT_A = baseColor;
-                OUT_B = vec4(glossiness.r,specular.r,height.r,1.0);
-                OUT_C = Normal;
+                OUT_B = vec4(glossiness.r,specular.r,height.r,clamp(regionmask + #IN_B.a,0.0,1.0));
+                OUT_C = vec4(Normal.rgb,1.0);
                 DEBUG = $debugmode;
 
 

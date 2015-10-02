@@ -140,7 +140,7 @@
             // Output to Handles. Roughness,metalness & height are carried on signle variable
             OUT_A = baseColor;
             OUT_B = vec4(roughness,metalness,height,specular);
-            OUT_C = normal;
+            OUT_C = vec4(normal.rgb,1.0);
 
 
 

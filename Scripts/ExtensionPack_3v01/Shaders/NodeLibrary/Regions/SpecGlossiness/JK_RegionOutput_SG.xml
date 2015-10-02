@@ -55,6 +55,7 @@
         <Output Name="specular" PrettyName="Out Specular"/>
         <Output Name="height" PrettyName="Out Height"/>
         <Output Name="normal" PrettyName="Out Normal"/>
+        <Output Name="mask" PrettyName="Out Mask"/>
     </Outputs>
     <Attributes>
     </Attributes>
@@ -73,15 +74,17 @@
                 <Output Name="specular"><Pos>170,-20</Pos></Output>
                 <Output Name="height"><Pos>170,40</Pos></Output>
                 <Output Name="normal"><Pos>170,60</Pos></Output>
+                <Output Name="mask"><Pos>70,70</Pos></Output>
+
             </Outputs>
 
         </Context>
         <Context Type="GLSL">
             <Shader ShaderType='Fragment'>
                 <Inputs>
-                <Input Name="IN_A"><Default>vec4(1.0)</Default></Input>
-                <Input Name="IN_B"><Default>vec4(1.0)</Default></Input>
-                <Input Name="IN_C"><Default>vec4(1.0)</Default></Input>
+                <Input Name="IN_A"><Default>vec4(0.0)</Default></Input>
+                <Input Name="IN_B"><Default>vec4(0.0)</Default></Input>
+                <Input Name="IN_C"><Default>vec4(0.0)</Default></Input>
                 </Inputs>
 
             </Shader>
@@ -94,7 +97,8 @@
             glossiness = vec4(#IN_B.r,#IN_B.r,#IN_B.r,1.0);
             specular = vec4(#IN_B.g,#IN_B.g,#IN_B.g,1.0);
             height = vec4(#IN_B.b,#IN_B.b,#IN_B.b,1.0);
-            normal = #IN_C;
+            normal = vec4(#IN_C);
+            mask = vec4(#IN_B.a,#IN_B.a,#IN_B.a,1.0);
 
 
                 ]]></Body>

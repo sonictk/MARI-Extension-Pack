@@ -74,25 +74,29 @@
     <Attribute Name="baseColor_clamp" PrettyName="Clamp Input" Group="Handle Base Color (RGBA)" Type="bool" Min="false" Max="true">true</Attribute>
      <!--===============================================================================================================-->
     <Attribute Name="roughness_Use" PrettyName="On/Off" Group="Handle Roughness (float)" Type="bool" Min="false" Max="true">false</Attribute>
-    <Attribute Name="roughness_float" PrettyName="Float" Group="Handle Roughness (float)" Type="double">1.0</Attribute>
+    <Attribute Name="roughness_float" PrettyName="Float" Group="Handle Roughness (float)" Type="double">0.5</Attribute>
+    <Attribute Name="roughness_mult" PrettyName="Input Multiplier" Group="Handle Roughness (float)" Type="double">1.0</Attribute>
     <Attribute Name="roughness_mix" PrettyName="Mix" Group="Handle Roughness (float)" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
     <Attribute Name="roughness_BlendMode" PrettyName="Mode" Group="Handle Roughness (float)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
     <Attribute Name="roughness_clamp" PrettyName="Clamp Input" Group="Handle Roughness (float)" Type="bool" Min="false" Max="true">true</Attribute>
     <!--===============================================================================================================-->
     <Attribute Name="metalness_Use" PrettyName="On/Off" Group="Handle Metal (float)" Type="bool" Min="false" Max="true">false</Attribute>
     <Attribute Name="metalness_float" PrettyName="Float" Group="Handle Metal (float)" Type="double">1.0</Attribute>
+    <Attribute Name="metalness_mult" PrettyName="Input Multiplier" Group="Handle Metal (float)" Type="double">1.0</Attribute>
     <Attribute Name="metalness_mix" PrettyName="Mix" Group="Handle Metal (float)" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
     <Attribute Name="metalness_BlendMode" PrettyName="Mode" Group="Handle Metal (float)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
     <Attribute Name="metalness_clamp" PrettyName="Clamp Input" Group="Handle Metal (float)" Type="bool" Min="false" Max="true">true</Attribute>
     <!--===============================================================================================================-->
     <Attribute Name="specular_Use" PrettyName="On/Off" Group="Handle F0Specular (float)" Type="bool" Min="false" Max="true">false</Attribute>
     <Attribute Name="specular_float" PrettyName="Float" Group="Handle F0Specular (float)" Type="double">0.5</Attribute>
+    <Attribute Name="specular_mult" PrettyName="Input Multiplier" Group="Handle F0Specular (float)" Type="double">1.0</Attribute>
     <Attribute Name="specular_mix" PrettyName="Mix" Group="Handle F0Specular (float)" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
     <Attribute Name="specular_BlendMode" PrettyName="Mode" Group="Handle F0Specular (float)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
     <Attribute Name="specular_clamp" PrettyName="Clamp Input" Group="Handle F0Specular (float)" Type="bool" Min="false" Max="true">true</Attribute>
     <!--===============================================================================================================-->
     <Attribute Name="height_Use" PrettyName="On/Off" Group="Handle Height (float)" Type="bool" Min="false" Max="true">false</Attribute>
-    <Attribute Name="height_float" PrettyName="Float" Group="Handle Height (float)" Type="double">1.0</Attribute>
+    <Attribute Name="height_float" PrettyName="Float" Group="Handle Height (float)" Type="double">0.0</Attribute>
+    <Attribute Name="height_mult" PrettyName="Input Multiplier" Group="Handle Height (float)" Type="double">1.0</Attribute>
     <Attribute Name="height_mix" PrettyName="Mix" Group="Handle Height (float)" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
     <Attribute Name="height_BlendMode" PrettyName="Mode" Group="Handle Height (float)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
     <Attribute Name="height_clamp" PrettyName="Clamp Input" Group="Handle Height (float)" Type="bool" Min="false" Max="true">false</Attribute>
@@ -155,7 +159,7 @@
                 <Input Name="normal"><Default>$normal_color*vec4($normal_float,$normal_float,$normal_float,1.0)</Default></Input>
 
                 <Input Name="IN_A"><Default>vec4(0.0)</Default></Input>
-                <Input Name="IN_B"><Default>vec4(0.0)</Default></Input>
+                <Input Name="IN_B"><Default>vec4(0.5,1.0,0.0,0.5)</Default></Input>
                 <Input Name="IN_C"><Default>vec4(0.0)</Default></Input>
                 <Input Name="RegionMask"><Default>vec4(1.0)</Default></Input>
                 </Inputs>
@@ -168,10 +172,11 @@
                 <Body><![CDATA[
 
 
-                 // DO NOT DELETE THE FOLLOWING COMMENT LINE - USED TO INITIALIZE SLIDERS:
-                 // $baseColor_color; $normal_color;
-                 // $baseColor_float; $roughness_float; $metalness_float;
-                 // $height_float; $normal_float; $specular_float;
+                // DO NOT DELETE THE FOLLOWING COMMENT LINE - USED TO INITIALIZE SLIDERS:
+                // $baseColor_color; $normal_color;
+                // $baseColor_float; $roughness_float; $metalness_float;
+                // $height_float; $normal_float; $specular_float;
+                // $height_mult; $roughness_mult; $metalness_mult; $specular_mult;
 
 
                 // Casting # to Variable
@@ -190,9 +195,14 @@
                 regionmask = regionmask * float($useRegion);
 
                 // At the cost of readability I am not casting variables to save varyings, since they became a bottleneck while working
-                // Blending Values within the Region (RegionInput from other region and each Attribute)
-                // Blending between clamped and unclamped.
-                // setting regionmask to 0 for values that are turned Off
+                // Each attribute is blendes using the user-chosen Blendmode Blendmode(A,B,Mix)
+                // A - A is the incoming Attribute from the previous region. On FLOAT Values an additional Multiplier is evaluated
+                // to be able to gain the incoming Attribute (for height for example)
+                // B - B is the Attribute from the current Region, either Clamped or unclamped, depending on user choice
+                // MIX - The Mix value is determined by 1) Is the region on, 2) is the material attribute on 3) what is the 'mix' value in the ui
+
+
+                float material_attribute_mask;
 
                 vec4 baseColor = $baseColor_BlendMode(
                                                         #IN_A,
@@ -208,39 +218,48 @@
                                                     );
 
 
+                material_attribute_mask = (regionmask*$roughness_mix) * float($roughness_Use);
+
                 vec4 roughness = $roughness_BlendMode(
-                                                        roughness_Handle,
+                                                        mix(roughness_Handle,roughness_Handle * vec4($roughness_mult),material_attribute_mask),
                                                         mix(#roughness,clamp(#roughness,vec4(0.0),vec4(1.0)),float($roughness_clamp)),
-                                                        (regionmask*$roughness_mix) * float($roughness_Use)
+                                                        material_attribute_mask
                                                     );
 
 
+                material_attribute_mask = (regionmask*$metalness_mix) * float($metalness_Use);
+
                 vec4 metalness = $metalness_BlendMode(
-                                                        metalness_Handle,
+                                                        mix(metalness_Handle,metalness_Handle * vec4($metalness_mult),material_attribute_mask),
                                                         mix(#metalness,clamp(#metalness,vec4(0.0),vec4(1.0)),float($metalness_clamp)),
-                                                        (regionmask*$metalness_mix) * float($metalness_Use)
+                                                        material_attribute_mask
                                                      );
 
+
+                material_attribute_mask = (regionmask*$specular_mix) * float($specular_Use);
 
                 vec4 specular =   $specular_BlendMode(
-                                                        specular_Handle,
+                                                        mix(specular_Handle,specular_Handle * vec4($specular_mult),material_attribute_mask),
                                                         mix(#specular,clamp(#specular,vec4(0.0),vec4(1.0)),float($specular_clamp)),
-                                                        (regionmask*$specular_mix) * float($specular_Use)
+                                                        material_attribute_mask
                                                      );
 
 
+                material_attribute_mask = (regionmask*$height_mix) * float($height_Use);
+
                 vec4 height =      $height_BlendMode(
-                                                        height_Handle,
+                                                        mix(height_Handle,height_Handle * vec4($height_mult),material_attribute_mask),
                                                         mix(#height,clamp(#height,vec4(0.0),vec4(1.0)),float($height_clamp)),
-                                                        (regionmask*$height_mix) * float($height_Use)
+                                                        material_attribute_mask
                                                     );
 
 
 
                 // Output to Handles. Roughness,metalness & height are carried on signle variable
+                // The combined Alpha of this region and all previous regions is carried over in OUT_C.alpha
                 OUT_A = baseColor;
                 OUT_B = vec4(roughness.r,metalness.r,height.r,specular.r);
-                OUT_C = Normal;
+                OUT_C = vec4(Normal.rgb,clamp(regionmask + #IN_C.a,0.0,1.0));
                 DEBUG = $debugmode;
 
 
