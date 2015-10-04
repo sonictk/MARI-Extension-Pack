@@ -42,7 +42,7 @@
 
 <Node>
     <ID>JK_Region_Base_Metal</ID>
-    <DefaultName>Region Base (MetalRough)</DefaultName>
+    <DefaultName>MR Region Base (MetalRough)</DefaultName>
     <Category>Material Regions/Metal-Rough/</Category>
     <Inputs>
         <Input Name="baseColor" PrettyName="Base Color" />

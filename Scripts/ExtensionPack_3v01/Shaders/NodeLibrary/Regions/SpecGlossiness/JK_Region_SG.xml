@@ -42,7 +42,7 @@
 
 <Node>
     <ID>JK_Region_Glossiness</ID>
-    <DefaultName>Region (SpecGloss)</DefaultName>
+    <DefaultName>SG Region (SpecGloss)</DefaultName>
     <Category>Material Regions/Specular-Glossiness/</Category>
     <Inputs>
         <Input Name="IN_A" PrettyName="Input A"/>

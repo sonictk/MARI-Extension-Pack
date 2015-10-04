@@ -42,7 +42,7 @@
 
 <Node>
     <ID>JK_Region_Base_RR</ID>
-    <DefaultName>Region Base (R-R)</DefaultName>
+    <DefaultName>RR Region Base (R-R)</DefaultName>
     <Category>Material Regions/Reflectance-Roughness/</Category>
     <Inputs>
         <Input Name="diffuse" />

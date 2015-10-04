@@ -42,7 +42,7 @@
 
 <Node>
     <ID>JK_RegionMerge_Glossiness</ID>
-    <DefaultName>Region Merge (SpecGloss)</DefaultName>
+    <DefaultName>SG Region Merge (SpecGloss)</DefaultName>
     <Category>Material Regions/Specular-Glossiness/</Category>
     <Inputs>
         <Input Name="IN1_A" PrettyName="Input Region 1_A"/>

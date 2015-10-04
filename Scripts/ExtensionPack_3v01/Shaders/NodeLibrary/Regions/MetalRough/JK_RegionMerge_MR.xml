@@ -42,7 +42,7 @@
 
 <Node>
     <ID>JK_RegionMerge_Metal</ID>
-    <DefaultName>Region Merge (MetalRough)</DefaultName>
+    <DefaultName>MR Region Merge (MetalRough)</DefaultName>
     <Category>Material Regions/Metal-Rough/</Category>
     <Inputs>
         <Input Name="IN1_A" PrettyName="Input Region 1_A"/>

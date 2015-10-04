@@ -42,7 +42,7 @@
 
 <Node>
     <ID>JK_RegionSplitter_Glossiness</ID>
-    <DefaultName>Region Output (SpecGloss)</DefaultName>
+    <DefaultName>SG Region Output (SpecGloss)</DefaultName>
     <Category>Material Regions/Specular-Glossiness/</Category>
     <Inputs>
         <Input Name="IN_A" PrettyName="Input A"/>

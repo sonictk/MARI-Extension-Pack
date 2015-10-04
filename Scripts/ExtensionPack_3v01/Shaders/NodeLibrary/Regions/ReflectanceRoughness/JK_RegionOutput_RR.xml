@@ -42,7 +42,7 @@
 
 <Node>
     <ID>JK_RegionSplitter_RR</ID>
-    <DefaultName>Region Output (R-R)</DefaultName>
+    <DefaultName>RR Region Output (R-R)</DefaultName>
     <Category>Material Regions/Reflectance-Roughness/</Category>
     <Inputs>
         <Input Name="IN_A" PrettyName="Input A"/>

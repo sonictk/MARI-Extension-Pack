@@ -42,7 +42,7 @@
 
 <Node>
     <ID>JK_Region_RR</ID>
-    <DefaultName>Region (R-R)</DefaultName>
+    <DefaultName>RR Region (R-R)</DefaultName>
     <Category>Material Regions/Reflectance-Roughness/</Category>
     <Inputs>
         <Input Name="IN_A" PrettyName="Input A"/>
@@ -97,7 +97,7 @@
     <Attribute Name="specCol_clamp" PrettyName="Clamp Input" Group="Handle Specular Color (RGBA)" Type="bool" Min="false" Max="true">true</Attribute>
     <!--===============================================================================================================-->
     <Attribute Name="disp_Use" PrettyName="On/Off" Group="Handle Displacement/Bump (float)" Type="bool" Min="false" Max="true">false</Attribute>
-    <Attribute Name="disp_float" PrettyName="Float" Group="Handle Displacement/Bump (float)" Type="double">1.0</Attribute>
+    <Attribute Name="disp_float" PrettyName="Float" Group="Handle Displacement/Bump (float)" Type="double">0.0</Attribute>
     <Attribute Name="disp_mult" PrettyName="Input Multiplier" Group="Handle Displacement/Bump (float)" Type="double">1.0</Attribute>
     <Attribute Name="disp_mix" PrettyName="Mix" Group="Handle Displacement/Bump (float)" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
     <Attribute Name="disp_BlendMode" PrettyName="Mode" Group="Handle Displacement/Bump (float)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
@@ -163,14 +163,14 @@
                 <Input Name="Normal"><Default>$normal_color*vec4($normal_float,$normal_float,$normal_float,1.0)</Default></Input>
 
                 <Input Name="IN_A"><Default>vec4(0.0)</Default></Input>
-                <Input Name="IN_B"><Default>vec4(0.5,1.0,0.0,1.0)</Default></Input>
+                <Input Name="IN_B"><Default>vec4(0.5,1.0,0.0,0.0)</Default></Input>
                 <Input Name="IN_C"><Default>vec4(0.0)</Default></Input>
-                <Input Name="IN_D"><Default>vec4(1.0)</Default></Input>
+                <Input Name="IN_D"><Default>vec4(0.0,0.0,0.0,0.0)</Default></Input>
                 <Input Name="RegionMask"><Default>vec4(1.0)</Default></Input>
                 </Inputs>
 
    <Outputs>
-                <Output Name="Debug"><Default>float(1.0)</Default></Output>
+                <Output Name="Debug"><Default>float(0.0)</Default></Output>
   </Outputs>
             </Shader>
             <Shader>
@@ -257,7 +257,7 @@
                 // Output to Handles. Roughness,reflectance & disp are carried on signle variable
                 OUT_A = diffuse;
                 OUT_B = vec4(Roughness.r,Reflectance.r,Disp.r,1.0);
-                OUT_C = vec4(Normal,clamp(regionmask + #IN_C.a,0.0,1.0),0.0,1.0));
+                OUT_C = vec4(Normal.rgb,( clamp(regionmask + #IN_C.a,0.0,1.0) ) );
                 OUT_D = specCol;
                 DEBUG = $debugmode;
 

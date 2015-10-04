@@ -1,4 +1,4 @@
-<!--
+    <!--
 ===============================================================================
 == Material Region Metal-Rough
 == Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
@@ -42,7 +42,7 @@
 
 <Node>
     <ID>JK_Region_Metal</ID>
-    <DefaultName>Region (MetalRough)</DefaultName>
+    <DefaultName>MR Region (MetalRough)</DefaultName>
     <Category>Material Regions/Metal-Rough/</Category>
     <Inputs>
         <Input Name="IN_A" PrettyName="Input A"/>

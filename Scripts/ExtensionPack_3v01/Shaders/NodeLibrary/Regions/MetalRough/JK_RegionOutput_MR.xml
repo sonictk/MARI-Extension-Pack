@@ -42,7 +42,7 @@
 
 <Node>
     <ID>JK_RegionSplitter_Metal</ID>
-    <DefaultName>Region Output (MetalRough)</DefaultName>
+    <DefaultName>MR Region Output (MetalRough)</DefaultName>
     <Category>Material Regions/Metal-Rough/</Category>
     <Inputs>
         <Input Name="IN_A" PrettyName="Input A"/>

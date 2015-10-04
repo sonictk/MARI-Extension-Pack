@@ -42,7 +42,7 @@
 
 <Node>
     <ID>JK_Region_Base_Glossiness</ID>
-    <DefaultName>Region Base (SpecGloss)</DefaultName>
+    <DefaultName>SG Region Base (SpecGloss)</DefaultName>
     <Category>Material Regions/Specular-Glossiness/</Category>
     <Inputs>
         <Input Name="BaseColor" PrettyName="Base Color" />
