@@ -48,6 +48,8 @@
         <Input Name="IN_A" PrettyName="Input A"/>
         <Input Name="IN_B" PrettyName="Input B"/>
         <Input Name="IN_C" PrettyName="Input C"/>
+        <Input Name="IN_D" PrettyName="Input D"/>
+
     </Inputs>
     <Outputs>
         <Output Name="baseColor" PrettyName="Out BaseColor"/>
@@ -67,6 +69,7 @@
                 <Input Name="IN_A"><Pos>-170,-40</Pos></Input>
                 <Input Name="IN_B"><Pos>-170,-20</Pos></Input>
                 <Input Name="IN_C"><Pos>-170,20</Pos></Input>
+                <Input Name="IN_D"><Pos>-170,40</Pos></Input>
             </Inputs>
 
             <Outputs>
@@ -86,6 +89,7 @@
                 <Input Name="IN_A"><Default>vec4(0.0)</Default></Input>
                 <Input Name="IN_B"><Default>vec4(0.0)</Default></Input>
                 <Input Name="IN_C"><Default>vec4(0.0)</Default></Input>
+                <Input Name="IN_D"><Default>vec4(0.0)</Default></Input>
                 </Inputs>
 
             </Shader>
@@ -96,10 +100,10 @@
             baseColor = #IN_A;
             roughness = vec4(#IN_B.r,#IN_B.r,#IN_B.r,1.0);
             metalness = vec4(#IN_B.g,#IN_B.g,#IN_B.g,1.0);
-            specular = vec4(#IN_B.a,#IN_B.a,#IN_B.a,1.0);
             height = vec4(#IN_B.b,#IN_B.b,#IN_B.b,1.0);
-            normal = vec4(#IN_C.rgb,1.0);
-            mask = vec4(#IN_C.a,#IN_C.a,#IN_C.a,1.0);
+            normal = #IN_C;
+            specular = vec4(#IN_D.r,#IN_B.r,#IN_B.r,1.0);
+            mask = vec4(#IN_D.g,#IN_D.g,#IN_D.g,1.0);
 
 
                 ]]></Body>

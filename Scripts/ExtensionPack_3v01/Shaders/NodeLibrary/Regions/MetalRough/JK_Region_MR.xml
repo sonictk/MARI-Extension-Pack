@@ -48,6 +48,7 @@
         <Input Name="IN_A" PrettyName="Input A"/>
         <Input Name="IN_B" PrettyName="Input B"/>
         <Input Name="IN_C" PrettyName="Input C"/>
+        <Input Name="IN_D" PrettyName="Input D"/>
         <Input Name="RegionMask" />
         <Input Name="baseColor" PrettyName="Base Color" />
         <Input Name="roughness" PrettyName="Roughness"/>
@@ -60,6 +61,7 @@
         <Output Name="OUT_A" PrettyName="Output A"/>
         <Output Name="OUT_B" PrettyName="Output B"/>
         <Output Name="OUT_C" PrettyName="Output C"/>
+        <Output Name="OUT_D" PrettyName="Output D"/>
         <Output Name="DEBUG" />
     </Outputs>
     <Attributes>
@@ -128,6 +130,7 @@
                 <Input Name="IN_A"><Pos>-170,-40</Pos></Input>
                 <Input Name="IN_B"><Pos>-170,-20</Pos></Input>
                 <Input Name="IN_C"><Pos>-170,20</Pos></Input>
+                <Input Name="IN_D"><Pos>-170,40</Pos></Input>
                 <Input Name="RegionMask"><Pos>0,150</Pos></Input>
 
                 <Input Name="baseColor"><Pos>40,-150</Pos></Input>
@@ -141,6 +144,7 @@
             </Inputs>
 
             <Outputs>
+                <Output Name="OUT_D"><Pos>170,40</Pos></Output>
                 <Output Name="OUT_C"><Pos>170,20</Pos></Output>
                 <Output Name="OUT_B"><Pos>170,-20</Pos></Output>
                 <Output Name="OUT_A"><Pos>170,-40</Pos></Output>
@@ -159,8 +163,9 @@
                 <Input Name="normal"><Default>$normal_color*vec4($normal_float,$normal_float,$normal_float,1.0)</Default></Input>
 
                 <Input Name="IN_A"><Default>vec4(0.0)</Default></Input>
-                <Input Name="IN_B"><Default>vec4(0.5,1.0,0.0,0.5)</Default></Input>
+                <Input Name="IN_B"><Default>vec4(0.5,1.0,0.0,1.0)</Default></Input>
                 <Input Name="IN_C"><Default>vec4(0.0)</Default></Input>
+                <Input Name="IN_D"><Default>vec4(0.0,0.0,0.0,1.0)</Default></Input>
                 <Input Name="RegionMask"><Default>vec4(1.0)</Default></Input>
                 </Inputs>
 
@@ -183,8 +188,8 @@
                 vec4 idColor_handle = sRgb2Linear($idColor);
                 vec4 roughness_Handle = vec4(#IN_B.r,#IN_B.r,#IN_B.r,1.0);
                 vec4 metalness_Handle = vec4(#IN_B.g,#IN_B.g,#IN_B.g,1.0);
-                vec4 specular_Handle = vec4(#IN_B.a,#IN_B.a,#IN_B.a,1.0);
                 vec4 height_Handle = vec4(#IN_B.b,#IN_B.b,#IN_B.b,1.0);
+                vec4 specular_Handle = vec4(#IN_D.r,#IN_D.r,#IN_D.r,1.0);
 
 
                 float regionmask = $idPick ? col2Mask(#RegionMask,idColor_handle,$idError) : #RegionMask.r ;
@@ -252,10 +257,11 @@
 
 
                 // Output to Handles. Roughness,metalness & height are carried on signle variable
-                // The combined Alpha of this region and all previous regions is carried over in OUT_C.alpha
+                // The combined Alpha of this region and all previous regions is carried over in OUT_D.g
                 OUT_A = baseColor;
-                OUT_B = vec4(roughness.r,metalness.r,height.r,specular.r);
-                OUT_C = vec4(Normal.rgb,clamp(regionmask + #IN_C.a,0.0,1.0));
+                OUT_B = vec4(roughness.r,metalness.r,height.r,1.0);
+                OUT_C = Normal;
+                OUT_D = vec4(specular.r,clamp(regionmask + #IN_D.g,0.0,1.0),0.0,1.0);
                 DEBUG = $debugmode;
 
 
