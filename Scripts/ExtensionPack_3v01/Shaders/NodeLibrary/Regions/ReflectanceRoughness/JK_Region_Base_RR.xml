@@ -10,7 +10,7 @@
 == Web: www.campi3d.com
 == Email: MariIdeas@campi3d.com
 ================================================================================
-== Modified Date: September, 3 2015
+== Modified Date: October, 3 2015
 ================================================================================
 == Redistribution and use in source and binary forms, with or without
 == modification, are permitted provided that the following conditions are met:
@@ -77,9 +77,9 @@
     <Attribute Name="disp_float" PrettyName="Float" Group="Handle Displacement/Bump (float)" Type="double">0.5</Attribute>
     <Attribute Name="disp_clamp" PrettyName="Clamp Input" Group="Handle Displacement/Bump (float)" Type="bool" Min="false" Max="true">false</Attribute>
     <!--===============================================================================================================-->
-    <Attribute Name="normal_color" PrettyName="Color" Group="Handle Normal (RGBA)" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(0.216,0.216,1.0,1.0)</Attribute>
-    <Attribute Name="normal_float" PrettyName="Float" Group="Handle Normal (RGBA)" Type="double">1.0</Attribute>
-    <Attribute Name="normal_clamp" PrettyName="Clamp Input" Group="Handle Normal (RGBA)" Type="bool" Min="false" Max="true">true</Attribute>
+    <Attribute Name="normal_color" PrettyName="Color" Group="Handle Normal (RGB)" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(0.216,0.216,1.0,1.0)</Attribute>
+    <Attribute Name="normal_float" PrettyName="Float" Group="Handle Normal (RGB)" Type="double">1.0</Attribute>
+    <Attribute Name="normal_clamp" PrettyName="Clamp Input" Group="Handle Normal (RGB)" Type="bool" Min="false" Max="true">true</Attribute>
     <!--===============================================================================================================-->
 </Attributes>
  <Groups>
@@ -88,7 +88,7 @@
      <Group Name="Handle Reflectance (float)" Expanded="false"></Group>
      <Group Name="Handle Specular Color (RGBA)" Expanded="false"></Group>
      <Group Name="Handle Displacement/Bump (float)" Expanded="false"></Group>
-     <Group Name="Handle Normal (RGBA)" Expanded="false"></Group>
+     <Group Name="Handle Normal (RGB)" Expanded="false"></Group>
  </Groups>
  <Contexts>
         <Context Type="NodeGraphView">
@@ -146,7 +146,7 @@
             // Output to Handles. Roughness,reflectance & disp are carried on signle variable
             OUT_A = diffuse;
             OUT_B = vec4(specRough,specRefl,disp,1.0);
-            OUT_C = normal;
+            OUT_C = vec4(normal.rgb,1.0);
             OUT_D = specCol;
 
 

@@ -1,9 +1,9 @@
 <!--
-================================================================================
-== == Material Region Merge Metal-Rough
+===============================================================================
+== Material Region Merge Reflectance-Roughness
 == Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
 ================================================================================
-== File: JK_RegionMerge_MR.xml
+== File: JK_RegionMerge_RR.xml
 == Description: Allows you to merge two different region chains
 ================================================================================
 == Author: Jens Kafitz
@@ -41,9 +41,9 @@
 -->
 
 <Node>
-    <ID>JK_RegionMerge_Metal</ID>
-    <DefaultName>Region Merge (MetalRough)</DefaultName>
-    <Category>Material Regions/Metal-Rough/</Category>
+    <ID>JK_RegionMerge_RR</ID>
+    <DefaultName>Region Merge (R-R)</DefaultName>
+    <Category>Material Regions/Reflectance-Roughness/</Category>
     <Inputs>
         <Input Name="IN1_A" PrettyName="Input Region 1_A"/>
         <Input Name="IN1_B" PrettyName="Input Region 1_B"/>
@@ -62,7 +62,7 @@
         <Output Name="OUT_D" PrettyName="Output D"/>
     </Outputs>
     <Attributes>
-    </Attributes>
+</Attributes>
 
  <Contexts>
         <Context Type="NodeGraphView">
@@ -85,6 +85,9 @@
                 <Output Name="OUT_A"><Pos>170,-40</Pos></Output>
             </Outputs>
 
+
+
+
         </Context>
         <Context Type="GLSL">
             <Shader ShaderType='Fragment'>
@@ -105,11 +108,10 @@
                 <Body><![CDATA[
 
 
-            OUT_A = Comp_Default(#IN1_A,#IN2_A,clamp(#IN2_D.g,0.0,1.0));
-            OUT_B = Comp_Default(#IN1_B,#IN2_B,clamp(#IN2_D.g,0.0,1.0));
-            OUT_C = Comp_Default(#IN1_C,#IN2_C,clamp(#IN2_D.g,0.0,1.0));
-            OUT_D = Comp_Default(#IN1_D,#IN2_D,clamp(#IN2_D.g,0.0,1.0));
-
+            OUT_A = Comp_Default(#IN1_A,#IN2_A,clamp(#IN2_C.a,0.0,1.0));
+            OUT_B = Comp_Default(#IN1_B,#IN2_B,clamp(#IN2_C.a,0.0,1.0));
+            OUT_C = Comp_Default(#IN1_C,#IN2_C,clamp(#IN2_C.a,0.0,1.0));
+            OUT_D = Comp_Default(#IN1_D,#IN2_D,clamp(#IN2_C.a,0.0,1.0));
 
                 ]]></Body>
             </Shader>

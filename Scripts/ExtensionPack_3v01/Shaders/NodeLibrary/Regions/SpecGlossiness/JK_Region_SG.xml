@@ -10,7 +10,7 @@
 == Web: www.campi3d.com
 == Email: MariIdeas@campi3d.com
 ================================================================================
-== Modified Date: September, 3 2015
+== Modified Date: October, 3 2015
 ================================================================================
 == Redistribution and use in source and binary forms, with or without
 == modification, are permitted provided that the following conditions are met:
@@ -110,7 +110,7 @@
      <Group Name="Handle Glossiness (float)" Expanded="false"></Group>
      <Group Name="Handle Specular (float)" Expanded="false"></Group>
      <Group Name="Handle Height (float)" Expanded="false"></Group>
-     <Group Name="Handle Normal (RGBA)" Expanded="false"></Group>
+     <Group Name="Handle Normal (RGB)" Expanded="false"></Group>
      <Group Name="Material Region ID" Expanded="false"></Group>
  </Groups>
  <Contexts>
@@ -188,8 +188,6 @@
                 // MIX - The Mix value is determined by 1) Is the region on, 2) is the material attribute on 3) what is the 'mix' value in the ui
 
 
-                float material_attribute_mask;
-
                 vec4 baseColor = $baseColor_BlendMode(
                                                         #IN_A,
                                                         mix(#baseColor,clamp(#baseColor,vec4(0.0),vec4(1.0)),float($baseColor_clamp)),
@@ -198,7 +196,7 @@
 
 
                 vec4 Normal =       $normal_BlendMode(
-                                                        #IN_C,
+                                                        vec4(#IN_C.rgb,1.0),
                                                         mix(#Normal,clamp(#Normal,vec4(0.0),vec4(1.0)),float($normal_clamp)),
                                                         (regionmask*$normal_mix) * float($normal_Use)
                                                      );
@@ -232,7 +230,7 @@
                 // The combined Alpha of this region and all previous regions is carried over in OUT_B.alpha
                 OUT_A = baseColor;
                 OUT_B = vec4(glossiness.r,specular.r,height.r,1.0);
-                OUT_C = vec4(Normal.rgb,clamp(regionmask + #IN_B.a,0.0,1.0));
+                OUT_C = vec4(Normal.rgb,clamp(regionmask + #IN_C.a,0.0,1.0));
                 DEBUG = $debugmode;
 
 

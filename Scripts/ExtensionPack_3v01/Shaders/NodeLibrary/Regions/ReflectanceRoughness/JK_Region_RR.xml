@@ -10,7 +10,7 @@
 == Web: www.campi3d.com
 == Email: MariIdeas@campi3d.com
 ================================================================================
-== Modified Date: September, 3 2015
+== Modified Date: October, 3 2015
 ================================================================================
 == Redistribution and use in source and binary forms, with or without
 == modification, are permitted provided that the following conditions are met:
@@ -77,12 +77,14 @@
      <!--===============================================================================================================-->
     <Attribute Name="roughness_Use" PrettyName="On/Off" Group="Handle Roughness (float)" Type="bool" Min="false" Max="true">false</Attribute>
     <Attribute Name="roughness_float" PrettyName="Float" Group="Handle Roughness (float)" Type="double">1.0</Attribute>
+    <Attribute Name="roughness_mult" PrettyName="Input Multiplier" Group="Handle Roughness (float)" Type="double">1.0</Attribute>
     <Attribute Name="roughness_mix" PrettyName="Mix" Group="Handle Roughness (float)" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
     <Attribute Name="roughness_BlendMode" PrettyName="Mode" Group="Handle Roughness (float)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
     <Attribute Name="roughness_clamp" PrettyName="Clamp Input" Group="Handle Roughness (float)" Type="bool" Min="false" Max="true">true</Attribute>
     <!--===============================================================================================================-->
     <Attribute Name="reflectance_Use" PrettyName="On/Off" Group="Handle Reflectance (float)" Type="bool" Min="false" Max="true">false</Attribute>
     <Attribute Name="reflectance_float" PrettyName="Float" Group="Handle Reflectance (float)" Type="double">1.0</Attribute>
+    <Attribute Name="reflectance_mult" PrettyName="Input Multiplier" Group="Handle Reflectance (float)" Type="double">1.0</Attribute>
     <Attribute Name="reflectance_mix" PrettyName="Mix" Group="Handle Reflectance (float)" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
     <Attribute Name="reflectance_BlendMode" PrettyName="Mode" Group="Handle Reflectance (float)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
     <Attribute Name="reflectance_clamp" PrettyName="Clamp Input" Group="Handle Reflectance (float)" Type="bool" Min="false" Max="true">true</Attribute>
@@ -96,16 +98,17 @@
     <!--===============================================================================================================-->
     <Attribute Name="disp_Use" PrettyName="On/Off" Group="Handle Displacement/Bump (float)" Type="bool" Min="false" Max="true">false</Attribute>
     <Attribute Name="disp_float" PrettyName="Float" Group="Handle Displacement/Bump (float)" Type="double">1.0</Attribute>
+    <Attribute Name="disp_mult" PrettyName="Input Multiplier" Group="Handle Displacement/Bump (float)" Type="double">1.0</Attribute>
     <Attribute Name="disp_mix" PrettyName="Mix" Group="Handle Displacement/Bump (float)" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
     <Attribute Name="disp_BlendMode" PrettyName="Mode" Group="Handle Displacement/Bump (float)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
     <Attribute Name="disp_clamp" PrettyName="Clamp Input" Group="Handle Displacement/Bump (float)" Type="bool" Min="false" Max="true">false</Attribute>
     <!--===============================================================================================================-->
-    <Attribute Name="normal_Use" PrettyName="On/Off" Group="Handle Normal (RGBA)" Type="bool" Min="false" Max="true">false</Attribute>
-    <Attribute Name="normal_color" PrettyName="Color" Group="Handle Normal (RGBA)" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(0.216,0.216,1.0,1.0)</Attribute>
-    <Attribute Name="normal_float" PrettyName="Float" Group="Handle Normal (RGBA)" Type="double">1.0</Attribute>
-    <Attribute Name="normal_mix" PrettyName="Mix" Group="Handle Normal (RGBA)" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
-    <Attribute Name="normal_BlendMode" PrettyName="Mode" Group="Handle Normal (RGBA)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
-    <Attribute Name="normal_clamp" PrettyName="Clamp Input" Group="Handle Normal (RGBA)" Type="bool" Min="false" Max="true">true</Attribute>
+    <Attribute Name="normal_Use" PrettyName="On/Off" Group="Handle Normal (RGB)" Type="bool" Min="false" Max="true">false</Attribute>
+    <Attribute Name="normal_color" PrettyName="Color" Group="Handle Normal (RGB)" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(0.216,0.216,1.0,1.0)</Attribute>
+    <Attribute Name="normal_float" PrettyName="Float" Group="Handle Normal (RGB)" Type="double">1.0</Attribute>
+    <Attribute Name="normal_mix" PrettyName="Mix" Group="Handle Normal (RGB)" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
+    <Attribute Name="normal_BlendMode" PrettyName="Mode" Group="Handle Normal (RGB)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
+    <Attribute Name="normal_clamp" PrettyName="Clamp Input" Group="Handle Normal (RGB)" Type="bool" Min="false" Max="true">true</Attribute>
     <!--===============================================================================================================-->
     <Attribute Name="idPick" PrettyName="On/Off" Group="Material Region ID" Type="bool" Min="false" Max="true">false</Attribute>
     <Attribute Name="idColor" PrettyName="Mask ID" Group="Material Region ID" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(0.0,0.0,0.0,1)</Attribute>
@@ -118,7 +121,7 @@
      <Group Name="Handle Reflectance (float)" Expanded="false"></Group>
      <Group Name="Handle Specular Color (RGBA)" Expanded="false"></Group>
      <Group Name="Handle Displacement/Bump (float)" Expanded="false"></Group>
-     <Group Name="Handle Normal (RGBA)" Expanded="false"></Group>
+     <Group Name="Handle Normal (RGB)" Expanded="false"></Group>
      <Group Name="Material Region ID" Expanded="false"></Group>
  </Groups>
  <Contexts>
@@ -160,7 +163,7 @@
                 <Input Name="Normal"><Default>$normal_color*vec4($normal_float,$normal_float,$normal_float,1.0)</Default></Input>
 
                 <Input Name="IN_A"><Default>vec4(0.0)</Default></Input>
-                <Input Name="IN_B"><Default>vec4(0.0)</Default></Input>
+                <Input Name="IN_B"><Default>vec4(0.5,1.0,0.0,1.0)</Default></Input>
                 <Input Name="IN_C"><Default>vec4(0.0)</Default></Input>
                 <Input Name="IN_D"><Default>vec4(1.0)</Default></Input>
                 <Input Name="RegionMask"><Default>vec4(1.0)</Default></Input>
@@ -174,31 +177,17 @@
                 <Body><![CDATA[
 
 
-                 // Initalizing Attributes, necessary since <Default> on INPUTS doesn't do it
-                 vec4 INIT_V4 =   $diffuse_color; INIT_V4 = $specCol_color; INIT_V4 = $normal_color;
-                 float INIT_FL =  $diffuse_float; INIT_FL = $roughness_float; INIT_FL = $reflectance_float; INIT_FL = $specCol_float;
-                            INIT_FL = $disp_float; INIT_FL = $normal_float;
+                // DO NOT DELETE THE FOLLOWING COMMENT LINE - USED TO INITIALIZE SLIDERS:
+                // $diffuse_color; $specCol_color; $normal_color;
+                // $diffuse_float; $roughness_float; $reflectance_float; $specCol_float; $disp_float; $normal_float;
 
 
                 // Casting # to Variable
-                vec4 diffuse_handle = #diffuse ;
-                vec4 specRough_handle = #specRough ;
-                vec4 specRefl_handle = #specRefl ;
-                vec4 specCol_handle = #specCol ;
-                vec4 disp_handle = #Disp ;
-                vec4 normal_handle = #Normal ;
                 vec4 idColor_handle = sRgb2Linear($idColor);
+                vec4 roughness_Handle = vec4(#IN_B.r,#IN_B.r,#IN_B.r,1.0);
+                vec4 Reflectance_Handle = vec4(#IN_B.g,#IN_B.g,#IN_B.g,1.0);
+                vec4 disp_Handle = vec4(#IN_B.b,#IN_B.b,#IN_B.b,1.0);
 
-
-                // Blending between clamped and unclamped.
-                // CLamping here is only done directly on the region input (diffuse, specRough etc.)
-                // not on any values coming from another region
-                vec4 diffuse_clamp = mix(diffuse_handle,clamp(diffuse_handle,vec4(0.0),vec4(1.0)),float($diffuse_clamp));
-                vec4 specRough_clamp = mix(specRough_handle,clamp(specRough_handle,vec4(0.0),vec4(1.0)),float($roughness_clamp));
-                vec4 specRefl_clamp = mix(specRefl_handle,clamp(specRefl_handle,vec4(0.0),vec4(1.0)),float($reflectance_clamp));
-                vec4 specCol_clamp = mix(specCol_handle,clamp(specCol_handle,vec4(0.0),vec4(1.0)),float($specCol_clamp));
-                vec4 disp_clamp = mix(disp_handle,clamp(disp_handle,vec4(0.0),vec4(1.0)),float($disp_clamp));
-                vec4 normal_clamp = mix(normal_handle,clamp(normal_handle,vec4(0.0),vec4(1.0)),float($normal_clamp));
                 float regionmask = $idPick ? col2Mask(#RegionMask,idColor_handle,$idError) : #RegionMask.r ;
                 vec4 id_mask = mix(#RegionMask,vec4(regionmask,regionmask,regionmask,1.0),regionmask*float($idPick));
                 regionmask = clamp(regionmask,0.0,1.0);
@@ -207,33 +196,68 @@
                 regionmask = regionmask * float($useRegion);
 
 
-
-                // setting regionmask to 0 for values that are turned Off
-                float diffuse_mix = (regionmask*$diffuse_mix) * float($diffuse_Use);
-                float roughness_mix = (regionmask*$roughness_mix) * float($roughness_Use);
-                float reflectance_mix = (regionmask*$reflectance_mix) * float($reflectance_Use);
-                float specCol_mix = (regionmask*$specCol_mix) * float($specCol_Use);
-                float disp_mix = (regionmask*$disp_mix) * float($disp_Use);
-                float normal_mix = (regionmask*$normal_mix) * float($normal_Use);
+                // At the cost of readability I am not casting variables to save varyings, since they became a bottleneck while working
+                // Each attribute is blendes using the user-chosen Blendmode Blendmode(A,B,Mix)
+                // A - A is the incoming Attribute from the previous region. On FLOAT Values an additional Multiplier is evaluated
+                // to be able to gain the incoming Attribute (for height for example)
+                // B - B is the Attribute from the current Region, either Clamped or unclamped, depending on user choice
+                // MIX - The Mix value is determined by 1) Is the region on, 2) is the material attribute on 3) what is the 'mix' value in the ui
 
 
-                // Blending Values within the Region (RegionInput from other region and each Attribute)
-                vec4 diffuse = $diffuse_BlendMode(#IN_A,diffuse_clamp,diffuse_mix);
-                vec4 roughness_Handle = vec4(#IN_B.r,#IN_B.r,#IN_B.r,1.0);
-                vec4 Roughness = $roughness_BlendMode(roughness_Handle,specRough_clamp,roughness_mix);
-                vec4 Reflectance_Handle = vec4(#IN_B.g,#IN_B.g,#IN_B.g,1.0);
-                vec4 Reflectance = $reflectance_BlendMode(Reflectance_Handle,specRefl_clamp,reflectance_mix);
-                vec4 specCol = $specCol_BlendMode(#IN_D,specCol_clamp,specCol_mix);
-                vec4 disp_Handle = vec4(#IN_B.b,#IN_B.b,#IN_B.b,1.0);
-                vec4 Disp = $disp_BlendMode(disp_Handle,disp_clamp,disp_mix);
-                vec4 Normal = $normal_BlendMode(#IN_C,normal_clamp,normal_mix);
+                vec4 diffuse =          $diffuse_BlendMode(
+                                                             #IN_A,
+                                                             mix(#diffuse,clamp(#diffuse,vec4(0.0),vec4(1.0)),float($diffuse_clamp)),
+                                                             (regionmask*$diffuse_mix) * float($diffuse_Use)
+                                                         );
+
+
+
+                vec4 Normal =           $normal_BlendMode(
+                                                            vec4(#IN_C.rgb,1.0),
+                                                            mix(#Normal,clamp(#Normal,vec4(0.0),vec4(1.0)),float($normal_clamp)),
+                                                            (regionmask*$normal_mix) * float($normal_Use)
+                                                         );
+
+
+
+                vec4 specCol =        $specCol_BlendMode(
+                                                          #IN_D,
+                                                          mix(#specCol,clamp(#specCol,vec4(0.0),vec4(1.0)),float($specCol_clamp)),
+                                                          (regionmask*$specCol_mix) * float($specCol_Use)
+                                                        );
+
+
+
+                vec4 Roughness =    $roughness_BlendMode(
+                                                           mix(roughness_Handle,roughness_Handle * vec4($roughness_mult),(regionmask*$roughness_mix) * float($roughness_Use)),
+                                                           mix(#specRough,clamp(#specRough,vec4(0.0),vec4(1.0)),float($roughness_clamp)),
+                                                           (regionmask*$roughness_mix) * float($roughness_Use)
+                                                        );
+
+
+
+                vec4 Reflectance = $reflectance_BlendMode(
+                                                            mix(Reflectance_Handle,Reflectance_Handle * vec4($reflectance_mult),(regionmask*$reflectance_mix) * float($reflectance_Use)),
+                                                            mix(#specRefl,clamp(#specRefl,vec4(0.0),vec4(1.0)),float($reflectance_clamp)),
+                                                            (regionmask*$reflectance_mix) * float($reflectance_Use)
+                                                        );
+
+
+
+
+                vec4 Disp =             $disp_BlendMode(
+                                                            mix(disp_Handle,disp_Handle * vec4($disp_mult),(regionmask*$disp_mix) * float($disp_Use)),
+                                                            mix(#Disp,clamp(#Disp,vec4(0.0),vec4(1.0)),float($disp_clamp)),
+                                                            (regionmask*$disp_mix) * float($disp_Use)
+                                                        );
+
 
 
 
                 // Output to Handles. Roughness,reflectance & disp are carried on signle variable
                 OUT_A = diffuse;
                 OUT_B = vec4(Roughness.r,Reflectance.r,Disp.r,1.0);
-                OUT_C = Normal;
+                OUT_C = vec4(Normal,clamp(regionmask + #IN_C.a,0.0,1.0),0.0,1.0));
                 OUT_D = specCol;
                 DEBUG = $debugmode;
 
