@@ -103,12 +103,12 @@
     <Attribute Name="height_BlendMode" PrettyName="Mode" Group="Handle Height (float)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
     <Attribute Name="height_clamp" PrettyName="Clamp Input" Group="Handle Height (float)" Type="bool" Min="false" Max="true">false</Attribute>
     <!--===============================================================================================================-->
-    <Attribute Name="normal_Use" PrettyName="On/Off" Group="Handle Normal (RGB)" Type="bool" Min="false" Max="true">false</Attribute>
-    <Attribute Name="normal_color" PrettyName="Color" Group="Handle Normal (RGB)" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(0.216,0.216,1.0,1.0)</Attribute>
-    <Attribute Name="normal_float" PrettyName="Float" Group="Handle Normal (RGB)" Type="double">1.0</Attribute>
-    <Attribute Name="normal_mix" PrettyName="Mix" Group="Handle Normal (RGB)" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
-    <Attribute Name="normal_BlendMode" PrettyName="Mode" Group="Handle Normal (RGB)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
-    <Attribute Name="normal_clamp" PrettyName="Clamp Input" Group="Handle Normal (RGB)" Type="bool" Min="false" Max="true">true</Attribute>
+    <Attribute Name="normal_Use" PrettyName="On/Off" Group="Handle Normal (RGBA)" Type="bool" Min="false" Max="true">false</Attribute>
+    <Attribute Name="normal_color" PrettyName="Color" Group="Handle Normal (RGBA)" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(0.216,0.216,1.0,1.0)</Attribute>
+    <Attribute Name="normal_float" PrettyName="Float" Group="Handle Normal (RGBA)" Type="double">1.0</Attribute>
+    <Attribute Name="normal_mix" PrettyName="Mix" Group="Handle Normal (RGBA)" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
+    <Attribute Name="normal_BlendMode" PrettyName="Mode" Group="Handle Normal (RGBA)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
+    <Attribute Name="normal_clamp" PrettyName="Clamp Input" Group="Handle Normal (RGBA)" Type="bool" Min="false" Max="true">true</Attribute>
     <!--===============================================================================================================-->
     <Attribute Name="idPick" PrettyName="On/Off" Group="Material Region ID" Type="bool" Min="false" Max="true">false</Attribute>
     <Attribute Name="idColor" PrettyName="Mask ID" Group="Material Region ID" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(0.0,0.0,0.0,1)</Attribute>

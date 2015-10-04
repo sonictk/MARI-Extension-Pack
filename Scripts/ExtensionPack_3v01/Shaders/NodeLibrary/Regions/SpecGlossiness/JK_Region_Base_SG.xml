@@ -71,9 +71,9 @@
     <Attribute Name="height_float" PrettyName="Float" Group="Handle Height (float)" Type="double">0.5</Attribute>
     <Attribute Name="height_clamp" PrettyName="Clamp Input" Group="Handle Height (float)" Type="bool" Min="false" Max="true">false</Attribute>
     <!--===============================================================================================================-->
-    <Attribute Name="normal_color" PrettyName="Color" Group="Handle Normal (RGBA)" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(0.216,0.216,1.0,1.0)</Attribute>
-    <Attribute Name="normal_float" PrettyName="Float" Group="Handle Normal (RGBA)" Type="double">1.0</Attribute>
-    <Attribute Name="normal_clamp" PrettyName="Clamp Input" Group="Handle Normal (RGBA)" Type="bool" Min="false" Max="true">true</Attribute>
+    <Attribute Name="normal_color" PrettyName="Color" Group="Handle Normal (RGB)" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(0.216,0.216,1.0,1.0)</Attribute>
+    <Attribute Name="normal_float" PrettyName="Float" Group="Handle Normal (RGB)" Type="double">1.0</Attribute>
+    <Attribute Name="normal_clamp" PrettyName="Clamp Input" Group="Handle Normal (RGB)" Type="bool" Min="false" Max="true">true</Attribute>
     <!--===============================================================================================================-->
 </Attributes>
  <Groups>
@@ -134,7 +134,7 @@
             // Output to Handles. Glossiness,specular & height are carried on signle variable
             OUT_A = BaseColor;
             OUT_B = vec4(glossiness,specular,height,1.0);
-            OUT_C = normal;
+            OUT_C = vec4(normal.rgb,1.0);
 
 
 

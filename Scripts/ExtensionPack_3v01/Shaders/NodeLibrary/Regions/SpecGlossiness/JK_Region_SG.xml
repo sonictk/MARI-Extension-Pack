@@ -93,12 +93,12 @@
     <Attribute Name="height_BlendMode" PrettyName="Mode" Group="Handle Height (float)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
     <Attribute Name="height_clamp" PrettyName="Clamp Input" Group="Handle Height (float)" Type="bool" Min="false" Max="true">false</Attribute>
     <!--===============================================================================================================-->
-    <Attribute Name="normal_Use" PrettyName="On/Off" Group="Handle Normal (RGBA)" Type="bool" Min="false" Max="true">false</Attribute>
-    <Attribute Name="normal_color" PrettyName="Color" Group="Handle Normal (RGBA)" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(0.216,0.216,1.0,1.0)</Attribute>
-    <Attribute Name="normal_float" PrettyName="Float" Group="Handle Normal (RGBA)" Type="double">1.0</Attribute>
-    <Attribute Name="normal_mix" PrettyName="Mix" Group="Handle Normal (RGBA)" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
-    <Attribute Name="normal_BlendMode" PrettyName="Mode" Group="Handle Normal (RGBA)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
-    <Attribute Name="normal_clamp" PrettyName="Clamp Input" Group="Handle Normal (RGBA)" Type="bool" Min="false" Max="true">true</Attribute>
+    <Attribute Name="normal_Use" PrettyName="On/Off" Group="Handle Normal (RGB)" Type="bool" Min="false" Max="true">false</Attribute>
+    <Attribute Name="normal_color" PrettyName="Color" Group="Handle Normal (RGB)" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(0.216,0.216,1.0,1.0)</Attribute>
+    <Attribute Name="normal_float" PrettyName="Float" Group="Handle Normal (RGB)" Type="double">1.0</Attribute>
+    <Attribute Name="normal_mix" PrettyName="Mix" Group="Handle Normal (RGB)" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
+    <Attribute Name="normal_BlendMode" PrettyName="Mode" Group="Handle Normal (RGB)" Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
+    <Attribute Name="normal_clamp" PrettyName="Clamp Input" Group="Handle Normal (RGB)" Type="bool" Min="false" Max="true">true</Attribute>
     <!--===============================================================================================================-->
     <Attribute Name="idPick" PrettyName="On/Off" Group="Material Region ID" Type="bool" Min="false" Max="true">false</Attribute>
     <Attribute Name="idColor" PrettyName="Mask ID" Group="Material Region ID" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(0.0,0.0,0.0,1)</Attribute>
@@ -148,7 +148,7 @@
                 <Input Name="Normal"><Default>$normal_color*vec4($normal_float,$normal_float,$normal_float,1.0)</Default></Input>
 
                 <Input Name="IN_A"><Default>vec4(0.0)</Default></Input>
-                <Input Name="IN_B"><Default>vec4(0.5,0.5,0.0,0.0)</Default></Input>
+                <Input Name="IN_B"><Default>vec4(0.5,0.5,0.0,1.0)</Default></Input>
                 <Input Name="IN_C"><Default>vec4(0.0)</Default></Input>
                 <Input Name="RegionMask"><Default>vec4(1.0)</Default></Input>
                 </Inputs>
@@ -231,8 +231,8 @@
                 // Output to Handles. Glossiness,specular & height are carried on signle variable
                 // The combined Alpha of this region and all previous regions is carried over in OUT_B.alpha
                 OUT_A = baseColor;
-                OUT_B = vec4(glossiness.r,specular.r,height.r,clamp(regionmask + #IN_B.a,0.0,1.0));
-                OUT_C = vec4(Normal);
+                OUT_B = vec4(glossiness.r,specular.r,height.r,1.0);
+                OUT_C = vec4(Normal.rgb,clamp(regionmask + #IN_B.a,0.0,1.0));
                 DEBUG = $debugmode;
 
 

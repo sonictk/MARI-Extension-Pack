@@ -97,8 +97,8 @@
             glossiness = vec4(#IN_B.r,#IN_B.r,#IN_B.r,1.0);
             specular = vec4(#IN_B.g,#IN_B.g,#IN_B.g,1.0);
             height = vec4(#IN_B.b,#IN_B.b,#IN_B.b,1.0);
-            normal = vec4(#IN_C);
-            mask = vec4(#IN_B.a,#IN_B.a,#IN_B.a,1.0);
+            normal = vec4(#IN_C.rgb,1.0);
+            mask = vec4(#IN_C.a,#IN_C.a,#IN_C.a,1.0);
 
 
                 ]]></Body>

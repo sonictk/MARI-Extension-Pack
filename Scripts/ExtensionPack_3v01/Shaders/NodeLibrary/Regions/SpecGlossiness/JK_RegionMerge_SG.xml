@@ -91,9 +91,9 @@
                 <Body><![CDATA[
 
 
-            OUT_A = Comp_Default(#IN1_A,#IN2_A,clamp(#IN2_B.a,0.0,1.0));
-            OUT_B = Comp_Default(#IN1_B,#IN2_B,clamp(#IN2_B.a,0.0,1.0));
-            OUT_C = Comp_Default(#IN1_C,#IN2_C,clamp(#IN2_B.a,0.0,1.0));
+            OUT_A = Comp_Default(#IN1_A,#IN2_A,clamp(#IN2_C.a,0.0,1.0));
+            OUT_B = Comp_Default(#IN1_B,#IN2_B,clamp(#IN2_C.a,0.0,1.0));
+            OUT_C = Comp_Default(#IN1_C,#IN2_C,clamp(#IN2_C.a,0.0,1.0));
 
                 ]]></Body>
             </Shader>
