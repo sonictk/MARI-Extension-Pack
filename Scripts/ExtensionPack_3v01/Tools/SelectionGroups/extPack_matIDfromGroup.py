@@ -319,7 +319,7 @@ def matIDFromSelectionGroup():
                    matIDChannel = channel
                    matIdChannelExists = True
                    matIDChannel.makeCurrent()
-                   pass
+                   break
 
             if not matIdChannelExists:
                 matID = geo.createChannel(matIdChannelName,matIdChannelSize,matIdChannelSize,8)
@@ -327,6 +327,11 @@ def matIDFromSelectionGroup():
                 matID.createPaintableLayer(matIdChannelName,None,FillColor)
 
 
+            if matIdChannelExists:
+                layerList = mari.current.channel().layerList()
+                if len(layerList) == 0:
+                    FillColor = mari.Color(0,0,0,1)
+                    mari.current.channel().createPaintableLayer('Base',None,FillColor)
 
             for item in SelGroups_to_matID:
 
