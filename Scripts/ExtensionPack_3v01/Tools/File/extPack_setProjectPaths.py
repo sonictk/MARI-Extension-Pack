@@ -176,8 +176,8 @@ class setProjectPathUI(QtGui.QDialog):
         Link_VarC_checkbox_connect = lambda: self._resolveBASEVariable(self.Path_Base,self.Path_VarC,self.link_VarC)
         self.link_VarC.clicked.connect(Link_VarC_checkbox_connect)
         # Variable Widgets Variable D
-        self.Active_VarD = QtGui.QCheckBox("GEOMETRY (Import):")
-        self.Active_VarD.setToolTip('The default Path that should be used when Importing new Objects.\nBy toggling this off the path field will be reset to whatever path is currently set')
+        self.Active_VarD = QtGui.QCheckBox("GEOMETRY (Import/Export):")
+        self.Active_VarD.setToolTip('The default Path that should be used when Importing/Exporting Objects.\nBy toggling this off the path field will be reset to whatever path is currently set')
         self.Path_VarD = QtGui.QLineEdit()
         self.Path_VarD.setToolTip('Path to be used for Variable.\nIf the path contains folders that do not exist, they can be created for you.\nUse a variable $BASE to set paths relative to Base Path')
         self.path_button_VarD = QtGui.QPushButton(path_icon, "")
