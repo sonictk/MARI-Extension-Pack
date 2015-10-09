@@ -146,7 +146,6 @@ class matIDFromSelectionGroupGUI(QtGui.QDialog):
         self.channel_size.addItem("2048", 2048)
         self.channel_size.addItem("4096", 4096)
         self.channel_size.addItem("8192", 8192)
-        self.channel_size.addItem("8192", 8192)
         self.channel_size.addItem("16384", 16384)
         self.channel_size.addItem("32768", 32768)
         self.channel_size.setCurrentIndex(3)
