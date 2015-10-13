@@ -851,6 +851,12 @@ def createToolsMenu():
 
     mari.menus.addSeparator(UI_path,'Export Selection')
 
+######################################################################
+#  Toolbars
+######################################################################
+
+    #  Transform Paint Tool - adds new options to the default Mari toolbar
+    mari.customScripts.transformPaintToolbar()
 
 
 ######################################################################
@@ -904,16 +910,21 @@ def createToolsMenu():
 
     # -------------------------------------------------------------------------
 
-    #  Restore Collection Pins when project loaded, clear them if project closed
+    #  Restore Collection Pins when project loaded, clear them if project closed - Layers/extPack_pinnedLayers
 
     mari.utils.connect(mari.projects.opened, lambda: mari.customScripts.restoreProjectPins())
     mari.utils.connect(mari.projects.closed, lambda: mari.customScripts.clearCollectionPins())
 
     # -------------------------------------------------------------------------
 
-    #  Restore User Set Project Paths on project Load
+    #  Restore User Set Project Paths on project Load - File/extPack_setProjectPaths
 
     mari.utils.connect(mari.projects.opened, lambda: mari.customScripts.restore_project_paths())
+
+    # -------------------------------------------------------------------------
+
+    #  Restore Buffer Bit Depth to Channel Linking - Toolbars/extPack_TransformPaint.py
+    mari.utils.connect(mari.projects.opened, lambda: mari.customScripts.initSyncedBufferDepth())
 
 
 

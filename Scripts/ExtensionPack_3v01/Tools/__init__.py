@@ -90,6 +90,9 @@ import View.extPack_screenshot_all_channels as screenshot_all_channels
 # SHADING:
 import Shading.extPack_disableViewport as disableViewport
 
+# TOOLBARS
+import Toolbars.extPack_TransformPaint as TransformPaintToolbar
+
 # HELP:
 import Help.extPack_online_help as onlineHelp
 
@@ -268,6 +271,16 @@ class customScripts():
     def disableViewport(self,mode):
         disableViewport.disableViewport(mode)
 
+
+    # --------------------------------------------------------------
+    # TOOLBARS:
+
+    def transformPaintToolbar(self):
+        TransformPaintToolbar.initToolbar()
+
+    def initSyncedBufferDepth(self):
+        TransformPaintToolbar.initBufferSyncOnNewProject()
+
     # --------------------------------------------------------------
     # HELP:
 
@@ -348,6 +361,9 @@ print 'View Menu: Screenshot All Channels'
 print '-----------------------------------------'
 print 'Image Manager Palette Additions (1): '
 print 'Image Manager: Export Selection'
+print '-----------------------------------------'
+print 'Toolbar Additions (1): '
+print 'Transform Paint: Tool Properties'
 print '-----------------------------------------'
 print 'Help Menu Additions (1): '
 print 'Help Menu: Mari Extension Pack Help'
