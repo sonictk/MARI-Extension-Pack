@@ -108,7 +108,7 @@ class paintBufferToolbar(object):
         g_buffer_depth.addItem("16 Bit (Half)", mari.PaintBuffer.BufferDepth.DEPTH_HALF)
         g_buffer_depth.addItem("32 Bit (Float)", mari.PaintBuffer.BufferDepth.DEPTH_FLOAT)
         g_buffer_clamp = QtGui.QCheckBox('Clamp')
-        g_buffer_sync = QtGui.QCheckBox('Link Depth to Paint Target')
+        g_buffer_sync = QtGui.QCheckBox('Link Depth to Channel')
 
         g_flip_x = QtGui.QPushButton("Flip X")
         g_flip_y = QtGui.QPushButton("Flip Y")
