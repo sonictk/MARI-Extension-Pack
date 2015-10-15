@@ -167,12 +167,11 @@
                 // $glossiness_mult; $specular_mult; height_mult;
 
                 // Casting # to Variable
-                vec4 idColor_handle = sRgb2Linear($idColor);
                 vec4 glossiness_Handle = vec4(#IN_B.r,#IN_B.r,#IN_B.r,1.0);
                 vec4 specular_Handle = vec4(#IN_B.g,#IN_B.g,#IN_B.g,1.0);
                 vec4 height_Handle = vec4(#IN_B.b,#IN_B.b,#IN_B.b,1.0);
 
-                float regionmask = $idPick ? col2Mask(#RegionMask,idColor_handle,$idError) : #RegionMask.r ;
+                float regionmask = $idPick ? col2Mask(#RegionMask,$idColor,$idError) : #RegionMask.r ;
                 vec4 id_mask = mix(#RegionMask,vec4(regionmask,regionmask,regionmask,1.0),regionmask*float($idPick));
                 regionmask = clamp(regionmask,0.0,1.0);
                 // casting as new variable for DEBUG handle purposes only

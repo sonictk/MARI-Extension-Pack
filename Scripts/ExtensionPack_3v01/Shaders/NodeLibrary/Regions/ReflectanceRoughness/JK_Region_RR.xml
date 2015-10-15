@@ -183,12 +183,11 @@
 
 
                 // Casting # to Variable
-                vec4 idColor_handle = sRgb2Linear($idColor);
                 vec4 roughness_Handle = vec4(#IN_B.r,#IN_B.r,#IN_B.r,1.0);
                 vec4 Reflectance_Handle = vec4(#IN_B.g,#IN_B.g,#IN_B.g,1.0);
                 vec4 disp_Handle = vec4(#IN_B.b,#IN_B.b,#IN_B.b,1.0);
 
-                float regionmask = $idPick ? col2Mask(#RegionMask,idColor_handle,$idError) : #RegionMask.r ;
+                float regionmask = $idPick ? col2Mask(#RegionMask,$idColor,$idError) : #RegionMask.r ;
                 vec4 id_mask = mix(#RegionMask,vec4(regionmask,regionmask,regionmask,1.0),regionmask*float($idPick));
                 regionmask = clamp(regionmask,0.0,1.0);
                 // casting as new variable for DEBUG handle purposes only
