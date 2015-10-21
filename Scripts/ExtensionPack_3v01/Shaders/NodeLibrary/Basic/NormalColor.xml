@@ -44,14 +44,12 @@
   <Cost>0.001</Cost>
   <CostDescription>Trivial operation</CostDescription>
   <Attributes>
-    <Attribute Name="colorspace" PrettyName="Generate as" Group="" Type="stringlist">Linear,Linear,sRGB</Attribute>
   </Attributes>
   <Contexts>
       <Context Type="GLSL">
         <Shader>
            <Body><![CDATA[
-                vec4 color = ($colorspace == 0) ? vec4(0.214,0.214,1.0,1.0) : vec4(0.5,0.5,1.0,1.0);
-                Output = color;
+                Output = ec4(0.5,0.5,1.0,1.0);
            ]]>
            </Body>
         </Shader>

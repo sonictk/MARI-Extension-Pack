@@ -76,7 +76,7 @@
     <Attribute Name="height_float" PrettyName="Float" Group="Handle Height (float)" Type="double">0.5</Attribute>
     <Attribute Name="height_clamp" PrettyName="Clamp Input" Group="Handle Height (float)" Type="bool" Min="false" Max="true">false</Attribute>
     <!--===============================================================================================================-->
-    <Attribute Name="normal_color" PrettyName="Color" Group="Handle Normal (RGBA)" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(0.216,0.216,1.0,1.0)</Attribute>
+    <Attribute Name="normal_color" PrettyName="Color" Group="Handle Normal (RGBA)" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(0.5,0.5,1.0,1.0)</Attribute>
     <Attribute Name="normal_float" PrettyName="Float" Group="Handle Normal (RGBA)" Type="double">1.0</Attribute>
     <Attribute Name="normal_clamp" PrettyName="Clamp Input" Group="Handle Normal (RGBA)" Type="bool" Min="false" Max="true">true</Attribute>
     <!--===============================================================================================================-->
