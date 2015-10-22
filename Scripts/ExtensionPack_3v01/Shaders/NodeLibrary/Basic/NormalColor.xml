@@ -4,7 +4,7 @@
 == Copyright (c) 2015 Jens Kafitz All Rights Reserved.
 ================================================================================
 == File: NormalColor.xml
-== Description: Simple Normal Color generted in linear or sRGB space
+== Description: Simple Normal Color
 ================================================================================
 == Modification by: Jens Kafitz
 ================================================================================
@@ -49,7 +49,7 @@
       <Context Type="GLSL">
         <Shader>
            <Body><![CDATA[
-                Output = ec4(0.5,0.5,1.0,1.0);
+                Output = vec4(0.5,0.5,1.0,1.0);
            ]]>
            </Body>
         </Shader>
