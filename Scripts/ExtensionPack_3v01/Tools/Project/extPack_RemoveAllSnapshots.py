@@ -2,6 +2,8 @@
 # Remove All Project Snapshots
 # ------------------------------------------------------------------------------
 # Removes all saved snapshots (channels, layers) from your project
+# Same as using it from your Snapshot Menu but just added for convenience
+# when optimizing a project.
 # ------------------------------------------------------------------------------
 # Written by Jens Kafitz, 2015
 # ------------------------------------------------------------------------------
@@ -49,9 +51,9 @@ class WarningUI(QtGui.QMessageBox):
     def __init__(self,parent=None):
         super(WarningUI, self).__init__(parent)
         # Create info gui
-        self.setWindowTitle('Warning: This is not undoable')
+        self.setWindowTitle('Warning !')
         self.setIcon(QtGui.QMessageBox.Warning)
-        self.setText('Removing all Snapshots is not undoable. Are you sure you wish to proceed ?')
+        self.setText('Removing all Snapshots will \n\n- remove ALL snapshots from your project\n- clear the history\n- Save the project\n\nYou will not be able to undo this action or any before it.')
         self.setStandardButtons(QtGui.QMessageBox.Ok | QtGui.QMessageBox.Cancel)
         self.setDefaultButton(QtGui.QMessageBox.Cancel)
 
@@ -63,9 +65,11 @@ def removeAllSnapshots():
     warning = WarningUI()
     warning.exec_()
     warning_reply = warning.buttonRole(warning.clickedButton())
-    # If User chooses to Ignore problematic paths, we will remove the prolematic ones from the dictionary
     if warning_reply is QtGui.QMessageBox.ButtonRole.AcceptRole:
-        mari.system.snapshots.deleteAll(confirm=False)
+        mari.system.snapshots.deleteAll(False)
+        project = mari.current.project()
+        project.save()
+        mari.history.clear(False)
         mari.utils.message('All Snapshots removed','Snapshots')
 
     else:
