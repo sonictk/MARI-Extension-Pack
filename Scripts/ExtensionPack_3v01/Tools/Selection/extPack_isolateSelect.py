@@ -53,6 +53,7 @@ def isolateSelect():
     selVisibleAction = mari.actions.find('/Mari/Geometry/Selection/Select Visible')
     hideSelAction =  mari.actions.find('/Mari/Geometry/Selection Group/Hide Selection Group')
     showSelAction = mari.actions.find('/Mari/Geometry/Selection Group/Show Selection Group')
+    deselectAction = mari.actions.find('/Mari/Geometry/Selection/Select None')
 
 
     if mari.selection_groups.sceneSelectionMode() != OBJ_Mode:
@@ -124,12 +125,18 @@ def isolateSelect():
                 if cur_set_found:
                     mari.selection_groups.select(isolate_cur_set)
                     hideSelAction.trigger()
-                if vis_set_found:
+                if vis_set_found and cur_set_found:
                     mari.selection_groups.select(isolate_vis_set)
                     hideSelAction.trigger()
                 if cur_set_found:
                     mari.selection_groups.select(isolate_cur_set)
                     showSelAction.trigger()
+                if vis_set_found and not cur_set_found:
+                    mari.selection_groups.select(isolate_vis_set)
+                    mari.selection_groups.removeSelectionGroup(isolate_vis_set)
+                    deselectAction.trigger()
+                    mari.utils.message('No selection found','Isolate Selection')
+
 
             mari.history.stopMacro()
             deactivateViewportToggle.trigger()
