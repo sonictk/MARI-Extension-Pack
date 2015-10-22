@@ -860,6 +860,31 @@ def createToolsMenu():
 
 
 ######################################################################
+#  Project
+######################################################################
+
+    #  Remove all Snapshots
+    script_menu_path = 'MainWindow/Scripts/Project'
+
+    removeAllSnapshots = mari.actions.create('/Mari/MARI Extension Pack/Project/Remove All Snapshots', 'mari.customScripts.removeAllSnapshots()')
+
+    mari.actions.addToSet('RequiresProject',removeAllSnapshots)
+    mari.menus.addAction(removeAllSnapshots, script_menu_path)
+    icon_filename = 'Snapshots.png'
+    icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
+    removeAllSnapshots.setIconPath(icon_path)
+
+    #  Mari Garbage Collection
+    script_menu_path = 'MainWindow/Scripts/Project'
+    cleanUp = mari.actions.create('/Mari/MARI Extension Pack/Project/Project Garbage Collection', 'mari.customScripts.cleanUpProject()')
+    mari.actions.addToSet('RequiresProject',cleanUp)
+    mari.menus.addAction(cleanUp, script_menu_path)
+    icon_filename = 'Trash.png'
+    icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
+    cleanUp.setIconPath(icon_path)
+
+
+######################################################################
 # ONLINE HELP
 ######################################################################
 

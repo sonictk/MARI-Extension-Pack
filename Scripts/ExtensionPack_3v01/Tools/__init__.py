@@ -93,6 +93,10 @@ import Shading.extPack_disableViewport as disableViewport
 # TOOLBARS
 import Toolbars.extPack_TransformPaint as TransformPaintToolbar
 
+# PROJECT
+import Project.extPack_RemoveAllSnapshots as RemoveAllSnapshots
+import Project.extPack_garbageCollect as GarbageCollect
+
 # HELP:
 import Help.extPack_online_help as onlineHelp
 
@@ -280,6 +284,16 @@ class customScripts():
 
     def initSyncedBufferDepth(self):
         TransformPaintToolbar.initBufferSyncOnNewProject()
+
+    # --------------------------------------------------------------
+    # PROJECT:
+
+    def removeAllSnapshots(self):
+        RemoveAllSnapshots.removeAllSnapshots()
+
+
+    def cleanUpProject(self):
+        GarbageCollect.cleanUp()
 
     # --------------------------------------------------------------
     # HELP:
