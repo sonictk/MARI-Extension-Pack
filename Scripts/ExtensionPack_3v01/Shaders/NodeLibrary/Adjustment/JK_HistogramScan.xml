@@ -49,6 +49,8 @@
   </Tags>
     <Inputs>
         <Input Name="Input"></Input>
+        <Input Name="Position"></Input>
+        <Input Name="Contrast"></Input>
     </Inputs>
     <Attributes>
         <Attribute Name="position" PrettyName="Position" Group="" Type="double" Min="0.0" Max="1.0">0.0</Attribute>
@@ -61,12 +63,17 @@
     <Context Type="NodeGraphView">
         <Inputs>
             <Input Name="Input"><Pos>0,-50</Pos></Input>
+            <Input Name="Position" ><Pos>-120,0</Pos></Input>
+            <Input Name="Contrast" ><Pos>120,0</Pos></Input>
         </Inputs>
     </Context>
     <Context Type="GLSL">
         <Shader>
             <Inputs>
                 <Input Name="Input"><Default>vec4(1,1,1,1)</Default></Input>
+                <Input Name="Position"><Default>vec4($position,$position,$position,1.0)</Default></Input>
+                <Input Name="Contrast"><Default>vec4($contrast,$contrast,$contrast,1.0)</Default></Input>
+
             </Inputs>
             <!--
             NOTE: alpha = clamp(alpha,0.0001,alpha) is necessary to avoid calling pow(0,0), which is undefined
@@ -78,13 +85,16 @@
             -->
             <Body><![CDATA[
 
+    // Do not remove the following comment, used to initialize sliders:
+    // $position; $contrast
+
 
     // Histogram Scan
 
-    float position = mix($position,1.0-$position,float($invertPosition));
+    float position = mix(#Position.r,1.0-#Position.r,float($invertPosition));
     float pos_a = ( max(position,0.5) - 0.5) * 2.0;
     float pos_b = min( (position*2.0),1.0);
-    float pos_x = min( ($contrast*0.5),1.0);
+    float pos_x = min( (#Contrast.r*0.5),1.0);
           pos_x = max(pos_x,0.0);
     float InBlack = mix(pos_a,pos_b,pos_x);
     float InWhite = mix(pos_b,pos_a,pos_x);
