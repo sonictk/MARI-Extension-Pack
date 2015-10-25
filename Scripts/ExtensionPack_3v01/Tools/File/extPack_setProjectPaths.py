@@ -810,6 +810,8 @@ class setProjectPathUI(QtGui.QDialog):
 
             if dict_ACTIVE:
                 try:
+                    if dict_RESOLVEDPATH.endswith('/') or dict_RESOLVEDPATH.endswith('\\'):
+                        dict_RESOLVEDPATH = dict_RESOLVEDPATH[:-1]
                     mari.resources.setPath(dict_VARIABLE,dict_RESOLVEDPATH)
                     actionXML('addPath','UserDefined',dict_VARIABLE,dict_RESOLVEDPATH)
                     print dict_VARIABLE + ' set to: ' + dict_RESOLVEDPATH
@@ -821,24 +823,36 @@ class setProjectPathUI(QtGui.QDialog):
         try:
             # Set Texture Flattened Temaplte
             if self.Active_VarJ.isChecked():
-                mari.resources.setFlattenedSequenceTemplate(self.Path_VarJ.text())
-                actionXML('addPath','UserDefined','Sequence_Flat',self.Path_VarJ.text())
-                print 'Flattened Sequence Template' + ' set to: ' + self.Path_VarJ.text()
+                template = self.Path_VarJ.text()
+                if template.startswith('/') or template.startswith('\\'):
+                    template = template[1:]
+                mari.resources.setFlattenedSequenceTemplate(template)
+                actionXML('addPath','UserDefined','Sequence_Flat',template)
+                print 'Flattened Sequence Template' + ' set to: ' + template
             # Set Texture Temaplte
             if self.Active_VarK.isChecked():
-                mari.resources.setSequenceTemplate(self.Path_VarK.text())
-                actionXML('addPath','UserDefined','Sequence',self.Path_VarK.text())
-                print 'Sequence Template' + ' set to: ' + self.Path_VarK.text()
+                template = self.Path_VarK.text()
+                if template.startswith('/') or template.startswith('\\'):
+                    template = template[1:]
+                mari.resources.setSequenceTemplate(template)
+                actionXML('addPath','UserDefined','Sequence',template)
+                print 'Sequence Template' + ' set to: ' + template
             # Set PTEX Flattened Temaplte
             if self.Active_VarL.isChecked():
-                mari.resources.setPtexFlattenedSequenceTemplate(self.Path_VarL.text())
-                actionXML('addPath','UserDefined','PTEXSequence_Flat',self.Path_VarL.text())
-                print 'PTEX Flattened Template' + ' set to: ' + self.Path_VarL.text()
+                template = self.Path_VarL.text()
+                if template.startswith('/') or template.startswith('\\'):
+                    template = template[1:]
+                mari.resources.setPtexFlattenedSequenceTemplate(template)
+                actionXML('addPath','UserDefined','PTEXSequence_Flat',template)
+                print 'PTEX Flattened Template' + ' set to: ' + template
             # Set PTEX Temaplte
             if self.Active_VarM.isChecked():
-                mari.resources.setPtexSequenceTemplate(self.Path_VarM.text())
-                actionXML('addPath','UserDefined','PTEXSequence',self.Path_VarM.text())
-                print 'PTEX Template' + ' set to: ' + self.Path_VarM.text()
+                template = self.Path_VarM.text()
+                if template.startswith('/') or template.startswith('\\'):
+                    template = template[1:]
+                mari.resources.setPtexSequenceTemplate(template)
+                actionXML('addPath','UserDefined','PTEXSequence',template)
+                print 'PTEX Template' + ' set to: ' + template
         except Exception:
             mari.utils.message('Unable to set sequence templates. Check formatting.')
             pass
@@ -1058,19 +1072,34 @@ class restoreProjectPaths(object):
             if data[key][0] == 'UserDefined':
                 varToSet = var_dict[data[key][1]]
                 try:
-                    mari.resources.setPath(varToSet,data[key][2])
+                    path = data[key][2]
+                    if path.endswith('/') or path.endswith('\\'):
+                        path = path[:-1]
+                    mari.resources.setPath(varToSet,path)
                 except Exception:
                     pass
 
                 # checking sequence templates that don't have MARI variables
                 if data[key][1] == 'Sequence_Flat':
-                    mari.resources.setFlattenedSequenceTemplate(data[key][2])
+                    path = data[key][2]
+                    if path.startswith('/') or path.startswith('\\'):
+                        path = path[1:]
+                    mari.resources.setFlattenedSequenceTemplate(path)
                 elif data[key][1] == 'Sequence':
-                    mari.resources.setSequenceTemplate(data[key][2])
+                    path = data[key][2]
+                    if path.startswith('/') or path.startswith('\\'):
+                        path = path[1:]
+                    mari.resources.setSequenceTemplate(path)
                 elif data[key][1] == 'PTEXSequence_Flat':
-                    mari.resources.setPtexFlattenedSequenceTemplate(data[key][2])
+                    path = data[key][2]
+                    if path.startswith('/') or path.startswith('\\'):
+                        path = path[1:]
+                    mari.resources.setPtexFlattenedSequenceTemplate(path)
                 elif data[key][1] == 'PTEXSequence':
-                    mari.resources.setPtexSequenceTemplate(data[key][2])
+                    path = data[key][2]
+                    if path.startswith('/') or path.startswith('\\'):
+                        path = path[1:]
+                    mari.resources.setPtexSequenceTemplate(path)
 
 # ------------------------------------------------------------------------------
 

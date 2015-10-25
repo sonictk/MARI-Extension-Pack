@@ -472,6 +472,10 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
         ''' sample the export template used to generate the file name'''
         path = self.path_line_edit.text()
         template = self.template_line_edit.text()
+        if template.startswith('/') or template.startswith('\\'):
+            template = template[1:]
+        if path.endswith('/') or path.endswith('\\'):
+            path = path[:-1]
         return os.path.join(path, template)
 
     def _resetExportPathTemplate(self):
