@@ -1,0 +1,31 @@
+<Node Class="MriSnChannelBakeNode">
+  <ID>JK_BakeToPaint</ID>
+  <DefaultName>Bake Visible to selected Paint Node</DefaultName>
+  <Category>Misc/Custom/</Category>
+    <Cost>0.0</Cost>
+    <CostDescription>Does nothing</CostDescription>
+    <Description>Will Bake whatever you are currently viewing into the SELECTED Paint Node</Description>
+    <Inputs>
+        <Input Name="Input" PrettyName="Source"/>
+        <Input Name="Paint" PrettyName="Target"/>
+    </Inputs>
+    <Tags>
+    </Tags>
+  <Attributes>
+      <Attribute Name="Channel" Type="stringlist"/>
+  </Attributes>
+    <Contexts>
+        <Context Type="NodeGraphView">
+        </Context>
+        <Context Type="GLSL">
+            <Shader>
+                <Inputs>
+                    <Input Name="Input"><Default>vec4(0,0,0,1)</Default></Input>
+                </Inputs>
+                <Body><![CDATA[
+    Output = #Input;
+                ]]></Body>
+            </Shader>
+        </Context>
+    </Contexts>
+</Node>
