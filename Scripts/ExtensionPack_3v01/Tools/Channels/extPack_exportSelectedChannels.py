@@ -8,10 +8,21 @@
 # ------------------------------------------------------------------------------
 # http://www.jorel-latraille.com/
 # http://www.thefoundry.co.uk
+# http://www.jenskafitz.com
 # ------------------------------------------------------------------------------
-# Rewritten & Extended by Jens Kafitz, 2015
-# ------------------------------------------------------------------------------
-# http://www.campi3d.com
+# Additions by Jens Kafitz, 2015
+#  - PySide Conversion
+#  - Path / Template Field Separation
+#  - List All Objects
+#  - Modified Textures Metadata fixes
+#  - Modified Textures notices changes in channel layers now
+#  - Resolution Exports
+#  - Hiding of Mari Internal Channels and Channel sorting in line with Channel Palette
+#  - Preselecting channels
+#  - UI Fixes & Changes
+#  - Mari UI Integration
+#  - Remembering of Settings
+#  - Path Field Dialog and Folder Creation System
 # ------------------------------------------------------------------------------
 # DISCLAIMER & TERMS OF USE:
 #
@@ -56,6 +67,8 @@ import inspect
 version = "3.0"     #UI VERSION
 
 USER_ROLE = 34          # PySide.Qt.UserRole
+CHANNEL_NODE = None     # A Global Channel Variable for dynamically resized Channel Nodes
+CHANNEL_DUP = None      # A Global Channel Variable for dynamically resized Channel Objects
 
 
 # ------------------------------------------------------------------------------
@@ -75,8 +88,9 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
         self.setWindowTitle("Export Custom Channel Selection")
         main_layout = QtGui.QVBoxLayout()
         top_group = QtGui.QGroupBox()
-        middle_group = QtGui.QGroupBox()
-        bottom_group = QtGui.QGroupBox()
+        modified_box_group = QtGui.QGroupBox()
+        options_box_group = QtGui.QGroupBox()
+        res_box_group = QtGui.QGroupBox()
 
         #Create layout for middle section
         top_layout = QtGui.QHBoxLayout()
@@ -226,7 +240,7 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
         self.export_only_modified_textures_box.setToolTip('Exports only modified UDIMs. Requires at least one previous export with this tool')
         self.export_only_modified_textures_box.setChecked(False)
         middle_checkbox_group_layout.addWidget(self.export_only_modified_textures_box)
-        middle_group.setLayout(middle_checkbox_group_layout)
+        modified_box_group.setLayout(middle_checkbox_group_layout)
 
         #Add check box layout.
         check_box_layout = QtGui.QGridLayout()
@@ -259,12 +273,32 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
         self.export_full_patch_bleed_box.setChecked(True)
         self.export_remove_alpha_box.setChecked(False)
 
-        bottom_group.setLayout(check_box_layout)
+        options_box_group.setLayout(check_box_layout)
+
+        #Add radio button layout.
+        res_box_layout = QtGui.QGridLayout()
+        res_label = QtGui.QLabel("Export Resolution:")
+
+        self.res_full = QtGui.QRadioButton('Full')
+        self.res_halve = QtGui.QRadioButton('Half')
+        self.res_quarter = QtGui.QRadioButton('Quarter')
+        self.res_eighth = QtGui.QRadioButton('Eighth')
+
+        res_box_layout.addWidget(res_label,0,0)
+        res_box_layout.addWidget(self.res_full,0,1)
+        res_box_layout.addWidget(self.res_halve,0,2)
+        res_box_layout.addWidget(self.res_quarter,0,3)
+        res_box_layout.addWidget(self.res_eighth,0,4)
+        self.res_full.setChecked(True)
+
+        res_box_group.setLayout(res_box_layout)
+
 
         #Add widget groups to main layout
         main_layout.addWidget(top_group)
-        main_layout.addWidget(middle_group)
-        main_layout.addWidget(bottom_group)
+        main_layout.addWidget(modified_box_group)
+        main_layout.addWidget(options_box_group)
+        main_layout.addWidget(res_box_group)
 
         # Add OK Cancel buttons
         self.button_box = QtGui.QDialogButtonBox()
@@ -280,9 +314,6 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
         #calling once to cull the object list, whole thing doesn't really make for a snappy interface appearance
         listAllObjects(self.channel_list,currentObjChannels,displayAllObjBox.isChecked())
         self._optionsLoad()
-
-
-
 
     def _optionsSave(self):
         """Saves UI Options between sessions."""
@@ -306,7 +337,6 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
                 self.SETTINGS.setValue(name,state)
 
             self.SETTINGS.endGroup()
-
 
     def _optionsLoad(self):
         """Loads UI Options between sessions."""
@@ -336,10 +366,9 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
             self.SETTINGS.endGroup()
 
 
-
     #Generate List of Channels for the Channel List
     def populateChannelList(self,channel_list):
-
+        ''' Adds Channels to a Channel List '''
            #Populate geo : channel list widget
         geo_list = sorted(mari.geo.list(), key=lambda x: x.name())
         chan_list = []
@@ -384,7 +413,6 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
             channel_list.setCurrentRow(currentChannelRow)
 
         return channel_list, currentChannelCount
-
 
 
     #Hide parts of interface if export everything is ticked
@@ -518,6 +546,17 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
         else:
             return False
 
+    #Get chosen resolution
+    def _getResolution(self):
+        if self.res_full.isChecked():
+            return 1
+        elif self.res_halve.isChecked():
+            return 2
+        elif self.res_quarter.isChecked():
+            return 4
+        elif self.res_eighth.isChecked():
+            return 8
+
 # ------------------------------------------------------------------------------
 
 class ChannelsToExportList(QtGui.QListWidget):
@@ -611,6 +650,104 @@ class InfoUI(QtGui.QMessageBox):
             self.setDefaultButton(QtGui.QMessageBox.Ok)
 
 # ------------------------------------------------------------------------------
+
+class createResizedChannel(object):
+    '''Handles dynamic resizing of Channels for exporting them at lower resolution then they are in mari'''
+    def __init__(self, channel,relative_size,parent=None):
+
+        self.ResizedChannel = None
+
+        size_dict = {256:mari.ImageSet.SIZE_256,
+                         512:mari.ImageSet.SIZE_512,
+                         1024:mari.ImageSet.SIZE_1024,
+                         2048:mari.ImageSet.SIZE_2048,
+                         4096:mari.ImageSet.SIZE_4096,
+                         8192:mari.ImageSet.SIZE_8192,
+                         16384:mari.ImageSet.SIZE_16384,
+                         32768:mari.ImageSet.SIZE_32768
+                        }
+
+        # Current Scene Data
+        current_channel = channel
+        current_channel_UUID = current_channel.uuid()
+        current_geo = mari.geo.current()
+        current_graph = current_geo.nodeGraph()
+        nodelist = current_graph.nodeList()
+        channel_node = None
+        node_id = -1
+
+        # searching for channel node
+        for node in nodelist:
+            node_id += 1
+            if node.uuid() == current_channel_UUID:
+                channel_node = node
+                break
+
+        # Saving what is attached to the Channel
+        channel_input = channel_node.inputNode('Input')
+
+        # writing a duplicate of the channel node
+        channel_node_ls = (nodelist[node_id],)
+        stringFromNode = current_graph.nodesToString(channel_node_ls)
+
+        #hooking up to a signal first so I can find the node I am about to create
+        # Hopefully this can be removed in a future version of Mari.
+        mari.utils.connect(mari.nodes.nodeCreated, setNodeFromSignal)
+        current_graph.nodesFromString(stringFromNode)
+        mari.utils.disconnect(mari.nodes.nodeCreated,setNodeFromSignal)
+
+        # Finding Channel corresponding to new Channel node
+        node_uuid = CHANNEL_NODE.uuid()
+        self.ResizedChannel = findChannelFromUUID(node_uuid)
+
+
+        # Resizing new Channel to target resolution dependency
+        index_ls = []
+        size_var = mari.ImageSet.SIZE_256
+
+        for patch in mari.geo.current().patchList():
+            index = patch.uvIndex()
+            index_ls = [index,]
+            height = self.ResizedChannel.width(index)
+
+            height /= relative_size
+            if height < 256:
+                height = 256
+            if height > 32768:
+                height = 32768
+            size_var = size_dict[height]
+
+            self.ResizedChannel.resize(size_var,index_ls)
+
+        CHANNEL_NODE.setInputNode('Input',channel_input)
+
+
+        def getNodeFromSignal(Node):
+            ''' Returns a new Node from a signal response,that a new one is created in the Nodegraph '''
+            self.ResizedChannel_Node = Node
+
+        def getResizedChannel():
+            ''' Returns the Channel Object that was created by the script'''
+            return self.ResizedChannel
+
+def setNodeFromSignal(Node):
+    global CHANNEL_NODE
+    CHANNEL_NODE = Node
+
+def findChannelFromUUID(uuid):
+    ''' Returns a channel object based on an input uuid'''
+    curGeo = mari.current.geo()
+    channelList = curGeo.channelList()
+
+    for channel in channelList:
+        if channel.uuid() == uuid:
+            global CHANNEL_DUP
+            CHANNEL_DUP = channel
+            return channel
+            break
+
+# ------------------------------------------------------------------------------
+
 def _exportChannels(args_dict):
 
     save_options = mari.Image.DEFAULT_OPTIONS
@@ -626,6 +763,14 @@ def _exportChannels(args_dict):
     path = args_dict['path']
     if args_dict['flattened']:
         for channel in args_dict['channels']:
+            channel_to_export = channel
+            channel_resolution = args_dict['resolution']
+            if channel_resolution == 1:
+                channel_to_export = channel
+            else:
+                createResizedChannel(channel,channel_resolution)
+                channel_to_export = CHANNEL_DUP
+
             uv_index_list = []
             metadata = []
             if args_dict['only_modified_textures']:
@@ -633,10 +778,17 @@ def _exportChannels(args_dict):
                 if len(uv_index_list) == 0:
                     continue
             try:
-                channel.exportImagesFlattened(path, save_options, uv_index_list)
+                channel_to_export.exportImagesFlattened(path, save_options, uv_index_list)
             except Exception, e:
                 mari.utils.message('Failed to export "%s"' %e)
+                if channel_resolution != 1:
+                    mari.geo.current().nodeGraph().removeNode(CHANNEL_NODE)
                 return
+
+            # remove temp channel node if a lower res was exported
+            if channel_resolution != 1:
+                mari.geo.current().nodeGraph().removeNode(CHANNEL_NODE)
+
             for data in metadata:
                 channel.setMetadata(*data)
                 channel.setMetadataDisplayName(data[0],str(data[0]) + ' Modified Texture Export')
@@ -646,6 +798,14 @@ def _exportChannels(args_dict):
             channel.setMetadataEnabled('OnlyModifiedTextures', False)
     else:
         for channel in args_dict['channels']:
+            channel_to_export = channel
+            channel_resolution = args_dict['resolution']
+            if channel_resolution == 1:
+                channel_to_export = channel
+            else:
+                createResizedChannel(channel,channel_resolution)
+                channel_to_export = CHANNEL_DUP
+
             uv_index_list = []
             metadata = []
             if args_dict['only_modified_textures']:
@@ -653,9 +813,15 @@ def _exportChannels(args_dict):
                 if len(uv_index_list) == 0:
                     continue
             try:
-                channel.exportImages(path, save_options, uv_index_list)
+                channel_to_export.exportImages(path, save_options, uv_index_list)
+                # remove temp channel node if a lower res was exported
+                if channel_resolution != 1:
+                    mari.geo.current().nodeGraph().removeNode(CHANNEL_NODE)
+
             except Exception, e:
                 mari.utils.message('Failed to export "%s"' %e)
+                if channel_resolution != 1:
+                    mari.geo.current().nodeGraph().removeNode(CHANNEL_NODE)
                 return
             for data in metadata:
                 channel.setMetadata(*data)
@@ -689,6 +855,15 @@ def _exportEverything(args_dict):
     path = args_dict['path']
     if args_dict['flattened']:
         for channel in channels:
+
+            channel_to_export = channel
+            channel_resolution = args_dict['resolution']
+            if channel_resolution == 1:
+                channel_to_export = channel
+            else:
+                createResizedChannel(channel,channel_resolution)
+                channel_to_export = CHANNEL_DUP
+
             uv_index_list = []
             metadata = []
             if args_dict['only_modified_textures']:
@@ -696,9 +871,15 @@ def _exportEverything(args_dict):
                 if len(uv_index_list) == 0:
                     continue
             try:
-                channel.exportImagesFlattened(path, save_options, uv_index_list)
+                channel_to_export.exportImagesFlattened(path, save_options, uv_index_list)
+                # remove temp channel node if a lower res was exported
+                if channel_resolution != 1:
+                    mari.geo.current().nodeGraph().removeNode(CHANNEL_NODE)
             except Exception, e:
                 mari.utils.message('Failed to export "%s"' %e)
+                # remove temp channel node if a lower res was exported
+                if channel_resolution != 1:
+                    mari.geo.current().nodeGraph().removeNode(CHANNEL_NODE)
                 return
             for data in metadata:
                 channel.setMetadata(*data)
@@ -709,16 +890,31 @@ def _exportEverything(args_dict):
             channel.setMetadataEnabled('OnlyModifiedTextures', False)
     else:
         for channel in channels:
+
+            channel_to_export = channel
+            channel_resolution = args_dict['resolution']
+            if channel_resolution == 1:
+                channel_to_export = channel
+            else:
+                createResizedChannel(channel,channel_resolution)
+                channel_to_export = CHANNEL_DUP
+
             uv_index_list = []
             metadata = []
-            if agrs_dict['only_modified_textures']:
+            if args_dict['only_modified_textures']:
                 uv_index_list, metadata = _onlyModifiedTextures(channel)
                 if len(uv_index_list) == 0:
                     continue
             try:
-                channel.exportImages(path, save_options, uv_index_list)
+                channel_to_export.exportImages(path, save_options, uv_index_list)
+                # remove temp channel node if a lower res was exported
+                if channel_resolution != 1:
+                    mari.geo.current().nodeGraph().removeNode(CHANNEL_NODE)
             except Exception, e:
                 mari.utils.message('Failed to export "%s"' %e)
+                # remove temp channel node if a lower res was exported
+                if channel_resolution != 1:
+                    mari.geo.current().nodeGraph().removeNode(CHANNEL_NODE)
                 return
             for data in metadata:
                 channel.setMetadata(*data)
@@ -748,7 +944,8 @@ def exportSelectedChannels(mode):
         'full_patch_bleed' : dialog._getExportFullPatchBleed(),
         'small_textures' : dialog._getExportSmallTextures(),
         'remove_alpha' : dialog._getExportRemoveAlpha(),
-        'only_modified_textures' : dialog._getExportOnlyModifiedTextures()
+        'only_modified_textures' : dialog._getExportOnlyModifiedTextures(),
+        'resolution': dialog._getResolution()
         }
         if dialog._getExportEverything():
             _exportEverything(args_dict)
