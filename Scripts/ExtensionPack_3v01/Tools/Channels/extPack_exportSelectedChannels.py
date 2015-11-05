@@ -314,6 +314,7 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
         #calling once to cull the object list, whole thing doesn't really make for a snappy interface appearance
         listAllObjects(self.channel_list,currentObjChannels,displayAllObjBox.isChecked())
         self._optionsLoad()
+        self._exportEverything()
 
     def _optionsSave(self):
         """Saves UI Options between sessions."""
@@ -776,18 +777,19 @@ def _exportChannels(args_dict):
             if args_dict['only_modified_textures']:
                 uv_index_list, metadata = _onlyModifiedTextures(channel)
                 if len(uv_index_list) == 0:
+                    if channel_resolution != 1:
+                        mari.geo.current().nodeGraph().removeNode(CHANNEL_NODE)
                     continue
             try:
                 channel_to_export.exportImagesFlattened(path, save_options, uv_index_list)
+                if channel_resolution != 1:
+                    mari.geo.current().nodeGraph().removeNode(CHANNEL_NODE)
             except Exception, e:
                 mari.utils.message('Failed to export "%s"' %e)
                 if channel_resolution != 1:
                     mari.geo.current().nodeGraph().removeNode(CHANNEL_NODE)
                 return
 
-            # remove temp channel node if a lower res was exported
-            if channel_resolution != 1:
-                mari.geo.current().nodeGraph().removeNode(CHANNEL_NODE)
 
             for data in metadata:
                 channel.setMetadata(*data)
@@ -811,6 +813,8 @@ def _exportChannels(args_dict):
             if args_dict['only_modified_textures']:
                 uv_index_list, metadata = _onlyModifiedTextures(channel)
                 if len(uv_index_list) == 0:
+                    if channel_resolution != 1:
+                        mari.geo.current().nodeGraph().removeNode(CHANNEL_NODE)
                     continue
             try:
                 channel_to_export.exportImages(path, save_options, uv_index_list)
@@ -869,6 +873,8 @@ def _exportEverything(args_dict):
             if args_dict['only_modified_textures']:
                 uv_index_list, metadata = _onlyModifiedTextures(channel)
                 if len(uv_index_list) == 0:
+                    if channel_resolution != 1:
+                        mari.geo.current().nodeGraph().removeNode(CHANNEL_NODE)
                     continue
             try:
                 channel_to_export.exportImagesFlattened(path, save_options, uv_index_list)
