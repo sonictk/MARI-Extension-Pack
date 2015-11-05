@@ -127,18 +127,7 @@ def checkMariVersion():
         mari.utils.message("Mari Version not compatible with MARI Extension Pack " + current_extension_pack)
         return False, False
 
-# Tempcheck -  Mari 3 & Extension Pack Python are a reaaaally deadly combination for the moment due to a complete
-# changeover to pySide and newer python version
 
-def checkMariVersion3():
-    "Checks if Mari Version is not 3.0 or higher"
-    MARI_3_VERSION_NUMBER =   30001111 #MARI 3.0 Alpha 11
-
-    if mari.app.version().number() >=  MARI_3_VERSION_NUMBER:
-        mari.utils.message("You are using Mari 3.0 and MARI Extension Pack " + current_extension_pack + ".\n Loading of Python based Extension Pack Tools was aborted, \ndue to known stability issues .")
-        return False,False
-    else:
-        return True, True
 
 # ------------------------------------------------------------------------------
 
@@ -407,179 +396,166 @@ def resolveJToolsConflict(jtools_path):
 
 
 class versionConflictUI(QtGui.QDialog):
-    '''Dialog listing Scripts in conflict with Extension Pack'''
-    def __init__(self,script_input_state,jtools_path):
-    	super(versionConflictUI, self).__init__()
-    	# Dialog Settings
-    	self.setFixedSize(550, 200)
-    	self.setWindowTitle('EXTENSION PACK VERSION CONFLICT')
-    	# Layouts
-    	layoutV1 = QtGui.QVBoxLayout()
-    	layoutH1 = QtGui.QHBoxLayout()
-    	self.setLayout(layoutV1)
-    	# Widgets
-    	self.DescrA =  QtGui.QLabel("A Version Conflict was detected in your Script Directory")
-    	self.DescrB =  QtGui.QLabel("You have files installed that have newer versions in MARI Extension Pack")
-    	self.DescrC =  QtGui.QLabel("Please open your Console via the PYTHON Menu for a list of files ")
-    	self.DescrD =  QtGui.QLabel("Choosing to Fix Automatically will try to rename the offending files")
-    	self.cancelBtn = QtGui.QPushButton('Cancel')
-    	self.resolveBtn = QtGui.QPushButton('Fix')
-    	# Populate
-    	layoutV1.addWidget(self.DescrA)
-    	layoutV1.addWidget(self.DescrB)
-    	layoutV1.addWidget(self.DescrC)
-    	layoutV1.addWidget(self.DescrD)
-    	layoutV1.addLayout(layoutH1)
-    	layoutH1.addWidget(self.cancelBtn)
-    	layoutH1.addWidget(self.resolveBtn)
-    	# Connections
-    	self.cancelBtn.clicked.connect(self.excepDialog)
-    	self.resolveBtn.clicked.connect(lambda: self.closeResolveDialog(script_input_state,jtools_path))
-    	self.raise_()
-    	self.activateWindow()
+	'''Dialog listing Scripts in conflict with Extension Pack'''
+	def __init__(self,script_input_state,jtools_path):
+		super(versionConflictUI, self).__init__()
+		# Dialog Settings
+		self.setFixedSize(550, 200)
+		self.setWindowTitle('EXTENSION PACK VERSION CONFLICT')
+		# Layouts
+		layoutV1 = QtGui.QVBoxLayout()
+		layoutH1 = QtGui.QHBoxLayout()
+		self.setLayout(layoutV1)
+		# Widgets
+		self.DescrA =  QtGui.QLabel("A Version Conflict was detected in your Script Directory")
+		self.DescrB =  QtGui.QLabel("You have files installed that have newer versions in MARI Extension Pack")
+		self.DescrC =  QtGui.QLabel("Please open your Console via the PYTHON Menu for a list of files ")
+		self.DescrD =  QtGui.QLabel("Choosing to Fix Automatically will try to rename the offending files")
+		self.cancelBtn = QtGui.QPushButton('Cancel')
+		self.resolveBtn = QtGui.QPushButton('Fix')
+		# Populate
+		layoutV1.addWidget(self.DescrA)
+		layoutV1.addWidget(self.DescrB)
+		layoutV1.addWidget(self.DescrC)
+		layoutV1.addWidget(self.DescrD)
+		layoutV1.addLayout(layoutH1)
+		layoutH1.addWidget(self.cancelBtn)
+		layoutH1.addWidget(self.resolveBtn)
+		# Connections
+		self.cancelBtn.clicked.connect(self.excepDialog)
+		self.resolveBtn.clicked.connect(lambda: self.closeResolveDialog(script_input_state,jtools_path))
+		self.raise_()
+		self.activateWindow()
 
-    def excepDialog(self):
-    	''' Closes Dialog and throws a warning message '''
-    	self.close()
-    	mari.utils.message("MARI Extension Pack did NOT LOAD:\nVersion Conflict\nCheck Python Console for Details")
+	def excepDialog(self):
+		''' Closes Dialog and throws a warning message '''
+		self.close()
+		mari.utils.message("MARI Extension Pack did NOT LOAD:\nVersion Conflict\nCheck Python Console for Details")
 
-    def closeResolveDialog(self,script_input_state,jtools_path):
-    	''' Attempts to rename offending files and edit JTOOLS-INIT '''
-    	scriptResolve = resolveScriptConflict(script_input_state)
+	def closeResolveDialog(self,script_input_state,jtools_path):
+		''' Attempts to rename offending files and edit JTOOLS-INIT '''
+		scriptResolve = resolveScriptConflict(script_input_state)
 
-    	# Script_Resolve dict
-    	# [0] script fix success
-    	# [1] shader fix success
-    	# [2] script problem existed
-    	# [3] shader problem existed
+		# Script_Resolve dict
+		# [0] script fix success
+		# [1] shader fix success
+		# [2] script problem existed
+		# [3] shader problem existed
 
-    	jtoolsresolve = True
-    	tools_resolve = True
-    	shaders_resolve = True
+		jtoolsresolve = True
+		tools_resolve = True
+		shaders_resolve = True
 
-    	if scriptResolve[2]: #if there was a problem at all
-    		if scriptResolve[0]: #if it was fixed
-    			print 'Script File Rename:  Successful'
-    			print ''
-    			tools_resolve = True
-    		else:
-    			print 'Script File Rename Failed: You may not have write permissions to the folder'
-    			print ''
-    			tools_resolve = False
-    	else:
-    		tools_resolve = True
+		if scriptResolve[2]: #if there was a problem at all
+			if scriptResolve[0]: #if it was fixed
+				print 'Script File Rename:  Successful'
+				print ''
+				tools_resolve = True
+			else:
+				print 'Script File Rename Failed: You may not have write permissions to the folder'
+				print ''
+				tools_resolve = False
+		else:
+			tools_resolve = True
 
-    	if scriptResolve[3]: #if there was a problem at all
-    		if scriptResolve[1]: #if it was fixed
-    			print 'Old Shaders removed:  Successful'
-    			print ''
-    			shaders_resolve = True
-    		else:
-    			print 'Removal of old Shaders failed: You may not have write permissions to the folder'
-    			print ''
-    			shaders_resolve = False
-    	else:
-    		shaders_resolve = True
+		if scriptResolve[3]: #if there was a problem at all
+			if scriptResolve[1]: #if it was fixed
+				print 'Old Shaders removed:  Successful'
+				print ''
+				shaders_resolve = True
+			else:
+				print 'Removal of old Shaders failed: You may not have write permissions to the folder'
+				print ''
+				shaders_resolve = False
+		else:
+			shaders_resolve = True
 
-    	if jtools_path != '':
-    		jtoolsresolve = resolveJToolsConflict(jtools_path)
-    		if jtoolsresolve:
-    			print 'JTOOLS __INIT__ File successfully patched'
-    			print ''
-    		else:
-    			print 'Error occurred during edit of JTOOLS __INIT__.py:'
-    			print 'You may not have write permissions to the folder'
-    			print ''
+		if jtools_path != '':
+			jtoolsresolve = resolveJToolsConflict(jtools_path)
+			if jtoolsresolve:
+				print 'JTOOLS __INIT__ File successfully patched'
+				print ''
+			else:
+				print 'Error occurred during edit of JTOOLS __INIT__.py:'
+				print 'You may not have write permissions to the folder'
+				print ''
 
-    	if tools_resolve and shaders_resolve and jtoolsresolve:
-    		mari.utils.message('Conflicts successfully fixed. Please restart MARI')
+		if tools_resolve and shaders_resolve and jtoolsresolve:
+			mari.utils.message('Conflicts successfully fixed. Please restart MARI')
 
-    	else:
-    		mari.utils.message('An error occured during the automatic fix.\nYou may not have write permissions to the Script Folder\nCheck Python Console for details.')
+		else:
+			mari.utils.message('An error occured during the automatic fix.\nYou may not have write permissions to the Script Folder\nCheck Python Console for details.')
 
-    	self.close()
+		self.close()
 
 
 
 # ------------------------------------------------------------------------------
 
 def extPackLoad():
-    '''Loads MARI Extension Pack'''
+	'''Loads MARI Extension Pack'''
 
-    # Checking MARI Version, if False Error
-    mari_version = checkMariVersion()
-    if not mari_version[0]:
-    	print ' '
-    	print '  Mari Extension Pack ' + current_extension_pack
-    	print '     DID NOT LOAD'
-    	print ' '
-    	print 'Reason: Incompatible Mari Version'
-    	print ' '
-    	return
+	# Checking MARI Version, if False Error
+	mari_version = checkMariVersion()
+	if not mari_version[0]:
+		print ' '
+		print '  Mari Extension Pack ' + current_extension_pack
+		print '     DID NOT LOAD'
+		print ' '
+		print 'Reason: Incompatible Mari Version'
+		print ' '
+		return
 
-    # Checking Script Conflicts & jtools init state
-    script_version = versionConflictCheck()
+	# Checking Script Conflicts & jtools init state
+	script_version = versionConflictCheck()
 
-    # Script Version Check Dict
-    # [0] General Conflict (Scripts or Shaders)
-    # [1] Script Error Paths
-    # [2] Shader Error Paths
-    # [3] Script Conflict Exists
-    # [4] Shader Conflict Exists
+	# Script Version Check Dict
+	# [0] General Conflict (Scripts or Shaders)
+	# [1] Script Error Paths
+	# [2] Shader Error Paths
+	# [3] Script Conflict Exists
+	# [4] Shader Conflict Exists
 
-    jtools = detectJTOOLS()
-
-
-    if script_version[0] or jtools[1]:
-    	# Location of JTOOLS INIT, empty if it doesn't exist
-    	jtools_path = jtools[1]
-
-    	# if JTOOLS Check returns TRUE means that there are Modules
-    	# within its __init__ file that need to be disabled
-    	if jtools[0]:
-    		print 'Conflicting Modules from JTOOLS above need to be removed from'
-    		print 'File: ' + jtools[1]
-    		print ''
+	jtools = detectJTOOLS()
 
 
-    	print ''
-    	print '#####################################################'
-    	print ''
-    	print '	       MARI EXTENSION PACK DID NOT LOAD'
-    	print '         See printout above to resolve'
-    	print ''
-    	print '#####################################################'
+	if script_version[0] or jtools[1]:
+		# Location of JTOOLS INIT, empty if it doesn't exist
+		jtools_path = jtools[1]
+
+		# if JTOOLS Check returns TRUE means that there are Modules
+		# within its __init__ file that need to be disabled
+		if jtools[0]:
+			print 'Conflicting Modules from JTOOLS above need to be removed from'
+			print 'File: ' + jtools[1]
+			print ''
 
 
-    	versionConflictUI(script_version,jtools_path).exec_()
-
-    	return
-
-    else:
-        # Temporary checking for MARI 3 Version. Since there are known issues with Mari 3 & Extension Pack causing crashes and a lot of bad stuff,
-        # Extension Pack Python tools are not loaded for Mari 3. Don't want to make Mari more unstable then it already is.
-        mari_version_3 = checkMariVersion3()
-        if not mari_version_3[0]:
-            import Shaders.RegisterCustomShaders
-
-            # End Console Printout partial success:
-            print '#####################################################'
-            print 'Mari Extension Pack ' + current_extension_pack + ' loaded using Nodes/Shaders only (Mari 3 incompatibility)'
-            print '#####################################################'
-            print '            http://mari.ideascale.com'
-            print ''
+		print ''
+		print '#####################################################'
+		print ''
+		print '	       MARI EXTENSION PACK DID NOT LOAD'
+		print '         See printout above to resolve'
+		print ''
+		print '#####################################################'
 
 
-        else:
-            import Tools
-            import Shaders.RegisterCustomShaders
+		versionConflictUI(script_version,jtools_path).exec_()
 
-            # End Console Printout success:
-            print '#####################################################'
-            print 'Mari Extension Pack ' + current_extension_pack + ' finished loading successfully'
-            print '#####################################################'
-            print '            http://mari.ideascale.com'
-            print ''
+		return
+
+	else:
+
+		import Tools
+		import Shaders.RegisterCustomShaders
+
+	# End Console Printout success:
+
+	print '#####################################################'
+	print 'Mari Extension Pack ' + current_extension_pack + ' finished loading successfully'
+	print '#####################################################'
+	print '            http://mari.ideascale.com'
+	print ''
 
 
 
