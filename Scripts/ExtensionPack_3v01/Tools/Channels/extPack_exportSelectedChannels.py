@@ -278,11 +278,16 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
         #Add radio button layout.
         res_box_layout = QtGui.QGridLayout()
         res_label = QtGui.QLabel("Export Resolution:")
+        res_label.setToolTip('Allows you do export your Channel non-destructively at a different resolution\nthan it is in your Mari project')
 
         self.res_full = QtGui.QRadioButton('Full')
+        self.res_full.setToolTip('Exports your Channel at 100% resolution')
         self.res_halve = QtGui.QRadioButton('Half')
+        self.res_halve.setToolTip('Exports your Channel at 50% resolution')
         self.res_quarter = QtGui.QRadioButton('Quarter')
+        self.res_quarter.setToolTip('Exports your Channel at 25% resolution')
         self.res_eighth = QtGui.QRadioButton('Eighth')
+        self.res_eighth.setToolTip('Exports your Channel at 12.5% resolution')
 
         res_box_layout.addWidget(res_label,0,0)
         res_box_layout.addWidget(self.res_full,0,1)
