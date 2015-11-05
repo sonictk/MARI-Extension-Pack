@@ -1,0 +1,100 @@
+<!--
+================================================================================
+== Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
+== Based on original Algorithm by Tanner Helland.
+================================================================================
+== File: JK_ColorTemperature.xml
+== Description: Adjustment Layer to modify color temperature
+================================================================================
+== Original Code Implementation: Renaud Bédard
+== MARI Implementation: Jens Kafitz | Mari Ideascale
+== Web: www.campi3d.com
+== Web: www.mari.ideascale.com
+== Email: MariIdeas@campi3d.com
+================================================================================
+== Modified Date: May, 17 2015
+================================================================================
+== Redistribution and use in source and binary forms, with or without
+== modification, are permitted provided that the following conditions are met:
+==
+== 1. Redistributions of source code must retain the above copyright
+== notice, this list of conditions and the following disclaimer.
+==
+== 2. Redistributions in binary form must reproduce the above copyright
+== notice, this list of conditions and the following disclaimer in the
+== documentation and/or other materials provided with the distribution.
+==
+== 3. Neither the name of the copyright holder nor the names of its
+== contributors may be used to endorse or promote products derived from
+== this software without specific prior written permission.
+==
+== THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+== IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+== THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+== PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+== CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+== EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+== PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+== OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+== WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+== OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+== ADVISED OF HE POSSIBILITY OF SUCH DAMAGE.
+================================================================================
+-->
+
+<Node>
+    <ID>JK_ColorTemperature</ID>
+    <DefaultName>Color Temperature</DefaultName>
+    <Category>/Custom/</Category>
+    <Tags>
+        <Tag>_adjustment</Tag>
+    </Tags>
+    <Inputs>
+        <Input Name="Input" PreferredInput='1'/>
+    </Inputs>
+    <Attributes>
+        <!--===============================================================================================================-->
+        <Attribute Name="Temperature" PrettyName="Temperature (Kelvin)" Group="" Type="double" Min="1500" Max="40000" >6500.0</Attribute>
+        <Attribute Name="TemperatureFine" PrettyName="Offset (Kelvin)" Group="" Type="double" Min="-1000" Max="1000.0" >0.0</Attribute>
+        <Attribute Name="LumPres" PrettyName="Luminance Preservation" Group="" Type="double" Min="0.0" Max="1">1.0</Attribute>
+        <Attribute Name="sRGB" PrettyName="sRGB Mode" Type="bool" Min="true" Max="false">true</Attribute>
+        <!--===============================================================================================================-->
+    </Attributes>
+    <Contexts>
+        <Context Type="NodeGraphView">
+            <Inputs>
+                <Input Name="Input" ><Pos>0,-50</Pos></Input>
+            </Inputs>
+        </Context>
+            <Context Type="GLSL">
+            <Shader>
+                <Inputs>
+                    <Input Name="Input"><Default>vec4(1,1,1,1)</Default></Input>
+                </Inputs>
+                <Body><![CDATA[
+
+               float Kelvin = 6500.0;
+
+                // swapping lookup to be more like lightroom
+                if ($Temperature+$TemperatureFine > 6500.0) {
+                     Kelvin = remap($Temperature + $TemperatureFine,40000.0, 6500.000001, 1500.0, 6499.999999, 1.0);
+                     }
+                else if ($Temperature+$TemperatureFine < 6500.0) {
+                     Kelvin = remap($Temperature + $TemperatureFine, 6499.999999, 1500.0, 6500.000001, 40000.0, 1.0);
+                     }
+
+
+                vec4 temperatureRGB = vec4( Kelvin2Rgb(Kelvin),1.0);
+                     temperatureRGB = mix(sRgb2Linear(temperatureRGB),temperatureRGB,float($sRGB));
+                float original_lum = Luminance(#Input.rgb);
+                vec4 blended = #Input * temperatureRGB;
+                vec4 HSL = mriRgb2Hsl(blended);
+                vec4 lumPreservedRGB = mriHsl2Rgb(vec4(HSL.r, HSL.g, original_lum, 1.0));
+                Output = vec4(mix(blended.rgb,lumPreservedRGB.rgb,$LumPres),#Input.a);
+
+
+                ]]></Body>
+            </Shader>
+        </Context>
+    </Contexts>
+</Node>

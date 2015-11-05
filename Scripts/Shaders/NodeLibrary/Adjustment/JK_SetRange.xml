@@ -1,0 +1,114 @@
+<!--
+================================================================================
+== Mari Ideascale Procedural Library
+== Copyright (c) 2013 Jens Kafitz. All Rights Reserved.
+================================================================================
+== File: JK_SetRange.xml
+== Description: Simple remap node with optional components like rgba remapping.
+================================================================================
+== Author: Jens Kafitz | Mari Ideascale
+== Web: www.campi3d.com
+== Web: www.mari.ideascale.com
+== Email: MariIdeas@campi3d.com
+================================================================================
+== Modified Date: June, 16 2014
+================================================================================
+== Redistribution and use in source and binary forms, with or without
+== modification, are permitted provided that the following conditions are met:
+==
+== 1. Redistributions of source code must retain the above copyright
+== notice, this list of conditions and the following disclaimer.
+==
+== 2. Redistributions in binary form must reproduce the above copyright
+== notice, this list of conditions and the following disclaimer in the
+== documentation and/or other materials provided with the distribution.
+==
+== 3. Neither the name of the copyright holder nor the names of its
+== contributors may be used to endorse or promote products derived from
+== this software without specific prior written permission.
+==
+== THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+== IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+== THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+== PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+== CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+== EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+== PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+== OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+== WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+== OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+== ADVISED OF HE POSSIBILITY OF SUCH DAMAGE.
+================================================================================
+-->
+
+<Node>
+    <ID>Set Range</ID>
+    <DefaultName>Set Range</DefaultName>
+    <Category>/Custom/</Category>
+    <Tags>
+        <Tag>_adjustment</Tag>
+    </Tags>
+    <Inputs>
+        <Input Name="Input"></Input>
+    </Inputs>
+    <Attributes>
+        <!--===============================================================================================================-->
+        <Attribute Name="oMin" PrettyName="OldMin" Group="" Type="float" >0.0</Attribute>
+        <Attribute Name="oMax" PrettyName="OldMax" Group="" Type="float" >1.0</Attribute>
+        <Attribute Name="nMin" PrettyName="NewMin" Group="" Type="float" >0.0</Attribute>
+        <Attribute Name="nMax" PrettyName="NewMax" Group="" Type="float" >1.0</Attribute>
+        <!--===============================================================================================================-->
+        <Attribute Name="sMult" PrettyName="MultiplyScale" Group="Extra Attributes" Type="float" >1.0</Attribute>
+        <Attribute Name="useClamp" PrettyName="Clamp Values" Group="Extra Attributes" Type="bool" Min="false" Max="true">false</Attribute>
+        <!--===============================================================================================================-->
+        <Attribute Name="Red" Type="bool" Group="Channels" Min="true" Max="false">true</Attribute>
+        <Attribute Name="Green" Type="bool" Group="Channels" Min="true" Max="false">true</Attribute>
+        <Attribute Name="Blue" Type="bool" Group="Channels" Min="true" Max="false">true</Attribute>
+        <Attribute Name="Alpha" Type="bool" Group="Channels" Min="true" Max="false">false</Attribute>
+        <!--===============================================================================================================-->
+    </Attributes>
+    <Contexts>
+        <Context Type="NodeGraphView">
+            <Inputs>
+                <Input Name="Input"><Pos>0,-50</Pos></Input>
+            </Inputs>
+        </Context>
+        <Context Type="GLSL">
+            <Shader>
+                <Inputs>
+                    <Input Name="Input"><Default>vec4(1,1,1,1)</Default></Input>
+                </Inputs>
+                <Body><![CDATA[
+
+
+
+                vec4 old = (#Input.rgba - vec4($oMin)) / (vec4($oMax) - vec4($oMin));
+                vec4 new = ((vec4($nMax) - vec4($nMin)) * old.rgba) + vec4($nMin) ;
+                vec4 scale = vec4(new * vec4($sMult));
+
+                if ($useClamp == true)
+                    {
+                    Output = vec4(
+                                  $Red   ? clamp(scale.r,0.0,1.0) : #Input.r,
+                                  $Green ? clamp(scale.g,0.0,1.0) : #Input.g,
+                                  $Blue  ? clamp(scale.b,0.0,1.0) : #Input.b,
+                                  $Alpha ? clamp(scale.a,0.0,1.0) : #Input.a
+                                  );
+
+                }
+
+                else
+                    {
+                    Output = vec4(
+                                  $Red   ? scale.r : #Input.r,
+                                  $Green ? scale.g : #Input.g,
+                                  $Blue  ? scale.b : #Input.b,
+                                  $Alpha ? scale.a : #Input.a
+                                 );
+                    }
+
+                ]]></Body>
+            </Shader>
+        </Context>
+    </Contexts>
+</Node>

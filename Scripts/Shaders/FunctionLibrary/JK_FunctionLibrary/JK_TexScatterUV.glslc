@@ -1,0 +1,944 @@
+////////////////////////////////////////////////////////////////////////////////
+// Texture Scatter UV
+// Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
+////////////////////////////////////////////////////////////////////////////////
+// File: JK_TexScatterUV.glslc
+// Description: UV Based Texture Bombing Function(s) for use in JK_TextureScatter_UV.
+////////////////////////////////////////////////////////////////////////////////
+// Author: Jens Kafitz | Mari Ideascale
+// Web: www.campi3d.com
+// Web: www.mari.ideascale.com
+// Email: MariIdeas@campi3d.com
+////////////////////////////////////////////////////////////////////////////////
+// Modified Date: December 21, 2014
+////////////////////////////////////////////////////////////////////////////////
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are met:
+//
+// 1. Redistributions of source code must retain the above copyright
+// notice, this list of conditions and the following disclaimer.
+//
+// 2. Redistributions in binary form must reproduce the above copyright
+// notice, this list of conditions and the following disclaimer in the
+// documentation and/or other materials provided with the distribution.
+//
+// 3. Neither the name of the copyright holder nor the names of its
+// contributors may be used to endorse or promote products derived from
+// this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+// IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+// THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+// PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+// CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+// EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+// PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+// OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+// WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+// OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+// ADVISED OF HE POSSIBILITY OF SUCH DAMAGE.
+////////////////////////////////////////////////////////////////////////////////
+
+
+// ------------------------------------------------------------------------
+// NOTES + TO DO 
+// ------------------------------------------------------------------------
+/*
+
+Once Foundry fixes INCLUDE Bug on Windows, move out forward declarations of functions
+
+A Contact Occlusion Version exists at commit 1db5928ecc0e57aa109c2a6b16ccc1567dcaecde
+but was removed due to performance and stability implications
+
+
+*/
+// ------------------------------------------------------------------------
+// OPENGL VERSION
+// ------------------------------------------------------------------------
+
+#version 330
+
+
+// ------------------------------------------------------------------------
+// Forward declaration from other files
+// ------------------------------------------------------------------------
+
+
+float Value3D( vec3 P );
+void voronoi(vec3 position, float jitterD, int distype, out float f1, out float f2, out vec3 pos1,
+         out vec3 pos2, out vec3 f1cell, out vec3 f2cell);
+float SimplexPerlin3D(vec3 P);
+
+// for use in voronoi_simple
+float rnd_1d(vec2 x);
+float dist_Squared(float x, float y, float z);
+float softThreshold(float threshold, float bound, float value);
+float remap(float value, float oldMin, float oldMax, float newMin, float newMax, float multiplier);
+
+
+
+// ------------------------------------------------------------------------
+// INCLUDES
+// ------------------------------------------------------------------------
+
+//! include | Noise.glslh
+//! include | Comp.glslh
+
+
+// ------------------------------------------------------------------------
+// MACROS
+// ------------------------------------------------------------------------
+
+#define whichtile(x,freq) (floor((x) * (freq)))
+
+
+// ------------------------------------------------------------------------
+// CUSTOM FUNCTIONS
+// ------------------------------------------------------------------------
+
+//1D Random Function with Thresholding
+float rnd1d_threshold(float x,float lo,float hi,float threshold,float threshold_bound)
+{
+    uint n = floatBitsToUint(x * 214013.0);
+    n = n * (n * n * 15731u + 789221u);
+    n = (n >> 9u) | 0x3F800000u;
+
+    float result =  2.0 - uintBitsToFloat(n);
+    result = softThreshold(threshold,threshold_bound,result);
+    return (smoothstep(.25, .75, (result)) * ((hi) - (lo)) + (lo));
+}
+
+// voronoi cellular pattern generator from DT3D_CellularNoise.glslc 
+// but a little simplified for better performance and with a threshold.
+void voronoi_simple(vec3 position, float jitterD,out vec3 f1cell,float threshold,float threshold_bound)
+{
+    vec3 thiscell = floor(position)+0.5f;
+    float i, j, k, dist;
+
+    vec3 c;
+    for(i = -1; i <= 1; i += 1)
+    {
+        for(j = -1; j <= 1; j += 1)
+        {
+            for(k = -1; k <= 1; k += 1)
+            {
+                vec3 testcell = thiscell  + vec3(i,j,k);
+                vec3 randomUVW = testcell * vec3(0.037f, 0.119f, .093f);
+                float cellnoise = (rnd_1d(randomUVW.xy+randomUVW.z+0.2),rnd_1d(randomUVW.xy+randomUVW.z+0.5),rnd_1d(randomUVW.xy+randomUVW.z+0.3));
+                vec3 pos = testcell + jitterD*(cellnoise-0.5);
+                vec3 offset = pos - position;
+                dist = dist_Squared(offset.x,offset.y,offset.z);
+   
+                f1cell = vec3( softThreshold(threshold,threshold_bound,cellnoise) );      
+
+            
+            }
+        }
+    }
+}
+
+
+
+// simple Noise based cells
+float udn(float x,float scale,float lo,float hi)
+{ 
+  vec3 x_3 = vec3(x*scale);
+  float valnoi = Value3D(x_3);
+  float result = (smoothstep(.25, .75, (valnoi)) * ((hi) - (lo)) + (lo));
+  return result;
+}
+
+
+// A very expensive, voronoi based noise for seeding. Currently in use
+// for rotation and jitter. Potentially switch jitter to a less expensive one !
+float udnVor(float x,float scale,float lo,float hi, float threshold, float threshold_bound)
+{ 
+  vec3 x_3 = vec3(x*scale);
+  float outf1,outf2;
+  vec3 pos1,pos2,f1cell,f2cell;
+  voronoi_simple(x_3,1.0,f1cell,threshold,threshold_bound);
+  float remap = f1cell.r;
+  float result = (smoothstep(.25, .75, (remap)) * ((hi) - (lo)) + (lo));
+  return result;
+}
+
+
+
+
+// ------------------------------------------------------------------------------------------------------
+// ---------------------------MAIN TEXTURE SCATTER------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------                      
+                       
+
+
+vec4 JK_texScatterUV( 
+
+          vec2 UV,
+          float scale,
+          float ScaleRnd,
+          float ScaleRndWeight,
+          float frequency,
+          float layers,
+          float noise_scale_A,
+          bool forceTile,
+          float jitter_scale,
+          float rot_min,
+          float rot_max,
+          int BlendMode,
+          vec4 TexSize,
+          vec4 RndSize,
+          float HSVSeed,
+          float ValueOffset,
+          float LayerAttenuation,
+          float A_minH,
+          float A_maxH,
+          float A_minS,
+          float A_maxS,
+          float A_minV,
+          float A_maxV,
+          vec4 HSMix,
+          vec4 ValMix,
+          float clampValues,
+          sampler2D textureA,
+          int textureA_AlphaMode,
+          bool UseMapB,
+          sampler2D textureB,
+          int textureB_AlphaMode,
+          bool UseMapC,
+          sampler2D textureC,
+          int textureC_AlphaMode,
+          bool UseMapD,
+          sampler2D textureD,
+          int textureD_AlphaMode,
+          vec4 Map_Weight,
+          vec4 Clumping,
+          vec4 invert,
+          vec4 Fade,
+          vec4 Hardness,
+          vec4 roundness
+        )
+
+
+
+
+{
+
+// ------------------------------------------------------------------------------------------------------
+//                      Unassigned Variables
+// ------------------------------------------------------------------------------------------------------                      
+                       
+  // Unwrapping combined vec4s into components
+  // Floats were passed through as vec4s to avoid a Mari crash when canceling a bake and restarting it
+
+  float roundnessA = roundness.r;
+  float roundnessB = roundness.g;
+  float roundnessC = roundness.b;
+  float roundnessD = roundness.a;
+
+  float HardnessA = Hardness.r;
+  float HardnessB = Hardness.g;
+  float HardnessC = Hardness.b;
+  float HardnessD = Hardness.a;
+
+  float FadeA = Fade.r;
+  float FadeB = Fade.g;
+  float FadeC = Fade.b;
+  float FadeD = Fade.a;
+
+  float invert_textureA = invert.r;
+  float invert_textureB = invert.g;
+  float invert_textureC = invert.b;
+  float invert_textureD = invert.a;
+
+  float Clumping_MapA = Clumping.r;
+  float Clumping_MapB = Clumping.g;
+  float Clumping_MapC = Clumping.b;
+  float Clumping_MapD = Clumping.a;
+
+  float textureA_weight = Map_Weight.r;
+  float textureB_weight = Map_Weight.g;
+  float textureC_weight = Map_Weight.b;
+  float textureD_weight = Map_Weight.a;
+
+  float HSMixA = HSMix.r;
+  float HSMixB = HSMix.g;
+  float HSMixC = HSMix.b;
+  float HSMixD = HSMix.a;
+
+  float ValMixA = ValMix.r;
+  float ValMixB = ValMix.g;
+  float ValMixC = ValMix.b;
+  float ValMixD = ValMix.a;
+
+  float RndSizeA = RndSize.r;
+  float RndSizeB = RndSize.g;
+  float RndSizeC = RndSize.b;
+  float RndSizeD = RndSize.a;
+
+  float MapASize = TexSize.r;
+  float MapBSize = TexSize.g;
+  float MapCSize = TexSize.b;
+  float MapDSize = TexSize.a;
+
+// -------------------------------------------------------------------
+
+  vec4 layer_color,layer_color_B,layer_color_C,layer_color_D;
+  vec4 layer_color_comb,layer_color_comb_B,layer_color_comb_C;
+  vec4 layer_opac,surface_opac,surface_color;
+  float layer_alpha;
+  float ss, tt,tmps,tmpt;
+  float home_row,home_col;
+  float layer_idx,col_idx,row_idx;
+  float cell_size,half_cell;
+  float col, row;
+  float noi,noi_minor,noi_major,noi_scalrRnd;
+  float rel_s, rel_t;
+  float jitter_s, jitter_t,max_jitter;
+  float center_s, center_t;
+  float sMin, sMax, tMin, tMax;
+  float inBounds;
+  float offset;
+  vec2 square_d;
+  float Falloff,MixVal;
+  float _clumps;
+
+  // Mixes for different Texture Slots
+  float TexMixA,TexMixB,TexMixC,TexMixD;
+  
+
+  // Used for creating the more random distribution when forceTile is turned off
+  // since it gets added to col + row variables it is set to 0 by default and only
+  // gets changed when forceTile is turned off
+  float tmp_layer_idx;
+
+
+// ------------------------------------------------------------------------------------------------------
+//                      Assigned Variables
+// ------------------------------------------------------------------------------------------------------      
+                
+  // quick hack to make it tileable
+  int tmpscale = int(scale);
+  scale = float(tmpscale);
+       
+  float s = UV.x;
+  float t = UV.y;
+  cell_size = (1.0 / (scale)) ;
+  half_cell = cell_size / 2.0;
+  surface_color = vec4(0.0,0.0,0.0,0.0);
+  surface_opac = vec4(0.0,0.0,0.0,1.0);
+  home_col = whichtile(s,scale);
+  home_row = whichtile(t,scale);
+  float seed = noise_scale_A*100;
+  float ScaleRnd_Orig = ScaleRnd;
+
+
+  // Variable for Hue Saturation Shift Mix of each texture slot
+  float HSFinalMix = HSMixA;
+  // Variable for Value Shift Mix of each texture slot
+  float ValFinalMix = ValMixA;
+
+
+// ------------------------------------------------------------------------------------------------------
+//                      ROW/COL/LAYER INDEXING
+// ------------------------------------------------------------------------------------------------------                      
+        
+
+
+  // small offset on layer idx to compensate for precision
+  for (layer_idx = 0.999; layer_idx < layers; layer_idx += 1.0)
+
+    {
+
+
+      noise_scale_A = noise_scale_A + ( layer_idx*(scale/10.125));
+      jitter_scale = jitter_scale + (layer_idx/5.0);
+
+
+
+      // scan current cell and neighbors, 9 cells total
+      for (col_idx = -1.0; col_idx <= 1.0; col_idx += 1.0)
+       	{
+       		for (row_idx = -1.0; row_idx <= 1.0; row_idx += 1.0)
+       			{
+
+       				// determine row and column index, wraparound
+       				rel_s = s;
+       				rel_t = t;
+
+              // Always setting tmp_layer idx to 0 for each loop
+              tmp_layer_idx = 0.0;
+
+              if (forceTile == false)
+
+                {
+                  // Creating a temporary layer idx for use as offset on
+                  // col & row. However with the offset the clumping
+                  // doesn't show up as pronounced so when clumping
+                  // is used I am slowly reverting back to a less random
+                  // distribution (original way):
+                  // This breaks the tiling but generally gives better 
+                  // random distribution. It is being used when ForceTile
+                  // is turned off:
+
+                  tmp_layer_idx = ( ((Clumping_MapA+Clumping_MapB+Clumping_MapC+Clumping_MapD))/4.0);
+                  tmp_layer_idx = ( tmp_layer_idx == 0.0) ? 1.0 : tmp_layer_idx;
+                  tmp_layer_idx = (layer_idx/30)*clamp(tmp_layer_idx,0.0,1.0);
+
+                }
+
+
+					    col = home_col + col_idx + tmp_layer_idx;
+       				
+       				if (col < 0.0 ) 
+       					{
+       						rel_s = s + 1.0;
+       						col = scale - 1.0;
+       					}
+       					
+       				if (col >= scale) 
+       					{
+       						rel_s = s - 1.0;
+       						col = 0.0;
+       					}
+       				
+       				row = home_row + row_idx + tmp_layer_idx;
+
+       				if (row < 0.0 ) 
+       					{
+       						rel_t = t + 1.0;
+       						row = scale - 1.0;
+       					}
+
+       				if (row >= scale) 
+
+       					{
+       						rel_t = t - 1.0;
+       						row = 0.0;
+       					}
+
+ 
+// ------------------------------------------------------------------------------------------------------
+//                     Seeding Value. Used all over the place for rotation, jitter,texture mix etc.
+//                     Improving this to be less repetitve would go a long way
+// ------------------------------------------------------------------------------------------------------    
+
+              noi_major = (Value3D ( vec3(col * noise_scale_A + 123.0, 
+                        row * noise_scale_A - 345.0,
+                        layer_idx * noise_scale_A + 222.0)
+                              ) + 1.0
+                  ) ;
+           
+
+              noi_minor = (SimplexPerlin3D ( vec3(col * noise_scale_A + 0.5, 
+                        row * noise_scale_A * layer_idx + 0.5,
+                        layer_idx * noise_scale_A + 222.0)
+                              ) * noise_scale_A
+                  ) ;
+
+              noi = (Value3D ( vec3(col * noise_scale_A + 123.0, 
+                        row * noise_scale_A - 345.0,
+                        layer_idx * noise_scale_A + 222.0)
+                              ) + noi_minor
+                  ) ;
+
+        
+              noi_scalrRnd = (udnVor( (noi * 12358) * layer_idx,noise_scale_A*layer_idx, 0.0, ScaleRndWeight+0.3,0.01,8.0));
+
+
+              // generic clumping
+              _clumps = rnd_1d(vec2(col+seed,row+seed));
+
+// ------------------------------------------------------------------------------------------------------
+//                      Jitter
+// ------------------------------------------------------------------------------------------------------                      
+                       
+
+       				if ((noi_major + noi_minor) < frequency*10.0)
+       			    {			
+       	          max_jitter = cell_size*0.5;
+
+                  jitter_s = udnVor(noi_major * (1183.127*layer_idx),(jitter_scale+layer_idx)*layer_idx, -max_jitter, max_jitter,0.5,1.0);
+                  jitter_t = udnVor(noi_major * (9999.123*layer_idx),(jitter_scale+layer_idx)*(layer_idx+1.0), -max_jitter, max_jitter,0.5,1.0) ;
+         
+
+// ------------------------------------------------------------------------------------------------------
+//                      Texture Weights/Mixes
+// ------------------------------------------------------------------------------------------------------                      
+
+                  TexMixA = rnd1d_threshold(noi * 7438,0.0,1.0,textureA_weight,0.0);
+    
+                  if (UseMapB) {TexMixB = rnd1d_threshold(noi * 1234,0.0,1.0,textureB_weight,0.0);}
+                  if (UseMapC) {TexMixC = rnd1d_threshold(noi * 2345,0.0,1.0,textureC_weight,0.0);}
+                  if (UseMapD) {TexMixD = rnd1d_threshold(noi * 3456,0.0,1.0,textureD_weight,0.0);}
+
+// ------------------------------------------------------------------------------------------------------
+//                      Cell Centre and Scale Randomization
+// ------------------------------------------------------------------------------------------------------                      
+                     
+
+                  // Scale Randomizer. Generating Mix Values for ScaleRnd based from GlobalScale ScaleRnd
+                  // then mixing the effect based on the ScaleRndMix Values of each Texture Slot.
+                  ScaleRnd = mix( mix(1.0,ScaleRnd_Orig,RndSizeA),ScaleRnd,TexMixA);
+                  if (UseMapB) {ScaleRnd = mix( mix(1.0,ScaleRnd_Orig,RndSizeB),ScaleRnd,TexMixB);}
+                  if (UseMapC) {ScaleRnd = mix( mix(1.0,ScaleRnd_Orig,RndSizeC),ScaleRnd,TexMixC);}
+                  if (UseMapD) {ScaleRnd = mix( mix(1.0,ScaleRnd_Orig,RndSizeD),ScaleRnd,TexMixD);}
+                  float noi_f = smoothstep(noi_scalrRnd,1.0,(ScaleRnd));
+
+
+
+                  //center of texture on surface
+                  center_s = ((col * cell_size) + half_cell + jitter_s);
+                  center_t = ((row * cell_size) + half_cell + jitter_t);
+
+// ------------------------------------------------------------------------------------------------------
+//                      Rotation of each cell
+// ------------------------------------------------------------------------------------------------------                      
+                       
+     					    float x = udn(rel_s,1.0,rel_s,0.0);
+     					    float y = udn(rel_t,1.0,rel_t,0.0);
+     					    
+                  // float rad = radians(udnVor( (noi_minor * 777) * layer_idx,noise_scale_A*layer_idx, rot_min, rot_max,0.5,8.0));
+                  // testing - slightly quicker way to do this:
+                  float rad = radians(rnd1d_threshold( (noi_minor * 777) * layer_idx,rot_min, rot_max,0.5,8.0));
+            
+                  rad = remap(rad,0.0,1.0,-1.0,1.0,1.0);
+     					    float ox = (col * cell_size) + half_cell;
+                  float oy = (row * cell_size) + half_cell;
+     					    tmps = ((x) - (ox)) * cos(rad) - ((y) - (oy)) * sin(rad) + (ox);
+     					    tmpt = ((x) - (ox)) * sin(rad) + ((y) - (oy)) * cos(rad) + (oy);
+
+
+// ------------------------------------------------------------------------------------------------------
+//                      Per Cell Texture Coordinates
+// ------------------------------------------------------------------------------------------------------                      
+                  
+
+       					  //bounds for texture in this layer
+       					  sMin = (center_s - half_cell) ;
+       					  sMax = (center_s + half_cell) ;
+       					  tMin = (center_t - half_cell) ;
+       					  tMax = (center_t + half_cell) ;
+       					     
+       					  // check if the current point on the surface is in the texture area
+       					  inBounds = 1.0;
+       					  if (tmps <= sMin) inBounds = 0;
+       					  if (tmps >= sMax) inBounds = 0;
+       					  if (tmpt <= tMin) inBounds = 0;
+       					  if (tmpt >= tMax) inBounds = 0;
+       			      
+       						if (inBounds == 1.0)
+                    {
+                    
+
+                      // calculate texture coordinates
+                      ss = ( (tmps - sMax)) ;
+                      tt = ( (tmpt - tMax)) ;
+
+                      float ss_c = ( (center_s));
+                      float tt_c = ( (center_t));
+
+                      // UVs for each cell & Texture (A/B/C/D)
+                      vec2 n_uv = vec2(ss,tt) * (scale/noi_f) ;
+                      vec2 n_uv_a = n_uv * MapASize;
+                      vec2 n_uv_b = n_uv * MapBSize;
+                      vec2 n_uv_c = n_uv * MapCSize;
+                      vec2 n_uv_d = n_uv * MapDSize;
+
+
+
+                    
+// ------------------------------------------------------------------------------------------------------
+//                      Start of Texture A,B,C,D
+// ------------------------------------------------------------------------------------------------------                      
+                          
+
+
+                      // get color from texture maps and weigh them per importance
+                      // importance is determined via thresholding function on a vor Noise
+                      // Depending on Mode set, Alphas are evaluated differently via Switches
+                      // However Alphas are always multiplied by the alpha fade off & Alpha Cutout 
+                      // in the end
+
+                      layer_color = texture(textureA,n_uv_a);
+                      layer_color.rgb = mix(layer_color.rgb,vec3(1.0)-layer_color.rgb,invert_textureA);
+
+
+                  
+                      // Determine what Alpha is being used. 1) From loaded image 2) Luminance 3)Inv Luminance
+                      // Please note the texture invert is being evaluated before !
+                      switch (textureA_AlphaMode)
+                        {
+                          case 0:
+                          //From Map
+                          break;
+                          case 1:
+                          //Alpha is Luminance
+                          layer_color.a = dot(vec3(0.2126, 0.7152, 0.0722), layer_color.rgb);
+                          break;
+                          case 2:
+                          //Alpha is Inverted Luminance
+                          layer_color.a = dot(vec3(0.2126, 0.7152, 0.0722), vec3(1.0) - layer_color.rgb);
+                          break;
+                        }
+
+
+                      // ------------------------------- //
+                      //     Alpha Fade Texture A       //
+                      // --------------------------------//  
+
+                      //Square Alpha Fadeoff
+                      Falloff = FadeA+roundnessA*2.0;
+                      square_d = abs(((n_uv_a))+vec2(0.5));
+                      square_d = max(square_d/(1+roundnessA),0.0);
+                      square_d = pow(square_d,vec2(2.0/roundnessA));
+                      MixVal = pow(square_d.x+square_d.y,roundnessA/1.5)*(Falloff*2.0);
+                      MixVal = 1.0-MixVal;
+                      MixVal = float(MixVal)+pow(MixVal*HardnessA,1.0/Falloff);
+                      MixVal = clamp(MixVal,0.0,1.0);
+                      layer_color.a *= MixVal;
+
+                      // Square Alpha Generation to cut off repeating elements due to per Map Scale Offset
+                      square_d = abs(((n_uv_a)));
+                      square_d = pow(square_d,vec2(2000));
+                      MixVal = (square_d.x+square_d.y);
+                      MixVal = 1.0-MixVal;
+                      MixVal = float(MixVal>0.5)+MixVal*2.0;
+                      MixVal = clamp(MixVal,0.0,1.0);
+
+                      layer_color.a *= MixVal;
+
+                      layer_color.a  = clamp(layer_color.a,0.0,1.0);
+
+                      // Applying Clumping for Map
+                      layer_color.a *= softThreshold(Clumping_MapA,0.0,_clumps);
+
+                      // layer_color_Comb_C is what is being accessed int the end
+                      // I always write into _C in the end no matter how many textures are used
+                      layer_color_comb_C = mix(layer_color,vec4(0.0),TexMixA);
+
+        
+                      // --------------------------------------------------------- //
+                      //                     Texture B slot in Use                 //
+                      // ----------------------------------------------------------//                     
+                  
+                      if (UseMapB)
+                        {
+                          layer_color_B = texture(textureB,n_uv_b);
+                          layer_color_B.rgb = mix(layer_color_B.rgb,vec3(1.0)-layer_color_B.rgb,invert_textureB);
+
+
+                          // Determine what Alpha is being used. 1) From loaded image 2) Luminance 3)Inv Luminance
+                          // Please note the texture invert is being evaluated before !
+                          switch (textureB_AlphaMode)
+                            {
+                              case 0:
+                              //From Map
+                              break;
+                              case 1:
+                              //Alpha is Luminance
+                              layer_color_B.a = dot(vec4(0.2126, 0.7152, 0.0722, 0.0), layer_color_B);
+                              break;
+                              case 2:
+                              //Alpha is Inverted Luminance
+                              layer_color_B.a = dot(vec4(0.2126, 0.7152, 0.0722, 0.0), vec4(1.0) - layer_color_B);
+                              break;
+                            }
+
+                          // ------------------------------- //
+                          //     Alpha Fade Texture B       //
+                          // --------------------------------//    
+                                    
+                          //Square Alpha Fadeoff
+                          Falloff = FadeB+roundnessB*2.0;
+                          square_d = abs(((n_uv_b))+vec2(0.5));
+                          square_d = max(square_d/(1+roundnessB),0.0);
+                          square_d = pow(square_d,vec2(2.0/roundnessB));
+                          MixVal = pow(square_d.x+square_d.y,roundnessB/1.5)*(Falloff*2.0);
+                          MixVal = 1.0-MixVal;
+                          MixVal = float(MixVal)+pow(MixVal*HardnessB,1.0/Falloff);
+                          MixVal = clamp(MixVal,0.0,1.0);
+                          layer_color_B.a *= MixVal;
+
+
+                          // Square Alpha Generation to cut off repeating elements due to per Map Scale Offset
+                          square_d = abs(((n_uv_b)));
+                          square_d = pow(square_d,vec2(2000));
+                          MixVal = (square_d.x+square_d.y);
+                          MixVal = 1.0-MixVal;
+                          MixVal = float(MixVal>0.5)+MixVal*2.0;
+                          MixVal = clamp(MixVal,0.0,1.0);
+
+                          layer_color_B.a *= MixVal;
+
+                          layer_color_B.a = clamp(layer_color_B.a,0.0,1.0);
+
+                          // Applying Clumping for Map
+                          layer_color_B.a *= softThreshold(Clumping_MapB,0.0,_clumps);
+                       
+
+                          // the following is used to determine the HSV Shift Amount to be mixed into TextureB
+                          HSFinalMix = mix(HSMixB,HSMixA,TexMixB);
+                          ValFinalMix = mix(ValMixB,ValMixA,TexMixB);
+
+                          layer_color_comb = mix(layer_color_B,layer_color_comb_C,TexMixB);
+                          layer_color_comb_C = layer_color_comb;
+                                 
+                        }
+
+
+                      // --------------------------------------------------------- //
+                      //                      Texture C slot  in Use               //
+                      // ----------------------------------------------------------//                       
+                          
+                      if (UseMapC)
+                        {
+                          layer_color_C = texture(textureC,n_uv_c);
+                          layer_color_C.rgb = mix(layer_color_C.rgb,vec3(1.0)-layer_color_C.rgb,invert_textureC);
+
+                          // Determine what Alpha is being used. 1) From loaded image 2) Luminance 3)Inv Luminance
+                          // Please note the texture invert is being evaluated before !
+                          switch (textureC_AlphaMode)
+                            {
+                              case 0:
+                              //From Map
+                              break;
+                              case 1:
+                              //Alpha is Luminance
+                              layer_color_C.a = dot(vec4(0.2126, 0.7152, 0.0722, 0.0), layer_color_C);
+                              break;
+                              case 2:
+                              //Alpha is Inverted Luminance
+                              layer_color_C.a = dot(vec4(0.2126, 0.7152, 0.0722, 0.0), vec4(1.0) - layer_color_C);
+                              break;
+                            }
+
+                          // ------------------------------- //
+                          //     Alpha Fade Texture C       //
+                          // --------------------------------// 
+
+                          //Square Alpha Fadeoff
+                          Falloff = FadeC+roundnessC*2.0;
+                          square_d = abs(((n_uv_c))+vec2(0.5));
+                          square_d = max(square_d/(1+roundnessC),0.0);
+                          square_d = pow(square_d,vec2(2.0/roundnessC));
+                          MixVal = pow(square_d.x+square_d.y,roundnessC/1.5)*(Falloff*2.0);
+                          MixVal = 1.0-MixVal;
+                          MixVal = float(MixVal)+pow(MixVal*HardnessC,1.0/Falloff);
+                          MixVal = clamp(MixVal,0.0,1.0);
+                          layer_color_C.a *= MixVal;
+
+
+                          // Square Alpha Generation to cut off repeating elements due to per Map Scale Offset
+                          square_d = abs(((n_uv_c)));
+                          square_d = pow(square_d,vec2(2000));
+                          MixVal = (square_d.x+square_d.y);
+                          MixVal = 1.0-MixVal;
+                          MixVal = float(MixVal>0.5)+MixVal*2.0;
+                          MixVal = clamp(MixVal,0.0,1.0);
+
+
+                          layer_color_C.a *= MixVal;
+
+                          layer_color_C.a = clamp(layer_color_C.a,0.0,1.0);
+
+                          // Applying Clumping for Map
+                          layer_color_C.a *= softThreshold(Clumping_MapC,0.0,_clumps);
+
+
+                          // the following is used to determine the HSV Shift Amount to be mixed into TextureC
+                          HSFinalMix = mix(HSMixC,HSFinalMix,TexMixC);
+                          ValFinalMix = mix(ValMixC,ValFinalMix,TexMixC);
+
+                          layer_color_comb_B = mix(layer_color_C,layer_color_comb_C,TexMixC);
+                          layer_color_comb_C = layer_color_comb_B;
+                        }
+
+
+                      // --------------------------------------------------------- //
+                      //                      Texture D slot in Use                //
+                      // ----------------------------------------------------------//                      
+                          
+                      if (UseMapD)
+                        {
+                          layer_color_D = texture(textureD,n_uv_d);
+                          layer_color_D.rgb = mix(layer_color_D.rgb,vec3(1.0)-layer_color_D.rgb,invert_textureD);
+
+                          // Determine what Alpha is being used. 1) From loaded image 2) Luminance 3)Inv Luminance
+                          // Please note the texture invert is being evaluated before !
+                          switch (textureD_AlphaMode)
+                            {
+                              case 0:
+                              //From Map
+                              break;
+                              case 1:
+                              //Alpha is Luminance
+                              layer_color_D.a = dot(vec4(0.2126, 0.7152, 0.0722, 0.0), layer_color_C);
+                              break;
+                              case 2:
+                              //Alpha is Inverted Luminance
+                              layer_color_D.a = dot(vec4(0.2126, 0.7152, 0.0722, 0.0), vec4(1.0) - layer_color_D);
+                              break;
+                            }
+
+                          // ------------------------------- //
+                          //     Alpha Fade Texture D       //
+                          // --------------------------------//                    
+                          
+                        
+                          //Square Alpha Fadeoff
+                          Falloff = FadeD+roundnessD*2.0;
+                          square_d = abs(((n_uv_d))+vec2(0.5));
+                          square_d = max(square_d/(1+roundnessD),0.0);
+                          square_d = pow(square_d,vec2(2.0/roundnessD));
+                          MixVal = pow(square_d.x+square_d.y,roundnessD/1.5)*(Falloff*2.0);
+                          MixVal = 1.0-MixVal;
+                          MixVal = float(MixVal)+pow(MixVal*HardnessD,1.0/Falloff);
+                          MixVal = clamp(MixVal,0.0,1.0);
+                          layer_color_D.a *= MixVal;
+
+
+
+                          // Square Alpha Generation to cut off repeating elements due to per Map Scale Offset
+                          square_d = abs(((n_uv_d)));
+                          square_d = pow(square_d,vec2(2000));
+                          MixVal = (square_d.x+square_d.y);
+                          MixVal = 1.0-MixVal;
+                          MixVal = float(MixVal>0.5)+MixVal*2.0;
+                          MixVal = clamp(MixVal,0.0,1.0);
+
+
+                          layer_color_D.a *= MixVal;
+
+                          layer_color_D.a = clamp(layer_color_D.a,0.0,1.0);
+
+                          // Applying Clumping for Map
+                          layer_color_D.a *= softThreshold(Clumping_MapD,0.0,_clumps);
+
+                          // the following is used to determine the HSV Shift Amount to be mixed into TextureC
+                          HSFinalMix = mix(HSMixD,HSFinalMix,TexMixD);
+                          ValFinalMix = mix(ValMixD,ValFinalMix,TexMixD);
+
+
+                          layer_color_comb_C = mix(layer_color_D,layer_color_comb_C,TexMixD);
+                        }
+                  
+
+// ------------------------------------------------------------------------------------------------------
+//                     random  HSV Shift
+// ------------------------------------------------------------------------------------------------------                      
+                        
+                        
+
+                        layer_color_comb_C = mriRgb2Hsv(layer_color_comb_C);
+                        vec4 orig_color_comb_C =layer_color_comb_C;
+
+                        // Generating Hue/Sat Shift
+                        layer_color_comb_C.r += udnVor(noi * 1234,HSVSeed+(HSVSeed+2.0),A_minH,A_maxH,0.5,1.0);                                       
+                        layer_color_comb_C.g *= udnVor(noi * 2345,HSVSeed,A_minS,A_maxS,0.5,1.0);
+
+                        // mixing Hue Saturation Mix Contribution from each Tex Slot
+                        layer_color_comb_C = mix(orig_color_comb_C,layer_color_comb_C,HSFinalMix); 
+                        
+                        // Generating Val Shift                  
+                        layer_color_comb_C.b *= (udnVor(noi * 3456,HSVSeed-(HSVSeed/4.0),A_minV+ValueOffset,A_maxV+ValueOffset,0.5,1.0)) + ((LayerAttenuation*layer_idx)/layers);                               
+                        
+                        // mixing Value Mix Contribution from each Tex Slot
+                        layer_color_comb_C.b = mix(orig_color_comb_C.b,layer_color_comb_C.b,ValFinalMix); 
+
+                        //testing - a slightly faster way to do this:
+                        // layer_color_comb_C.r += rnd1d_threshold(noi * 1234,A_minH,A_maxH,0.5,1.0);
+                        // layer_color_comb_C.g *= rnd1d_threshold(noi * 2345,A_minS,A_maxS,0.5,1.0);
+                        // layer_color_comb_C.b *= rnd1d_threshold(noi * 3456,A_minV+ValueOffset,A_maxV+ValueOffset,0.5,1.0) + ((LayerAttenuation*layer_idx)/layers);
+
+
+                        layer_color_comb_C = mriHsv2Rgb(layer_color_comb_C);
+                
+
+// ------------------------------------------------------------------------------------------------------
+//                     Per Cell Alpha Generation
+// ------------------------------------------------------------------------------------------------------                      
+                        
+  
+                        // Square Alpha Generation to cut off repeating elements due to Scale Randomization
+                        square_d = abs(((n_uv)));
+                        square_d = pow(square_d,vec2(2000));
+                        MixVal = (square_d.x+square_d.y);
+                        MixVal = 1.0-MixVal;
+                        MixVal = float(MixVal>0.5)+MixVal*2.0;
+                        MixVal = clamp(MixVal,0.0,1.0);
+
+                        // Applying Alpha Cutoff for Scale Randomization
+                        layer_alpha = layer_color_comb_C.a * MixVal;
+
+                        //writing this into vec4 because Comp_Default needs it
+                        layer_opac = vec4(layer_alpha);
+            
+       					        // Creating Alpha based on surface (alpha=0)
+                        // There are some pre-mult issues here when blending layer_opac
+                        // (the vec4 version of layer_alpha) with layer_alpha
+                        surface_opac = Comp_Screen(surface_opac,layer_opac,1.0);
+          
+          
+
+// ------------------------------------------------------------------------------------------------------
+//                      Blend Modes for each Cell
+// ------------------------------------------------------------------------------------------------------                      
+                        
+                        // Combine according to Blend Mode:
+                        switch (BlendMode)
+                          {
+                            case 0:
+                            // OVER
+                            surface_color = Comp_Default(surface_color,layer_color_comb_C,layer_alpha);
+                            break;
+                            case 1:
+                            //ADD
+                            surface_color = Comp_Add(surface_color,layer_color_comb_C,layer_alpha);
+                            break;
+                            case 2:
+                            // SCREEN
+                            surface_color = Comp_Screen(surface_color,layer_color_comb_C,layer_alpha);
+                            break;
+                            case 3:
+                            // MULTIPLY
+                            surface_color = Comp_Multiply(surface_color,layer_color_comb_C,layer_alpha);
+                            break;
+                            case 4:
+                            // SOFT LIGHT
+                             surface_color = Comp_SoftLight(surface_color,layer_color_comb_C,layer_alpha);
+                            break;
+                            case 5:
+                            // HARD LIGHT
+                             surface_color = Comp_HardLight(surface_color,layer_color_comb_C,layer_alpha);
+                            break;
+                            case 6:
+                            // HARD MIX
+                             surface_color = Comp_HardMix(surface_color,layer_color_comb_C,layer_alpha);
+                            break;
+                            case 7:
+                            // OVERLAY
+                             surface_color = Comp_Overlay(surface_color,layer_color_comb_C,layer_alpha);
+                            break;
+                          }
+
+
+
+                    }
+                				
+       	    }		
+        }
+      }
+  }
+
+
+// ------------------------------------------------------------------------------------------------------
+//                      OUTPUT
+// ------------------------------------------------------------------------------------------------------                      
+                        
+
+        vec4 result = mix(surface_color,clamp(surface_color,vec4(0.0),vec4(1.0)),clampValues);
+        return result;
+
+}
+
+

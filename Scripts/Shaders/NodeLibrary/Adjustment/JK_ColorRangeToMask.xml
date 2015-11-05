@@ -1,0 +1,265 @@
+<!--
+================================================================================
+== Mari Ideascale Procedural Library
+== Copyright (c) 2013 Jens Kafitz. All Rights Reserved.
+================================================================================
+== File: JK_ColorRangeToMask.xml
+== Description: Convert a picked color range into a mask layer for texturing.
+================================================================================
+== Author: Jens Kafitz | Mari Ideascale
+== Web: www.campi3d.com
+== Web: www.mari.ideascale.com
+== Email: MariIdeas@campi3d.com
+================================================================================
+== Modified Date: June, 16 2014
+================================================================================
+== Redistribution and use in source and binary forms, with or without
+== modification, are permitted provided that the following conditions are met:
+==
+== 1. Redistributions of source code must retain the above copyright
+== notice, this list of conditions and the following disclaimer.
+==
+== 2. Redistributions in binary form must reproduce the above copyright
+== notice, this list of conditions and the following disclaimer in the
+== documentation and/or other materials provided with the distribution.
+==
+== 3. Neither the name of the copyright holder nor the names of its
+== contributors may be used to endorse or promote products derived from
+== this software without specific prior written permission.
+==
+== THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+== IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+== THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+== PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+== CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+== EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+== PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+== OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+== WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+== OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+== ADVISED OF HE POSSIBILITY OF SUCH DAMAGE.
+================================================================================
+-->
+
+<Node>
+    <ID>ColorRange to Mask</ID>
+    <DefaultName>ColorRange to Mask</DefaultName>
+    <Category>/Custom/</Category>
+    <Tags>
+        <Tag>_adjustment</Tag>
+    </Tags>
+    <Inputs>
+        <Input Name="Input"></Input>
+    </Inputs>
+    <Attributes>
+        <!--===============================================================================================================-->
+        <Attribute Name="preview" PrettyName="Show Background" Group="Preview" Type="bool" Min="true" Max="false">true</Attribute>
+        <Attribute Name="wipe" Group="Preview" Type="float" Min="0.0" Max="1.0">1.0</Attribute>
+        <Attribute Name="inverseBuffer" PrettyName="Reverse Wipe" Group="Preview" Type="bool" Min="true" Max="false">false</Attribute>
+        <Attribute Name="SelectionPreview" PrettyName="Selection Preview" Group="Preview" Type="stringlist">Stencil,Grayscale,Stencil,Black Matte,White Matte</Attribute>
+        <!--===============================================================================================================-->
+        <Attribute Name="AdditiveSlots" PrettyName="Additive Slots" Group="Global" Type="int" Min="0" Max="4">1</Attribute>
+        <Attribute Name="SubtrSlots" PrettyName="Subtractive Slots" Group="Global" Type="int" Min="0" Max="4">0</Attribute>
+        <Attribute Name="weight" PrettyName="+/- bias" Group="Global" Type="float" Min="-4.0" Max="4.0">0.0</Attribute>
+        <Attribute Name="globFuzz" PrettyName="Gain" Group="Global" Type="float" Min="0.0" Max="1.0">0.5</Attribute>
+        <Attribute Name="Invert" PrettyName="Invert" Group="Global" Type="bool" Min="true" Max="false">false</Attribute>
+        <!--===============================================================================================================-->
+        <Attribute Name="Color1" PrettyName="Color A" Group="Additive Selection" Type="color">(1.0,1.0,1.0,1)</Attribute>
+        <Attribute Name="FuzzinessA" PrettyName="Expand A" Group="Additive Selection" Type="float" Min="0.01" Max="1.0">0.5</Attribute>
+        <Attribute Name="Color2" PrettyName="Color B" Group="Additive Selection" Type="color">(1.0,1.0,1.0,1)</Attribute>
+        <Attribute Name="FuzzinessB" PrettyName="Expand B" Group="Additive Selection" Type="float" Min="0.01" Max="1.0">0.5</Attribute>
+        <Attribute Name="Color3" PrettyName="Color C" Group="Additive Selection" Type="color">(1.0,1.0,1.0,1)</Attribute>
+        <Attribute Name="FuzzinessC" PrettyName="Expand C" Group="Additive Selection" Type="float" Min="0.01" Max="1.0">0.5</Attribute>
+        <Attribute Name="Color4" PrettyName="Color D" Group="Additive Selection" Type="color">(1.0,1.0,1.0,1)</Attribute>
+        <Attribute Name="FuzzinessD" PrettyName="Expand D" Group="Additive Selection" Type="float" Min="0.01" Max="1.0">0.5</Attribute>
+        <!--===============================================================================================================-->
+        <Attribute Name="Color5" PrettyName="Color A" Group="Subtractive Selection" Type="color">(1.0,1.0,1.0,1)</Attribute>
+        <Attribute Name="FuzzinessE" PrettyName="Expand A" Group="Subtractive Selection" Type="float" Min="0.01" Max="1.0">0.5</Attribute>
+        <Attribute Name="Color6" PrettyName="Color B" Group="Subtractive Selection" Type="color">(1.0,1.0,1.0,1)</Attribute>
+        <Attribute Name="FuzzinessF" PrettyName="Expand B" Group="Subtractive Selection" Type="float" Min="0.01" Max="1.0">0.5</Attribute>
+        <Attribute Name="Color7" PrettyName="Color C" Group="Subtractive Selection" Type="color">(1.0,1.0,1.0,1)</Attribute>
+        <Attribute Name="FuzzinessG" PrettyName="Expand C" Group="Subtractive Selection" Type="float" Min="0.01" Max="1.0">0.5</Attribute>
+        <Attribute Name="Color8" PrettyName="Color D" Group="Subtractive Selection" Type="color">(1.0,1.0,1.0,1)</Attribute>
+        <Attribute Name="FuzzinessH" PrettyName="Expand D" Group="Subtractive Selection" Type="float" Min="0.01" Max="1.0">0.5</Attribute>
+        <!--===============================================================================================================-->
+        <Attribute Name="Enhance" PrettyName="Enhance Selection" Group="Enhance Selection" Type="bool" Min="true" Max="false">false</Attribute>
+        <Attribute Name="RangeMin" PrettyName="Range Min" Group="Enhance Selection" Type="float" Min="0.0" Max="1.0">0.2</Attribute>
+        <Attribute Name="RangeMax" PrettyName="Range Max" Group="Enhance Selection" Type="float" Min="0.0" Max="1.0">0.3</Attribute>
+        <!--===============================================================================================================-->
+        <Attribute Name="Grade" PrettyName="Grade Mode" Group="Grade Mode" Type="bool" Min="true" Max="false">false</Attribute>
+        <Attribute Name="Hue"        PrettyName="Hue Shift"        Group="Grade Mode" Type="double" Min="-180.0" Max="180.0">0.0</Attribute>
+        <Attribute Name="Saturation" PrettyName="Saturation Scale" Group="Grade Mode" Type="double" Min="0.0" Max="10.0">1.0</Attribute>
+        <Attribute Name="Value"      PrettyName="Value Scale"      Group="Grade Mode" Type="double" Min="0.0" Max="10.0">1.0</Attribute>
+        <Attribute Name="Gamma" Group="Grade Mode" Type="double" Min="0.0" Max="3.0">1.0</Attribute>
+        <Attribute Name="Contrast" Group="Grade Mode" Type="double" Min="0.0" Max="2.0">1.0</Attribute>
+        <Attribute Name="ContrastPivot" PrettyName="Contrast Pivot" Group="Grade Mode" Type="double" Min="0.0" Max="1.0">0.5</Attribute>
+       
+    </Attributes>
+    <Groups>
+        <Group Name="Enhance Selection" Expanded="false"></Group>
+        <Group Name="Subtractive Selection" Expanded="false"></Group>
+    </Groups>
+    <Contexts>
+        <Context Type="NodeGraphView">
+            <Inputs>
+                <Input Name="Input"><Pos>0,-50</Pos></Input>
+            </Inputs>
+        </Context>
+        <Context Type="GLSL">
+            <Shader>
+                <Inputs>
+                    <Input Name="Input"><Default>vec4(1,1,1,1)</Default></Input>
+                </Inputs>
+                <Body><![CDATA[
+
+                vec2 _buffer = _State.ProjectionCoord.xy;
+                float d = (_buffer.x-($wipe-0.005))/(($wipe+0.005)-($wipe-0.005));
+                float d1 = clamp(mix(0.0,1.0,d),0.0,1.0);
+                d = mix(d1,1.0-d1,float($inverseBuffer));
+
+                // SELECTION ENHANCEMENT MIX VARIABLES
+                vec4 trhsv_input = #Input;
+                vec4 trhsv_input_1 = $Color1;
+                vec4 trhsv_input_2 = $Color2;
+                vec4 trhsv_input_3 = $Color3;
+                vec4 trhsv_input_4 = $Color4;
+                vec4 trhsv_input_5 = $Color5;
+                vec4 trhsv_input_6 = $Color6;
+                vec4 trhsv_input_7 = $Color7;
+                vec4 trhsv_input_8 = $Color8;
+
+                if ($Enhance == true)
+                {
+                    float rangeMin = float($RangeMin);
+                    float rangeMax = float($RangeMax);
+
+                    trhsv_input = fullVibrance(#Input,rangeMin,rangeMax,3.5);
+
+                    // Converting Additive Colors
+                    trhsv_input_1 = fullVibrance($Color1,rangeMin,rangeMax,3.5);
+                    trhsv_input_2 =  (float($AdditiveSlots)>1.00) ? fullVibrance($Color2,rangeMin,rangeMax,3.5) : vec4(0.0);
+                    trhsv_input_3 =  (float($AdditiveSlots)>2.00) ? fullVibrance($Color3,rangeMin,rangeMax,3.5) : vec4(0.0);
+                    trhsv_input_4 =  (float($AdditiveSlots)>3.00) ? fullVibrance($Color4,rangeMin,rangeMax,3.5) : vec4(0.0);
+
+                    // Converting Subtractive Colors
+                    if ($SubtrSlots > 0)
+                    {
+                        trhsv_input_5 = fullVibrance($Color5,rangeMin,rangeMax,3.5);
+                        trhsv_input_6 =  (float($SubtrSlots)>1.00) ? fullVibrance($Color6,rangeMin,rangeMax,3.5) : vec4(0.0);
+                        trhsv_input_7 =  (float($SubtrSlots)>2.00) ? fullVibrance($Color7,rangeMin,rangeMax,3.5) : vec4(0.0);
+                        trhsv_input_8 =  (float($SubtrSlots)>3.00) ? fullVibrance($Color8,rangeMin,rangeMax,3.5) : vec4(0.0);
+                    }
+                }
+
+
+                vec4 input_mix_smart = mix(#Input,trhsv_input,float($Enhance));
+
+                float DistanceA = length( input_mix_smart.rgb - trhsv_input_1.rgb);
+                float DistanceB = length( input_mix_smart.rgb - trhsv_input_2.rgb);
+                float DistanceC = length( input_mix_smart.rgb - trhsv_input_3.rgb);
+                float DistanceD = length( input_mix_smart.rgb - trhsv_input_4.rgb);
+
+                float DistanceE = length( input_mix_smart.rgb - trhsv_input_5.rgb);
+                float DistanceF = length( input_mix_smart.rgb - trhsv_input_6.rgb);
+                float DistanceG = length( input_mix_smart.rgb - trhsv_input_7.rgb);
+                float DistanceH = length( input_mix_smart.rgb - trhsv_input_8.rgb);
+
+                float MaskAdd1 = clamp( 2 * ($globFuzz - (DistanceA / $FuzzinessA)), 0.0, 1.0);
+                float MaskAdd2 = clamp( 2 * ($globFuzz - (DistanceB / $FuzzinessB)), 0.0, 1.0);
+                float MaskAdd3 = clamp( 2 * ($globFuzz - (DistanceC / $FuzzinessC)), 0.0, 1.0);
+                float MaskAdd4 = clamp( 2 * ($globFuzz - (DistanceD / $FuzzinessD)), 0.0, 1.0);
+
+                float MaskSub5 = clamp( 2 * ($globFuzz - (DistanceE / $FuzzinessE)), 0.0, 1.0);
+                float MaskSub6 = clamp( 2 * ($globFuzz - (DistanceF / $FuzzinessF)), 0.0, 1.0);
+                float MaskSub7 = clamp( 2 * ($globFuzz - (DistanceG / $FuzzinessG)), 0.0, 1.0);
+                float MaskSub8 = clamp( 2 * ($globFuzz - (DistanceH / $FuzzinessH)), 0.0, 1.0);
+
+                float MaskAdd[4] = float[4](MaskAdd1,MaskAdd2,MaskAdd3,MaskAdd4);
+                float MaskSub[4] = float[4](MaskSub5,MaskSub6,MaskSub7,MaskSub8);
+
+                float resultAdd,resultSub;
+
+                for (int i = 0; i< $AdditiveSlots; ++i)
+                {
+                    resultAdd += MaskAdd[i];
+                }
+
+                for (int i = 0; i< $SubtrSlots; ++i)
+                {
+                    resultSub += MaskSub[i];
+                }
+
+                float weightPlus = (float($weight) - 4.0) / - 2.0 +1.0;
+                float weightMinus =  (float($weight) + 4.0) / 2.0 + 1.0;
+
+                float result = clamp(((resultAdd*weightPlus/2.0) - (resultSub*weightMinus/2.0)),0.0,1.0);
+
+                vec3 background = #Input.rgb;
+
+                float _range = (clamp(result,0.0,1.0));
+                _range = mix(_range,1.0-_range,float($Invert));
+
+                float selectionType;
+                float preview = float($preview);
+                float rangeRes = (1.0-_range);
+
+                if ($preview)
+                {
+                    switch($SelectionPreview)
+                    {
+                        //Grayscale
+                        case 0:
+                        selectionType = 0.0;
+                        _range = _range;
+                        break;
+
+                        //Stencil
+                        case 1:
+                        selectionType = rangeRes*(preview);
+                        _range = _range;
+                        break;
+
+                        //Black Matte
+                        case 2:
+                        selectionType = clamp( (1.0-rangeRes),0.0,1.0)*(preview);
+                        _range = 0.0;
+                        break;
+
+                        //White Matte
+                        case 3:
+                        selectionType = clamp( (1.0-rangeRes),0.0,1.0)*(preview);
+                        _range = 1.0;
+                        break;
+                    }
+                }
+
+                vec3 range = vec3(_range);
+                range = mix(range,background,selectionType);
+
+                vec3 previewSplit = mix(range,background,d);
+                vec4 SelectionResult = vec4 (mix(range,previewSplit,preview),#Input.a);
+
+                if ($Grade)
+                {
+                    vec4 HSV = mriRgb2Hsv(#Input);
+                    bool Chromatic = 0.0 < HSV.g;
+                    HSV.r += $Hue;
+                    HSV.r = fract(HSV.r / 360.0) * 360.0;
+                    HSV.g *= $Saturation;
+                    HSV.b *= $Value;
+                    vec4 colorCorrect = Chromatic ? mriHsv2Rgb(HSV) : vec4(vec3(HSV.b), HSV.a);
+                    for (int i = 0; i != 3; ++i) {
+                    colorCorrect[i] = colorCorrect[i] > 0 ? pow(colorCorrect[i], 1.0/$Gamma) : colorCorrect[i];
+                    colorCorrect = (colorCorrect-vec4($ContrastPivot))*$Contrast+vec4($ContrastPivot);
+                    }
+                    SelectionResult = mix(#Input,colorCorrect,_range);
+
+                }
+                
+                Output = SelectionResult;
+
+                ]]></Body>
+            </Shader>
+        </Context>
+    </Contexts>
+</Node>
