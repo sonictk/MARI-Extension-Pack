@@ -24,6 +24,8 @@
 #  - Remembering of Settings
 #  - Path Field Dialog and Folder Creation System
 # ------------------------------------------------------------------------------
+# If you are reading this and you want to understand what is going on - good luck and sorry for the mess.
+# ------------------------------------------------------------------------------
 # DISCLAIMER & TERMS OF USE:
 #
 # Copyright (c) The Foundry 2014.
@@ -65,10 +67,13 @@ import inspect
 
 
 version = "3.0"     #UI VERSION
+Settings_Group = "Export_Selected_Channels_" + version    #The Settings Group in the Mari Config File
 
 USER_ROLE = 34          # PySide.Qt.UserRole
 CHANNEL_NODE = None     # A Global Channel Variable for dynamically resized Channel Nodes
 CHANNEL_DUP = None      # A Global Channel Variable for dynamically resized Channel Objects
+EXPORT_SELECTED = False # A Global Variable for Export Selected Patches
+EXPORT_PATH_DICT = {}   # A Dictionary to log all exported File paths if post processing is required
 
 
 # ------------------------------------------------------------------------------
@@ -220,7 +225,6 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
         displayAllObjBox.setToolTip('If ON, all channels from all objects in the project will be shown')
         displayAllObjBox.clicked.connect(lambda: listAllObjects(self.channel_list,currentObjChannels,displayAllObjBox.isChecked()))
 
-
         #Add export everything check box
         self.export_everything_box = QtGui.QCheckBox('Export Everything')
         self.export_everything_box.setToolTip('Exports all Channels for all Objects')
@@ -234,12 +238,19 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
 
 
         #Add middle group layout and check boxes
-        middle_checkbox_group_layout = QtGui.QHBoxLayout()
+        middle_checkbox_group_layout = QtGui.QGridLayout()
 
         self.export_only_modified_textures_box = QtGui.QCheckBox('Only Modified Textures')
-        self.export_only_modified_textures_box.setToolTip('Exports only modified UDIMs. Requires at least one previous export with this tool')
+        self.export_only_modified_textures_box.setToolTip('Exports only modified UDIMs. Requires at least one previous export with this tool\nPlease note this is only considered when exporting all Patches.\nWhen exporting only selected patches, this setting is ignored.')
         self.export_only_modified_textures_box.setChecked(False)
-        middle_checkbox_group_layout.addWidget(self.export_only_modified_textures_box)
+
+        self.run_postprocessing_box = QtGui.QCheckBox('Execute Post Process Commands')
+        self.run_postprocessing_box.setToolTip('When on, any post process script specified\nunder "Post Process" Dialog will be executed')
+        self.run_postprocessing_box.setChecked(False)
+
+        middle_checkbox_group_layout.addWidget(self.export_only_modified_textures_box,0,0)
+        middle_checkbox_group_layout.addWidget(self.run_postprocessing_box,0,1)
+
         modified_box_group.setLayout(middle_checkbox_group_layout)
 
         #Add check box layout.
@@ -298,22 +309,40 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
 
         res_box_group.setLayout(res_box_layout)
 
-
         #Add widget groups to main layout
         main_layout.addWidget(top_group)
         main_layout.addWidget(modified_box_group)
         main_layout.addWidget(options_box_group)
         main_layout.addWidget(res_box_group)
 
-        # Add OK Cancel buttons
-        self.button_box = QtGui.QDialogButtonBox()
-        self.button_box.setOrientation(QtCore.Qt.Horizontal)
-        self.button_box.setStandardButtons(QtGui.QDialogButtonBox.Ok | QtGui.QDialogButtonBox.Cancel)
-        self.button_box.button(QtGui.QDialogButtonBox.Ok).clicked.connect(self._checkInput)
-        self.button_box.button(QtGui.QDialogButtonBox.Cancel).clicked.connect(self.reject)
+        #Add check box layout.
+        button_layout = QtGui.QHBoxLayout()
 
-        #Add bottom layout to main layout and set main layout to dialog's layout
-        main_layout.addWidget(self.button_box)
+        # Add Export, Cancel and Script buttons
+        self.ok_btn = QtGui.QPushButton('Export All Patches')
+        self.ok_sel_btn = QtGui.QPushButton('Export Selected Patches')
+        self.ok_sel_btn.setToolTip('Please note that "Only Modified Textures" Setting is ignored\nand all selected patches will be exported')
+
+        self.cancel_btn = QtGui.QPushButton('Cancel')
+        self.script_btn = QtGui.QPushButton('Post Process')
+        self.script_btn.setToolTip('Allows you to set up a series of shell commands\nthat should be run on the exported channels')
+
+
+        self.ok_btn.clicked.connect(self._checkInput)
+        self.ok_sel_btn.clicked.connect(self._exportSelectedPatches)
+        self.ok_sel_btn.clicked.connect(self._checkInput)
+
+        self.cancel_btn.clicked.connect(self.reject)
+        self.script_btn.clicked.connect(self._CommandUI)
+
+        button_layout.addWidget(self.script_btn)
+        button_layout.addStretch()
+        button_layout.addWidget(self.ok_btn)
+        button_layout.addWidget(self.ok_sel_btn)
+        button_layout.addWidget(self.cancel_btn)
+
+        # main_layout.addWidget(button_layout)
+        main_layout.addLayout(button_layout)
         self.setLayout(main_layout)
 
         #calling once to cull the object list, whole thing doesn't really make for a snappy interface appearance
@@ -326,7 +355,7 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
 
         for name, obj in inspect.getmembers(self):
 
-            self.SETTINGS.beginGroup("Export_Selected_Channels_" + version)
+            self.SETTINGS.beginGroup(Settings_Group)
             if isinstance(obj, QtGui.QLineEdit):
                 state = None
                 if self.dialog_mode == 'flattened':
@@ -349,7 +378,7 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
 
 
         for name, obj in inspect.getmembers(self):
-            self.SETTINGS.beginGroup("Export_Selected_Channels_" + version)
+            self.SETTINGS.beginGroup(Settings_Group)
 
             if isinstance(obj, QtGui.QCheckBox):
                 state_string = self.SETTINGS.value(name)
@@ -446,6 +475,12 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
     #Set the path line edit box text to be the path provided
     def _setPath(self, path):
         self.path_line_edit.setText(path)
+
+    #Are you in Export Selected Patches Mode ?
+    def _exportSelectedPatches(self):
+        global EXPORT_SELECTED
+        EXPORT_SELECTED = True
+
 
     #Check path and template will work, check if export everything box is ticked if not make sure there are some channels to export
     def _checkInput(self):
@@ -563,6 +598,15 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
         elif self.res_eighth.isChecked():
             return 8
 
+    #Get Post Processing Checkbox State (bool)
+    def _getPostProcess(self):
+        return self.run_postprocessing_box.isChecked()
+
+    # launches the UI for the Command Line Tools
+    def _CommandUI(self):
+        cmd_dialog = PostProcessUI()
+        cmd_dialog.exec_()
+
 # ------------------------------------------------------------------------------
 
 class ChannelsToExportList(QtGui.QListWidget):
@@ -625,7 +669,6 @@ def listAllObjects(channel_list, cur_obj_channels, showAll):
             item = channel_list.item(index)
             item.setHidden(True)
 
-
 # ------------------------------------------------------------------------------
 def _updateExportFilter(export_filter_box, export_list):
     """For each item in the export list display, set it to hidden if it doesn't match the filter text."""
@@ -635,7 +678,6 @@ def _updateExportFilter(export_filter_box, export_list):
         item_text_lower = item.text().lower()
         matches = all([word in item_text_lower for word in match_words])
         item.setHidden(not matches)
-
 
 # ------------------------------------------------------------------------------
 class InfoUI(QtGui.QMessageBox):
@@ -676,13 +718,15 @@ class createResizedChannel(object):
         # Current Scene Data
         current_channel = channel
         current_channel_UUID = current_channel.uuid()
-        current_geo = mari.geo.current()
+        current_geo = channel.geoEntity()
         current_graph = current_geo.nodeGraph()
         nodelist = current_graph.nodeList()
         channel_node = None
         node_id = -1
 
         # searching for channel node
+        # while I could use Channel.ChannelNode to get the corresponding Node I need the
+        # Number of the Channel Node in the List of Nodes so going the hard way
         for node in nodelist:
             node_id += 1
             if node.uuid() == current_channel_UUID:
@@ -704,14 +748,14 @@ class createResizedChannel(object):
 
         # Finding Channel corresponding to new Channel node
         node_uuid = CHANNEL_NODE.uuid()
-        self.ResizedChannel = findChannelFromUUID(node_uuid)
+        self.ResizedChannel = findChannelFromUUID(node_uuid,current_geo)
 
 
         # Resizing new Channel to target resolution dependency
         index_ls = []
         size_var = mari.ImageSet.SIZE_256
 
-        for patch in mari.geo.current().patchList():
+        for patch in current_geo.patchList():
             index = patch.uvIndex()
             index_ls = [index,]
             height = self.ResizedChannel.width(index)
@@ -740,9 +784,9 @@ def setNodeFromSignal(Node):
     global CHANNEL_NODE
     CHANNEL_NODE = Node
 
-def findChannelFromUUID(uuid):
+def findChannelFromUUID(uuid,geo):
     ''' Returns a channel object based on an input uuid'''
-    curGeo = mari.current.geo()
+    curGeo = geo
     channelList = curGeo.channelList()
 
     for channel in channelList:
@@ -755,6 +799,8 @@ def findChannelFromUUID(uuid):
 # ------------------------------------------------------------------------------
 
 def _exportChannels(args_dict):
+
+    global EXPORT_SELECTED
 
     save_options = mari.Image.DEFAULT_OPTIONS
     if args_dict['full_patch_bleed']:
@@ -769,6 +815,7 @@ def _exportChannels(args_dict):
     path = args_dict['path']
     if args_dict['flattened']:
         for channel in args_dict['channels']:
+            current_geo = channel.geoEntity()
             channel_to_export = channel
             channel_resolution = args_dict['resolution']
             if channel_resolution == 1:
@@ -783,18 +830,40 @@ def _exportChannels(args_dict):
                 uv_index_list, metadata = _onlyModifiedTextures(channel)
                 if len(uv_index_list) == 0:
                     if channel_resolution != 1:
-                        mari.geo.current().nodeGraph().removeNode(CHANNEL_NODE)
+                        current_geo.nodeGraph().removeNode(CHANNEL_NODE)
                     continue
             try:
-                channel_to_export.exportImagesFlattened(path, save_options, uv_index_list)
+
+                # if doing any post processing make sure to log all exported files
+                if args_dict['post_process']:
+                    attachImageSignals(current_geo)
+
+                #  If running in 'ExportSelectedPatches Mode' vs All Images
+                if EXPORT_SELECTED:
+                    channel_to_export.exportSelectedPatchesFlattened(path, save_options, None)
+                else:
+                    channel_to_export.exportImagesFlattened(path, save_options, uv_index_list)
+
+
+                EXPORT_SELECTED = False
+
+                # if doing any post processing detach the previously set signal connection after export and run post process
+                if args_dict['post_process']:
+                    detachImageSignals(current_geo)
+                    postProcessExport()
+
+                # if exporting lower resolution, get rid of temp channel node
                 if channel_resolution != 1:
-                    mari.geo.current().nodeGraph().removeNode(CHANNEL_NODE)
+                    current_geo.nodeGraph().removeNode(CHANNEL_NODE)
+
+
             except Exception, e:
                 mari.utils.message('Failed to export "%s"' %e)
+                detachImageSignals(current_geo)
+                EXPORT_SELECTED = False
                 if channel_resolution != 1:
-                    mari.geo.current().nodeGraph().removeNode(CHANNEL_NODE)
+                    current_geo.nodeGraph().removeNode(CHANNEL_NODE)
                 return
-
 
             for data in metadata:
                 channel.setMetadata(*data)
@@ -819,18 +888,38 @@ def _exportChannels(args_dict):
                 uv_index_list, metadata = _onlyModifiedTextures(channel)
                 if len(uv_index_list) == 0:
                     if channel_resolution != 1:
-                        mari.geo.current().nodeGraph().removeNode(CHANNEL_NODE)
+                        current_geo.nodeGraph().removeNode(CHANNEL_NODE)
                     continue
             try:
-                channel_to_export.exportImages(path, save_options, uv_index_list)
-                # remove temp channel node if a lower res was exported
+
+                # if doing any post processing make sure to log all exported files
+                if args_dict['post_process']:
+                    attachImageSignals(current_geo)
+
+                #  If running in 'ExportSelectedPatches Mode' vs All Images
+                if EXPORT_SELECTED:
+                    channel_to_export.exportSelectedPatches(path, save_options, None)
+                else:
+                    channel_to_export.exportImages(path, save_options, uv_index_list)
+
+                EXPORT_SELECTED = False
+
+                # if doing any post processing detach the previously set signal connection after export and run post process
+                if args_dict['post_process']:
+                    detachImageSignals(current_geo)
+                    postProcessExport()
+
+                # if exporting lower resolution, get rid of temp channel node
                 if channel_resolution != 1:
-                    mari.geo.current().nodeGraph().removeNode(CHANNEL_NODE)
+                    current_geo.nodeGraph().removeNode(CHANNEL_NODE)
+
 
             except Exception, e:
                 mari.utils.message('Failed to export "%s"' %e)
+                detachImageSignals(current_geo)
+                EXPORT_SELECTED = False
                 if channel_resolution != 1:
-                    mari.geo.current().nodeGraph().removeNode(CHANNEL_NODE)
+                    current_geo.nodeGraph().removeNode(CHANNEL_NODE)
                 return
             for data in metadata:
                 channel.setMetadata(*data)
@@ -840,14 +929,15 @@ def _exportChannels(args_dict):
             channel.setMetadataFlags('OnlyModifiedTextures',mari.Metadata.METADATA_EDITABLE)
             channel.setMetadataEnabled('OnlyModifiedTextures', False)
 
+
     #If successful let the user know
     mari.utils.message("Export Successful")
-
 
 # ------------------------------------------------------------------------------
 def _exportEverything(args_dict):
     """Export everything, all geo and all channels"""
 
+    global EXPORT_SELECTED
 
     geo_list = mari.geo.list()
     channels = []
@@ -864,7 +954,7 @@ def _exportEverything(args_dict):
     path = args_dict['path']
     if args_dict['flattened']:
         for channel in channels:
-
+            current_geo = channel.geoEntity()
             channel_to_export = channel
             channel_resolution = args_dict['resolution']
             if channel_resolution == 1:
@@ -879,18 +969,37 @@ def _exportEverything(args_dict):
                 uv_index_list, metadata = _onlyModifiedTextures(channel)
                 if len(uv_index_list) == 0:
                     if channel_resolution != 1:
-                        mari.geo.current().nodeGraph().removeNode(CHANNEL_NODE)
+                        current_geo.nodeGraph().removeNode(CHANNEL_NODE)
                     continue
             try:
-                channel_to_export.exportImagesFlattened(path, save_options, uv_index_list)
-                # remove temp channel node if a lower res was exported
+
+                # if doing any post processing make sure to log all exported files
+                if args_dict['post_process']:
+                    attachImageSignals(current_geo)
+
+                #  If running in 'ExportSelectedPatches Mode' vs All Images
+                if EXPORT_SELECTED:
+                    channel_to_export.exportSelectedPatchesFlattened(path, save_options, None)
+                else:
+                    channel_to_export.exportImagesFlattened(path, save_options, uv_index_list)
+
+                EXPORT_SELECTED = False
+
+                # if doing any post processing detach the previously set signal connection after export and run post process
+                if args_dict['post_process']:
+                    detachImageSignals(current_geo)
+                    postProcessExport()
+
+                # if exporting lower resolution, get rid of temp channel node
                 if channel_resolution != 1:
-                    mari.geo.current().nodeGraph().removeNode(CHANNEL_NODE)
+                    current_geo.nodeGraph().removeNode(CHANNEL_NODE)
+
             except Exception, e:
                 mari.utils.message('Failed to export "%s"' %e)
-                # remove temp channel node if a lower res was exported
+                detachImageSignals(current_geo)
+                EXPORT_SELECTED = False
                 if channel_resolution != 1:
-                    mari.geo.current().nodeGraph().removeNode(CHANNEL_NODE)
+                    current_geo.nodeGraph().removeNode(CHANNEL_NODE)
                 return
             for data in metadata:
                 channel.setMetadata(*data)
@@ -917,15 +1026,35 @@ def _exportEverything(args_dict):
                 if len(uv_index_list) == 0:
                     continue
             try:
-                channel_to_export.exportImages(path, save_options, uv_index_list)
-                # remove temp channel node if a lower res was exported
+
+
+                # if doing any post processing make sure to log all exported files
+                if args_dict['post_process']:
+                    attachImageSignals(current_geo)
+
+                #  If running in 'ExportSelectedPatches Mode' vs All Images
+                if EXPORT_SELECTED:
+                    channel_to_export.exportSelectedPatches(path, save_options, None)
+                else:
+                    channel_to_export.exportImages(path, save_options, uv_index_list)
+
+                EXPORT_SELECTED = False
+
+                # if doing any post processing detach the previously set signal connection after export and run post process
+                if args_dict['post_process']:
+                    detachImageSignals(current_geo)
+                    postProcessExport()
+
+                # if exporting lower resolution, get rid of temp channel node
                 if channel_resolution != 1:
-                    mari.geo.current().nodeGraph().removeNode(CHANNEL_NODE)
+                    current_geo.nodeGraph().removeNode(CHANNEL_NODE)
+
             except Exception, e:
                 mari.utils.message('Failed to export "%s"' %e)
-                # remove temp channel node if a lower res was exported
+                detachImageSignals(current_geo)
+                EXPORT_SELECTED = False
                 if channel_resolution != 1:
-                    mari.geo.current().nodeGraph().removeNode(CHANNEL_NODE)
+                    current_geo.nodeGraph().removeNode(CHANNEL_NODE)
                 return
             for data in metadata:
                 channel.setMetadata(*data)
@@ -938,6 +1067,12 @@ def _exportEverything(args_dict):
     mari.utils.message("Export Successful")
 
 # ------------------------------------------------------------------------------
+def saveFileListFromExportSignal(summary):
+    ''' Saves Filepaths from the ImageExported Signal'''
+    print summary
+
+# ------------------------------------------------------------------------------
+
 def exportSelectedChannels(mode):
     """Export selected channels."""
     suitable = _isProjectSuitable()
@@ -956,7 +1091,8 @@ def exportSelectedChannels(mode):
         'small_textures' : dialog._getExportSmallTextures(),
         'remove_alpha' : dialog._getExportRemoveAlpha(),
         'only_modified_textures' : dialog._getExportOnlyModifiedTextures(),
-        'resolution': dialog._getResolution()
+        'resolution': dialog._getResolution(),
+        'post_process': dialog._getPostProcess()
         }
         if dialog._getExportEverything():
             _exportEverything(args_dict)
@@ -1097,6 +1233,315 @@ def _sha256(string):
     return sha256.hexdigest()
 
 # ------------------------------------------------------------------------------
+
+class PostProcessUI(QtGui.QDialog):
+    """UI to enter Shell Commands that are executed after Channel Export"""
+    def __init__(self):
+        super(PostProcessUI, self).__init__()
+
+        # Storing Widget Settings between sessions here:
+        self.SETTINGS = mari.Settings()
+
+        # Dialog Settings
+        # self.setFixedSize(800, 600)
+        self.setWindowTitle('Set Post Process Commands')
+        # Layouts & Boxes
+        window_layout_box = QtGui.QVBoxLayout()
+        info_layout_grid = QtGui.QGridLayout()
+        command_layout_grid = QtGui.QGridLayout()
+        button_layout_box = QtGui.QHBoxLayout()
+        info_group_box = QtGui.QGroupBox('Info')
+        command_group_box = QtGui.QGroupBox("Commands")
+
+        self.setLayout(window_layout_box)
+
+        # Info Widgets
+        self.Descr_Command =  QtGui.QLabel(
+"The fields below allow you to specify shell commands or scripts to be executed for each exported channel.\n\
+Commands are executed in the order they appear. Only active commands will be executed,\n\
+and you will need to turn on the 'Run Post Processing' Checkbox in the Main Dialog\n\n\
+You can pass several variables to commands from the Export Tool such as\n\n\
+$PATH - The full Directory Path where the exported Channel was saved\n\
+$FILEPATH - The full Path and Filename for each exported File\n\
+$FILE - The File Name of each exported File\n\
+$CHANNEL - The Name of each exported Channel\n\
+$TEMPLATE - The Filename Template\n\
+$UDIM - A comma separated list of exported UDIMS")
+        info_layout_grid.addWidget(self.Descr_Command,3,2)
+        info_group_box.setLayout(info_layout_grid)
+
+        # Command Line Code Widges
+        # Variable Widgets Variable A
+        self.Active_CmdA = QtGui.QCheckBox()
+        self.Active_CmdA.setToolTip('A shell command to be executed after each channel export')
+        self.Script_CmdA = QtGui.QLineEdit()
+
+        radioButtonGrpA = QtGui.QButtonGroup(self)
+
+        self.pChan_A = QtGui.QRadioButton('Per Channel')
+        self.pChan_A.setToolTip('The Command will be executed once per exported Channel')
+        self.pFile_A = QtGui.QRadioButton('Per File')
+        self.pFile_A.setToolTip('The Command will be executed once per exported File')
+
+        radioButtonGrpA.addButton(self.pChan_A)
+        radioButtonGrpA.addButton(self.pFile_A)
+
+        command_layout_grid.addWidget(self.Active_CmdA,2,0)
+        command_layout_grid.addWidget(self.Script_CmdA,2,2)
+        command_layout_grid.addWidget(self.pChan_A,2,3)
+        command_layout_grid.addWidget(self.pFile_A,2,4)
+        self.pChan_A.setChecked(True)
+
+
+        # Connections:
+        #### Activate Checkbox:
+        Active_CmdA_checkbox_connect = lambda: self._disableUIElements(self.Active_CmdA,self.Script_CmdA,self.pChan_A,self.pFile_A)
+        self.Active_CmdA.clicked.connect(Active_CmdA_checkbox_connect)
+
+        # Variable Widgets Variable B
+        self.Active_CmdB = QtGui.QCheckBox()
+        self.Active_CmdB.setToolTip('A shell command to be executed after each channel export')
+        self.Script_CmdB = QtGui.QLineEdit()
+
+        radioButtonGrpB = QtGui.QButtonGroup(self)
+
+        self.pChan_B = QtGui.QRadioButton('Per Channel')
+        self.pChan_B.setToolTip('The Command will be executed once per exported Channel')
+        self.pFile_B = QtGui.QRadioButton('Per File')
+        self.pFile_B.setToolTip('The Command will be executed once per exported File')
+
+        radioButtonGrpB.addButton(self.pChan_B)
+        radioButtonGrpB.addButton(self.pFile_B)
+
+        command_layout_grid.addWidget(self.Active_CmdB,3,0)
+        command_layout_grid.addWidget(self.Script_CmdB,3,2)
+        command_layout_grid.addWidget(self.pChan_B,3,3)
+        command_layout_grid.addWidget(self.pFile_B,3,4)
+        self.pChan_B.setChecked(True)
+
+        # Connections:
+        #### Activate Checkbox:
+        Active_CmdB_checkbox_connect = lambda: self._disableUIElements(self.Active_CmdB,self.Script_CmdB,self.pChan_B,self.pFile_B)
+        self.Active_CmdB.clicked.connect(Active_CmdB_checkbox_connect)
+
+        # Variable Widgets Variable C
+        self.Active_CmdC = QtGui.QCheckBox()
+        self.Active_CmdC.setToolTip('A shell command to be executed after each channel export')
+        self.Script_CmdC = QtGui.QLineEdit()
+
+        radioButtonGrpC = QtGui.QButtonGroup(self)
+
+        self.pChan_C = QtGui.QRadioButton('Per Channel')
+        self.pChan_C.setToolTip('The Command will be executed once per exported Channel')
+        self.pFile_C = QtGui.QRadioButton('Per File')
+        self.pFile_C.setToolTip('The Command will be executed once per exported File')
+
+        radioButtonGrpC.addButton(self.pChan_C)
+        radioButtonGrpC.addButton(self.pFile_C)
+
+        command_layout_grid.addWidget(self.Active_CmdC,4,0)
+        command_layout_grid.addWidget(self.Script_CmdC,4,2)
+        command_layout_grid.addWidget(self.pChan_C,4,3)
+        command_layout_grid.addWidget(self.pFile_C,4,4)
+        self.pChan_C.setChecked(True)
+
+        # Connections:
+        #### Activate Checkbox:
+        Active_CmdC_checkbox_connect = lambda: self._disableUIElements(self.Active_CmdC,self.Script_CmdC,self.pChan_C,self.pFile_C)
+        self.Active_CmdC.clicked.connect(Active_CmdC_checkbox_connect)
+
+        command_group_box.setLayout(command_layout_grid)
+
+         # APPLY CANCEL BUTTONS
+        # Widget OK / Cancel Button
+        self.OkBtn = QtGui.QPushButton('Set Commands')
+        self.CancelBtn = QtGui.QPushButton('Cancel')
+        # Add Apply Cancel Buttons to Button Layout
+        button_layout_box.addWidget(self.OkBtn)
+        button_layout_box.addWidget(self.CancelBtn)
+        # Connections:
+        self.OkBtn.clicked.connect(self._setCommand)
+        self.CancelBtn.clicked.connect(self.reject)
+        # Add sub Layouts to main Window Box Layout
+        window_layout_box.addWidget(info_group_box)
+        window_layout_box.addWidget(command_group_box)
+        window_layout_box.addLayout(button_layout_box)
+
+        # loading user settings from config (last user modifications) and setting base path to per project if exists
+        self._restoreCommand()
+
+        # Initialize UI Elements, checks if Variables are set active and if not disables UI elements
+        self._disableUIElements(self.Active_CmdA,self.Script_CmdA,self.pChan_A,self.pFile_A)
+        self._disableUIElements(self.Active_CmdB,self.Script_CmdB,self.pChan_B,self.pFile_B)
+        self._disableUIElements(self.Active_CmdC,self.Script_CmdC,self.pChan_C,self.pFile_C)
+
+
+    def _setCommand(self):
+        '''Writes the set commands to the config file when command dialog confirmed'''
+
+        CmdA_Active = self.Active_CmdA.isChecked()
+        CmdB_Active = self.Active_CmdB.isChecked()
+        CmdC_Active = self.Active_CmdC.isChecked()
+
+        CmdA = self.Script_CmdA.text()
+        CmdB = self.Script_CmdB.text()
+        CmdC = self.Script_CmdC.text()
+
+        CmdA_pChannel = self.pChan_A.isChecked()
+        CmdA_pFile = self.pFile_A.isChecked()
+        CmdB_pChannel = self.pChan_B.isChecked()
+        CmdB_pFile = self.pFile_B.isChecked()
+        CmdC_pChannel = self.pChan_C.isChecked()
+        CmdC_pFile = self.pFile_C.isChecked()
+
+        self.SETTINGS.beginGroup(Settings_Group)
+
+        self.SETTINGS.setValue('PostCommandA_Active',CmdA_Active)
+        self.SETTINGS.setValue('PostCommandB_Active',CmdB_Active)
+        self.SETTINGS.setValue('PostCommandC_Active',CmdC_Active)
+
+        self.SETTINGS.setValue('PostCommandA',CmdA)
+        self.SETTINGS.setValue('PostCommandB',CmdB)
+        self.SETTINGS.setValue('PostCommandC',CmdC)
+
+        self.SETTINGS.setValue('PostCommandA_perChannel',CmdA_pChannel)
+        self.SETTINGS.setValue('PostCommandA_perFile',CmdA_pFile)
+        self.SETTINGS.setValue('PostCommandB_perChannel',CmdB_pChannel)
+        self.SETTINGS.setValue('PostCommandB_perFile',CmdB_pFile)
+        self.SETTINGS.setValue('PostCommandC_perChannel',CmdC_pChannel)
+        self.SETTINGS.setValue('PostCommandC_perFile',CmdC_pFile)
+
+        self.SETTINGS.endGroup()
+
+        self.accept()
+
+    def _restoreCommand(self):
+        ''' Reads the commands set previously and restores them when opening the command dialog'''
+
+        self.SETTINGS.beginGroup(Settings_Group)
+
+        self.Script_CmdA.setText(self.SETTINGS.value('PostCommandA'))
+        self.Script_CmdB.setText(self.SETTINGS.value('PostCommandB'))
+        self.Script_CmdC.setText(self.SETTINGS.value('PostCommandC'))
+
+        self.Active_CmdA.setChecked( (self.SETTINGS.value('PostCommandA_Active')== 'true'))
+        self.Active_CmdB.setChecked( (self.SETTINGS.value('PostCommandB_Active')== 'true'))
+        self.Active_CmdC.setChecked( (self.SETTINGS.value('PostCommandC_Active')== 'true'))
+
+        self.pFile_A.setChecked( (self.SETTINGS.value('PostCommandA_perFile')== 'true'))
+        self.pFile_B.setChecked( (self.SETTINGS.value('PostCommandB_perFile')== 'true'))
+        self.pFile_C.setChecked( (self.SETTINGS.value('PostCommandC_perFile')== 'true'))
+
+        self.pChan_A.setChecked( (self.SETTINGS.value('PostCommandA_perChannel')== 'true'))
+        self.pChan_B.setChecked( (self.SETTINGS.value('PostCommandB_perChannel')== 'true'))
+        self.pChan_C.setChecked( (self.SETTINGS.value('PostCommandC_perChannel')== 'true'))
+
+        self.SETTINGS.endGroup()
+
+
+    def _disableUIElements(self, obj_active, obj_cmd, obj_pChan, obj_pFile):
+        """ Disables UI elements if Actvivate checkbox is off"""
+
+        if not obj_active.isChecked():
+            obj_cmd.setReadOnly(True)
+            obj_cmd.setEnabled(False)
+            obj_pChan.setEnabled(False)
+            obj_pFile.setEnabled(False)
+        else:
+            obj_cmd.setReadOnly(False)
+            obj_cmd.setEnabled(True)
+            obj_pChan.setEnabled(True)
+            obj_pFile.setEnabled(True)
+
+
+# ------------------------------------------------------------------------------
+# The following are used for post processing
+
+def getNewImageset(Set):
+    ''' records all exported file paths into a dict for later processing'''
+    imageList = Set.imageList()
+    global EXPORT_PATH_DICT
+    for image in imageList:
+        key = image.lastExportPath()
+        EXPORT_PATH_DICT[key] = key
+
+def attachImageSignals(geo):
+    ''' monitors changes to image sets to catch internal imagesets'''
+    mari.utils.connect(geo.imageSetAdded,getNewImageset)
+    mari.utils.connect(geo.imageSetMadeCurrent,getNewImageset)
+
+def detachImageSignals(geo):
+    ''' disconnects monitoring of  changes to image sets to catch internal imagesets'''
+    mari.utils.disconnect(geo.imageSetAdded,getNewImageset)
+    mari.utils.disconnect(geo.imageSetMadeCurrent,getNewImageset)
+
+
+def getPostProcessSettings():
+    ''' Reads the set post processing settings and commands'''
+
+    SETTINGS = mari.Settings()
+
+    SETTINGS.beginGroup(Settings_Group)
+
+    CmdA = SETTINGS.value('PostCommandA')
+    CmdB = SETTINGS.value('PostCommandB')
+    CmdC = SETTINGS.value('PostCommandC')
+
+    Active_CmdA = ( (SETTINGS.value('PostCommandA_Active')== 'true'))
+    Active_CmdB = ( (SETTINGS.value('PostCommandB_Active')== 'true'))
+    Active_CmdC = ( (SETTINGS.value('PostCommandC_Active')== 'true'))
+
+    pFile_A = ( (SETTINGS.value('PostCommandA_perFile')== 'true'))
+    pFile_B = ( (SETTINGS.value('PostCommandB_perFile')== 'true'))
+    pFile_C = ( (SETTINGS.value('PostCommandC_perFile')== 'true'))
+
+    pChan_A = ( (SETTINGS.value('PostCommandA_perChannel')== 'true'))
+    pChan_B = ( (SETTINGS.value('PostCommandB_perChannel')== 'true'))
+    pChan_C = ( (SETTINGS.value('PostCommandC_perChannel')== 'true'))
+
+    SETTINGS.endGroup()
+
+    return CmdA,CmdB,CmdC,Active_CmdA,Active_CmdB,Active_CmdC,pFile_A,pFile_B,pFile_C
+
+
+def postProcessExport():
+    '''Runs any Post Process Commands for an exported Channel'''
+    global EXPORT_PATH_DICT
+
+    temp_dict = EXPORT_PATH_DICT
+    EXPORT_PATH_DICT = {}
+
+    CmdA,CmdB,CmdC,Active_CmdA,Active_CmdB,Active_CmdC,pFile_A,pFile_B,pFile_C = getPostProcessSettings()
+
+    if pFile_A and Active_CmdA or pFile_B and Active_CmdB or pFile_C and Active_CmdC:
+        for item in temp_dict:
+            if Active_CmdA and pFile_A:
+                print 'Executing A per file'
+                print temp_dict[item]
+
+            if Active_CmdB and pFile_B:
+                print 'Executing B per file'
+                print temp_dict[item]
+
+            if Active_CmdC and pFile_C:
+                print 'Executing C per file'
+                print temp_dict[item]
+
+    if Active_CmdA and not pFile_A:
+        print 'Executing A per Channel'
+
+    if Active_CmdB and not pFile_B:
+        print 'Executing B per Channel'
+
+    if Active_CmdC and not pFile_C:
+        print 'Executing C per Channel'
+
+    pass
+
+
+
+# ------------------------------------------------------------------------------
+
 def _isProjectSuitable():
     """Checks project state."""
     MARI_3_0V1b2_VERSION_NUMBER = 30001202    # see below
@@ -1117,4 +1562,4 @@ def _isProjectSuitable():
 
 # ------------------------------------------------------------------------------
 if __name__ == "__main__":
-    exportSelectedChannels()
+    exportSelectedChannels('flattened')
