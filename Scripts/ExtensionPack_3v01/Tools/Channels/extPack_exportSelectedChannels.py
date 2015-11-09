@@ -17,6 +17,7 @@
 #  - Modified Textures Metadata fixes
 #  - Modified Textures notices changes in channel layers now
 #  - Resolution Exports
+#  - Texture Post Processing
 #  - Hiding of Mari Internal Channels and Channel sorting in line with Channel Palette
 #  - Preselecting channels
 #  - UI Fixes & Changes
@@ -63,6 +64,7 @@ import mari, os, hashlib
 import PySide.QtGui as QtGui
 import PySide.QtCore as QtCore
 from PySide.QtCore import QSettings
+import subprocess
 import inspect
 
 
@@ -1261,20 +1263,38 @@ class PostProcessUI(QtGui.QDialog):
 Commands are executed in the order they appear. Only active commands will be executed,\n\
 and you will need to turn on the 'Run Post Processing' Checkbox in the Main Dialog\n\n\
 You can pass several variables to commands from the Export Tool such as\n\n\
-$PATH - The full Directory Path where the exported Channel was saved\n\
-$FILEPATH - The full Path and Filename for each exported File\n\
-$FILE - The File Name of each exported File\n\
-$CHANNEL - The Name of each exported Channel\n\
-$TEMPLATE - The Filename Template\n\
-$UDIM - A comma separated list of exported UDIMS")
+$FILENAME - gets replaced with the Filename (including extension) of each exported File. Available in 'per File' mode only.\n\
+$FILENAME_NOEXT - gets replaced with the Filename (without extension) of each exported File. Available in 'per File' mode only.\n\
+$FULLPATH - gets replaced with the full path and filename (with extension) of each exported File. Available in 'per File' mode only.\n\
+$FULLPATH_NOEXT - gets replaced with the full path and filename (without extension) of each exported File. Available in 'per File' mode only.\n\
+$DIRECTORY - gets replaced with the Directory path to the File(s). Folder will include a trailing slash.\n\
+$DIRECTORY_NOSLASH - gets replaced with the Directory path to the Files(s). Folder will not include a trailing slash")
+
+
         info_layout_grid.addWidget(self.Descr_Command,3,2)
         info_group_box.setLayout(info_layout_grid)
+
+
+        #Labels
+        ExecutableLabel = QtGui.QLabel('Executable')
+        ExecutableLabel.setToolTip('The Executable Field should contain the Filename or Path and Filename\nof the application you want to execute')
+        ArgumentsLabel = QtGui.QLabel('Arguments')
+        ExecutableLabel.setToolTip('The Arguments Field should contain any arguments or\nflags passed to the executable file')
+
+
+        command_layout_grid.addWidget(ExecutableLabel,1,2)
+        command_layout_grid.addWidget(ArgumentsLabel,1,3)
 
         # Command Line Code Widges
         # Variable Widgets Variable A
         self.Active_CmdA = QtGui.QCheckBox()
         self.Active_CmdA.setToolTip('A shell command to be executed after each channel export')
+        self.Exec_CmdA = QtGui.QLineEdit()
         self.Script_CmdA = QtGui.QLineEdit()
+        self.Exec_CmdA.setToolTip('The Executable Field should contain the Filename or Path and Filename\nof the application you want to execute')
+        self.Script_CmdA.setToolTip('The Arguments Field should contain any arguments or\nflags passed to the executable file')
+
+
 
         radioButtonGrpA = QtGui.QButtonGroup(self)
 
@@ -1287,21 +1307,26 @@ $UDIM - A comma separated list of exported UDIMS")
         radioButtonGrpA.addButton(self.pFile_A)
 
         command_layout_grid.addWidget(self.Active_CmdA,2,0)
-        command_layout_grid.addWidget(self.Script_CmdA,2,2)
-        command_layout_grid.addWidget(self.pChan_A,2,3)
-        command_layout_grid.addWidget(self.pFile_A,2,4)
+        command_layout_grid.addWidget(self.Exec_CmdA,2,2)
+        command_layout_grid.addWidget(self.Script_CmdA,2,3)
+        command_layout_grid.addWidget(self.pChan_A,2,4)
+        command_layout_grid.addWidget(self.pFile_A,2,5)
         self.pChan_A.setChecked(True)
 
 
         # Connections:
         #### Activate Checkbox:
-        Active_CmdA_checkbox_connect = lambda: self._disableUIElements(self.Active_CmdA,self.Script_CmdA,self.pChan_A,self.pFile_A)
+        Active_CmdA_checkbox_connect = lambda: self._disableUIElements(self.Active_CmdA, self.Exec_CmdA, self.Script_CmdA,self.pChan_A,self.pFile_A)
         self.Active_CmdA.clicked.connect(Active_CmdA_checkbox_connect)
 
         # Variable Widgets Variable B
         self.Active_CmdB = QtGui.QCheckBox()
         self.Active_CmdB.setToolTip('A shell command to be executed after each channel export')
+        self.Exec_CmdB = QtGui.QLineEdit()
         self.Script_CmdB = QtGui.QLineEdit()
+        self.Exec_CmdB.setToolTip('The Executable Field should contain the Filename or Path and Filename\nof the application you want to execute')
+        self.Script_CmdB.setToolTip('The Arguments Field should contain any arguments or\nflags passed to the executable file')
+
 
         radioButtonGrpB = QtGui.QButtonGroup(self)
 
@@ -1314,20 +1339,25 @@ $UDIM - A comma separated list of exported UDIMS")
         radioButtonGrpB.addButton(self.pFile_B)
 
         command_layout_grid.addWidget(self.Active_CmdB,3,0)
-        command_layout_grid.addWidget(self.Script_CmdB,3,2)
-        command_layout_grid.addWidget(self.pChan_B,3,3)
-        command_layout_grid.addWidget(self.pFile_B,3,4)
+        command_layout_grid.addWidget(self.Exec_CmdB,3,2)
+        command_layout_grid.addWidget(self.Script_CmdB,3,3)
+        command_layout_grid.addWidget(self.pChan_B,3,4)
+        command_layout_grid.addWidget(self.pFile_B,3,5)
         self.pChan_B.setChecked(True)
 
         # Connections:
         #### Activate Checkbox:
-        Active_CmdB_checkbox_connect = lambda: self._disableUIElements(self.Active_CmdB,self.Script_CmdB,self.pChan_B,self.pFile_B)
+        Active_CmdB_checkbox_connect = lambda: self._disableUIElements(self.Active_CmdB,self.Exec_CmdB,self.Script_CmdB,self.pChan_B,self.pFile_B)
         self.Active_CmdB.clicked.connect(Active_CmdB_checkbox_connect)
 
         # Variable Widgets Variable C
         self.Active_CmdC = QtGui.QCheckBox()
         self.Active_CmdC.setToolTip('A shell command to be executed after each channel export')
+        self.Exec_CmdC = QtGui.QLineEdit()
         self.Script_CmdC = QtGui.QLineEdit()
+        self.Exec_CmdC.setToolTip('The Executable Field should contain the Filename or Path and Filename\nof the application you want to execute')
+        self.Script_CmdC.setToolTip('The Arguments Field should contain any arguments or\nflags passed to the executable file')
+
 
         radioButtonGrpC = QtGui.QButtonGroup(self)
 
@@ -1340,14 +1370,15 @@ $UDIM - A comma separated list of exported UDIMS")
         radioButtonGrpC.addButton(self.pFile_C)
 
         command_layout_grid.addWidget(self.Active_CmdC,4,0)
-        command_layout_grid.addWidget(self.Script_CmdC,4,2)
-        command_layout_grid.addWidget(self.pChan_C,4,3)
-        command_layout_grid.addWidget(self.pFile_C,4,4)
+        command_layout_grid.addWidget(self.Exec_CmdC,4,2)
+        command_layout_grid.addWidget(self.Script_CmdC,4,3)
+        command_layout_grid.addWidget(self.pChan_C,4,4)
+        command_layout_grid.addWidget(self.pFile_C,4,5)
         self.pChan_C.setChecked(True)
 
         # Connections:
         #### Activate Checkbox:
-        Active_CmdC_checkbox_connect = lambda: self._disableUIElements(self.Active_CmdC,self.Script_CmdC,self.pChan_C,self.pFile_C)
+        Active_CmdC_checkbox_connect = lambda: self._disableUIElements(self.Active_CmdC,self.Exec_CmdC,self.Script_CmdC,self.pChan_C,self.pFile_C)
         self.Active_CmdC.clicked.connect(Active_CmdC_checkbox_connect)
 
         command_group_box.setLayout(command_layout_grid)
@@ -1371,9 +1402,9 @@ $UDIM - A comma separated list of exported UDIMS")
         self._restoreCommand()
 
         # Initialize UI Elements, checks if Variables are set active and if not disables UI elements
-        self._disableUIElements(self.Active_CmdA,self.Script_CmdA,self.pChan_A,self.pFile_A)
-        self._disableUIElements(self.Active_CmdB,self.Script_CmdB,self.pChan_B,self.pFile_B)
-        self._disableUIElements(self.Active_CmdC,self.Script_CmdC,self.pChan_C,self.pFile_C)
+        self._disableUIElements(self.Active_CmdA,self.Exec_CmdA,self.Script_CmdA,self.pChan_A,self.pFile_A)
+        self._disableUIElements(self.Active_CmdB,self.Exec_CmdB,self.Script_CmdB,self.pChan_B,self.pFile_B)
+        self._disableUIElements(self.Active_CmdC,self.Exec_CmdC,self.Script_CmdC,self.pChan_C,self.pFile_C)
 
 
     def _setCommand(self):
@@ -1382,6 +1413,10 @@ $UDIM - A comma separated list of exported UDIMS")
         CmdA_Active = self.Active_CmdA.isChecked()
         CmdB_Active = self.Active_CmdB.isChecked()
         CmdC_Active = self.Active_CmdC.isChecked()
+
+        ExecA = self.Exec_CmdA.text()
+        ExecB = self.Exec_CmdB.text()
+        ExecC = self.Exec_CmdC.text()
 
         CmdA = self.Script_CmdA.text()
         CmdB = self.Script_CmdB.text()
@@ -1399,6 +1434,10 @@ $UDIM - A comma separated list of exported UDIMS")
         self.SETTINGS.setValue('PostCommandA_Active',CmdA_Active)
         self.SETTINGS.setValue('PostCommandB_Active',CmdB_Active)
         self.SETTINGS.setValue('PostCommandC_Active',CmdC_Active)
+
+        self.SETTINGS.setValue('PostExecutableA',ExecA)
+        self.SETTINGS.setValue('PostExecutableB',ExecB)
+        self.SETTINGS.setValue('PostExecutableC',ExecC)
 
         self.SETTINGS.setValue('PostCommandA',CmdA)
         self.SETTINGS.setValue('PostCommandB',CmdB)
@@ -1420,6 +1459,10 @@ $UDIM - A comma separated list of exported UDIMS")
 
         self.SETTINGS.beginGroup(Settings_Group)
 
+        self.Exec_CmdA.setText(self.SETTINGS.value('PostExecutableA'))
+        self.Exec_CmdB.setText(self.SETTINGS.value('PostExecutableB'))
+        self.Exec_CmdC.setText(self.SETTINGS.value('PostExecutableC'))
+
         self.Script_CmdA.setText(self.SETTINGS.value('PostCommandA'))
         self.Script_CmdB.setText(self.SETTINGS.value('PostCommandB'))
         self.Script_CmdC.setText(self.SETTINGS.value('PostCommandC'))
@@ -1439,17 +1482,21 @@ $UDIM - A comma separated list of exported UDIMS")
         self.SETTINGS.endGroup()
 
 
-    def _disableUIElements(self, obj_active, obj_cmd, obj_pChan, obj_pFile):
+    def _disableUIElements(self, obj_active, obj_exec, obj_cmd, obj_pChan, obj_pFile):
         """ Disables UI elements if Actvivate checkbox is off"""
 
         if not obj_active.isChecked():
             obj_cmd.setReadOnly(True)
+            obj_exec.setReadOnly(True)
+            obj_exec.setEnabled(False)
             obj_cmd.setEnabled(False)
             obj_pChan.setEnabled(False)
             obj_pFile.setEnabled(False)
         else:
             obj_cmd.setReadOnly(False)
             obj_cmd.setEnabled(True)
+            obj_exec.setReadOnly(False)
+            obj_exec.setEnabled(True)
             obj_pChan.setEnabled(True)
             obj_pFile.setEnabled(True)
 
@@ -1463,6 +1510,7 @@ def getNewImageset(Set):
     global EXPORT_PATH_DICT
     for image in imageList:
         key = image.lastExportPath()
+        # key = key.replace('\\',r'\\')
         EXPORT_PATH_DICT[key] = key
 
 def attachImageSignals(geo):
@@ -1483,9 +1531,15 @@ def getPostProcessSettings():
 
     SETTINGS.beginGroup(Settings_Group)
 
-    CmdA = SETTINGS.value('PostCommandA')
-    CmdB = SETTINGS.value('PostCommandB')
-    CmdC = SETTINGS.value('PostCommandC')
+    CmdA = SETTINGS.value('PostCommandA').encode('unicode-escape')
+    CmdB = SETTINGS.value('PostCommandB').encode('unicode-escape')
+    CmdC = SETTINGS.value('PostCommandC').encode('unicode-escape')
+
+    ExecA = SETTINGS.value('PostExecutableA').encode('unicode-escape')
+    ExecB = SETTINGS.value('PostExecutableB').encode('unicode-escape')
+    ExecC = SETTINGS.value('PostExecutableC').encode('unicode-escape')
+
+
 
     Active_CmdA = ( (SETTINGS.value('PostCommandA_Active')== 'true'))
     Active_CmdB = ( (SETTINGS.value('PostCommandB_Active')== 'true'))
@@ -1501,7 +1555,7 @@ def getPostProcessSettings():
 
     SETTINGS.endGroup()
 
-    return CmdA,CmdB,CmdC,Active_CmdA,Active_CmdB,Active_CmdC,pFile_A,pFile_B,pFile_C
+    return ExecA,ExecB,ExecC,CmdA,CmdB,CmdC,Active_CmdA,Active_CmdB,Active_CmdC,pFile_A,pFile_B,pFile_C
 
 
 def postProcessExport():
@@ -1511,33 +1565,160 @@ def postProcessExport():
     temp_dict = EXPORT_PATH_DICT
     EXPORT_PATH_DICT = {}
 
-    CmdA,CmdB,CmdC,Active_CmdA,Active_CmdB,Active_CmdC,pFile_A,pFile_B,pFile_C = getPostProcessSettings()
+    ExecA,ExecB,ExecC,CmdA,CmdB,CmdC,Active_CmdA,Active_CmdB,Active_CmdC,pFile_A,pFile_B,pFile_C = getPostProcessSettings()
 
-    if pFile_A and Active_CmdA or pFile_B and Active_CmdB or pFile_C and Active_CmdC:
-        for item in temp_dict:
-            if Active_CmdA and pFile_A:
-                print 'Executing A per file'
-                print temp_dict[item]
+    # COMMANDS ARE RUNNING IN ORDER: COMMAND A FIRST, COMMAND B then COMMAND C
+    # This is to ensure Command dependencies work correctly
 
-            if Active_CmdB and pFile_B:
-                print 'Executing B per file'
-                print temp_dict[item]
+    # PER CHANNEL MODE:
+    # finding the path for use in per channel mode
+    for item in temp_dict:
+        if not temp_dict[item]:
+            pass
+        else:
+            path,filename = os.path.split(item)
+            break
 
-            if Active_CmdC and pFile_C:
-                print 'Executing C per file'
-                print temp_dict[item]
 
+    # ------------- COMMAND A ------------------------
+
+    # Executing COMMAND A - PER CHANNEL
     if Active_CmdA and not pFile_A:
-        print 'Executing A per Channel'
+        if not ExecA: #if Executable is empty skip
+            pass
+        else:
+            args = [ExecA]
+            if not CmdA: #if arguments are empty skip
+                pass
+            else:
+                CmdA_replace = CmdA.replace('$DIRECTORY_NOSLASH', path)
+                CmdA_replace = CmdA_replace.replace('$DIRECTORY', path + os.sep)
+                optionsList = CmdA_replace.split()
+                for option in optionsList:
+                    args.append(option)
+            subprocess.call(args)
 
+    # Executing COMMAND A - PER FILE
+    if pFile_A and Active_CmdA:
+        for item in temp_dict:
+            if not temp_dict[item]:
+                pass
+            else:
+                path,filename = os.path.split(item)
+                filename_noExt = os.path.splitext(filename)[0]
+
+                if Active_CmdA and pFile_A:
+                    if not ExecA: #if Executable is empty skip
+                        pass
+                    else:
+                        args = [ExecA]
+                        if not CmdA: #if arguments are empty skip
+                            pass
+                        else:
+                            CmdA_replace = CmdA.replace('$DIRECTORY_NOSLASH', path)
+                            CmdA_replace = CmdA_replace.replace('$DIRECTORY', path + os.sep)
+                            CmdA_replace = CmdA_replace.replace('$FILENAME_NOEXT', filename_noExt)
+                            CmdA_replace = CmdA_replace.replace('$FILENAME', filename)
+                            CmdA_replace = CmdA_replace.replace('$FULLPATH_NOEXT', path + os.sep + filename_noExt)
+                            CmdA_replace = CmdA_replace.replace('$FULLPATH', item)
+                            optionsList = CmdA_replace.split()
+                            for option in optionsList:
+                                args.append(option)
+                        subprocess.call(args)
+
+
+    # ------------- COMMAND B ------------------------
+
+    # Executing COMMAND B - PER CHANNEL
     if Active_CmdB and not pFile_B:
-        print 'Executing B per Channel'
+        if not ExecB: #if Executable is empty skip
+            pass
+        else:
+            args = [ExecB]
+            if not CmdB: #if arguments are empty skip
+                pass
+            else:
+                CmdB_replace = CmdB.replace('$DIRECTORY_NOSLASH', path)
+                CmdB_replace = CmdB_replace.replace('$DIRECTORY', path + os.sep)
+                optionsList = CmdB_replace.split()
+                for option in optionsList:
+                    args.append(option)
+            subprocess.call(args)
 
+    # Executing COMMAND B - PER FILE
+    if pFile_B and Active_CmdB:
+        for item in temp_dict:
+            if not temp_dict[item]:
+                pass
+            else:
+                path,filename = os.path.split(item)
+                filename_noExt = os.path.splitext(filename)[0]
+
+                if Active_CmdB and pFile_B:
+                    if not ExecB: #if Executable is empty skip
+                        pass
+                    else:
+                        args = [ExecB]
+                        if not CmdB: #if arguments are empty skip
+                            pass
+                        else:
+                            CmdB_replace = CmdB.replace('$DIRECTORY_NOSLASH', path)
+                            CmdB_replace = CmdB_replace.replace('$DIRECTORY', path + os.sep)
+                            CmdA_replace = CmdB_replace.replace('$FILENAME_NOEXT', filename_noExt)
+                            CmdB_replace = CmdB_replace.replace('$FILENAME', filename)
+                            CmdB_replace = CmdB_replace.replace('$FULLPATH_NOEXT', path + os.sep + filename_noExt)
+                            CmdB_replace = CmdB_replace.replace('$FULLPATH', item)
+                            optionsList = CmdB_replace.split()
+                            for option in optionsList:
+                                args.append(option)
+                        subprocess.call(args)
+
+
+    # ------------- COMMAND C ------------------------
+
+    # Executing COMMAND C - PER CHANNEL
     if Active_CmdC and not pFile_C:
-        print 'Executing C per Channel'
+        if not ExecC: #if Executable is empty skip
+            pass
+        else:
+            args = [ExecC]
+            if not CmdC: #if arguments are empty skip
+                pass
+            else:
+                CmdC_replace = CmdC.replace('$DIRECTORY_NOSLASH', path)
+                CmdC_replace = CmdC_replace.replace('$DIRECTORY', path + os.sep)
+                optionsList = CmdC_replace.split()
+                for option in optionsList:
+                    args.append(option)
+            subprocess.call(args)
 
-    pass
+    # Executing COMMAND C - PER FILE
+    if pFile_C and Active_CmdC:
+        for item in temp_dict:
+            if not temp_dict[item]:
+                pass
+            else:
+                path,filename = os.path.split(item)
+                filename_noExt = os.path.splitext(filename)[0]
 
+                if Active_CmdC and pFile_C:
+                    if not ExecC: #if Executable is empty skip
+                        pass
+                    else:
+                        args = [ExecC]
+                        if not CmdC: #if arguments are empty skip
+                            pass
+                        else:
+                            CmdC_replace = CmdC.replace('$DIRECTORY_NOSLASH', path)
+                            CmdC_replace = CmdC_replace.replace('$DIRECTORY', path + os.sep)
+                            CmdA_replace = CmdC_replace.replace('$FILENAME_NOEXT', filename_noExt)
+                            CmdC_replace = CmdC_replace.replace('$FILENAME', filename)
+                            CmdC_replace = CmdC_replace.replace('$FULLPATH_NOEXT', path + os.sep + filename_noExt)
+                            CmdC_replace = CmdC_replace.replace('$FULLPATH', item)
+                            optionsList = CmdC_replace.split()
+                            for option in optionsList:
+                                args.append(option)
+                        subprocess.call(args)
 
 
 # ------------------------------------------------------------------------------
@@ -1562,4 +1743,4 @@ def _isProjectSuitable():
 
 # ------------------------------------------------------------------------------
 if __name__ == "__main__":
-    exportSelectedChannels('flattened')
+    exportSelectedChannels()
