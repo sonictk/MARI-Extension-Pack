@@ -815,8 +815,12 @@ def _exportChannels(args_dict):
 
     #Check if export flattened is ticked, if not export unflattened
     path = args_dict['path']
-    if args_dict['flattened']:
-        for channel in args_dict['channels']:
+
+    for channel in args_dict['channels']:
+        # only export flattened (aka baking) if the channel requires it:
+        single_layer_channel = checkChannelForSingleLayer(channel)
+
+        if args_dict['flattened'] and single_layer_channel == False:
             current_geo = channel.geoEntity()
             channel_to_export = channel
             channel_resolution = args_dict['resolution']
@@ -834,11 +838,12 @@ def _exportChannels(args_dict):
                     if channel_resolution != 1:
                         current_geo.nodeGraph().removeNode(CHANNEL_NODE)
                     continue
-            try:
 
-                # if doing any post processing make sure to log all exported files
-                if args_dict['post_process']:
-                    attachImageSignals(current_geo)
+            # if doing any post processing make sure to log all exported files
+            if args_dict['post_process']:
+                attachImageSignals(current_geo)
+
+            try:
 
                 #  If running in 'ExportSelectedPatches Mode' vs All Images
                 if EXPORT_SELECTED:
@@ -852,7 +857,8 @@ def _exportChannels(args_dict):
                 # if doing any post processing detach the previously set signal connection after export and run post process
                 if args_dict['post_process']:
                     detachImageSignals(current_geo)
-                    postProcessExport()
+                    if not mari.app.wasProcessingCanceled():
+                        postProcessExport()
 
                 # if exporting lower resolution, get rid of temp channel node
                 if channel_resolution != 1:
@@ -874,62 +880,66 @@ def _exportChannels(args_dict):
             channel.setMetadata('OnlyModifiedTextures', True)
             channel.setMetadataFlags('OnlyModifiedTextures',mari.Metadata.METADATA_EDITABLE)
             channel.setMetadataEnabled('OnlyModifiedTextures', False)
-    else:
-        for channel in args_dict['channels']:
-            channel_to_export = channel
-            channel_resolution = args_dict['resolution']
-            if channel_resolution == 1:
-                channel_to_export = channel
-            else:
-                createResizedChannel(channel,channel_resolution)
-                channel_to_export = CHANNEL_DUP
 
-            uv_index_list = []
-            metadata = []
-            if args_dict['only_modified_textures']:
-                uv_index_list, metadata = _onlyModifiedTextures(channel)
-                if len(uv_index_list) == 0:
-                    if channel_resolution != 1:
-                        current_geo.nodeGraph().removeNode(CHANNEL_NODE)
-                    continue
-            try:
+        else:
+
+                channel_to_export = channel
+                channel_resolution = args_dict['resolution']
+                if channel_resolution == 1:
+                    channel_to_export = channel
+                else:
+                    createResizedChannel(channel,channel_resolution)
+                    channel_to_export = CHANNEL_DUP
+
+                uv_index_list = []
+                metadata = []
+                if args_dict['only_modified_textures']:
+                    uv_index_list, metadata = _onlyModifiedTextures(channel)
+                    if len(uv_index_list) == 0:
+                        if channel_resolution != 1:
+                            current_geo.nodeGraph().removeNode(CHANNEL_NODE)
+                        continue
 
                 # if doing any post processing make sure to log all exported files
                 if args_dict['post_process']:
                     attachImageSignals(current_geo)
 
-                #  If running in 'ExportSelectedPatches Mode' vs All Images
-                if EXPORT_SELECTED:
-                    channel_to_export.exportSelectedPatches(path, save_options, None)
-                else:
-                    channel_to_export.exportImages(path, save_options, uv_index_list)
 
-                EXPORT_SELECTED = False
+                try:
 
-                # if doing any post processing detach the previously set signal connection after export and run post process
-                if args_dict['post_process']:
+                    #  If running in 'ExportSelectedPatches Mode' vs All Images
+                    if EXPORT_SELECTED:
+                        channel_to_export.exportSelectedPatches(path, save_options, None)
+                    else:
+                        channel_to_export.exportImages(path, save_options, uv_index_list)
+
+                    EXPORT_SELECTED = False
+
+                    # if doing any post processing detach the previously set signal connection after export and run post process
+                    if args_dict['post_process']:
+                        detachImageSignals(current_geo)
+                        if not mari.app.wasProcessingCanceled():
+                            postProcessExport()
+
+                    # if exporting lower resolution, get rid of temp channel node
+                    if channel_resolution != 1:
+                        current_geo.nodeGraph().removeNode(CHANNEL_NODE)
+
+
+                except Exception, e:
+                    mari.utils.message('Failed to export "%s"' %e)
                     detachImageSignals(current_geo)
-                    postProcessExport()
-
-                # if exporting lower resolution, get rid of temp channel node
-                if channel_resolution != 1:
-                    current_geo.nodeGraph().removeNode(CHANNEL_NODE)
-
-
-            except Exception, e:
-                mari.utils.message('Failed to export "%s"' %e)
-                detachImageSignals(current_geo)
-                EXPORT_SELECTED = False
-                if channel_resolution != 1:
-                    current_geo.nodeGraph().removeNode(CHANNEL_NODE)
-                return
-            for data in metadata:
-                channel.setMetadata(*data)
-                channel.setMetadataDisplayName(data[0],str(data[0]) + ' Modified Texture Export')
-                channel.setMetadataFlags(data[0],mari.Metadata.METADATA_EDITABLE)
-            channel.setMetadata('OnlyModifiedTextures', True)
-            channel.setMetadataFlags('OnlyModifiedTextures',mari.Metadata.METADATA_EDITABLE)
-            channel.setMetadataEnabled('OnlyModifiedTextures', False)
+                    EXPORT_SELECTED = False
+                    if channel_resolution != 1:
+                        current_geo.nodeGraph().removeNode(CHANNEL_NODE)
+                    return
+                for data in metadata:
+                    channel.setMetadata(*data)
+                    channel.setMetadataDisplayName(data[0],str(data[0]) + ' Modified Texture Export')
+                    channel.setMetadataFlags(data[0],mari.Metadata.METADATA_EDITABLE)
+                channel.setMetadata('OnlyModifiedTextures', True)
+                channel.setMetadataFlags('OnlyModifiedTextures',mari.Metadata.METADATA_EDITABLE)
+                channel.setMetadataEnabled('OnlyModifiedTextures', False)
 
 
     #If successful let the user know
@@ -954,8 +964,14 @@ def _exportEverything(args_dict):
         save_options = save_options | mari.Image.REMOVE_ALPHA
     #Check if export flattened is ticked, if not export unflattened
     path = args_dict['path']
-    if args_dict['flattened']:
-        for channel in channels:
+
+    for channel in channels:
+
+        # only export flattened (aka baking) if the channel requires it:
+        single_layer_channel = checkChannelForSingleLayer(channel)
+
+        if args_dict['flattened'] and single_layer_channel == False:
+
             current_geo = channel.geoEntity()
             channel_to_export = channel
             channel_resolution = args_dict['resolution']
@@ -973,11 +989,12 @@ def _exportEverything(args_dict):
                     if channel_resolution != 1:
                         current_geo.nodeGraph().removeNode(CHANNEL_NODE)
                     continue
-            try:
 
-                # if doing any post processing make sure to log all exported files
-                if args_dict['post_process']:
-                    attachImageSignals(current_geo)
+            # if doing any post processing make sure to log all exported files
+            if args_dict['post_process']:
+                attachImageSignals(current_geo)
+
+            try:
 
                 #  If running in 'ExportSelectedPatches Mode' vs All Images
                 if EXPORT_SELECTED:
@@ -990,7 +1007,8 @@ def _exportEverything(args_dict):
                 # if doing any post processing detach the previously set signal connection after export and run post process
                 if args_dict['post_process']:
                     detachImageSignals(current_geo)
-                    postProcessExport()
+                    if not mari.app.wasProcessingCanceled():
+                        postProcessExport()
 
                 # if exporting lower resolution, get rid of temp channel node
                 if channel_resolution != 1:
@@ -1010,9 +1028,8 @@ def _exportEverything(args_dict):
             channel.setMetadata('OnlyModifiedTextures', True)
             channel.setMetadataFlags('OnlyModifiedTextures',mari.Metadata.METADATA_EDITABLE)
             channel.setMetadataEnabled('OnlyModifiedTextures', False)
-    else:
-        for channel in channels:
 
+        else:
             channel_to_export = channel
             channel_resolution = args_dict['resolution']
             if channel_resolution == 1:
@@ -1027,12 +1044,13 @@ def _exportEverything(args_dict):
                 uv_index_list, metadata = _onlyModifiedTextures(channel)
                 if len(uv_index_list) == 0:
                     continue
+
+            # if doing any post processing make sure to log all exported files
+            if args_dict['post_process']:
+                attachImageSignals(current_geo)
+
+
             try:
-
-
-                # if doing any post processing make sure to log all exported files
-                if args_dict['post_process']:
-                    attachImageSignals(current_geo)
 
                 #  If running in 'ExportSelectedPatches Mode' vs All Images
                 if EXPORT_SELECTED:
@@ -1045,7 +1063,8 @@ def _exportEverything(args_dict):
                 # if doing any post processing detach the previously set signal connection after export and run post process
                 if args_dict['post_process']:
                     detachImageSignals(current_geo)
-                    postProcessExport()
+                    if not mari.app.wasProcessingCanceled():
+                        postProcessExport()
 
                 # if exporting lower resolution, get rid of temp channel node
                 if channel_resolution != 1:
@@ -1065,11 +1084,37 @@ def _exportEverything(args_dict):
             channel.setMetadata('OnlyModifiedTextures', True)
             channel.setMetadataFlags('OnlyModifiedTextures',mari.Metadata.METADATA_EDITABLE)
             channel.setMetadataEnabled('OnlyModifiedTextures', False)
+
     #If successful let the user know
     mari.utils.message("Export Successful")
 
 # ------------------------------------------------------------------------------
+
+def checkChannelForSingleLayer(channel):
+    '''Checks if a Channel just consists of a single paint layer'''
+
+    layerList = channel.layerList()
+
+    if len(layerList) > 1:
+        return False
+
+    else:
+        layer = layerList[0]
+        paintableLayer = layer.isPaintableLayer()
+        adjustments = layer.hasAdjustmentStack()
+        mask = layer.hasMask()
+        maskStack = layer.hasMaskStack()
+        if paintableLayer and not adjustments and not mask and not maskStack:
+            return True
+        else:
+            return False
+
+
+
+# ------------------------------------------------------------------------------
+
 def saveFileListFromExportSignal(summary):
+
     ''' Saves Filepaths from the ImageExported Signal'''
     print summary
 
@@ -1596,7 +1641,7 @@ def postProcessExport():
                 optionsList = CmdA_replace.split()
                 for option in optionsList:
                     args.append(option)
-            subprocess.call(args)
+            subprocess.Popen(args)
 
     # Executing COMMAND A - PER FILE
     if pFile_A and Active_CmdA:
@@ -1624,7 +1669,7 @@ def postProcessExport():
                             optionsList = CmdA_replace.split()
                             for option in optionsList:
                                 args.append(option)
-                        subprocess.call(args)
+                        subprocess.Popen(args)
 
 
     # ------------- COMMAND B ------------------------
@@ -1643,7 +1688,7 @@ def postProcessExport():
                 optionsList = CmdB_replace.split()
                 for option in optionsList:
                     args.append(option)
-            subprocess.call(args)
+            subprocess.Popen(args)
 
     # Executing COMMAND B - PER FILE
     if pFile_B and Active_CmdB:
@@ -1671,7 +1716,7 @@ def postProcessExport():
                             optionsList = CmdB_replace.split()
                             for option in optionsList:
                                 args.append(option)
-                        subprocess.call(args)
+                        subprocess.Popen(args)
 
 
     # ------------- COMMAND C ------------------------
@@ -1690,7 +1735,7 @@ def postProcessExport():
                 optionsList = CmdC_replace.split()
                 for option in optionsList:
                     args.append(option)
-            subprocess.call(args)
+            subprocess.Popen(args)
 
     # Executing COMMAND C - PER FILE
     if pFile_C and Active_CmdC:
@@ -1718,7 +1763,7 @@ def postProcessExport():
                             optionsList = CmdC_replace.split()
                             for option in optionsList:
                                 args.append(option)
-                        subprocess.call(args)
+                        subprocess.Popen(args)
 
 
 # ------------------------------------------------------------------------------
