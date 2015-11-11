@@ -165,7 +165,7 @@ def convertChannelLayer(layerselection,layername,channelselection):
         layer.setMaskEnabled(False)
 
 
-    if layer.hasAdjustmentStack():
+    if hasattr(layer, 'hasAdjustmentStack') and layer.hasAdjustmentStack():
         # Creating a templayer and assigning the adjstack from the channellayer
         # to keep it through the merge process. In the end reassigning the adjstack
         # and closing layer
