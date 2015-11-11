@@ -60,9 +60,6 @@
 # ADVISED OF HE POSSIBILITY OF SUCH DAMAGE.
 # ------------------------------------------------------------------------------
 
-# TO DO: Get all Imagesets
-#  Extend GetMatchingLayers with argument 'INLCUDE CHANNELLAYERS'
-
 import mari, os, hashlib
 import PySide.QtGui as QtGui
 import PySide.QtCore as QtCore
@@ -835,14 +832,6 @@ def checkChannelForSingleLayer(channel):
             return False
 
 # ------------------------------------------------------------------------------
-# Saves the path of each exported File from a Signal
-
-def saveFileListFromExportSignal(summary):
-
-    ''' Saves Filepaths from the ImageExported Signal'''
-    print summary
-
-# ------------------------------------------------------------------------------
 # Figures out what textures have been modified
 
 def _onlyModifiedTextures(channel):
@@ -856,7 +845,7 @@ def _onlyModifiedTextures(channel):
 def _getChangedUvIndexes(channel):
     """Get uv indexes with new hashes"""
     geo = channel.geoEntity()
-    all_layers = _getAllLayers(channel.layerList())
+    all_layers = _getAllLayers(channel.layerList(),True)
     patch_list = geo.patchList()
     uv_index_list = []
     metadata = []
@@ -874,7 +863,7 @@ def _getChangedUvIndexes(channel):
 def _setChannelUvIndexes(channel):
     """Set the channel metadata uv index hash"""
     geo = channel.geoEntity()
-    all_layers = _getAllLayers(channel.layerList())
+    all_layers = _getAllLayers(channel.layerList(),True)
     patch_list = geo.patchList()
     uv_index_list = []
     metadata = []
@@ -947,28 +936,29 @@ def _sha256(string):
 # ------------------------------------------------------------------------------
 # returns a list of all layers in a stack
 
-def _getAllLayers(layer_list):
+def _getAllLayers(layer_list, include_channelLayers):
     """Returns a list of all of the layers in the layer stack, including substacks."""
-    return _getMatchingLayers(layer_list, _returnTrue)
+    return _getMatchingLayers(layer_list, _returnTrue, include_channelLayers)
 
 def _returnTrue(*object):
     """Return True for anything passed to this function."""
     return True
 
-def _getMatchingLayers(layer_list, criterionFn):
+def _getMatchingLayers(layer_list, criterionFn, include_channelLayers):
     """Returns a list of all of the layers in the stack that match the given criterion function, including substacks."""
     matching = []
     for layer in layer_list:
         if criterionFn(layer):
             matching.append(layer)
         if hasattr(layer, 'layerStack'):
-            matching.extend(_getMatchingLayers(layer.layerStack().layerList(), criterionFn))
+            matching.extend(_getMatchingLayers(layer.layerStack().layerList(), criterionFn, include_channelLayers))
         if layer.hasMaskStack():
-            matching.extend(_getMatchingLayers(layer.maskStack().layerList(), criterionFn))
+            matching.extend(_getMatchingLayers(layer.maskStack().layerList(), criterionFn, include_channelLayers))
         if hasattr(layer, 'hasAdjustmentStack') and layer.hasAdjustmentStack():
-            matching.extend(_getMatchingLayers(layer.adjustmentStack().layerList(), criterionFn))
-        if layer.isChannelLayer():
-            matching.extend(_getMatchingLayers(layer.channel().layerList(), criterionFn))
+            matching.extend(_getMatchingLayers(layer.adjustmentStack().layerList(), criterionFn, include_channelLayers))
+        if include_channelLayers:
+            if layer.isChannelLayer():
+                matching.extend(_getMatchingLayers(layer.channel().layerList(), criterionFn, include_channelLayers))
 
     return matching
 
@@ -1267,7 +1257,16 @@ def findImageSets(channel):
     Since Mari does not emit a signal when exporting PaintLayers non-flattened,
     I need to trawl through the entire channel and find all Imagesets manually
     '''
-    pass
+    layers_in_channel = channel.layerList()
+    layerList = _getAllLayers(layers_in_channel,False)
+
+    for layer in layerList:
+        if layer.hasMask():
+            imgSet = layer.maskImageSet()
+            getNewImageset(imgSet)
+        if layer.isPaintableLayer():
+            imgSet = layer.imageSet()
+            getNewImageset(imgSet)
 
 def getPostProcessSettings():
     ''' Reads the set post processing settings and commands'''
@@ -1586,6 +1585,7 @@ def _exportChannels(args_dict):
                     # if doing any post processing detach the previously set signal connection after export and run post process
                     if args_dict['post_process']:
                         detachImageSignals(current_geo)
+                        findImageSets(channel_to_export)
                         if not mari.app.wasProcessingCanceled():
                             postProcessExport()
 
@@ -1736,6 +1736,7 @@ def _exportEverything(args_dict):
                 # if doing any post processing detach the previously set signal connection after export and run post process
                 if args_dict['post_process']:
                     detachImageSignals(current_geo)
+                    findImageSets(channel_to_export)
                     if not mari.app.wasProcessingCanceled():
                         postProcessExport()
 
