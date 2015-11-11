@@ -60,12 +60,28 @@
 # ADVISED OF HE POSSIBILITY OF SUCH DAMAGE.
 # ------------------------------------------------------------------------------
 
-import mari, os, hashlib
+# ------------------------------------------------------------------------------
+# KNOWN ISSUES:
+#   1 ) when running Post Processes for a Channel that was exported non-flattened with
+#       ExportSelectedPatches Post Processing is run on ALL Patches (if they have been exported previously)
+# ------------------------------------------------------------------------------
+# TO DO:
+#       DOES RESOLUTION BAKING STILL WORK WITH NON-FLATTENED EXPORTS ?
+# ------------------------------------------------------------------------------
+
+
+
+
+import mari, os, hashlib,sys
 import PySide.QtGui as QtGui
 import PySide.QtCore as QtCore
 from PySide.QtCore import QSettings
+import multiprocessing, gc
+from Queue import Queue
+from threading import Thread
 import subprocess
 import inspect
+
 
 
 version = "3.0"     #UI VERSION
@@ -76,6 +92,7 @@ CHANNEL_NODE = None     # A Global Channel Variable for dynamically resized Chan
 CHANNEL_DUP = None      # A Global Channel Variable for dynamically resized Channel Objects
 EXPORT_SELECTED = False # A Global Variable for Export Selected Patches
 EXPORT_PATH_DICT = {}   # A Dictionary to log all exported File paths if post processing is required
+MAX_SUBPROCESS_THREADS = 1 #The maximum number of Subproccesses allowed. UI Setting
 
 
 # ------------------------------------------------------------------------------
@@ -823,7 +840,7 @@ def checkChannelForSingleLayer(channel):
     else:
         layer = layerList[0]
         paintableLayer = layer.isPaintableLayer()
-        adjustments = layer.hasAdjustmentStack()
+        adjustments = hasattr(layer, 'hasAdjustmentStack') and layer.hasAdjustmentStack()
         mask = layer.hasMask()
         maskStack = layer.hasMaskStack()
         if paintableLayer and not adjustments and not mask and not maskStack:
@@ -980,9 +997,11 @@ class PostProcessUI(QtGui.QDialog):
         # Layouts & Boxes
         window_layout_box = QtGui.QVBoxLayout()
         info_layout_grid = QtGui.QGridLayout()
+        options_layout_box = QtGui.QHBoxLayout()
         command_layout_grid = QtGui.QGridLayout()
         button_layout_box = QtGui.QHBoxLayout()
         info_group_box = QtGui.QGroupBox('Info')
+        options_group_box = QtGui.QGroupBox('Options')
         command_group_box = QtGui.QGroupBox("Commands")
 
         self.setLayout(window_layout_box)
@@ -1000,9 +1019,20 @@ $FULLPATH_NOEXT - gets replaced with the full path and filename (without extensi
 $DIRECTORY - gets replaced with the Directory path to the File(s). Folder will include a trailing slash.\n\
 $DIRECTORY_NOSLASH - gets replaced with the Directory path to the Files(s). Folder will not include a trailing slash")
 
-
         info_layout_grid.addWidget(self.Descr_Command,3,2)
         info_group_box.setLayout(info_layout_grid)
+
+
+        MaxThread_label = QtGui.QLabel('MAX PARALLEL RUNNING POST PROCESSES:')
+        MaxThread_label.setToolTip('Determines how many post processes are allowed to be run at the same time')
+        self.MaxThread_SpinBox = QtGui.QSpinBox()
+        self.MaxThread_SpinBox.setToolTip('Determines how many post processes are allowed to be run at the same time')
+        self.MaxThread_SpinBox.setRange(1,10000)
+        self.MaxThread_SpinBox.setValue(multiprocessing.cpu_count()*2)
+
+        options_layout_box.addWidget(MaxThread_label)
+        options_layout_box.addWidget(self.MaxThread_SpinBox)
+        options_group_box.setLayout(options_layout_box)
 
 
         #Labels
@@ -1125,6 +1155,7 @@ $DIRECTORY_NOSLASH - gets replaced with the Directory path to the Files(s). Fold
         self.CancelBtn.clicked.connect(self.reject)
         # Add sub Layouts to main Window Box Layout
         window_layout_box.addWidget(info_group_box)
+        window_layout_box.addWidget(options_group_box)
         window_layout_box.addWidget(command_group_box)
         window_layout_box.addLayout(button_layout_box)
 
@@ -1139,6 +1170,8 @@ $DIRECTORY_NOSLASH - gets replaced with the Directory path to the Files(s). Fold
 
     def _setCommand(self):
         '''Writes the set commands to the config file when command dialog confirmed'''
+
+        Max_Threads = self.MaxThread_SpinBox.value()
 
         CmdA_Active = self.Active_CmdA.isChecked()
         CmdB_Active = self.Active_CmdB.isChecked()
@@ -1160,6 +1193,8 @@ $DIRECTORY_NOSLASH - gets replaced with the Directory path to the Files(s). Fold
         CmdC_pFile = self.pFile_C.isChecked()
 
         self.SETTINGS.beginGroup(Settings_Group)
+
+        self.SETTINGS.setValue('Maximum_Threads',Max_Threads)
 
         self.SETTINGS.setValue('PostCommandA_Active',CmdA_Active)
         self.SETTINGS.setValue('PostCommandB_Active',CmdB_Active)
@@ -1189,25 +1224,31 @@ $DIRECTORY_NOSLASH - gets replaced with the Directory path to the Files(s). Fold
 
         self.SETTINGS.beginGroup(Settings_Group)
 
-        self.Exec_CmdA.setText(self.SETTINGS.value('PostExecutableA'))
-        self.Exec_CmdB.setText(self.SETTINGS.value('PostExecutableB'))
-        self.Exec_CmdC.setText(self.SETTINGS.value('PostExecutableC'))
+        try:
+            self.MaxThread_SpinBox.setValue(int(self.SETTINGS.value('Maximum_Threads')))
 
-        self.Script_CmdA.setText(self.SETTINGS.value('PostCommandA'))
-        self.Script_CmdB.setText(self.SETTINGS.value('PostCommandB'))
-        self.Script_CmdC.setText(self.SETTINGS.value('PostCommandC'))
+            self.Exec_CmdA.setText(self.SETTINGS.value('PostExecutableA'))
+            self.Exec_CmdB.setText(self.SETTINGS.value('PostExecutableB'))
+            self.Exec_CmdC.setText(self.SETTINGS.value('PostExecutableC'))
 
-        self.Active_CmdA.setChecked( (self.SETTINGS.value('PostCommandA_Active')== 'true'))
-        self.Active_CmdB.setChecked( (self.SETTINGS.value('PostCommandB_Active')== 'true'))
-        self.Active_CmdC.setChecked( (self.SETTINGS.value('PostCommandC_Active')== 'true'))
+            self.Script_CmdA.setText(self.SETTINGS.value('PostCommandA'))
+            self.Script_CmdB.setText(self.SETTINGS.value('PostCommandB'))
+            self.Script_CmdC.setText(self.SETTINGS.value('PostCommandC'))
 
-        self.pFile_A.setChecked( (self.SETTINGS.value('PostCommandA_perFile')== 'true'))
-        self.pFile_B.setChecked( (self.SETTINGS.value('PostCommandB_perFile')== 'true'))
-        self.pFile_C.setChecked( (self.SETTINGS.value('PostCommandC_perFile')== 'true'))
+            self.Active_CmdA.setChecked( (self.SETTINGS.value('PostCommandA_Active')== 'true'))
+            self.Active_CmdB.setChecked( (self.SETTINGS.value('PostCommandB_Active')== 'true'))
+            self.Active_CmdC.setChecked( (self.SETTINGS.value('PostCommandC_Active')== 'true'))
 
-        self.pChan_A.setChecked( (self.SETTINGS.value('PostCommandA_perChannel')== 'true'))
-        self.pChan_B.setChecked( (self.SETTINGS.value('PostCommandB_perChannel')== 'true'))
-        self.pChan_C.setChecked( (self.SETTINGS.value('PostCommandC_perChannel')== 'true'))
+            self.pFile_A.setChecked( (self.SETTINGS.value('PostCommandA_perFile')== 'true'))
+            self.pFile_B.setChecked( (self.SETTINGS.value('PostCommandB_perFile')== 'true'))
+            self.pFile_C.setChecked( (self.SETTINGS.value('PostCommandC_perFile')== 'true'))
+
+            self.pChan_A.setChecked( (self.SETTINGS.value('PostCommandA_perChannel')== 'true'))
+            self.pChan_B.setChecked( (self.SETTINGS.value('PostCommandB_perChannel')== 'true'))
+            self.pChan_C.setChecked( (self.SETTINGS.value('PostCommandC_perChannel')== 'true'))
+
+        except Exception:
+            pass
 
         self.SETTINGS.endGroup()
 
@@ -1243,7 +1284,7 @@ def getNewImageset(Set):
         EXPORT_PATH_DICT[key] = key
 
 def attachImageSignals(geo):
-    ''' monitors changes to image sets on geo to catch internal imagesets'''
+    ''' monitors changes to image sets on geo to catch internal imagesets created when exporting channel flattened'''
     mari.utils.connect(geo.imageSetAdded,getNewImageset)
     mari.utils.connect(geo.imageSetMadeCurrent,getNewImageset)
 
@@ -1255,7 +1296,8 @@ def detachImageSignals(geo):
 def findImageSets(channel):
     '''
     Since Mari does not emit a signal when exporting PaintLayers non-flattened,
-    I need to trawl through the entire channel and find all Imagesets manually
+    I need to trawl through the entire channel and find all Imagesets manually,
+    then check for their export path
     '''
     layers_in_channel = channel.layerList()
     layerList = _getAllLayers(layers_in_channel,False)
@@ -1271,9 +1313,16 @@ def findImageSets(channel):
 def getPostProcessSettings():
     ''' Reads the set post processing settings and commands'''
 
+    global MAX_SUBPROCESS_THREADS
     SETTINGS = mari.Settings()
-
     SETTINGS.beginGroup(Settings_Group)
+
+    MaxThreads = MAX_SUBPROCESS_THREADS
+
+    try:
+        MaxThreads = int(SETTINGS.value('Maximum_Threads'))
+    except Exception:
+        pass
 
     CmdA = SETTINGS.value('PostCommandA').encode('unicode-escape')
     CmdB = SETTINGS.value('PostCommandB').encode('unicode-escape')
@@ -1299,6 +1348,8 @@ def getPostProcessSettings():
 
     SETTINGS.endGroup()
 
+    MAX_SUBPROCESS_THREADS = MaxThreads
+
     return ExecA,ExecB,ExecC,CmdA,CmdB,CmdC,Active_CmdA,Active_CmdB,Active_CmdC,pFile_A,pFile_B,pFile_C
 
 def postProcessExport():
@@ -1322,6 +1373,8 @@ def postProcessExport():
             path,filename = os.path.split(item)
             break
 
+    # Q Thread
+    q = Queue()
 
     # ------------- COMMAND A ------------------------
 
@@ -1339,7 +1392,9 @@ def postProcessExport():
                 optionsList = CmdA_replace.split()
                 for option in optionsList:
                     args.append(option)
-            subprocess.Popen(args)
+            q.put_nowait(args)
+            # subprocess.Popen(args)
+
 
     # Executing COMMAND A - PER FILE
     if pFile_A and Active_CmdA:
@@ -1367,7 +1422,8 @@ def postProcessExport():
                             optionsList = CmdA_replace.split()
                             for option in optionsList:
                                 args.append(option)
-                        subprocess.Popen(args)
+                        q.put_nowait(args)
+                        # subprocess.Popen(args)
 
 
     # ------------- COMMAND B ------------------------
@@ -1386,7 +1442,8 @@ def postProcessExport():
                 optionsList = CmdB_replace.split()
                 for option in optionsList:
                     args.append(option)
-            subprocess.Popen(args)
+            q.put_nowait(args)
+            # subprocess.Popen(args)
 
     # Executing COMMAND B - PER FILE
     if pFile_B and Active_CmdB:
@@ -1414,7 +1471,8 @@ def postProcessExport():
                             optionsList = CmdB_replace.split()
                             for option in optionsList:
                                 args.append(option)
-                        subprocess.Popen(args)
+                        q.put_nowait(args)
+                        # subprocess.Popen(args)
 
 
     # ------------- COMMAND C ------------------------
@@ -1433,7 +1491,8 @@ def postProcessExport():
                 optionsList = CmdC_replace.split()
                 for option in optionsList:
                     args.append(option)
-            subprocess.Popen(args)
+            q.put_nowait(args)
+            # subprocess.Popen(args)
 
     # Executing COMMAND C - PER FILE
     if pFile_C and Active_CmdC:
@@ -1461,7 +1520,37 @@ def postProcessExport():
                             optionsList = CmdC_replace.split()
                             for option in optionsList:
                                 args.append(option)
-                        subprocess.Popen(args)
+                        q.put_nowait(args)
+                        # subprocess.Popen(args)
+
+
+    threads = [Thread(target=worker, args=(q,)) for _ in range(MAX_SUBPROCESS_THREADS)]
+    for t in threads:
+        t.daemon = True # threads die if the program dies
+        t.start()
+
+
+    for _ in threads: q.put_nowait(None) # signal no more files
+    for t in threads: t.join() # wait for completion
+    gc.collect()
+
+
+# ------------------------------------------------------------------------------
+# The following are used for managing a queue of postprocesses so not all run at the same time
+
+def runSubprocess(*args):
+    ''' Run subprocesses'''
+    subprocess.call(args)
+    gc.collect()
+
+def worker(queue):
+    """Process files from the queue."""
+    for args in iter(queue.get, None):
+        try:
+            runSubprocess(*args)
+        except Exception as e: # catch exceptions to avoid exiting the
+                               # thread prematurely
+            print('%r failed: %s' % (args, e,))
 
 # ------------------------------------------------------------------------------
 # The Function to trigger when user clicks Export or Export Selected Patches
@@ -1814,4 +1903,4 @@ def _isProjectSuitable():
 
 # ------------------------------------------------------------------------------
 if __name__ == "__main__":
-    exportSelectedChannels()
+    exportSelectedChannels('flattened')
