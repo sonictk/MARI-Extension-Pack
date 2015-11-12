@@ -65,11 +65,6 @@
 #   1 ) when running Post Processes for a Channel that was exported non-flattened with
 #       ExportSelectedPatches Post Processing is run on ALL Patches (if they have been exported previously)
 # ------------------------------------------------------------------------------
-# TO DO:
-#       DOES RESOLUTION BAKING STILL WORK WITH NON-FLATTENED EXPORTS ?
-# ------------------------------------------------------------------------------
-
-
 
 
 import mari, os, hashlib,sys
@@ -506,6 +501,9 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
     #Check path and template will work, check if export everything box is ticked if not make sure there are some channels to export
     def _checkInput(self):
 
+        getFlattened = self._getExportFlattened()
+        getResolution = self._getResolution()
+
         file_types = ['.' + format for format in mari.images.supportedWriteFormats()]
         file_types_str = []
         for format in file_types:
@@ -524,6 +522,10 @@ class ExportSelectedChannelsUI(QtGui.QDialog):
             pass
         elif len(self.export_list._currentChannels()) == 0:
             mari.utils.message("Please add a channel to export.")
+            return
+
+        if not getFlattened and getResolution != 1:
+            mari.utils.message("Exporting lower resolutions is currently only supported in 'Flattened' Mode. \n\nTo fix this, please check the 'Export Flattened' Checkbox or choose 'Export Resolution: Full' to proceed.",'Unable to Export with current settings')
             return
 
         if not os.path.exists(path_template):
@@ -1575,11 +1577,15 @@ def _exportChannels(args_dict):
     for channel in args_dict['channels']:
         # only export flattened (aka baking) if the channel requires it:
         single_layer_channel = checkChannelForSingleLayer(channel)
+        channel_resolution = args_dict['resolution']
+        # if it's a single layer channel that normally wouldn't need to be baked but you are exporting at lower res
+        # bake anyway:
+        if single_layer_channel == True and channel_resolution != 1:
+            single_layer_channel = False
 
         if args_dict['flattened'] and single_layer_channel == False:
             current_geo = channel.geoEntity()
             channel_to_export = channel
-            channel_resolution = args_dict['resolution']
             if channel_resolution == 1:
                 channel_to_export = channel
             else:
@@ -1730,12 +1736,16 @@ def _exportEverything(args_dict):
 
         # only export flattened (aka baking) if the channel requires it:
         single_layer_channel = checkChannelForSingleLayer(channel)
+        channel_resolution = args_dict['resolution']
+        # if it's a single layer channel that normally wouldn't need to be baked but you are exporting at lower res
+        # bake anyway:
+        if single_layer_channel == True and channel_resolution != 1:
+            single_layer_channel = False
 
         if args_dict['flattened'] and single_layer_channel == False:
 
             current_geo = channel.geoEntity()
             channel_to_export = channel
-            channel_resolution = args_dict['resolution']
             if channel_resolution == 1:
                 channel_to_export = channel
             else:
@@ -1903,4 +1913,4 @@ def _isProjectSuitable():
 
 # ------------------------------------------------------------------------------
 if __name__ == "__main__":
-    exportSelectedChannels('flattened')
+    exportSelectedChannels()
