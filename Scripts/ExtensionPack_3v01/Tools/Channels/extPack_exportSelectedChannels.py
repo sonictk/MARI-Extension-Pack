@@ -1298,7 +1298,7 @@ def getNewImagesetFromIndex(Set,geo):
             geo_patch_uv_list.append(UVIndex_selectedPatch)
 
     for image in imageList:
-        uvIndex_perImage = imageList.uvIndex(image)
+        uvIndex_perImage = Set.uvIndex(image)
         for UVIndex in geo_patch_uv_list:
             if UVIndex == uvIndex_perImage:
                 key = image.lastExportPath()
@@ -1639,8 +1639,6 @@ def _exportChannels(args_dict):
                     channel_to_export.exportImagesFlattened(path, save_options, uv_index_list)
 
 
-                EXPORT_SELECTED = False
-
                 # if doing any post processing detach the previously set signal connection after export and run post process
                 if args_dict['post_process']:
                     detachImageSignals(current_geo)
@@ -1713,8 +1711,6 @@ def _exportChannels(args_dict):
                     if channel_resolution != 1:
                         current_geo.nodeGraph().removeNode(CHANNEL_NODE)
 
-                    EXPORT_SELECTED = False
-
                 except Exception, e:
                     mari.utils.message('Failed to export "%s"' %e)
                     detachImageSignals(current_geo)
@@ -1731,6 +1727,7 @@ def _exportChannels(args_dict):
                 channel.setMetadataEnabled('OnlyModifiedTextures', False)
 
 
+    EXPORT_SELECTED = False
 
     #If successful let the user know
     mari.utils.message("Export Successful")
@@ -1799,7 +1796,6 @@ def _exportEverything(args_dict):
                 else:
                     channel_to_export.exportImagesFlattened(path, save_options, uv_index_list)
 
-                EXPORT_SELECTED = False
 
                 # if doing any post processing detach the previously set signal connection after export and run post process
                 if args_dict['post_process']:
@@ -1867,8 +1863,6 @@ def _exportEverything(args_dict):
                 if channel_resolution != 1:
                     current_geo.nodeGraph().removeNode(CHANNEL_NODE)
 
-                EXPORT_SELECTED = False
-
 
             except Exception, e:
                 mari.utils.message('Failed to export "%s"' %e)
@@ -1884,6 +1878,8 @@ def _exportEverything(args_dict):
             channel.setMetadata('OnlyModifiedTextures', True)
             channel.setMetadataFlags('OnlyModifiedTextures',mari.Metadata.METADATA_EDITABLE)
             channel.setMetadataEnabled('OnlyModifiedTextures', False)
+
+    EXPORT_SELECTED = False
 
     #If successful let the user know
     mari.utils.message("Export Successful")
