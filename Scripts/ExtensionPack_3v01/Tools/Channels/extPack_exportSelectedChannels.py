@@ -1285,6 +1285,25 @@ def getNewImageset(Set):
         key = image.lastExportPath()
         EXPORT_PATH_DICT[key] = key
 
+def getNewImagesetFromIndex(Set,geo):
+    ''' records all exported file paths into a dict for later processing based on selected patches'''
+    imageList = Set.imageList()
+    global EXPORT_PATH_DICT
+
+    geo_patch_uv_list = []
+    geo_patches = geo.patchList()
+    for patch in geo_patches:
+        if patch.isSelected():
+            UVIndex_selectedPatch = patch.uvIndex()
+            geo_patch_uv_list.append(UVIndex_selectedPatch)
+
+    for image in imageList:
+        uvIndex_perImage = imageList.uvIndex(image)
+        for UVIndex in geo_patch_uv_list:
+            if UVIndex == uvIndex_perImage:
+                key = image.lastExportPath()
+                EXPORT_PATH_DICT[key] = key
+
 def attachImageSignals(geo):
     ''' monitors changes to image sets on geo to catch internal imagesets created when exporting channel flattened'''
     mari.utils.connect(geo.imageSetAdded,getNewImageset)
@@ -1295,7 +1314,7 @@ def detachImageSignals(geo):
     mari.utils.disconnect(geo.imageSetAdded,getNewImageset)
     mari.utils.disconnect(geo.imageSetMadeCurrent,getNewImageset)
 
-def findImageSets(channel):
+def findImageSets(channel,geo):
     '''
     Since Mari does not emit a signal when exporting PaintLayers non-flattened,
     I need to trawl through the entire channel and find all Imagesets manually,
@@ -1307,10 +1326,16 @@ def findImageSets(channel):
     for layer in layerList:
         if layer.hasMask():
             imgSet = layer.maskImageSet()
-            getNewImageset(imgSet)
+            if EXPORT_SELECTED:
+                getNewImagesetFromIndex(imgSet,geo)
+            else:
+                getNewImageset(imgSet)
         if layer.isPaintableLayer():
             imgSet = layer.imageSet()
-            getNewImageset(imgSet)
+            if EXPORT_SELECTED:
+                getNewImagesetFromIndex(imgSet,geo)
+            else:
+                getNewImageset(imgSet)
 
 def getPostProcessSettings():
     ''' Reads the set post processing settings and commands'''
@@ -1675,12 +1700,12 @@ def _exportChannels(args_dict):
                     else:
                         channel_to_export.exportImages(path, save_options, uv_index_list)
 
-                    EXPORT_SELECTED = False
+
 
                     # if doing any post processing detach the previously set signal connection after export and run post process
                     if args_dict['post_process']:
                         detachImageSignals(current_geo)
-                        findImageSets(channel_to_export)
+                        findImageSets(channel_to_export,current_geo)
                         if not mari.app.wasProcessingCanceled():
                             postProcessExport()
 
@@ -1688,6 +1713,7 @@ def _exportChannels(args_dict):
                     if channel_resolution != 1:
                         current_geo.nodeGraph().removeNode(CHANNEL_NODE)
 
+                    EXPORT_SELECTED = False
 
                 except Exception, e:
                     mari.utils.message('Failed to export "%s"' %e)
@@ -1830,18 +1856,19 @@ def _exportEverything(args_dict):
                 else:
                     channel_to_export.exportImages(path, save_options, uv_index_list)
 
-                EXPORT_SELECTED = False
-
                 # if doing any post processing detach the previously set signal connection after export and run post process
                 if args_dict['post_process']:
                     detachImageSignals(current_geo)
-                    findImageSets(channel_to_export)
+                    findImageSets(channel_to_export,current_geo)
                     if not mari.app.wasProcessingCanceled():
                         postProcessExport()
 
                 # if exporting lower resolution, get rid of temp channel node
                 if channel_resolution != 1:
                     current_geo.nodeGraph().removeNode(CHANNEL_NODE)
+
+                EXPORT_SELECTED = False
+
 
             except Exception, e:
                 mari.utils.message('Failed to export "%s"' %e)
