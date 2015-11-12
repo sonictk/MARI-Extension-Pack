@@ -1283,6 +1283,7 @@ def getNewImageset(Set):
     global EXPORT_PATH_DICT
     for image in imageList:
         key = image.lastExportPath()
+        print key
         EXPORT_PATH_DICT[key] = key
 
 def getNewImagesetFromIndex(Set,geo):
@@ -1324,7 +1325,7 @@ def findImageSets(channel,geo):
     layerList = _getAllLayers(layers_in_channel,False)
 
     for layer in layerList:
-        if layer.hasMask():
+        if layer.hasMask() and not layer.hasMaskStack():
             imgSet = layer.maskImageSet()
             if EXPORT_SELECTED:
                 getNewImagesetFromIndex(imgSet,geo)
