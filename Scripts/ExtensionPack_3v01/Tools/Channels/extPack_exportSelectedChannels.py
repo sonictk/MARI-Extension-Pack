@@ -60,12 +60,6 @@
 # ADVISED OF HE POSSIBILITY OF SUCH DAMAGE.
 # ------------------------------------------------------------------------------
 
-# ------------------------------------------------------------------------------
-# KNOWN ISSUES:
-#   1 ) when running Post Processes for a Channel that was exported non-flattened with
-#       ExportSelectedPatches Post Processing is run on ALL Patches (if they have been exported previously)
-# ------------------------------------------------------------------------------
-
 
 import mari, os, hashlib,sys
 import PySide.QtGui as QtGui
@@ -1283,7 +1277,6 @@ def getNewImageset(Set):
     global EXPORT_PATH_DICT
     for image in imageList:
         key = image.lastExportPath()
-        print key
         EXPORT_PATH_DICT[key] = key
 
 def getNewImagesetFromIndex(Set,geo):
@@ -1415,9 +1408,14 @@ def postProcessExport():
             if not CmdA: #if arguments are empty skip
                 pass
             else:
-                CmdA_replace = CmdA.replace('$DIRECTORY_NOSLASH', path)
-                CmdA_replace = CmdA_replace.replace('$DIRECTORY', path + os.sep)
-                optionsList = CmdA_replace.split()
+                # CmdA_replace = CmdA.replace('$DIRECTORY_NOSLASH', path)
+                # CmdA_replace = CmdA_replace.replace('$DIRECTORY', path + os.sep)
+                optionsList = CmdA.split()
+                # Replacing from the list so not to fall into path with spaces trap if running .split() after replacing
+                for n,i in enumerate(optionsList):
+                    optionsList[n] = i_1 = i.replace('$DIRECTORY_NOSLASH', path)
+                    optionsList[n] = i_2 = i_1.replace('$DIRECTORY', path + os.sep)
+
                 for option in optionsList:
                     args.append(option)
             q.put_nowait(args)
@@ -1441,13 +1439,17 @@ def postProcessExport():
                         if not CmdA: #if arguments are empty skip
                             pass
                         else:
-                            CmdA_replace = CmdA.replace('$DIRECTORY_NOSLASH', path)
-                            CmdA_replace = CmdA_replace.replace('$DIRECTORY', path + os.sep)
-                            CmdA_replace = CmdA_replace.replace('$FILENAME_NOEXT', filename_noExt)
-                            CmdA_replace = CmdA_replace.replace('$FILENAME', filename)
-                            CmdA_replace = CmdA_replace.replace('$FULLPATH_NOEXT', path + os.sep + filename_noExt)
-                            CmdA_replace = CmdA_replace.replace('$FULLPATH', item)
-                            optionsList = CmdA_replace.split()
+                            optionsList = CmdA.split()
+                            # Replacing from the list so not to fall into path with spaces trap if running .split() after replacing
+                            for n,i in enumerate(optionsList):
+                                optionsList[n] = i_1 = i.replace('$DIRECTORY_NOSLASH', path)
+                                optionsList[n] = i_2 = i_1.replace('$DIRECTORY', path + os.sep)
+                                optionsList[n] = i_3 = i_2.replace('$FILENAME_NOEXT', filename_noExt)
+                                optionsList[n] = i_4 = i_3.replace('$FILENAME', filename)
+                                optionsList[n] = i_5 = i_4.replace('$FULLPATH_NOEXT', path + os.sep + filename_noExt)
+                                optionsList[n] = i_6 = i_5.replace('$FULLPATH', item)
+
+
                             for option in optionsList:
                                 args.append(option)
                         q.put_nowait(args)
@@ -1465,9 +1467,12 @@ def postProcessExport():
             if not CmdB: #if arguments are empty skip
                 pass
             else:
-                CmdB_replace = CmdB.replace('$DIRECTORY_NOSLASH', path)
-                CmdB_replace = CmdB_replace.replace('$DIRECTORY', path + os.sep)
-                optionsList = CmdB_replace.split()
+                optionsList = CmdB.split()
+                # Replacing from the list so not to fall into path with spaces trap if running .split() after replacing
+                for n,i in enumerate(optionsList):
+                    optionsList[n] = i_1 = i.replace('$DIRECTORY_NOSLASH', path)
+                    optionsList[n] = i_2 = i_1.replace('$DIRECTORY', path + os.sep)
+
                 for option in optionsList:
                     args.append(option)
             q.put_nowait(args)
@@ -1490,13 +1495,16 @@ def postProcessExport():
                         if not CmdB: #if arguments are empty skip
                             pass
                         else:
-                            CmdB_replace = CmdB.replace('$DIRECTORY_NOSLASH', path)
-                            CmdB_replace = CmdB_replace.replace('$DIRECTORY', path + os.sep)
-                            CmdA_replace = CmdB_replace.replace('$FILENAME_NOEXT', filename_noExt)
-                            CmdB_replace = CmdB_replace.replace('$FILENAME', filename)
-                            CmdB_replace = CmdB_replace.replace('$FULLPATH_NOEXT', path + os.sep + filename_noExt)
-                            CmdB_replace = CmdB_replace.replace('$FULLPATH', item)
-                            optionsList = CmdB_replace.split()
+                            optionsList = CmdB.split()
+                            # Replacing from the list so not to fall into path with spaces trap if running .split() after replacing
+                            for n,i in enumerate(optionsList):
+                                optionsList[n] = i_1 = i.replace('$DIRECTORY_NOSLASH', path)
+                                optionsList[n] = i_2 = i_1.replace('$DIRECTORY', path + os.sep)
+                                optionsList[n] = i_3 = i_2.replace('$FILENAME_NOEXT', filename_noExt)
+                                optionsList[n] = i_4 = i_3.replace('$FILENAME', filename)
+                                optionsList[n] = i_5 = i_4.replace('$FULLPATH_NOEXT', path + os.sep + filename_noExt)
+                                optionsList[n] = i_6 = i_5.replace('$FULLPATH', item)
+
                             for option in optionsList:
                                 args.append(option)
                         q.put_nowait(args)
@@ -1514,9 +1522,12 @@ def postProcessExport():
             if not CmdC: #if arguments are empty skip
                 pass
             else:
-                CmdC_replace = CmdC.replace('$DIRECTORY_NOSLASH', path)
-                CmdC_replace = CmdC_replace.replace('$DIRECTORY', path + os.sep)
-                optionsList = CmdC_replace.split()
+                optionsList = CmdC.split()
+                # Replacing from the list so not to fall into path with spaces trap if running .split() after replacing
+                for n,i in enumerate(optionsList):
+                    optionsList[n] = i_1 = i.replace('$DIRECTORY_NOSLASH', path)
+                    optionsList[n] = i_2 = i_1.replace('$DIRECTORY', path + os.sep)
+
                 for option in optionsList:
                     args.append(option)
             q.put_nowait(args)
@@ -1539,13 +1550,16 @@ def postProcessExport():
                         if not CmdC: #if arguments are empty skip
                             pass
                         else:
-                            CmdC_replace = CmdC.replace('$DIRECTORY_NOSLASH', path)
-                            CmdC_replace = CmdC_replace.replace('$DIRECTORY', path + os.sep)
-                            CmdA_replace = CmdC_replace.replace('$FILENAME_NOEXT', filename_noExt)
-                            CmdC_replace = CmdC_replace.replace('$FILENAME', filename)
-                            CmdC_replace = CmdC_replace.replace('$FULLPATH_NOEXT', path + os.sep + filename_noExt)
-                            CmdC_replace = CmdC_replace.replace('$FULLPATH', item)
-                            optionsList = CmdC_replace.split()
+                            optionsList = CmdC.split()
+                            # Replacing from the list so not to fall into path with spaces trap if running .split() after replacing
+                            for n,i in enumerate(optionsList):
+                                optionsList[n] = i_1 = i.replace('$DIRECTORY_NOSLASH', path)
+                                optionsList[n] = i_2 = i_1.replace('$DIRECTORY', path + os.sep)
+                                optionsList[n] = i_3 = i_2.replace('$FILENAME_NOEXT', filename_noExt)
+                                optionsList[n] = i_4 = i_3.replace('$FILENAME', filename)
+                                optionsList[n] = i_5 = i_4.replace('$FULLPATH_NOEXT', path + os.sep + filename_noExt)
+                                optionsList[n] = i_6 = i_5.replace('$FULLPATH', item)
+
                             for option in optionsList:
                                 args.append(option)
                         q.put_nowait(args)
@@ -1690,7 +1704,6 @@ def _exportChannels(args_dict):
                 if args_dict['post_process']:
                     attachImageSignals(current_geo)
 
-
                 try:
 
                     #  If running in 'ExportSelectedPatches Mode' vs All Images
@@ -1698,7 +1711,6 @@ def _exportChannels(args_dict):
                         channel_to_export.exportSelectedPatches(path, save_options, None)
                     else:
                         channel_to_export.exportImages(path, save_options, uv_index_list)
-
 
 
                     # if doing any post processing detach the previously set signal connection after export and run post process
@@ -1937,4 +1949,4 @@ def _isProjectSuitable():
 
 # ------------------------------------------------------------------------------
 if __name__ == "__main__":
-    exportSelectedChannels()
+    exportSelectedChannels('flattened')
