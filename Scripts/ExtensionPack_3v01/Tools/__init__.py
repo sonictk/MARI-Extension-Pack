@@ -99,6 +99,7 @@ import Project.extPack_garbageCollect as GarbageCollect
 
 # HELP:
 import Help.extPack_online_help as onlineHelp
+import Help.extPack_version_check as VersionCheck
 
 # ------------------------------------------------------------------------------
 
@@ -301,6 +302,9 @@ class customScripts():
     def open_online_help(self):
         onlineHelp.openExtPackHelp()
 
+    def check_version(self):
+        VersionCheck.check_version()
+
 # ------------------------------------------------------------------------------
 
 mari.customScripts = customScripts()
@@ -379,8 +383,9 @@ print '-----------------------------------------'
 print 'Toolbar Additions (1): '
 print 'Transform Paint: Tool Properties'
 print '-----------------------------------------'
-print 'Help Menu Additions (1): '
+print 'Help Menu Additions (2): '
 print 'Help Menu: Mari Extension Pack Help'
+print 'Help Menu: Check for new Version'
 print '-----------------------------------------'
 # ------------------------------------------------------------------------------
 

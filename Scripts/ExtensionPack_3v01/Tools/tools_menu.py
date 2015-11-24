@@ -901,6 +901,21 @@ def createToolsMenu():
     icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
     extHelp.setIconPath(icon_path)
 
+
+    # EXTENSION PACK VERSION CHECK
+
+    UI_path = 'MainWindow/Help'
+    script_menu_path = 'MainWindow/Scripts/Help'
+
+    extHelp = mari.actions.create('/Mari/MARI Extension Pack/Help/Check Extension Pack Version','mari.customScripts.check_version()')
+    mari.menus.addAction(extHelp, UI_path, 'Release Notes')
+    mari.menus.addAction(extHelp, script_menu_path)
+
+    icon_filename = 'Help.png'
+    icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
+    extHelp.setIconPath(icon_path)
+
+
     ###  Menu Separators ###
 
     mari.menus.addSeparator(UI_path,'Release Notes')
