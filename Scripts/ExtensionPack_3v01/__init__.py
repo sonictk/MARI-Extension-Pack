@@ -556,7 +556,7 @@ def extPackLoad():
 	print '#####################################################'
 	print 'Mari Extension Pack ' + current_extension_pack + ' finished loading successfully'
 	print '#####################################################'
-	print '            http://www.jenskafitz.com'
+	print '            http://www.MariExtensionPack.org'
 	print ''
 
 
