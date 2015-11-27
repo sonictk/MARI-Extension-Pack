@@ -42,7 +42,7 @@
 <Node>
     <ID>Texture Scatter UV</ID>
     <DefaultName>Texture Scatter 2D (TILEABLE)</DefaultName>
-    <Category>Environment/Custom/</Category>
+    <Category>Environment/Extension Pack/</Category>
     <Cost>0.99</Cost>
     <CostDescription>Heavy calculations and texture reads do not keep live</CostDescription>
     <Inputs>

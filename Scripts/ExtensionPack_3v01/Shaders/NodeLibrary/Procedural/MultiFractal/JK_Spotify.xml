@@ -43,7 +43,7 @@
 <Node>
     <ID>Spotify</ID>
     <DefaultName>Spotify</DefaultName>
-    <Category>Procedural/Custom/MultiFractal/</Category>
+    <Category>Procedural/Extension Pack/MultiFractal/</Category>
     <Inputs>
         <Input Name="Transform" PrettyName="Manifold"></Input>
         <Input Name="DimA" PrettyName="Dimension A"></Input>

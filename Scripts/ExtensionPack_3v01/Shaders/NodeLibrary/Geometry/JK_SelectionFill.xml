@@ -44,7 +44,7 @@
 <Node>
     <ID>JK_SelectionFill</ID>
     <DefaultName>Selection Fill</DefaultName>
-    <Category>Geometry/Custom/</Category>
+    <Category>Geometry/Extension Pack/</Category>
     <Cost>0.001</Cost>
     <CostDescription>Trivial operation</CostDescription>
     <Tags>

@@ -43,7 +43,7 @@
 <Node>
     <ID>JK_WorldSpaceRadialGradient</ID>
     <DefaultName>World Space Radial Gradient</DefaultName>
-    <Category>Environment/Custom/</Category>
+    <Category>Environment/Extension Pack/</Category>
     <Inputs>
         <Input Name="Transform" PrettyName="Manifold"></Input>
     </Inputs>

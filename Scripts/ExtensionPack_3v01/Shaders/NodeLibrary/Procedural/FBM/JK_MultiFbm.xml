@@ -43,7 +43,7 @@
 <Node>
     <ID>Multi fBm</ID>
     <DefaultName>Multi FBM</DefaultName>
-    <Category>Procedural/Custom/FBM/</Category>
+    <Category>Procedural/Extension Pack/FBM/</Category>
     <Inputs>
         <Input Name="Transform" PrettyName="Manifold"></Input>
     </Inputs>

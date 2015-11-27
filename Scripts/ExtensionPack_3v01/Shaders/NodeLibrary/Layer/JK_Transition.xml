@@ -43,7 +43,7 @@
 <Node>
     <ID>JK_Transition</ID>
     <DefaultName>Transition</DefaultName>
-    <Category>Layer/Custom/</Category>
+    <Category>Layer/Extension Pack/</Category>
     <Inputs>
         <Input Name="A" ></Input>
         <Input Name="B" ></Input>

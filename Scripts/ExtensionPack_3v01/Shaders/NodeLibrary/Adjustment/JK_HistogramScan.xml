@@ -43,7 +43,7 @@
 <Node>
     <ID>JK_HistogramScan</ID>
     <DefaultName>Histogram Scan</DefaultName>
-    <Category>Filter/Custom/Histogram/</Category>
+    <Category>Filter/Extension Pack/Histogram/</Category>
     <Tags>
         <Tag>_adjustment</Tag>
   </Tags>

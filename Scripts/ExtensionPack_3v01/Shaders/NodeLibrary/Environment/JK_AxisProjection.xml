@@ -42,7 +42,7 @@
 <Node>
     <ID>Axis Projection</ID>
     <DefaultName>Axis Projection</DefaultName>
-    <Category>Environment/Custom/</Category>
+    <Category>Environment/Extension Pack/</Category>
   <Cost>0.7</Cost>
   <CostDescription>Some calculations and some texture lookup</CostDescription>
   <Inputs>

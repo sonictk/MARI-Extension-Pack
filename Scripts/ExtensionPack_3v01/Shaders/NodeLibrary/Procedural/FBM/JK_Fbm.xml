@@ -43,7 +43,7 @@
 <Node>
     <ID>fBm+</ID>
     <DefaultName>FBM+</DefaultName>
-    <Category>Procedural/Custom/FBM/</Category>
+    <Category>Procedural/Extension Pack/FBM/</Category>
     <Inputs>
         <Input Name="Transform" PrettyName="Manifold"></Input>
         <Input Name="Size" ></Input>

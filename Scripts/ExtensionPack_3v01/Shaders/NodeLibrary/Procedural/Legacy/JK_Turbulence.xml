@@ -44,7 +44,7 @@
 <Node>
     <ID>Legacy Turbulence</ID>
     <DefaultName>Legacy Turbulence</DefaultName>
-    <Category>Procedural/Custom/Noise/</Category>
+    <Category>Procedural/Extension Pack/Noise/</Category>
     <Inputs>
         <Input Name="Transform" PrettyName="Manifold"></Input>
         <Input Name="Size"></Input>

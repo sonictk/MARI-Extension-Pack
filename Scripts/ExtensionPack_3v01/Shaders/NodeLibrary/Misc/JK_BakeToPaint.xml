@@ -1,7 +1,7 @@
 <Node Class="MriSnChannelBakeNode">
   <ID>JK_BakeToPaint</ID>
   <DefaultName>Bake Visible to selected Paint Node</DefaultName>
-  <Category>Misc/Custom/</Category>
+  <Category>Misc/Extension Pack/</Category>
     <Cost>0.0</Cost>
     <CostDescription>Does nothing</CostDescription>
     <Description>Will Bake whatever you are currently viewing into the SELECTED Paint Node</Description>

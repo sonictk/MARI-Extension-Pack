@@ -42,7 +42,7 @@
 <Node>
     <ID>Backface Mask</ID>
     <DefaultName>Backface Mask</DefaultName>
-    <Category>Geometry/Custom/</Category>
+    <Category>Geometry/Extension Pack/</Category>
   <Cost>0.2</Cost>
   <CostDescription>Some calculations and some texture lookup</CostDescription>
   <Inputs>

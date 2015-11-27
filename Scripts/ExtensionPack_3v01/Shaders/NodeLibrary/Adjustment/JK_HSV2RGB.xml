@@ -43,7 +43,7 @@
 <Node>
     <ID>JK_HSV2RGB</ID>
     <DefaultName>HSV to RGB</DefaultName>
-    <Category>Filter/Custom/Utils/</Category>
+    <Category>Filter/Extension Pack/Utils/</Category>
     <Tags>
         <Tag>_adjustment</Tag>
     </Tags>

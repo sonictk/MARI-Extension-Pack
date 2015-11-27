@@ -43,7 +43,7 @@
 <Node>
     <ID>Custom Object Normal</ID>
     <DefaultName>Custom Surface Normal</DefaultName>
-    <Category>Geometry/Custom/</Category>
+    <Category>Geometry/Extension Pack/</Category>
     <Inputs>
     </Inputs>
     <Attributes>

@@ -43,7 +43,7 @@
 <Node>
     <ID>PolySurface Curvature</ID>
     <DefaultName>PolySurface Curvature</DefaultName>
-    <Category>Geometry/Custom/</Category>
+    <Category>Geometry/Extension Pack/</Category>
     <Inputs>
         <Input Name="NormalMap"></Input>
         <Input Name="Curvature"></Input>

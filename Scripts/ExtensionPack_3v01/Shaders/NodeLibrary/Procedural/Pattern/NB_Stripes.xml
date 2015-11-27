@@ -47,7 +47,7 @@
 <Node>
     <ID>Stripes 2D</ID>
     <DefaultName>Stripes 2D</DefaultName>
-    <Category>Procedural/Custom/Pattern/</Category>
+    <Category>Procedural/Extension Pack/Pattern/</Category>
     <Inputs>
         <Input Name="Transform" PrettyName="Manifold (UV)"></Input>
         <Input Name="Scale" ></Input>

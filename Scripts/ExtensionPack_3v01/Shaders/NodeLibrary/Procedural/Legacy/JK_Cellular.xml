@@ -44,7 +44,7 @@
 <Node>
     <ID>Legacy Cellular</ID>
     <DefaultName>Legacy Cellular</DefaultName>
-    <Category>Procedural/Custom/Voronoi/</Category>
+    <Category>Procedural/Extension Pack/Voronoi/</Category>
     <Inputs>
         <Input Name="Transform" PrettyName="Manifold"></Input>
         <Input Name="Size"></Input>

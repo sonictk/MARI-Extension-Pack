@@ -47,7 +47,7 @@
 <Node>
     <ID>Ridged Multi Noise</ID>
     <DefaultName>Ridged Multi Noise</DefaultName>
-    <Category>Procedural/Custom/MultiFractal/</Category>
+    <Category>Procedural/Extension Pack/MultiFractal/</Category>
     <Inputs>
         <Input Name="Transform" PrettyName="Manifold"></Input>
         <Input Name="Frequency"></Input>
