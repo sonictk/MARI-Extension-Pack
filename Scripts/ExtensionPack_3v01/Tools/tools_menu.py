@@ -41,18 +41,27 @@
 # --------------------------------------------------------------------
 
 
-'''The following adds new functionality to the MARI Gui.
+'''
+
+The following adds new functionality to the MARI Gui.
 Items are grouped by the standard MARI Menus they appear in such as
 CHANNELS,LAYERS,PATCHES etc.
 
 Items are placed within existing Menus (UI_Path) and a copy is placed
 in a common Script Menu (script_menu_path)
 
+actionScripts are accessing customScript class defined in __init__ file.
+
+A global extPack_icon_path variable exists for Icons places in the ExtPack Icon Folder.
 
 Please note that Shortcuts should NOT be set as part of the action creation
 Shortcuts are defined in bulk at the very end of the function by passing the shortcut
 to set and the action path to a shortcut check function that ensures that User
-set shortcuts are respected'''
+set shortcuts are respected
+
+The very end of the file is reserved for signal connections
+
+'''
 
 
 # --------------------------------------------------------------------
@@ -63,7 +72,7 @@ import os
 
 tool_menu_version = '3.0'
 
-# Icon Path for custom icons
+# Global Icon Path for custom icons
 extPack_icon_path = os.path.join(os.path.dirname(__file__), "Icons")
 
 
@@ -271,6 +280,8 @@ def createToolsMenu():
     # Added twice to main interface to maintain existing logic
     UI_path_A = 'MainWindow/&Channels/Export Flattened'
     UI_path_B = 'MainWindow/&Channels/Export'
+    Context_path_A = 'Canvas/Context/Export Flattened'
+    Context_path_B = 'Canvas/Context/Export'
     script_menu_path = 'MainWindow/Scripts/Channels/Export'
 
     ExportSelectedFlattened = mari.actions.create ('/Mari/MARI Extension Pack/Channels/Export Custom Channel Selection', 'mari.customScripts.exportSelectedChannelsFlattened()')
@@ -279,8 +290,10 @@ def createToolsMenu():
     mari.actions.addToSet('RequiresProject',ExportSelected)
 
 
-    mari.menus.addAction(ExportSelectedFlattened, UI_path_A,'Export Current Channel Flattened')
-    mari.menus.addAction(ExportSelected, UI_path_B,'Export Current Channel')
+    mari.menus.addAction(ExportSelectedFlattened, UI_path_A,'Export All Channels Flattened')
+    mari.menus.addAction(ExportSelected, UI_path_B,'Export All Channels')
+    mari.menus.addAction(ExportSelectedFlattened, Context_path_A,'Export All Channels Flattened')
+    mari.menus.addAction(ExportSelected, Context_path_B,'Export All Channels')
     mari.menus.addAction(ExportSelectedFlattened, script_menu_path)
 
     icon_filename = 'ExportImages.png'
@@ -365,22 +378,25 @@ def createToolsMenu():
     ###   Pin to Collection ###
 
     UI_path = 'MainWindow/&Channels/' + u'Pin'
+    script_menu_path = 'MainWindow/Scripts/Channels/' + u'Pin'
 
     # Actions for Saving and managing pins
 
-    # quickPinLayer = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/Save Quick Pin', 'mari.customScripts.quickPin()')
+    quickPinChannel = mari.actions.create('/Mari/MARI Extension Pack/Channels/Pin Channels/Save Quick Pin', 'mari.customScripts.quickPin("channel")')
     pinCollectionChannel = mari.actions.create('/Mari/MARI Extension Pack/Channels/Pin Channels/Pin to Collection', 'mari.customScripts.collectionPin("channel")')
 
     # Actions for Adding pinned Layers
-    # mari.actions.addToSet('RequiresProject',quickPinLayer)
+    mari.actions.addToSet('RequiresProject',quickPinChannel)
     mari.actions.addToSet('RequiresProject',pinCollectionChannel)
 
-    # mari.menus.addAction(quickPinLayer,UI_path,'Cut')
+    mari.menus.addAction(quickPinChannel,UI_path,'Duplicate')
+    mari.menus.addAction(quickPinChannel,script_menu_path)
     mari.menus.addAction(pinCollectionChannel,UI_path)
+    mari.menus.addAction(pinCollectionChannel,script_menu_path)
 
-    # icon_filename = 'linked.16x16.png'
-    # icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
-    # quickPinLayer.setIconPath(icon_path)
+    icon_filename = 'linked.16x16.png'
+    icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
+    quickPinChannel.setIconPath(icon_path)
 
     icon_filename = 'script.16x16.png'
     icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
@@ -463,11 +479,12 @@ def createToolsMenu():
     ### Pin Layers
 
     UI_path = 'MainWindow/&Layers/' + u'Pin'
+    script_menu_path = 'MainWindow/Scripts/Layers/' + u'Pin'
 
     # Actions for Saving and managing pins
-    quickPinLayer = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/Save Quick Pin', 'mari.customScripts.quickPin()')
+    quickPinLayer = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/Save Quick Pin', 'mari.customScripts.quickPin("layer")')
     pinCollectionLayer = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/Pin to Collection', 'mari.customScripts.collectionPin("layer")')
-    manageCollections = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/Clear Collection',None)
+    manageCollections = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/Edit Collection Pins', 'mari.customScripts.manageCollectionPins()')
 
     # Actions for Adding pinned Layers
     quickPinInsert = mari.actions.create('/Mari/MARI Extension Pack/Layers/Pin Layers/Pins/Quick Pin','mari.customScripts.emptyPin()')
@@ -482,8 +499,11 @@ def createToolsMenu():
 
 
     mari.menus.addAction(quickPinLayer,UI_path,'Cut')
+    mari.menus.addAction(quickPinLayer,script_menu_path)
     mari.menus.addAction(pinCollectionLayer,UI_path)
+    mari.menus.addAction(pinCollectionLayer,script_menu_path)
     mari.menus.addAction(manageCollections,UI_path)
+    mari.menus.addAction(manageCollections,script_menu_path)
 
 
     icon_filename = 'linked.16x16.png'
@@ -831,6 +851,37 @@ def createToolsMenu():
 
     mari.menus.addSeparator(UI_path,'Export Selection')
 
+######################################################################
+#  Toolbars
+######################################################################
+
+    #  Transform Paint Tool - adds new options to the default Mari toolbar
+    mari.customScripts.transformPaintToolbar()
+
+
+######################################################################
+#  Project
+######################################################################
+
+    #  Remove all Snapshots
+    script_menu_path = 'MainWindow/Scripts/Project'
+
+    removeAllSnapshots = mari.actions.create('/Mari/MARI Extension Pack/Project/Remove All Snapshots', 'mari.customScripts.removeAllSnapshots()')
+
+    mari.actions.addToSet('RequiresProject',removeAllSnapshots)
+    mari.menus.addAction(removeAllSnapshots, script_menu_path)
+    icon_filename = 'Snapshots.png'
+    icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
+    removeAllSnapshots.setIconPath(icon_path)
+
+    #  Mari Garbage Collection
+    script_menu_path = 'MainWindow/Scripts/Project'
+    cleanUp = mari.actions.create('/Mari/MARI Extension Pack/Project/Project Garbage Collection', 'mari.customScripts.cleanUpProject()')
+    mari.actions.addToSet('RequiresProject',cleanUp)
+    mari.menus.addAction(cleanUp, script_menu_path)
+    icon_filename = 'Trash.png'
+    icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
+    cleanUp.setIconPath(icon_path)
 
 
 ######################################################################
@@ -850,25 +901,24 @@ def createToolsMenu():
     icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
     extHelp.setIconPath(icon_path)
 
+
+    # EXTENSION PACK VERSION CHECK
+
+    UI_path = 'MainWindow/Help'
+    script_menu_path = 'MainWindow/Scripts/Help'
+
+    extHelp = mari.actions.create('/Mari/MARI Extension Pack/Help/Check Extension Pack Version','mari.customScripts.check_version()')
+    mari.menus.addAction(extHelp, UI_path, 'Release Notes')
+    mari.menus.addAction(extHelp, script_menu_path)
+
+    icon_filename = 'Help.png'
+    icon_path = mari.resources.path(mari.resources.ICONS) + os.sep +  icon_filename
+    extHelp.setIconPath(icon_path)
+
+
     ###  Menu Separators ###
 
     mari.menus.addSeparator(UI_path,'Release Notes')
-
-
-
-######################################################################
-# DISABLE ELEMENTS WHEN NO PROJECT IS OPEN
-######################################################################
-
-
-    if mari.projects.current() is None:
-        mari.actions.disableSet('RequiresProject')
-    else:
-        mari.actions.enableSet('RequiresProject')
-
-    mari.utils.connect(mari.projects.opened, lambda: mari.actions.enableSet('RequiresProject'))
-    mari.utils.connect(mari.projects.closed, lambda: mari.actions.disableSet('RequiresProject'))
-
 
 
 ######################################################################
@@ -884,10 +934,47 @@ def createToolsMenu():
     setShortCutifEmpty('Ctrl+Space',"/Mari/MARI Extension Pack/Shading/Pause Viewport Update")
 
 
-# -----------------------------------------------------------------------------------------------------
+######################################################################
+# PROJECT SIGNAL ATTACHMENTS
+######################################################################
 
-# The following line just makes sure that the RequiresProject set is enabled.
-# This usually happens automatically but not when working in python using mari.utils.reloadAll() out of a project
+    # Disable Elements when no project is open, this is done by toggling the 'RequiresProject' set on or off
+
+    if mari.projects.current() is None:
+        mari.actions.disableSet('RequiresProject')
+    else:
+        mari.actions.enableSet('RequiresProject')
+
+    mari.utils.connect(mari.projects.opened, lambda: mari.actions.enableSet('RequiresProject'))
+    mari.utils.connect(mari.projects.closed, lambda: mari.actions.disableSet('RequiresProject'))
+
+    # -------------------------------------------------------------------------
+
+    #  Restore Collection Pins when project loaded, clear them if project closed - Layers/extPack_pinnedLayers
+
+    mari.utils.connect(mari.projects.opened, lambda: mari.customScripts.restoreProjectPins())
+    mari.utils.connect(mari.projects.closed, lambda: mari.customScripts.clearCollectionPins())
+
+    # -------------------------------------------------------------------------
+
+    #  Restore User Set Project Paths on project Load - File/extPack_setProjectPaths
+
+    mari.utils.connect(mari.projects.opened, lambda: mari.customScripts.restore_project_paths())
+
+    # -------------------------------------------------------------------------
+
+    #  Restore Buffer Bit Depth to Channel Linking - Toolbars/extPack_TransformPaint.py
+    mari.utils.connect(mari.projects.opened, lambda: mari.customScripts.initSyncedBufferDepth())
+
+
+
+######################################################################
+# DEBUGGING HELPER
+######################################################################
+
+# The following line just makes sure that the RequiresProject set is enabled at all times a project is open.
+# This usually happens automatically but when working in python console using mari.utils.reloadAll() out of a project
+# after reloading scripts the set isn't enabled.
 
 if mari.projects.current() is not None:
     mari.actions.enableSet('RequiresProject')

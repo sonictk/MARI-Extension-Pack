@@ -4,7 +4,7 @@
 == Copyright (c) 2015 Jens Kafitz All Rights Reserved.
 ================================================================================
 == File: NormalColor.xml
-== Description: Simple Normal Color generted in linear or sRGB space
+== Description: Simple Normal Color
 ================================================================================
 == Modification by: Jens Kafitz
 ================================================================================
@@ -44,14 +44,12 @@
   <Cost>0.001</Cost>
   <CostDescription>Trivial operation</CostDescription>
   <Attributes>
-    <Attribute Name="colorspace" PrettyName="Generate as" Group="" Type="stringlist">Linear,Linear,sRGB</Attribute>
   </Attributes>
   <Contexts>
       <Context Type="GLSL">
         <Shader>
            <Body><![CDATA[
-                vec4 color = ($colorspace == 0) ? vec4(0.214,0.214,1.0,1.0) : vec4(0.5,0.5,1.0,1.0);
-                Output = color;
+                Output = vec4(0.5,0.5,1.0,1.0);
            ]]>
            </Body>
         </Shader>

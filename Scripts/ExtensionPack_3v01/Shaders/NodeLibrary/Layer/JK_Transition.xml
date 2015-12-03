@@ -53,7 +53,7 @@
     <Attributes>
      <Attribute Name="Trans_Type" PrettyName="Transition" Type="stringlist">B over A by (PatternToBlack by Transition),B over A by (Transition),B over A by (Pattern),B over A by (Transition*Pattern),B over A by (WhiteToBlack),B over A by (PatternToBlack by Transition),B over A by (WhiteToPattern by Transition)</Attribute>
      <Attribute Name="BlendMode"       PrettyName="Mode"        Group=""         Type="userenum">Dynamic:MriBlendMode:Comp_Default</Attribute>
-    <Attribute Name="Contrast"  PrettyName="Contrast B" Type="double" Min="0.0" Max="10.0">3.0</Attribute>
+    <Attribute Name="Contrast"  PrettyName="Contrast B" Type="double" Min="1.0" Max="10.0">3.0</Attribute>
 </Attributes>
  <Contexts>
         <Context Type="NodeGraphView">
@@ -104,7 +104,7 @@
     }
     else if($Trans_Type==3)
     {
-      alpha = clamp(#Pattern.r + (2*(#Transition.r-0.5)), 0.0, 1.0);
+      alpha = clamp(#Pattern.r + (2.0*(#Transition.r-0.5)), 0.0, 1.0);
     }
     else if($Trans_Type==4)
     {

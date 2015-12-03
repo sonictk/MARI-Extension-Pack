@@ -46,7 +46,7 @@
     <DefaultName>Legacy Perlin</DefaultName>
     <Category>Procedural/Custom/Perlin/</Category>
     <Inputs>
-        <Input Name="Transform" PrettyName="Transform Coordinates"></Input>
+        <Input Name="Transform" PrettyName="Manifold"></Input>
         <Input Name="Size"></Input>
     </Inputs>
     <Attributes>

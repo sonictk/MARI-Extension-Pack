@@ -45,7 +45,7 @@
     <DefaultName>Multi FBM</DefaultName>
     <Category>Procedural/Custom/FBM/</Category>
     <Inputs>
-        <Input Name="Transform" PrettyName="Transform Coordinates"></Input>
+        <Input Name="Transform" PrettyName="Manifold"></Input>
     </Inputs>
     <Attributes>
         <!--===============================================================================================================-->

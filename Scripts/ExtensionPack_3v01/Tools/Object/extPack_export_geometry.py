@@ -103,6 +103,10 @@ def exportGeo(UI, ui_mode,q_geo_list,path,template):
                         # This is different from cases where a user specifies an explicit subfolder in the path line
                         # If an explicit subfolder is named a dialog will come up asking to create that folder
                         # That part is handled as part of the InfoUI() call previously
+                        if template.startswith('/') or template.startswith('\\'):
+                            template = template[1:]
+                        if path.endswith('/') or path.endswith('\\'):
+                            path = path[:-1]
                         export_path_template = os.path.join(path, template)
                         export_path_template = export_path_template.replace('$ENTITY', geo_name)
                         if not os.path.exists(os.path.split(export_path_template)[0]):

@@ -1,0 +1,107 @@
+<!--
+================================================================================
+== == Material Region Merge Specular-Glossiness
+== Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
+================================================================================
+== File: JK_RegionMerge_SG.xml
+== Description: Allows you to merge two different region chains
+================================================================================
+== Author: Jens Kafitz
+== Web: www.campi3d.com
+== Email: MariIdeas@campi3d.com
+================================================================================
+== Modified Date: October, 3 2015
+================================================================================
+== Redistribution and use in source and binary forms, with or without
+== modification, are permitted provided that the following conditions are met:
+==
+== 1. Redistributions of source code must retain the above copyright
+== notice, this list of conditions and the following disclaimer.
+==
+== 2. Redistributions in binary form must reproduce the above copyright
+== notice, this list of conditions and the following disclaimer in the
+== documentation and/or other materials provided with the distribution.
+==
+== 3. Neither the name of the copyright holder nor the names of its
+== contributors may be used to endorse or promote products derived from
+== this software without specific prior written permission.
+==
+== THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+== IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+== THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+== PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+== CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+== EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+== PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+== OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+== WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+== OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+== ADVISED OF HE POSSIBILITY OF SUCH DAMAGE.
+================================================================================
+-->
+
+<Node>
+    <ID>JK_RegionMerge_Glossiness</ID>
+    <DefaultName>SG Region Merge (SpecGloss)</DefaultName>
+    <Category>Material Regions/Specular-Glossiness/</Category>
+    <Inputs>
+        <Input Name="IN1_A" PrettyName="Input Region 1_A"/>
+        <Input Name="IN1_B" PrettyName="Input Region 1_B"/>
+        <Input Name="IN1_C" PrettyName="Input Region 1_C"/>
+        <Input Name="IN2_A" PrettyName="Input Region 2_A"/>
+        <Input Name="IN2_B" PrettyName="Input Region 2_B"/>
+        <Input Name="IN2_C" PrettyName="Input Region 2_C"/>
+    </Inputs>
+    <Outputs>
+        <Output Name="OUT_A" PrettyName="Output A"/>
+        <Output Name="OUT_B" PrettyName="Output B"/>
+        <Output Name="OUT_C" PrettyName="Output C"/>
+    </Outputs>
+    <Attributes>
+    </Attributes>
+
+ <Contexts>
+        <Context Type="NodeGraphView">
+            <Inputs>
+                <Input Name="IN1_A"><Pos>-170,-80</Pos></Input>
+                <Input Name="IN1_B"><Pos>-170,-50</Pos></Input>
+                <Input Name="IN1_C"><Pos>-170,-20</Pos></Input>
+                <Input Name="IN2_A"><Pos>-170,20</Pos></Input>
+                <Input Name="IN2_B"><Pos>-170,50</Pos></Input>
+                <Input Name="IN2_C"><Pos>-170,80</Pos></Input>
+            </Inputs>
+
+            <Outputs>
+                <Output Name="OUT_C"><Pos>170,20</Pos></Output>
+                <Output Name="OUT_B"><Pos>170,-20</Pos></Output>
+                <Output Name="OUT_A"><Pos>170,-40</Pos></Output>
+            </Outputs>
+
+        </Context>
+        <Context Type="GLSL">
+            <Shader ShaderType='Fragment'>
+                <Inputs>
+                <Input Name="IN1_A"><Default>vec4(0.0)</Default></Input>
+                <Input Name="IN1_B"><Default>vec4(0.0)</Default></Input>
+                <Input Name="IN1_C"><Default>vec4(0.0)</Default></Input>
+
+                <Input Name="IN2_A"><Default>vec4(0.0)</Default></Input>
+                <Input Name="IN2_B"><Default>vec4(0.0)</Default></Input>
+                <Input Name="IN2_C"><Default>vec4(0.0)</Default></Input>
+                </Inputs>
+
+            </Shader>
+            <Shader>
+                <Body><![CDATA[
+
+
+            OUT_A = Comp_Default(#IN1_A,#IN2_A,clamp(#IN2_C.a,0.0,1.0));
+            OUT_B = Comp_Default(#IN1_B,#IN2_B,clamp(#IN2_C.a,0.0,1.0));
+            OUT_C = Comp_Default(#IN1_C,#IN2_C,clamp(#IN2_C.a,0.0,1.0));
+
+                ]]></Body>
+            </Shader>
+        </Context>
+    </Contexts>
+</Node>
+

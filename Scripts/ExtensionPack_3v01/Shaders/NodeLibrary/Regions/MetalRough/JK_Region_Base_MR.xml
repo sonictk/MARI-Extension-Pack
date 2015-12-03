@@ -10,7 +10,7 @@
 == Web: www.campi3d.com
 == Email: MariIdeas@campi3d.com
 ================================================================================
-== Modified Date: September, 3 2015
+== Modified Date: October, 3 2015
 ================================================================================
 == Redistribution and use in source and binary forms, with or without
 == modification, are permitted provided that the following conditions are met:
@@ -42,7 +42,7 @@
 
 <Node>
     <ID>JK_Region_Base_Metal</ID>
-    <DefaultName>Region Base (MetalRough)</DefaultName>
+    <DefaultName>MR Region Base (MetalRough)</DefaultName>
     <Category>Material Regions/Metal-Rough/</Category>
     <Inputs>
         <Input Name="baseColor" PrettyName="Base Color" />
@@ -56,6 +56,7 @@
         <Output Name="OUT_A" PrettyName="Output A"/>
         <Output Name="OUT_B" PrettyName="Output B"/>
         <Output Name="OUT_C" PrettyName="Output C"/>
+        <Output Name="OUT_D" PrettyName="Output D"/>
     </Outputs>
     <Attributes>
     <!--===============================================================================================================-->
@@ -75,7 +76,7 @@
     <Attribute Name="height_float" PrettyName="Float" Group="Handle Height (float)" Type="double">0.5</Attribute>
     <Attribute Name="height_clamp" PrettyName="Clamp Input" Group="Handle Height (float)" Type="bool" Min="false" Max="true">false</Attribute>
     <!--===============================================================================================================-->
-    <Attribute Name="normal_color" PrettyName="Color" Group="Handle Normal (RGBA)" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(0.216,0.216,1.0,1.0)</Attribute>
+    <Attribute Name="normal_color" PrettyName="Color" Group="Handle Normal (RGBA)" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(0.5,0.5,1.0,1.0)</Attribute>
     <Attribute Name="normal_float" PrettyName="Float" Group="Handle Normal (RGBA)" Type="double">1.0</Attribute>
     <Attribute Name="normal_clamp" PrettyName="Clamp Input" Group="Handle Normal (RGBA)" Type="bool" Min="false" Max="true">true</Attribute>
     <!--===============================================================================================================-->
@@ -101,6 +102,7 @@
 
             <Outputs>
 
+                <Output Name="OUT_D"><Pos>170,40</Pos></Output>
                 <Output Name="OUT_C"><Pos>170,20</Pos></Output>
                 <Output Name="OUT_B"><Pos>170,-20</Pos></Output>
                 <Output Name="OUT_A"><Pos>170,-40</Pos></Output>
@@ -121,41 +123,27 @@
             <Shader>
                 <Body><![CDATA[
 
-           // Initalizing Attributes, necessary since <Default> on INPUTS doesn't do it
-           vec4 INIT_V4 =   $baseColor_color; INIT_V4 = $normal_color;
-           float INIT_FL =  $baseColor_float; INIT_FL = $roughness_float; INIT_FL = $metalness_float;
-                            INIT_FL = $height_float; INIT_FL = $normal_float; INIT_FL = $specular_float;
-
-
-
-            // Casting # to Variable
-            vec4 baseColor_handle = #baseColor ;
-            vec4 roughness_handle = #roughness ;
-            vec4 metalness_handle = #metalness ;
-            vec4 specular_handle = #specular;
-            vec4 height_handle = #height ;
-            vec4 normal_handle = #normal ;
-
-
+           // DO NOT DELETE THE FOLLOWING COMMENT LINE - USED TO INITIALIZE SLIDERS:
+           // $baseColor_color; $normal_color; $baseColor_float;  $roughness_float; $metalness_float; $height_float;  $normal_float;  $specular_float;
 
 
             // Blending between clamped and unclamped.
-            // CLamping here is only done directly on the region input (baseColor, roughness etc.)
+            // Clamping here is only done directly on the region input (baseColor, roughness etc.)
             // not on any values coming from another region
-            vec4 baseColor = mix(baseColor_handle,clamp(baseColor_handle,vec4(0.0),vec4(1.0)),float($baseColor_clamp));
-            vec4 roughness = mix(roughness_handle,clamp(roughness_handle,vec4(0.0),vec4(1.0)),float($roughness_clamp));
-            vec4 metalness = mix(metalness_handle,clamp(metalness_handle,vec4(0.0),vec4(1.0)),float($metalness_clamp));
-            vec4 specular = mix(specular_handle,clamp(specular_handle,vec4(0.0),vec4(1.0)),float($specular_clamp));
-            vec4 height = mix(height_handle,clamp(height_handle,vec4(0.0),vec4(1.0)),float($height_clamp));
-            vec4 normal = mix(normal_handle,clamp(normal_handle,vec4(0.0),vec4(1.0)),float($normal_clamp));
+            vec4 baseColor = mix(#baseColor,clamp(#baseColor,vec4(0.0),vec4(1.0)),float($baseColor_clamp));
+            vec4 normal = mix(#normal,clamp(#normal,vec4(0.0),vec4(1.0)),float($normal_clamp));
 
-
+            float roughness = mix(#roughness.r,clamp(#roughness.r,0.0,1.0),float($roughness_clamp));
+            float metalness = mix(#metalness.r,clamp(#metalness.r,0.0,1.0),float($metalness_clamp));
+            float specular = mix(#specular.r,clamp(#specular.r,0.0,1.0),float($specular_clamp));
+            float height = mix(#height.r,clamp(#height.r,0.0,1.0),float($height_clamp));
 
 
             // Output to Handles. Roughness,metalness & height are carried on signle variable
             OUT_A = baseColor;
-            OUT_B = vec4(roughness.r,metalness.r,height.r,specular.r);
+            OUT_B = vec4(roughness,metalness,height,1.0);
             OUT_C = normal;
+            OUT_D = vec4(specular,1.0,0.0,1.0);
 
 
 

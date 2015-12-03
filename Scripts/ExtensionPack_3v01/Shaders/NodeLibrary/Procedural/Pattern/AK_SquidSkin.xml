@@ -48,7 +48,7 @@
     <DefaultName>Squid Skin</DefaultName>
     <Category>Procedural/Custom/Pattern/</Category>
     <Inputs>
-        <Input Name="Transform" PrettyName="Transform Coordinates"></Input>
+        <Input Name="Transform" PrettyName="Manifold"></Input>
         <Input Name="Size" ></Input>
         <Input Name="Strength" ></Input>
         <Input Name="Sharpness" ></Input>

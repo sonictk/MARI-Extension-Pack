@@ -5,7 +5,7 @@
     <Cost>0.02</Cost>
     <CostDescription>Some calculations and a texture read</CostDescription>
     <Inputs>
-        <Input Name="Coordinates" PrettyName="Transform Coordinates"></Input>
+        <Input Name="Coordinates" PrettyName="Manifold"></Input>
     </Inputs>
     <Attributes>
         <Attribute Name="TileImage" PrettyName="Image" Group="Image" Type="image"></Attribute>

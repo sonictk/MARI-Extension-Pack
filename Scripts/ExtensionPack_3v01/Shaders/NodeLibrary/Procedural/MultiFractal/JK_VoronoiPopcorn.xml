@@ -46,7 +46,7 @@
     <DefaultName>VoronoiPopcorn</DefaultName>
     <Category>Procedural/Custom/MultiFractal/</Category>
     <Inputs>
-        <Input Name="Transform" PrettyName="Transform Coordinates"></Input>
+        <Input Name="Transform" PrettyName="Manifold"></Input>
         <Input Name="vScale" PrettyName="Primary Scale"></Input>
         <Input Name="Threshold"></Input>
         <Input Name="octaveGain" PrettyName="A/B Density Gain"></Input>

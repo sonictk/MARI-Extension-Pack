@@ -49,7 +49,7 @@
     <DefaultName>SuperEllipse 2D</DefaultName>
     <Category>Procedural/Custom/Pattern/</Category>
     <Inputs>
-        <Input Name="Transform" PrettyName="Transform Coordinates (UV)"></Input>
+        <Input Name="Transform" PrettyName="Manifold (UV)"></Input>
         <Input Name="Scale" ></Input>
         <Input Name="Corner" PrettyName="Corner Radius" ></Input>
         <Input Name="FalloffStart" PrettyName="Gradient Start" ></Input>

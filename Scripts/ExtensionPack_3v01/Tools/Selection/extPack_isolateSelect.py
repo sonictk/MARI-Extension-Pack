@@ -53,23 +53,31 @@ def isolateSelect():
     selVisibleAction = mari.actions.find('/Mari/Geometry/Selection/Select Visible')
     hideSelAction =  mari.actions.find('/Mari/Geometry/Selection Group/Hide Selection Group')
     showSelAction = mari.actions.find('/Mari/Geometry/Selection Group/Show Selection Group')
+    deselectAction = mari.actions.find('/Mari/Geometry/Selection/Select None')
 
 
     if mari.selection_groups.sceneSelectionMode() != OBJ_Mode:
         if mari.selection_groups.sceneSelectionMode() == PATCH_Mode or FACE_Mode:
             deactivateViewportToggle.trigger()
+            mari.history.startMacro('Toggle Isolate Selection')
 
             isolate_cur_set = None
             isolate_trig_set = None
             isolate_vis_set = None
 
-            for item in sel_groups:
-                if item.name() == "zz_IsolateSelect_current":
-                    isolate_cur_set = item
-                    isolateSelectState = True
-                if item.name() == "zz_IsolateSelect_visible":
-                    isolate_vis_set = item
-                    isolateSelectState = True
+            vis_set_found = False
+            cur_set_found = False
+
+            if len(sel_groups) != 0:
+                for item in sel_groups:
+                    if item.name() == "zz_IsolateSelect_current":
+                        isolate_cur_set = item
+                        isolateSelectState = True
+                        cur_set_found = True
+                    if item.name() == "zz_IsolateSelect_visible":
+                        isolate_vis_set = item
+                        isolateSelectState = True
+                        vis_set_found = True
 
 
             if isolateSelectState:
@@ -77,17 +85,23 @@ def isolateSelect():
                 # I am saving the new selection so it doesn't change
                 mari.selection_groups.createSelectionGroupFromSelection('zz_IsolateSelect_trigger')
                 sel_groups = mari.selection_groups.list()
-                for item in sel_groups:
-                    if item.name() == 'zz_IsolateSelect_trigger':
-                        isolate_trig_set = item
+                trigger_found = False
+                if len(sel_groups) != 0:
+                    for item in sel_groups:
+                        if item.name() == 'zz_IsolateSelect_trigger':
+                            isolate_trig_set = item
+                            trigger_found = True
 
-                mari.selection_groups.select(isolate_vis_set)
-                showSelAction.trigger()
-                mari.selection_groups.removeSelectionGroup(isolate_vis_set)
-                mari.selection_groups.select(isolate_cur_set)
-                mari.selection_groups.removeSelectionGroup(isolate_cur_set)
-                mari.selection_groups.select(isolate_trig_set)
-                mari.selection_groups.removeSelectionGroup(isolate_trig_set)
+                if vis_set_found:
+                    mari.selection_groups.select(isolate_vis_set)
+                    showSelAction.trigger()
+                    mari.selection_groups.removeSelectionGroup(isolate_vis_set)
+                if cur_set_found:
+                    mari.selection_groups.select(isolate_cur_set)
+                    mari.selection_groups.removeSelectionGroup(isolate_cur_set)
+                if trigger_found:
+                    mari.selection_groups.select(isolate_trig_set)
+                    mari.selection_groups.removeSelectionGroup(isolate_trig_set)
 
             else:
 
@@ -96,21 +110,35 @@ def isolateSelect():
                 mari.selection_groups.createSelectionGroupFromSelection('zz_IsolateSelect_visible')
 
                 sel_groups = mari.selection_groups.list()
+                vis_set_found = False
+                cur_set_found = False
 
-                for item in sel_groups:
-                    if item.name() == "zz_IsolateSelect_visible":
-                        isolate_vis_set = item
-                    if item.name() == "zz_IsolateSelect_current":
-                        isolate_cur_set = item
+                if len(sel_groups) != 0:
+                    for item in sel_groups:
+                        if item.name() == "zz_IsolateSelect_visible":
+                            isolate_vis_set = item
+                            vis_set_found = True
+                        if item.name() == "zz_IsolateSelect_current":
+                            isolate_cur_set = item
+                            cur_set_found = True
 
-                mari.selection_groups.select(isolate_cur_set)
-                hideSelAction.trigger()
-                mari.selection_groups.select(isolate_vis_set)
-                hideSelAction.trigger()
+                if cur_set_found:
+                    mari.selection_groups.select(isolate_cur_set)
+                    hideSelAction.trigger()
+                if vis_set_found and cur_set_found:
+                    mari.selection_groups.select(isolate_vis_set)
+                    hideSelAction.trigger()
+                if cur_set_found:
+                    mari.selection_groups.select(isolate_cur_set)
+                    showSelAction.trigger()
+                if vis_set_found and not cur_set_found:
+                    mari.selection_groups.select(isolate_vis_set)
+                    mari.selection_groups.removeSelectionGroup(isolate_vis_set)
+                    deselectAction.trigger()
+                    mari.utils.message('No selection found','Isolate Selection')
 
-                mari.selection_groups.select(isolate_cur_set)
-                showSelAction.trigger()
 
+            mari.history.stopMacro()
             deactivateViewportToggle.trigger()
 
     else:

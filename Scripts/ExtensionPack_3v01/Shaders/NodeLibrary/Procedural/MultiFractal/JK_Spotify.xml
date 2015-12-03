@@ -45,7 +45,7 @@
     <DefaultName>Spotify</DefaultName>
     <Category>Procedural/Custom/MultiFractal/</Category>
     <Inputs>
-        <Input Name="Transform" PrettyName="Transform Coordinates"></Input>
+        <Input Name="Transform" PrettyName="Manifold"></Input>
         <Input Name="DimA" PrettyName="Dimension A"></Input>
         <Input Name="DimB" PrettyName="Dimension B"></Input>
         <Input Name="Lacunarity"></Input>

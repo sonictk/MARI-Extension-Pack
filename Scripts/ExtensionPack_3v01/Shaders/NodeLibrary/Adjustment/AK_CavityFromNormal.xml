@@ -163,7 +163,7 @@
                     bool Invert = $Invert;
                     m_Output   = m_Input;
                     if (Invert) {
-                      m_Output = vec4 (1-m_Input.r, 1-m_Input.g, 1-m_Input.b, m_Input.a);
+                      m_Output = vec4 (1.0-m_Input.r, 1.0-m_Input.g, 1.0-m_Input.b, m_Input.a);
                     }
                 }
 

@@ -130,7 +130,7 @@
 
                 float tuneCurvature = (Adjust*size_pow);
                 curvN = length(fwidth(N)) ;
-                curvN = (curvN >=$MinVar) ? curvN : 0.0;
+                curvN = (curvN >=#MinVar.r) ? curvN : 0.0;
                 curvP = length(fwidth(P)) ;
 
 

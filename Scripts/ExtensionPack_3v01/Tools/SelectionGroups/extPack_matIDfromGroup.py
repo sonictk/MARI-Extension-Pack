@@ -131,11 +131,9 @@ class matIDFromSelectionGroupGUI(QtGui.QDialog):
         centre_layout.addLayout(matID_layout)
 
 
-        #Create button & ChannelName layout and hook them up
-        button_layout = QtGui.QHBoxLayout()
-        ok_button = QtGui.QPushButton("&OK")
-        cancel_button = QtGui.QPushButton("&Cancel")
-        channel_label = QtGui.QLabel("<strong>Channel</strong>")
+        #Create settings layout
+        settings_layout = QtGui.QHBoxLayout()
+        settings_group = QtGui.QGroupBox()
 
 
         # Channel Sizes
@@ -146,18 +144,39 @@ class matIDFromSelectionGroupGUI(QtGui.QDialog):
         self.channel_size.addItem("2048", 2048)
         self.channel_size.addItem("4096", 4096)
         self.channel_size.addItem("8192", 8192)
-        self.channel_size.addItem("8192", 8192)
         self.channel_size.addItem("16384", 16384)
         self.channel_size.addItem("32768", 32768)
         self.channel_size.setCurrentIndex(3)
 
         self.channel_name = QtGui.QLineEdit("_materialID")
         self.channel_name.setMaximumWidth(115)
+        channel_label = QtGui.QLabel("<strong>Channel</strong>")
 
-        button_layout.addWidget(channel_label)
-        button_layout.addWidget(self.channel_name)
-        button_layout.addWidget(self.channel_size)
-        button_layout.addStretch()
+        settings_layout.addWidget(channel_label)
+        settings_layout.addWidget(self.channel_name)
+        settings_layout.addWidget(self.channel_size)
+        settings_layout.addStretch()
+
+
+
+        #Mask Generation Mode
+        radio_label = QtGui.QLabel("Generate ID as:")
+        self.radio_ID = QtGui.QRadioButton('ID Color')
+        self.radio_Mask = QtGui.QRadioButton('Mask')
+
+        settings_layout.addWidget(radio_label)
+        settings_layout.addWidget(self.radio_ID)
+        self.radio_ID.setChecked(True)
+        settings_layout.addWidget(self.radio_Mask)
+
+        settings_group.setLayout(settings_layout)
+
+        #Create button & ChannelName layout and hook them up
+        button_layout = QtGui.QHBoxLayout()
+        ok_button = QtGui.QPushButton("&OK")
+        cancel_button = QtGui.QPushButton("&Cancel")
+
+
         button_layout.addWidget(ok_button)
         button_layout.addWidget(cancel_button)
 
@@ -168,6 +187,7 @@ class matIDFromSelectionGroupGUI(QtGui.QDialog):
 
         #Add layouts to main layout and dialog
         main_layout.addLayout(centre_layout)
+        main_layout.addWidget(settings_group)
         main_layout.addLayout(button_layout)
         self.setLayout(main_layout)
 
@@ -203,6 +223,10 @@ class matIDFromSelectionGroupGUI(QtGui.QDialog):
 
     def getChannelSize(self):
         return self.channel_size.itemData(self.channel_size.currentIndex(), 32)
+
+    def getIDMode(self):
+        return self.radio_ID.isChecked()
+
 
 # ------------------------------------------------------------------------------
 class SelGroupsToMatIDList(QtGui.QListWidget):
@@ -294,6 +318,8 @@ def matIDFromSelectionGroup():
 
     if dialog.exec_():
         SelGroups_to_matID = dialog.getSelectionGroups()
+        IDMode = dialog.getIDMode()
+
         if len(SelGroups_to_matID) > 0:
             mari.history.startMacro('Create MaterialIDs from Selection Groups')
             matIdChannelName = dialog.getChannelName()
@@ -310,6 +336,8 @@ def matIDFromSelectionGroup():
             geo = mari.current.geo()
             channelList = geo.channelList()
 
+            FillColorBlack = mari.Color(0,0,0,1)
+
 
             matIdChannelExists = False
 
@@ -319,44 +347,69 @@ def matIDFromSelectionGroup():
                    matIDChannel = channel
                    matIdChannelExists = True
                    matIDChannel.makeCurrent()
-                   pass
+                   break
 
             if not matIdChannelExists:
                 matID = geo.createChannel(matIdChannelName,matIdChannelSize,matIdChannelSize,8)
-                FillColor = mari.Color(0,0,0,1)
-                matID.createPaintableLayer(matIdChannelName,None,FillColor)
+                baseLayer = matID.createPaintableLayer(matIdChannelName,None,FillColorBlack)
+
+
+            if matIdChannelExists:
+                layerList = mari.current.channel().layerList()
+                if len(layerList) == 0:
+                    baseLayer = mari.current.channel().createPaintableLayer('Base',None,FillColorBlack)
+
+            if IDMode:
+                for item in SelGroups_to_matID:
+
+                    r = random.randrange(0,9999)
+                    r = r / 9999.0
+                    g = random.randrange(0,9999)
+                    g = g / 9999.0
+                    b = random.randrange(0,9999)
+                    b = b / 9999.0
+                    r = abs(1.0 - r)
+                    g = abs(1.0 - g)
+                    b = abs(1.0 - b)
+
+                    channel = mari.current.channel()
+                    layer = mari.current.layer()
+                    channel.setCurrentLayer(layer)
+                    selectionmode = item.selectionMode()
+                    mari.selection_groups.setSelectionMode(selectionmode)
+                    mari.selection_groups.select(item)
+                    fillcolor = mari.Color(r,g,b,1)
+
+                    h = random.randrange(0,255)
+                    h = h / 255.0 *  r
+                    s = 1.0
+
+
+                    fillcolor.setH(h)
+                    fillcolor.setS(s)
+                    mari.colors.setForeground(fillcolor)
+                    fill.trigger()
 
 
 
-            for item in SelGroups_to_matID:
+            else:
+                for item in SelGroups_to_matID:
 
-                r = random.randrange(0,9999)
-                r = r / 9999.0
-                g = random.randrange(0,9999)
-                g = g / 9999.0
-                b = random.randrange(0,9999)
-                b = b / 9999.0
-                r = abs(1.0 - r)
-                g = abs(1.0 - g)
-                b = abs(1.0 - b)
+                    channel = mari.current.channel()
+                    layer = mari.current.layer()
+                    channel.setCurrentLayer(layer)
+                    selectionmode = item.selectionMode()
+                    mari.selection_groups.setSelectionMode(selectionmode)
+                    mari.selection_groups.select(item)
+                    selection_name = item.name()
+                    FillColorWhite = mari.Color(1,1,1,1)
+                    mari.current.channel().createPaintableLayer(selection_name,None,FillColorBlack)
+                    mari.colors.setForeground(FillColorWhite)
+                    fill.trigger()
 
-                channel = mari.current.channel()
-                layer = mari.current.layer()
-                channel.setCurrentLayer(layer)
-                selectionmode = item.selectionMode()
-                mari.selection_groups.setSelectionMode(selectionmode)
-                mari.selection_groups.select(item)
-                fillcolor = mari.Color(r,g,b,1)
-
-                h = random.randrange(0,255)
-                h = h / 255.0 *  r
-                s = 1.0
+                baseLayer.close()
 
 
-                fillcolor.setH(h)
-                fillcolor.setS(s)
-                mari.colors.setForeground(fillcolor)
-                fill.trigger()
 
             mari.colors.setForeground(currentFGcolor)
             deactivateViewportToggle.trigger()

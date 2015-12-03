@@ -120,7 +120,7 @@ def restoreSharing(mode,layer_duplicate,target_stack,src_uuid,uuid_dict):
             repairedSharing.setMaskEnabled(_maskEnabled)
 
 
-        if layer.hasAdjustmentStack():
+        if hasattr(layer, 'hasAdjustmentStack') and layer.hasAdjustmentStack():
             # if original 'wrong' layer had an adjustment stack, recreate it on the new one
             _hasAdjStack = True
             _hasActiveAdjStack = layer.isAdjustmentStackEnabled()
@@ -132,7 +132,7 @@ def restoreSharing(mode,layer_duplicate,target_stack,src_uuid,uuid_dict):
             adjustments_inSrc_stack = reversed(adjustments_in_src_stack)
 
             # Creating adjustment stack on new layer and saving name of layerStack, then moving everything from old  layer to new adjustment stack
-            if repairedSharing.hasAdjustmentStack():
+            if hasattr(repairedSharing, 'hasAdjustmentStack') and repairedSharing.hasAdjustmentStack():
                 target_adj_stack = repairedSharing.adjustmentStack()
             else:
                 repairedSharing.makeAdjustmentStack()

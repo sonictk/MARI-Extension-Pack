@@ -90,8 +90,16 @@ import View.extPack_screenshot_all_channels as screenshot_all_channels
 # SHADING:
 import Shading.extPack_disableViewport as disableViewport
 
+# TOOLBARS
+import Toolbars.extPack_TransformPaint as TransformPaintToolbar
+
+# PROJECT
+import Project.extPack_RemoveAllSnapshots as RemoveAllSnapshots
+import Project.extPack_garbageCollect as GarbageCollect
+
 # HELP:
 import Help.extPack_online_help as onlineHelp
+import Help.extPack_version_check as VersionCheck
 
 # ------------------------------------------------------------------------------
 
@@ -102,6 +110,9 @@ class customScripts():
 
     def set_project_paths(self):
         set_project_paths.setProjectPath()
+
+    def restore_project_paths(self):
+        set_project_paths.restoreProjectPaths()
 
     # ------------------------------------------------------------
     # SELECTION:
@@ -185,17 +196,26 @@ class customScripts():
     def emptyPin(self):
         pinned_layers.emptyQuickPin()
 
-    def quickPin(self):
-        pinned_layers.addQuickPin()
+    def quickPin(self,mode):
+        pinned_layers.addQuickPin(mode)
 
-    def triggerQuickPin(self,layerName,project_uuid,layer_uuid):
-        pinned_layers.triggerQuickPin(layerName,project_uuid,layer_uuid)
+    def triggerQuickPin(self,layerType,layerName,project_uuid,layer_uuid):
+        pinned_layers.triggerQuickPin(layerType,layerName,project_uuid,layer_uuid)
 
     def collectionPin(self,mode):
         pinned_layers.addCollectionPin(mode)
 
     def triggerCollectionPin(self,layerType,layerName,project_uuid,layer_uuid):
         pinned_layers.triggerCollectionPin(layerType,layerName,project_uuid,layer_uuid)
+
+    def manageCollectionPins(self):
+        pinned_layers.EditPin_UI().exec_()
+
+    def restoreProjectPins(self):
+        pinned_layers.actionXML('restoreAction',None,None,None,None,None)
+
+    def clearCollectionPins(self):
+        pinned_layers.clearPins()
 
     # --------------------------------------------------------------
     # SHADERS:
@@ -256,11 +276,34 @@ class customScripts():
     def disableViewport(self,mode):
         disableViewport.disableViewport(mode)
 
+
+    # --------------------------------------------------------------
+    # TOOLBARS:
+
+    def transformPaintToolbar(self):
+        TransformPaintToolbar.initToolbar()
+
+    def initSyncedBufferDepth(self):
+        TransformPaintToolbar.initBufferSyncOnNewProject()
+
+    # --------------------------------------------------------------
+    # PROJECT:
+
+    def removeAllSnapshots(self):
+        RemoveAllSnapshots.removeAllSnapshots()
+
+
+    def cleanUpProject(self):
+        GarbageCollect.cleanUp()
+
     # --------------------------------------------------------------
     # HELP:
 
     def open_online_help(self):
         onlineHelp.openExtPackHelp()
+
+    def check_version(self):
+        VersionCheck.check_version()
 
 # ------------------------------------------------------------------------------
 
@@ -296,18 +339,20 @@ print 'Object Menu: Subdivision/Set all to Lowest Level'
 print 'Object Menu: Subdivision/Set all visible to Highest Level'
 print 'Object Menu: Subdivision/Set all visible to Lowest Level'
 print '-----------------------------------------'
-print 'Channel Palette Additions (5): '
+print 'Channel Palette Additions (7): '
 print 'Channel Menu: Export Custom Selection'
 print 'Channel Menu: Duplicate & Flatten'
 print 'Channel Menu: Resize/Save Channel Resolution'
 print 'Channel Menu: Resize/Load Channel Resolution'
 print 'Channel Menu: Duplicate'
+print 'Channel Menu: Pin/Save Quick Pin'
+print 'Channel Menu: Pin/Pin to Collection'
 print '-----------------------------------------'
 print 'Layer Palette Additions (11): '
 print 'Layer Menu: Add Pinned Layer'
 print 'Layer Menu: Pin/Save Quick Pin'
 print 'Layer Menu: Pin/Pin to Collection'
-print 'Layer Menu: Pin/Manage Collection Pins'
+print 'Layer Menu: Pin/Edit Collection Pins'
 print 'Layer Menu: Add Channel Layer'
 print 'Layer Menu: Layer Mask/Add Mask/Add Channel Mask'
 print 'Layer Menu: Layer Mask/Add Mask/Add Channel Mask (Group)'
@@ -335,8 +380,12 @@ print '-----------------------------------------'
 print 'Image Manager Palette Additions (1): '
 print 'Image Manager: Export Selection'
 print '-----------------------------------------'
-print 'Help Menu Additions (1): '
+print 'Toolbar Additions (1): '
+print 'Transform Paint: Tool Properties'
+print '-----------------------------------------'
+print 'Help Menu Additions (2): '
 print 'Help Menu: Mari Extension Pack Help'
+print 'Help Menu: Check for new Version'
 print '-----------------------------------------'
 # ------------------------------------------------------------------------------
 
