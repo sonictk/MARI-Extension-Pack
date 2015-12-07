@@ -1,0 +1,188 @@
+<!--
+================================================================================
+== Super Shape 2D
+== Copyright (c) 2015 Nicholas Breslow. All Rights Reserved.
+================================================================================
+== File: NB_SuperShape2D.xml
+== Description: 2D Super Shape procedural pattern node.
+================================================================================
+== Author: Nicholas Breslow
+== Web: www.nbreslow.com
+== Email: nick@nbreslow.com
+================================================================================
+== Modifications + Maintenance: Jens Kafitz
+== Web: www.campi3d.com
+== Email: MariIdeas@campi3d.com
+================================================================================
+== Modified Date: May, 18 2015
+================================================================================
+== Redistribution and use in source and binary forms, with or without
+== modification, are permitted provided that the following conditions are met:
+==
+== 1. Redistributions of source code must retain the above copyright
+== notice, this list of conditions and the following disclaimer.
+==
+== 2. Redistributions in binary form must reproduce the above copyright
+== notice, this list of conditions and the following disclaimer in the
+== documentation and/or other materials provided with the distribution.
+==
+== 3. Neither the name of the copyright holder nor the names of its
+== contributors may be used to endorse or promote products derived from
+== this software without specific prior written permission.
+==
+== THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+== IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+== THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+== PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+== CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+== EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+== PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+== OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+== WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+== OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+== ADVISED OF HE POSSIBILITY OF SUCH DAMAGE.
+================================================================================
+-->
+
+<Node>
+    <ID>SuperShape 2D</ID>
+    <DefaultName>SuperShape 2D</DefaultName>
+    <Category>Procedural/Extension Pack/Pattern/</Category>
+        <Inputs>
+        <Input Name="Transform" PrettyName="Manifold (UV)"></Input>
+        <Input Name="A" ></Input>
+        <Input Name="B" ></Input>
+        <Input Name="M" ></Input>
+        <Input Name="N1" ></Input>
+        <Input Name="N2" ></Input>
+        <Input Name="N3" ></Input>
+        <Input Name="Scale" ></Input>
+        <Input Name="Angle" ></Input>
+        <Input Name="FalloffStart" PrettyName="Gradient Start" ></Input>
+        <Input Name="FalloffEnd" PrettyName="Gradient End" ></Input>
+        </Inputs>
+    <Attributes>
+        <!--===============================================================================================================-->
+        <Attribute Name="a" PrettyName="A" Group="" Type="double" Min="0.0" Max="10.0">1.0</Attribute>
+        <Attribute Name="b" PrettyName="B" Group="" Type="double" Min="0.0" Max="10.0">1.0</Attribute>
+        <Attribute Name="m" PrettyName="M" Group="" Type="double" Min="0.0" Max="100.0">8.0</Attribute>
+        <Attribute Name="n1" PrettyName="N1" Group="" Type="double" Min="0.0" Max="100.0">6.0</Attribute>
+        <Attribute Name="n2" PrettyName="N2" Group="" Type="double" Min="0.0" Max="100.0">6.0</Attribute>
+        <Attribute Name="n3" PrettyName="N3" Group="" Type="double" Min="0.0" Max="100.0">6.0</Attribute>
+        <Attribute Name="Scale" PrettyName="Scale" Group="" Type="double" Min="0.01" Max="1.0">0.5</Attribute>
+        <Attribute Name="Repeat" PrettyName="Repeat" Group="" Type="double" Min="0.0" Max="200.0">20.0</Attribute>
+        <Attribute Name="Angle" PrettyName="Shape Angle" Group="" Type="float" Min="0.0" Max="360.0">0.0</Attribute>
+        <!--===============================================================================================================-->
+        <Attribute Name="Rotation" PrettyName="UV Rotation" Group="Position" Type="float" Min="0.0" Max="360.0">0.0</Attribute>
+        <Attribute Name="UOffset" PrettyName="U Offset" Group="Position" Type="float" Min="0" Max="1">0</Attribute>
+        <Attribute Name="VOffset" PrettyName="V Offset" Group="Position" Type="float" Min="0" Max="1">0</Attribute>
+        <Attribute Name="URepeat" PrettyName="U Repeat" Group="Position" Type="float" Min="0" Max="50" Logarithmic="1">1</Attribute>
+        <Attribute Name="VRepeat" PrettyName="V Repeat" Group="Position" Type="float" Min="0" Max="50" Logarithmic="1">1</Attribute>
+        <!--===============================================================================================================-->
+        <Attribute Name="shapeColor" PrettyName="Shape Color" Group="Color" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(1,1,1,1)</Attribute>
+        <Attribute Name="backColor" PrettyName="Background Color" Group="Color" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(0,0,0,1)</Attribute>
+        <!--===============================================================================================================-->
+        <Attribute Name="Start" PrettyName="Start" Group="Gradient" Type="float" Min="0.0" Max="1.0">0.0</Attribute>
+        <Attribute Name="End" PrettyName="End" Group="Gradient" Type="float" Min="0.0" Max="1.0">1.0</Attribute>
+        <Attribute Name="Falloff" PrettyName="Falloff" Group="Gradient" Type="curve">0.0,0.0,0.2,0.5,0.4,1.0,1.0,1.0</Attribute>
+        <!--===============================================================================================================-->
+    </Attributes>
+    <Contexts>
+        <Context Type="NodeGraphView">
+            <Inputs>
+                <Input Name="Transform"><Pos>0,-70</Pos></Input>
+                <Input Name="A"><Pos>150,-50</Pos></Input>
+                <Input Name="B"><Pos>150,-30</Pos></Input>
+                <Input Name="M"><Pos>150,-10</Pos></Input>
+                <Input Name="N1"><Pos>150,10</Pos></Input>
+                <Input Name="N2"><Pos>150,30</Pos></Input>
+                <Input Name="N3"><Pos>150,50</Pos></Input>
+                <Input Name="Scale"><Pos>-130,-22</Pos></Input>
+                <Input Name="Angle"><Pos>-130,-8</Pos></Input>
+                <Input Name="FalloffStart"><Pos>-130,8</Pos></Input>
+                <Input Name="FalloffEnd"><Pos>-130,22</Pos></Input>
+            </Inputs>
+        </Context>
+        <Context Type="GLSL">
+            <Shader ShaderType='Fragment'>
+                <Inputs>
+                <Input Name="Transform" ><Default>vec4(State.UV,0.0,1.0)</Default></Input>
+                <Input Name="A" ><Default>vec4($a)</Default></Input>
+                <Input Name="B" ><Default>vec4($b)</Default></Input>
+                <Input Name="M" ><Default>vec4($m)</Default></Input>
+                <Input Name="N1" ><Default>vec4($n1)</Default></Input>
+                <Input Name="N2" ><Default>vec4($n2)</Default></Input>
+                <Input Name="N3" ><Default>vec4($n3)</Default></Input>
+                <Input Name="Scale" ><Default>vec4($Scale)</Default></Input>
+                <Input Name="Angle" ><Default>vec4($Angle)</Default></Input>
+                <Input Name="FalloffStart" ><Default>vec4($Start)</Default></Input>
+                <Input Name="FalloffEnd" ><Default>vec4($End)</Default></Input>
+                </Inputs>
+            </Shader>
+            <Shader ShaderType='TessEvaluation'>
+                <Inputs>
+                <Input Name="Transform" ><Default>vec4(State.UV,0.0,1.0)</Default></Input>
+                <Input Name="A" ><Default>vec4($a)</Default></Input>
+                <Input Name="B" ><Default>vec4($b)</Default></Input>
+                <Input Name="M" ><Default>vec4($m)</Default></Input>
+                <Input Name="N1" ><Default>vec4($n1)</Default></Input>
+                <Input Name="N2" ><Default>vec4($n2)</Default></Input>
+                <Input Name="N3" ><Default>vec4($n3)</Default></Input>
+                <Input Name="Scale" ><Default>vec4($Scale)</Default></Input>
+                <Input Name="Angle" ><Default>vec4($Angle)</Default></Input>
+                <Input Name="FalloffStart" ><Default>vec4($Start)</Default></Input>
+                <Input Name="FalloffEnd" ><Default>vec4($End)</Default></Input>
+                </Inputs>
+            </Shader>
+            <Shader>
+                <Body><![CDATA[
+
+
+                // Initializing UI Sliders. Need to be called once directly in order to activate
+                float INIT = $Scale; INIT = $Start; INIT = $End; INIT = $Angle;
+                      INIT = $a; INIT = $b; INIT = $m; INIT = $n1; INIT = $n2; INIT = $n3;
+
+                float fstart = clamp(#FalloffStart.r,0.0,#FalloffStart.r);
+                float fend = clamp(#FalloffEnd.r,0.0,#FalloffEnd.r);
+
+                float A = clamp(#A.r,0.0,#A.r);
+                float B = clamp(#B.r,0.0,#B.r);
+                float M = clamp(#M.r,0.0,#M.r);
+                float N1 = clamp(#N1.r,0.0,#N1.r);
+                float N2 = clamp(#N2.r,0.0,#N2.r);
+                float N3 = clamp(#N3.r,0.0,#N3.r);
+
+
+                // Separate each UV tile into it's own square
+                vec2 uv = fract(#Transform.rg);
+
+                // UV Rotation
+                mat2 rotationMatrix = nb_uvRotation($Rotation);
+                vec2 offsetToCenter = vec2(0.5, 0.5);
+                uv -= offsetToCenter;
+                uv = rotationMatrix * uv;
+                uv += offsetToCenter;
+
+                // UV Repeat
+                uv = nb_uvMod(uv,$Repeat,vec2($URepeat,$VRepeat),vec2($UOffset, $VOffset));
+
+                // SuperShape and gradient
+                float grad;
+                float shape = nb_superShape2D(uv,#Scale.r,#Angle.r,A,B,M,N1,N2,N3,grad);
+
+                // TODO: Find distance formula for exact gradient
+                // Gradient
+                float shapeGradient = mriCurveLookup($Falloff, 1.0-grad);
+                shapeGradient = (shapeGradient-fstart)/(fend-fstart);
+
+                // Color
+                float Offset = 1.0/(32.0 * 1024.0);
+                float shape_mix = (nb_AAstep(Offset, shape)*shapeGradient);
+                Output.rgb = vec3(mix($backColor, $shapeColor, clamp(shape_mix,0.0,1.0)));
+                Output.a = mix($backColor.a, $shapeColor.a, clamp(shape_mix,0.0,1.0));
+
+                ]]></Body>
+            </Shader>
+        </Context>
+    </Contexts>
+</Node>

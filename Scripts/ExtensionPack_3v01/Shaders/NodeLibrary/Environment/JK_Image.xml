@@ -1,0 +1,40 @@
+<Node>
+    <ID>JK_TileImage</ID>
+    <DefaultName>Image</DefaultName>
+    <Category>Environment/Extension Pack/</Category>
+    <Cost>0.02</Cost>
+    <CostDescription>Some calculations and a texture read</CostDescription>
+    <Inputs>
+        <Input Name="Coordinates" PrettyName="Manifold"></Input>
+    </Inputs>
+    <Attributes>
+        <Attribute Name="TileImage" PrettyName="Image" Group="Image" Type="image"></Attribute>
+        <Attribute Name="FilterTileImage" PrettyName="Filter Image" Group="Filtering" Type="userenum">2,0,1,2,3,Nearest,Bilinear,Trilinear,Anisotropic</Attribute>
+        <Attribute Name="AnisotropyTileImage" PrettyName="Anisotropy" Group="Filtering" Type="float" Min="1" Max="16">1</Attribute>
+    </Attributes>
+    <Contexts>
+        <Context Type="NodeGraphView">
+            <Inputs>
+                <Input Name="Coordinates"><Pos>0,-50</Pos></Input>
+            </Inputs>
+        </Context>
+        <Context Type="GLSL">
+            <Shader>
+                <Inputs>
+                    <Input Name="Coordinates"><Default>vec4(State.UV,0.0,1.0)</Default></Input>
+                </Inputs>
+                <Body><![CDATA[
+    // Have to refernce Attribute in GLSL to enable them in the UI
+    // $FilterTileImage
+    // $AnisotropyTileImage
+    vec2 uv = #Coordinates.xy;
+
+    // sample
+    vec4 Result = texture($TileImage, uv);
+
+    Output = Result;
+                ]]></Body>
+            </Shader>
+        </Context>
+    </Contexts>
+</Node>

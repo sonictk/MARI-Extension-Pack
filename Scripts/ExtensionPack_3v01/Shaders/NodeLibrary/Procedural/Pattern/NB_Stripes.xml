@@ -1,0 +1,143 @@
+<!--
+================================================================================
+== Stripes
+== Copyright (c) 2015 Nicholas Breslow. All Rights Reserved.
+================================================================================
+== File: NB_Stripes.xml
+== Description: 2D Stripes procedural pattern node.
+================================================================================
+== Author: Nicholas Breslow
+== Web: www.nbreslow.com
+== Email: nick@nbreslow.com
+================================================================================
+== Modifications + Maintenance: Jens Kafitz
+== Web: www.campi3d.com
+== Email: MariIdeas@campi3d.com
+================================================================================
+== Modified Date: May, 18 2015
+================================================================================
+== Redistribution and use in source and binary forms, with or without
+== modification, are permitted provided that the following conditions are met:
+==
+== 1. Redistributions of source code must retain the above copyright
+== notice, this list of conditions and the following disclaimer.
+==
+== 2. Redistributions in binary form must reproduce the above copyright
+== notice, this list of conditions and the following disclaimer in the
+== documentation and/or other materials provided with the distribution.
+==
+== 3. Neither the name of the copyright holder nor the names of its
+== contributors may be used to endorse or promote products derived from
+== this software without specific prior written permission.
+==
+== THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+== IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+== THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+== PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+== CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+== EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+== PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+== OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+== WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+== OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+== ADVISED OF HE POSSIBILITY OF SUCH DAMAGE.
+================================================================================
+-->
+
+<Node>
+    <ID>Stripes 2D</ID>
+    <DefaultName>Stripes 2D</DefaultName>
+    <Category>Procedural/Extension Pack/Pattern/</Category>
+    <Inputs>
+        <Input Name="Transform" PrettyName="Manifold (UV)"></Input>
+        <Input Name="Scale" ></Input>
+        <Input Name="FalloffStart" PrettyName="Gradient Start" ></Input>
+        <Input Name="FalloffEnd" PrettyName="Gradient End" ></Input>
+    </Inputs>
+    <Attributes>
+        <!--===============================================================================================================-->
+        <Attribute Name="Scale" PrettyName="Scale" Type="double" Min="0.0" Max="1.0" >0.8</Attribute>
+        <Attribute Name="Repeat" PrettyName="Repeat" Type="double" Min="0.0" Max="100.0">10.0</Attribute>
+        <!--===============================================================================================================-->
+        <Attribute Name="Rotation" PrettyName="UV Rotation" Group="Position" Type="double" Min="0.0" Max="360.0">0.0</Attribute>
+        <Attribute Name="UOffset" PrettyName="U Offset" Group="Position" Type="double" Min="0.0" Max="1.0">0.0</Attribute>
+        <Attribute Name="VOffset" PrettyName="V Offset" Group="Position" Type="double" Min="0.0" Max="1.0">0.0</Attribute>
+        <Attribute Name="URepeat" PrettyName="U Repeat" Group="Position" Type="double" Min="1.0" Max="50.0">1.0</Attribute>
+        <Attribute Name="VRepeat" PrettyName="V Repeat" Group="Position" Type="double" Min="1.0" Max="50.0">1.0</Attribute>
+        <!--===============================================================================================================-->
+        <Attribute Name="shapeColor" PrettyName="Shape Color" Group="Color" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(1,1,1,1)</Attribute>
+        <Attribute Name="backColor" PrettyName="Background Color" Group="Color" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(0,0,0,1)</Attribute>
+        <!--===============================================================================================================-->
+        <Attribute Name="Start" PrettyName="Start" Group="Gradient" Type="double" Min="0.0" Max="1.0">0.0</Attribute>
+        <Attribute Name="End" PrettyName="End" Group="Gradient" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
+        <Attribute Name="Falloff" PrettyName="Falloff" Group="Gradient" Type="curve"></Attribute>
+        <!--===============================================================================================================-->
+    </Attributes>
+    <Contexts>
+        <Context Type="NodeGraphView">
+            <Inputs>
+                <Input Name="Transform"><Pos>0,-50</Pos></Input>
+                <Input Name="Scale"><Pos>-100,0</Pos></Input>
+                <Input Name="FalloffStart"><Pos>120,-10</Pos></Input>
+                <Input Name="FalloffEnd"><Pos>120,10</Pos></Input>
+            </Inputs>
+        </Context>
+        <Context Type="GLSL">
+            <Shader ShaderType='Fragment'>
+                <Inputs>
+                <Input Name="Transform" ><Default>vec4(State.UV,0.0,1.0)</Default></Input>
+                <Input Name="Scale" ><Default>vec4($Scale)</Default></Input>
+                <Input Name="FalloffStart" ><Default>vec4($Start)</Default></Input>
+                <Input Name="FalloffEnd" ><Default>vec4($End)</Default></Input>
+                </Inputs>
+            </Shader>
+            <Shader ShaderType='TessEvaluation'>
+                <Inputs>
+                <Input Name="Transform" ><Default>vec4(State.UV,0.0,1.0)</Default></Input>
+                <Input Name="Scale" ><Default>vec4($Scale)</Default></Input>
+                <Input Name="FalloffStart" ><Default>vec4($Start)</Default></Input>
+                <Input Name="FalloffEnd" ><Default>vec4($End)</Default></Input>
+                </Inputs>
+            </Shader>
+            <Shader>
+                <Body><![CDATA[
+
+                // Initializing UI Sliders. Need to be called once directly in order to activate
+                float INIT = $Scale; INIT = $Start; INIT = $End;
+
+                float fstart = clamp(#FalloffStart.r,0.0,#FalloffStart.r);
+                float fend = clamp(#FalloffEnd.r,0.0,#FalloffEnd.r);
+
+                // Separate each UV tile into it's own square
+                vec2 uv = fract(#Transform.rg);
+
+                // Bias UV tile
+                uv -= vec2(0.5);
+
+                // UV Rotation
+                mat2 rotationMatrix = nb_uvRotation($Rotation);
+                uv = rotationMatrix * uv;
+
+                // UV Repeat
+                uv = nb_uvMod(uv,$Repeat,vec2($URepeat,$VRepeat),vec2($UOffset, $VOffset));
+
+                // UnBias UV tile
+                uv += vec2(0.5);
+
+                // Stripes
+                float shape = nb_stripes2D(uv,clamp(#Scale.r,0.0,#Scale.r));
+
+                float shapeGradient = mriCurveLookup($Falloff, shape);
+                shapeGradient = (shapeGradient-fstart)/(fend-fstart);
+
+                // Color
+                float Offset = 1.0/(32.0 * 1024.0);
+                float shape_mix = (nb_AAstep(Offset, shape)*shapeGradient);
+                Output.rgb = vec3(mix($backColor, $shapeColor, clamp(shape_mix,0.0,1.0)));
+                Output.a = mix($backColor.a, $shapeColor.a, clamp(shape_mix,0.0,1.0));
+
+                ]]></Body>
+            </Shader>
+        </Context>
+    </Contexts>
+</Node>

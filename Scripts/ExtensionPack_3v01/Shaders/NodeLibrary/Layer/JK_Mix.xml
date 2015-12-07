@@ -1,0 +1,96 @@
+<!--
+================================================================================
+== Mix
+== Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
+================================================================================
+== File: JK_Mix.xml
+== Description: Simple B over A Mix, similar to merge but less expensive
+================================================================================
+== Author: Jens Kafitz
+== Web: www.campi3d.com
+== Email: MariIdeas@campi3d.com
+================================================================================
+== Modified Date: June, 1 2015
+================================================================================
+== Redistribution and use in source and binary forms, with or without
+== modification, are permitted provided that the following conditions are met:
+==
+== 1. Redistributions of source code must retain the above copyright
+== notice, this list of conditions and the following disclaimer.
+==
+== 2. Redistributions in binary form must reproduce the above copyright
+== notice, this list of conditions and the following disclaimer in the
+== documentation and/or other materials provided with the distribution.
+==
+== 3. Neither the name of the copyright holder nor the names of its
+== contributors may be used to endorse or promote products derived from
+== this software without specific prior written permission.
+==
+== THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+== IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+== THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+== PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+== CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+== EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+== PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+== OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+== WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+== OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+== ADVISED OF HE POSSIBILITY OF SUCH DAMAGE.
+================================================================================
+-->
+
+<Node>
+    <ID>JK_Mix</ID>
+    <DefaultName>Mix (Lerp) </DefaultName>
+    <Category>Layer/Extension Pack/</Category>
+    <Inputs>
+        <Input Name="A" ></Input>
+        <Input Name="B" ></Input>
+        <Input Name="Mix"></Input>
+    </Inputs>
+    <Attributes>
+        <Attribute Name="colorA" PrettyName="Color A" Type="color">(1.0,1.0,1.0,1)</Attribute>
+        <Attribute Name="colorB" PrettyName="Color B" Type="color">(0.0,0.0,0.0,1)</Attribute>
+        <Attribute Name="mixer"  PrettyName="Mix" Type="float" Min="0" Max="1">0.5</Attribute>
+</Attributes>
+ <Contexts>
+        <Context Type="NodeGraphView">
+            <Inputs>
+                <Input Name="A" ><Pos>-120,-10</Pos></Input>
+                <Input Name="B" ><Pos>-120,10</Pos></Input>
+                <Input Name="Mix"><Pos>120,0</Pos></Input>
+            </Inputs>
+        </Context>
+        <Context Type="GLSL">
+            <Shader ShaderType='Fragment'>
+                <Inputs>
+                <Input Name="A" ><Default>$colorA</Default></Input>
+                <Input Name="B" ><Default>$colorB</Default></Input>
+                <Input Name="Mix"><Default>vec4($mixer)</Default></Input>
+                </Inputs>
+            </Shader>
+            <Shader ShaderType='TessEvaluation'>
+                <Inputs>
+                <Input Name="A" ><Default>$colorA</Default></Input>
+                <Input Name="B" ><Default>$colorB</Default></Input>
+                <Input Name="Mix"><Default>vec4($mixer)</Default></Input>
+                </Inputs>
+            </Shader>
+            <Shader>
+                <Body><![CDATA[
+
+
+    vec4 INITv4 = $colorA; INITv4 = $colorB;
+    float INITf = $mixer;
+
+    float mixMult = (#Mix.r == $mixer) ? #Mix.r : (#Mix.r * $mixer);
+
+    Output = mix(#A,#B,mixMult);
+
+                ]]></Body>
+            </Shader>
+        </Context>
+    </Contexts>
+</Node>
+

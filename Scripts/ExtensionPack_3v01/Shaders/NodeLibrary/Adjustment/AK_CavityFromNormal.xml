@@ -1,0 +1,176 @@
+<!--
+================================================================================
+== Cavity from Normal
+== Copyright (c) 2015 Antoni Kujawa. All Rights Reserved.
+================================================================================
+== File: AK_CavityFromNormal.xml
+== Description: Cavity map adjustment layer that converts a cavity to normal map.
+================================================================================
+== Author: Antoni Kujawa
+== Email: akujawavfx@gmail.com
+================================================================================
+== Modified Date: May 18, 2015
+================================================================================
+== Redistribution and use in source and binary forms, with or without
+== modification, are permitted provided that the following conditions are met:
+==
+== 1. Redistributions of source code must retain the above copyright
+== notice, this list of conditions and the following disclaimer.
+==
+== 2. Redistributions in binary form must reproduce the above copyright
+== notice, this list of conditions and the following disclaimer in the
+== documentation and/or other materials provided with the distribution.
+==
+== 3. Neither the name of the copyright holder nor the names of its
+== contributors may be used to endorse or promote products derived from
+== this software without specific prior written permission.
+==
+== THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+== IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+== THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+== PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+== CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+== EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+== PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+== OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+== WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+== OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+== ADVISED OF HE POSSIBILITY OF SUCH DAMAGE.
+================================================================================
+-->
+
+<Node>
+    <ID>Cavity from Tangent Space Normal</ID>
+    <DefaultName>Cavity from Tangent Space Normal</DefaultName>
+    <Category>Filter/Extension Pack/Normal Map/</Category>
+    <Tags>
+        <Tag>_adjustment</Tag>
+    </Tags>
+    <Inputs>
+        <Input Name="Input"></Input>
+    </Inputs>
+    <Attributes>
+        <!--===============================================================================================================-->
+        <Attribute Name="wh" Group="Cavity Level" Type="double" Min="0.0" Max="1.0">1.0</Attribute>
+        <Attribute Name="md" Group="Cavity Level" Type="double" Min="0.0" Max="1.0">0.5</Attribute>
+        <Attribute Name="blk" Group="Cavity Level" Type="double" Min="0.0" Max="1.0">0.0</Attribute>
+        <Attribute Name="Invert" Group="" Type="bool" Min="true" Max="false">false</Attribute>
+        <!--===============================================================================================================-->
+    </Attributes>
+    <Contexts>
+        <Context Type="NodeGraphView">
+            <Inputs>
+                <Input Name="Input"><Pos>0,-50</Pos></Input>
+            </Inputs>
+        </Context>
+        <Context Type="GLSL">
+            <Shader>
+                <Inputs>
+                    <Input Name="Input"><Default>vec4(1.0,1.0,1.0,1.0)</Default></Input>
+                </Inputs>
+                <Body><![CDATA[
+
+                float c1 = 1.5;
+                float cp1 = 0.66;
+
+                vec4 bp1 = vec4(0.0,0.0,0.0,0.0);
+                vec4 wp1 = vec4(1.0,1.0,1.0,1.0);
+                vec4 l1 = vec4(0.8,0.8,0.8,0.0);
+                vec4 g1 = vec4(1.0,1.0,1.0,1.0);
+                vec4 m1 = vec4(0.6,0.6,0.6,1.0);
+                vec4 o1 = vec4(0.0,0.0,0.0,0.0);
+                vec4 ga1 = vec4(1.0,1.0,1.0,1.0);
+
+                bool rd = true;
+                bool gr = true;
+                bool bl = true;
+                float wo = 1.0;
+                float bo = 0.0;
+                float wh = 1.0;
+                float md = 0.649;
+                float blk = 0.0;
+
+                #define MS1 ggga
+
+                #define MS2 bbba
+
+                bool rd2 = true;
+                bool gr2 = true;
+                bool bl2 = true;
+                float wo2 = 1.0;
+                float bo2 = 0.0;
+
+                vec4 m_Input = #Input;
+
+                vec4 m_Output;
+
+                {
+                    m_Output.rgb = (m_Input.rgb-vec3(cp1))*c1+vec3(cp1);
+                    m_Output.a = m_Input.a;
+                }
+                    m_Input = m_Output;
+
+                {
+                    vec4 A = m1 * ( g1 - l1 ) / ( wp1 - bp1 );
+                    vec4 B = o1 + l1 - A * bp1;
+                    vec4 C = A * m_Input + B;
+                    C = clamp(C, vec4(0.0), C);
+
+                    m_Output = pow( C, 1.0 / ga1 );
+                }
+                    m_Input = m_Output;
+
+                {
+                    float grad = (wo - bo) / (wh - blk);
+                    float ratio = (md - blk) / (wh - blk);
+                    float alpha = 1.0/pow(10.0, 1.0 - 2.0 * ratio);
+                    vec3 levelled = vec3(0);
+                    for (int i = 0; i != 3; ++i) {
+                        levelled[i] = m_Input[i] < blk ? bo : m_Input[i] < wh ? pow(bo + (m_Input[i] - blk) * grad, alpha) : wo;
+                    }m_Output.r = rd   ? levelled.r : m_Input.r;
+                    m_Output.g = gr ? levelled.g : m_Input.g;
+                    m_Output.b = bl  ? levelled.b : m_Input.b;
+                    m_Output.a = m_Input.a;
+                }
+                    m_Input = m_Output;
+
+                {
+                    m_Output = m_Input.MS1;
+                }
+
+                    m_Input = m_Output;
+
+                {
+                    m_Output = m_Input.MS2;
+                }
+
+                    m_Input = m_Output;
+
+                {
+                    float grad = (wo2 - bo2) / ($wh - $blk);
+                    float ratio = ($md - $blk) / ($wh - $blk);
+                    float alpha = 1.0/pow(10.0, 1.0 - 2.0 * ratio);
+                    vec3 levelled = vec3(0);
+                    for (int i = 0; i != 3; ++i) {
+                        levelled[i] = m_Input[i] < $blk ? bo2 : m_Input[i] < $wh ? pow(bo2 + (m_Input[i] - $blk) * grad, alpha) : wo2;
+                    }m_Output.r = rd2   ? levelled.r : m_Input.r;
+                    m_Output.g = gr2 ? levelled.g : m_Input.g;
+                    m_Output.b = bl2  ? levelled.b : m_Input.b;
+                    m_Output.a = m_Input.a;
+                }
+                    m_Input = m_Output;
+                {
+                    bool Invert = $Invert;
+                    m_Output   = m_Input;
+                    if (Invert) {
+                      m_Output = vec4 (1.0-m_Input.r, 1.0-m_Input.g, 1.0-m_Input.b, m_Input.a);
+                    }
+                }
+
+                Output = m_Output;
+
+                ]]></Body>
+            </Shader>
+        </Context>
+    </Contexts>
+</Node>

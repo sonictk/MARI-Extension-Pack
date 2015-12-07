@@ -1,0 +1,108 @@
+////////////////////////////////////////////////////////////////////////////////
+// Miguel A Santiago Jr. Procedural Shader Library
+// Copyright (c) 2015 Miguel A Santiago Jr.. All Rights Reserved.
+////////////////////////////////////////////////////////////////////////////////
+// File: GputNoiseLib.glslh
+// Description: Modified Gpu Noise library from Brian Sharpe for the procedurals.
+////////////////////////////////////////////////////////////////////////////////
+// Author: Brian Sharpe
+// Web: www.github.com/BrianSharpe/GPU-Noise-Lib
+// Email:  brisharpe@yahoo.com
+////////////////////////////////////////////////////////////////////////////////
+// Contributors:
+// Author: Miguel A Santiago Jr.
+// Web: www.digiteck3d.com
+// Email: miguel@digiteck3d.com
+////////////////////////////////////////////////////////////////////////////////
+// Modified Date: June 14, 2014
+////////////////////////////////////////////////////////////////////////////////
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are met:
+//
+// 1. Redistributions of source code must retain the above copyright
+// notice, this list of conditions and the following disclaimer.
+//
+// 2. Redistributions in binary form must reproduce the above copyright
+// notice, this list of conditions and the following disclaimer in the
+// documentation and/or other materials provided with the distribution.
+//
+// 3. Neither the name of the copyright holder nor the names of its
+// contributors may be used to endorse or promote products derived from
+// this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+// IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+// THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+// PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+// CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+// EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+// PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+// OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+// WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+// OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+// ADVISED OF HE POSSIBILITY OF SUCH DAMAGE.
+////////////////////////////////////////////////////////////////////////////////
+
+//   Generate grid cells random noise
+//   returns value random cell values
+//
+vec4 CellNoise( vec3 gridcell );
+
+//   Value Noise 3D
+//   Return value range of -1.0->1.0
+//   http://briansharpe.files.wordpress.com/2011/11/valuesample1.jpg
+//
+float Value3D( vec3 P );
+
+//
+//   Perlin Noise 3D  ( gradient noise )
+//   Return value range of -1.0->1.0
+//   http://briansharpe.files.wordpress.com/2011/11/perlinsample.jpg
+//
+float Perlin3D( vec3 P );
+
+//
+//   SimplexPerlin3D  ( simplex gradient noise )
+//   Perlin noise over a simplex (tetrahedron) grid
+//   Return value range of -1.0->1.0
+//   http://briansharpe.files.wordpress.com/2012/01/simplexperlinsample.jpg
+//
+//   Implementation originally based off Stefan Gustavson's and Ian McEwan's work at...
+//   http://github.com/ashima/webgl-noise
+//
+float SimplexPerlin3D(vec3 P);
+
+//
+//   Hermite3D
+//   Return value range of -1.0->1.0
+//   http://briansharpe.files.wordpress.com/2012/01/hermitesample.jpg
+//
+float Hermite3D( vec3 P );
+
+//
+//   Value3D_Deriv
+//   Value3D noise with derivatives
+//   returns vec3( value, xderiv, yderiv, zderiv )
+//
+vec4 Value3D_Deriv( vec3 P );
+
+//
+//   PerlinSurflet3D_Deriv
+//   Perlin Surflet 3D noise with derivatives
+//   returns vec4( value, xderiv, yderiv, zderiv )
+//
+vec4 PerlinSurflet3D_Deriv( vec3 P );
+
+//
+//   Hermite3D_Deriv
+//   Hermite3D noise with derivatives
+//   returns vec3( value, xderiv, yderiv, zderiv )
+//
+vec4 Hermite3D_Deriv( vec3 P );
+
+//
+//   Noise type picker function
+//   Noise is all returned in signed form -1,1
+//   returns type = 0:value,1:perlin,2:simplex,3:hermite
+//
+float NoiseType(vec3 p, int type);

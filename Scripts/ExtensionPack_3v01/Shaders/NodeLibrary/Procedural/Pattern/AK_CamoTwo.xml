@@ -1,0 +1,170 @@
+<!--
+================================================================================
+== Military Camo
+== Copyright (c) 2015 Antoni Kujawa. All Rights Reserved.
+================================================================================
+== File: AK_CamoTwo.xml
+== Description: Camo procedurals to create military patterns.
+================================================================================
+== Author: Antoni Kujawa
+== Email: akujawavfx@gmail.com
+================================================================================
+== Modifications + Maintenance: Jens Kafitz
+== Web: www.campi3d.com
+== Email: MariIdeas@campi3d.com
+================================================================================
+== Modified Date: May, 18 2015
+================================================================================
+== Redistribution and use in source and binary forms, with or without
+== modification, are permitted provided that the following conditions are met:
+==
+== 1. Redistributions of source code must retain the above copyright
+== notice, this list of conditions and the following disclaimer.
+==
+== 2. Redistributions in binary form must reproduce the above copyright
+== notice, this list of conditions and the following disclaimer in the
+== documentation and/or other materials provided with the distribution.
+==
+== 3. Neither the name of the copyright holder nor the names of its
+== contributors may be used to endorse or promote products derived from
+== this software without specific prior written permission.
+==
+== THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+== IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+== THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+== PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+== CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+== EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+== PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+== OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+== WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+== OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+== ADVISED OF HE POSSIBILITY OF SUCH DAMAGE.
+================================================================================
+-->
+
+<Node>
+    <ID>Military Camo</ID>
+    <DefaultName>Military Camo</DefaultName>
+    <Category>Procedural/Extension Pack/Pattern/</Category>
+    <Inputs>
+        <Input Name="Transform" PrettyName="Manifold"></Input>
+        <Input Name="Size" ></Input>
+        <Input Name="Spacing" ></Input>
+        <Input Name="Roughness" ></Input>
+    </Inputs>
+    <Attributes>
+        <!--===============================================================================================================-->
+        <Attribute Name="colorA" PrettyName="Color A" Group="Color" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(0.262,0.253,0.012,1)</Attribute>
+        <Attribute Name="colorB" PrettyName="Color B" Group="Color" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(0.014,0.209,0.018,1)</Attribute>
+        <Attribute Name="colorC" PrettyName="Color C" Group="Color" Type="color" Min="(0,0,0,1)" Max="(1,1,1,1)">(0.054,0.150,0.035,1)</Attribute>
+        <!--===============================================================================================================-->
+        <Attribute Name="Size" Group="Size" Type="double" Min="0" Max="2">0.5</Attribute>
+        <Attribute Name="Spacing"  Type="double" Group="Size" Min="0" Max="1">0.5</Attribute>
+        <Attribute Name="Roughness" Group="Size" Type="double" Min="0" Max="2">0.0</Attribute>
+        <Attribute Name="Seed" Group="Size" PrettyName="Seed" Type="double" Min="1" Max="100000" Logarithmic="1">1</Attribute>
+        <Attribute Name="Invert"  PrettyName="Invert" Group="Size" Type="bool" Min="false" Max="true" Description="Inverts the Noise result before ColorA+B are applied" >false</Attribute>
+        <!--===============================================================================================================-->
+        <Attribute Name="uv" PrettyName="UV Space" Group="Space" Type="bool" Min="false" Max="true" Description="Runs the noise 2d uv based, use offset/scale x/y and rotate z" >false</Attribute>
+        <!--===============================================================================================================-->
+        <Attribute Name="XScale" PrettyName="Scale X" Group="Transform Scale" Type="double" Min="0" Max="100" Logarithmic="1">1</Attribute>
+        <Attribute Name="YScale" PrettyName="Scale Y" Group="Transform Scale" Type="double" Min="0" Max="100" Logarithmic="1">1</Attribute>
+        <Attribute Name="ZScale" PrettyName="Scale Z" Group="Transform Scale" Type="double" Min="0" Max="100" Logarithmic="1">1</Attribute>
+        <!--===============================================================================================================-->
+        <Attribute Name="rX" PrettyName="Rotate X" Group="Transform Rotate" Type="double" Min="0" Max="360">0</Attribute>
+        <Attribute Name="rY" PrettyName="Rotate Y" Group="Transform Rotate" Type="double" Min="0" Max="360">0</Attribute>
+        <Attribute Name="rZ" PrettyName="Rotate Z" Group="Transform Rotate" Type="double" Min="0" Max="360">0</Attribute>
+        <!--===============================================================================================================-->
+        <Attribute Name="XOffset" PrettyName="Translate X" Group="Transform Translate" Type="double" Min="0" Max="100" Logarithmic="1">0</Attribute>
+        <Attribute Name="YOffset" PrettyName="Translate Y" Group="Transform Translate" Type="double" Min="0" Max="100" Logarithmic="1">0</Attribute>
+        <Attribute Name="ZOffset" PrettyName="Translate Z" Group="Transform Translate" Type="double" Min="0" Max="100" Logarithmic="1">0</Attribute>
+        <!--===============================================================================================================-->
+    </Attributes>
+    <Groups>
+        <Group Name="Space" Expanded="false"></Group>
+        <Group Name="Transform Scale" Expanded="false"></Group>
+        <Group Name="Transform Rotate" Expanded="false"></Group>
+        <Group Name="Transform Translate" Expanded="false"></Group>
+    </Groups>
+ <Contexts>
+        <Context Type="NodeGraphView">
+            <Inputs>
+                <Input Name="Transform" ><Pos>0,-50</Pos></Input>
+                <Input Name="Size" ><Pos>100,0</Pos></Input>
+                <Input Name="Spacing"><Pos>-120,10</Pos></Input>
+                <Input Name="Roughness" ><Pos>-120,-10</Pos></Input>
+            </Inputs>
+        </Context>
+        <Context Type="GLSL">
+            <Shader ShaderType='Fragment'>
+                <Inputs>
+                <Input Name="Transform" ><Default>vec4(State.Position,1.0)</Default></Input>
+                <Input Name="Size" ><Default>vec4($Size)</Default></Input>
+                <Input Name="Spacing" ><Default>vec4($Spacing)</Default></Input>
+                <Input Name="Roughness" ><Default>vec4($Roughness)</Default></Input>
+                </Inputs>
+            </Shader>
+            <Shader ShaderType='TessEvaluation'>
+                <Inputs>
+                <Input Name="Transform" ><Default>vec4(State.Position,1.0)</Default></Input>
+                <Input Name="Size" ><Default>vec4($Size)</Default></Input>
+                <Input Name="Spacing" ><Default>vec4($Spacing)</Default></Input>
+                <Input Name="Roughness" ><Default>vec4($Roughness)</Default></Input>
+                </Inputs>
+            </Shader>
+            <Shader>
+                <Body><![CDATA[
+
+                //Initalize UI Sliders. Need to call slider attributes once in order for them to be activated in UI
+                float INIT = $Size; INIT = $Spacing ; INIT = $Roughness;
+
+                float size = clamp(#Size.r,0.0,#Size.r);
+
+                // compensate for scene size by applying eponential growth
+                float size_pow = (pow(10000.0,size*size)-1.0) + 0.0001;
+
+                // 3d space surface position
+                // build the needed vector attributes for position transform, offset max growths exponentially
+                vec3 trans = (vec3($XOffset,$YOffset,$ZOffset)*size_pow) + vec3($Seed);
+                vec3 rotate = vec3($rX,$rY,$rZ);
+                vec3 scale = vec3(1.0) / vec3($XScale,$YScale,$ZScale);
+
+                // transform the position to translate,rotate,scale the position
+                vec3 P = positionTransform(#Transform.rgb,trans,rotate,scale);
+
+                // 2d uv space surface position
+                // build the needed vector attributes for position transform, offset max growths exponentially
+                vec2 UVOffset = vec2($XOffset,$YOffset) + vec2($Seed);
+                vec2 UVScale = vec2($XScale,$YScale);
+
+                // transform the position to translate,rotate,scale the position
+                vec2 InputScaleUV = relUVTransform(State.UV,$rZ,UVOffset,UVScale,0.5,0.5)/ (size_pow);
+
+                // blend between 2d and 3d space position
+                P = mix(P,vec3(InputScaleUV,1.0),float($uv));
+
+                float roughness = #Spacing.r;
+                vec3 seed = P;
+                float noise_val = 0.4;
+                float sharpness = log2(2.0+99.0*roughness)/log2(100.0);
+                for(int i=0;i<10;i++)
+                {
+                    vec3 scaled_seed = pow(1.0,float(i)) * seed.rgb / size_pow;
+                    noise_val += noise(scaled_seed)/pow(5.0-4.0*sharpness,float(i));
+                }
+                noise_val = noise_val*0.5 + 0.5;
+                noise_val = clamp(noise_val,0.0,1.0);
+                noise_val = mix(noise_val,1.0-noise_val,float($Invert));
+
+                float rangeA = softThreshold(0.33,float(#Roughness.r),noise_val);
+                float rangeB = softThreshold(0.67,float(#Roughness.r),noise_val);
+                vec4 result = mix($colorB,$colorA,rangeB);
+                result = mix(result,$colorC,1.0-rangeA);
+                Output = result;
+
+                ]]></Body>
+            </Shader>
+        </Context>
+    </Contexts>
+</Node>
+

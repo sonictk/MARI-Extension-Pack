@@ -1,0 +1,94 @@
+<!--
+================================================================================
+== Posterize
+== Copyright (c) 2015 TheFoundry. All Rights Reserved.
+================================================================================
+== File: TF_Posterize.xml
+== Description: A simple posterize filter
+================================================================================
+== Author: TheFoundry
+== Taken & modified from \MariApp\Bundle\Media\Examples\Nodes\
+== Web: www.thefoundry.co.uk
+================================================================================
+== Nodepack Implememtation: Jens Kafitz
+== Web: www.campi3d.com
+== Email: MariIdeas@campi3d.com
+================================================================================
+== Modified Date: August, 15 2014
+================================================================================
+== Redistribution and use in source and binary forms, with or without
+== modification, are permitted provided that the following conditions are met:
+==
+== 1. Redistributions of source code must retain the above copyright
+== notice, this list of conditions and the following disclaimer.
+==
+== 2. Redistributions in binary form must reproduce the above copyright
+== notice, this list of conditions and the following disclaimer in the
+== documentation and/or other materials provided with the distribution.
+==
+== 3. Neither the name of the copyright holder nor the names of its
+== contributors may be used to endorse or promote products derived from
+== this software without specific prior written permission.
+==
+== THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+== IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+== THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+== PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+== CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+== EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+== PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+== OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+== WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+== OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+== ADVISED OF HE POSSIBILITY OF SUCH DAMAGE.
+================================================================================
+-->
+
+
+
+<Node>
+  <ID>Posterize</ID>
+    <DefaultName>Posterize</DefaultName>
+    <Category>Filter/Extension Pack/Filter/</Category>
+  <Tags>
+    <Tag>_adjustment</Tag>
+  </Tags>
+    <Inputs>
+        <Input Name="Input"></Input>
+    </Inputs>
+    <Attributes>
+        <Attribute Name="Colors" PrettyName="Color Bands" Group="" Type="double" Min="0.0" Max="256">16</Attribute>
+        <Attribute Name="Desat" PrettyName="Desaturate Base" Group="" Type="bool" Min="true" Max="false">false</Attribute>
+
+    </Attributes>
+  <Contexts>
+    <Context Type="GLSL">
+        <Shader>
+            <Inputs>
+                <Input Name="Input"><Default>vec4(1,1,1,1)</Default></Input>
+            </Inputs>
+            <Body><![CDATA[
+               float a, b, c, d, e, f, g, h, i;
+    vec3 wt = vec3(0.2126, 0.7152, 0.0722);
+    a = wt.r;
+    b = wt.r;
+    c = wt.r;
+    d = wt.g;
+    e = wt.g;
+    f = wt.g;
+    g = wt.b;
+    h = wt.b;
+    i = wt.b;
+    vec4 Input = mat4(a,   b,   c,   0.0,
+                  d,   e,   f,   0.0,
+                  g,   h,   i,   0.0,
+                  0.0, 0.0, 0.0, 1.0) * #Input;
+    Input = mix(#Input,Input,float($Desat));
+
+            Output.rgb = round($Colors * Input.rgb) / $Colors;
+            Output.a = #Input.a;
+            ]]></Body>
+        </Shader>
+    </Context>
+  </Contexts>
+</Node>

@@ -1,0 +1,109 @@
+<!--
+================================================================================
+== == Material Region Value Output Specular-Glossiness
+== Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
+================================================================================
+== File: JK_RegionOutput_SG.xml
+== Description: Allows you to extract a value from the Region Chain
+================================================================================
+== Author: Jens Kafitz
+== Web: www.campi3d.com
+== Email: MariIdeas@campi3d.com
+================================================================================
+== Modified Date: October, 3 2015
+================================================================================
+== Redistribution and use in source and binary forms, with or without
+== modification, are permitted provided that the following conditions are met:
+==
+== 1. Redistributions of source code must retain the above copyright
+== notice, this list of conditions and the following disclaimer.
+==
+== 2. Redistributions in binary form must reproduce the above copyright
+== notice, this list of conditions and the following disclaimer in the
+== documentation and/or other materials provided with the distribution.
+==
+== 3. Neither the name of the copyright holder nor the names of its
+== contributors may be used to endorse or promote products derived from
+== this software without specific prior written permission.
+==
+== THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+== IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+== THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+== PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+== CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+== EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+== PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+== OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+== WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+== OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+== ADVISED OF HE POSSIBILITY OF SUCH DAMAGE.
+================================================================================
+-->
+
+<Node>
+    <ID>JK_RegionSplitter_Glossiness</ID>
+    <DefaultName>SG Region Output (SpecGloss)</DefaultName>
+    <Category>Material Regions/Specular-Glossiness/</Category>
+    <Inputs>
+        <Input Name="IN_A" PrettyName="Input A"/>
+        <Input Name="IN_B" PrettyName="Input B"/>
+        <Input Name="IN_C" PrettyName="Input C"/>
+    </Inputs>
+    <Outputs>
+        <Output Name="baseColor" PrettyName="Out BaseColor"/>
+        <Output Name="glossiness" PrettyName="Out Glossiness"/>
+        <Output Name="specular" PrettyName="Out Specular"/>
+        <Output Name="height" PrettyName="Out Height"/>
+        <Output Name="normal" PrettyName="Out Normal"/>
+        <Output Name="mask" PrettyName="Out Mask"/>
+    </Outputs>
+    <Attributes>
+    </Attributes>
+
+ <Contexts>
+        <Context Type="NodeGraphView">
+            <Inputs>
+                <Input Name="IN_A"><Pos>-170,-40</Pos></Input>
+                <Input Name="IN_B"><Pos>-170,-20</Pos></Input>
+                <Input Name="IN_C"><Pos>-170,20</Pos></Input>
+            </Inputs>
+
+            <Outputs>
+                <Output Name="baseColor"><Pos>170,20</Pos></Output>
+                <Output Name="glossiness"><Pos>170,-40</Pos></Output>
+                <Output Name="specular"><Pos>170,-20</Pos></Output>
+                <Output Name="height"><Pos>170,40</Pos></Output>
+                <Output Name="normal"><Pos>170,60</Pos></Output>
+                <Output Name="mask"><Pos>70,70</Pos></Output>
+
+            </Outputs>
+
+        </Context>
+        <Context Type="GLSL">
+            <Shader ShaderType='Fragment'>
+                <Inputs>
+                <Input Name="IN_A"><Default>vec4(0.0)</Default></Input>
+                <Input Name="IN_B"><Default>vec4(0.0)</Default></Input>
+                <Input Name="IN_C"><Default>vec4(0.0)</Default></Input>
+                </Inputs>
+
+            </Shader>
+            <Shader>
+                <Body><![CDATA[
+
+
+
+            baseColor = #IN_A;
+            glossiness = vec4(#IN_B.r,#IN_B.r,#IN_B.r,1.0);
+            specular = vec4(#IN_B.g,#IN_B.g,#IN_B.g,1.0);
+            height = vec4(#IN_B.b,#IN_B.b,#IN_B.b,1.0);
+            normal = vec4(#IN_C.rgb,1.0);
+            mask = vec4(#IN_C.a,#IN_C.a,#IN_C.a,1.0);
+
+
+                ]]></Body>
+            </Shader>
+        </Context>
+    </Contexts>
+</Node>
+

@@ -1,14 +1,28 @@
-#MARI EXTENSION PACK 2.1
+#MARI EXTENSION PACK 3.0
 
-Copyright (c) 2015 www.mari.ideascale.com. All Rights Reserved.
-
+Copyright (c) 2015 www.jenskafitz.com. All Rights Reserved.
 
 ##Version:
-Extension Pack :  2.1  //  MARI Function Library: 1.12
+Extension Pack :  3.0  //  MARI Function Library: 1.13
 
-##What's new in 2.1:
+##Requirements:
 
-http://www.campi3d.com/External/MariExtensionPack/userGuide21/WhatsnewinExtensionPack21.html
+Mari 3.0v1 or higher. MARI Indie is not supported
+
+
+##What's new in 3.0:
+
+http://www.campi3d.com/External/MariExtensionPack/userGuide30/WhatsnewinExtensionPack30.html
+
+
+##Documentation
+
+Complete online help is available here
+
+http://www.campi3d.com/External/MariExtensionPack/userGuide30/MARIEXTENSIONPACK1.html
+
+The raw authoring files are located in the Help folder.
+HelpNDoc Personal Learning Edition (free) was used to author the help.
 
 
 ##Info
@@ -33,18 +47,8 @@ so we have some sort of easy way to assemble release information.
 
 Refer to SDK site of the help
 
-http://www.campi3d.com/External/MariExtensionPack/userGuide21/SDK.html
+http://www.campi3d.com/External/MariExtensionPack/userGuide30/SDK.html
 
-
-##Documentation
-
-Complete online help is available here
-
-http://www.campi3d.com/External/MariExtensionPack/userGuide21/MARIEXTENSIONPACK1.html
-
-
-The raw authoring files are located in the Help folder.
-HelpNDoc Personal Learning Edition (free) was used to author the help.
 
 
 ##Contributors

@@ -1,0 +1,118 @@
+<!--
+================================================================================
+== Conversion Metal-Rough workflow to SoecGlossiness Workflow
+== Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
+================================================================================
+== File: JK_MR2SG.xml
+== Description: Converts Outputs between two different workflows
+================================================================================
+== Author: Jens Kafitz
+== Web: www.campi3d.com
+== Email: MariIdeas@campi3d.com
+================================================================================
+== Modified Date: September, 3 2015
+================================================================================
+== Redistribution and use in source and binary forms, with or without
+== modification, are permitted provided that the following conditions are met:
+==
+== 1. Redistributions of source code must retain the above copyright
+== notice, this list of conditions and the following disclaimer.
+==
+== 2. Redistributions in binary form must reproduce the above copyright
+== notice, this list of conditions and the following disclaimer in the
+== documentation and/or other materials provided with the distribution.
+==
+== 3. Neither the name of the copyright holder nor the names of its
+== contributors may be used to endorse or promote products derived from
+== this software without specific prior written permission.
+==
+== THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+== IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+== THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+== PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+== CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+== EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+== PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+== OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+== WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+== OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+== ADVISED OF HE POSSIBILITY OF SUCH DAMAGE.
+================================================================================
+-->
+
+<Node>
+    <ID>JK_MR2SG</ID>
+    <DefaultName>PBR MetalRough to SpecGlossiness</DefaultName>
+    <Category>Material Regions/Conversion/</Category>
+    <Inputs>
+        <Input Name="in_baseColor" PrettyName="Base Color" />
+        <Input Name="in_roughness" PrettyName="Roughness"/>
+        <Input Name="in_metalness" PrettyName="Metal"/>
+        <Input Name="in_specular" PrettyName="F0Specular"/>
+        <Input Name="in_height" PrettyName="Height"/>
+        <Input Name="in_normal" PrettyName="Normal"/>
+    </Inputs>
+    <Outputs>out_
+        <Output Name="out_diffuse" PrettyName="Diffuse" />
+        <Output Name="out_glossiness" PrettyName="Glossiness"/>
+        <Output Name="out_specular" PrettyName="Specular" />
+        <Output Name="out_height" PrettyName="Height"/>
+        <Output Name="out_normal" PrettyName="Normal" />
+    </Outputs>
+    <Attributes>
+    </Attributes>
+
+ <Contexts>
+        <Context Type="NodeGraphView">
+            <Inputs>
+                <Input Name="in_baseColor"><Pos>-170,-60</Pos></Input>
+                <Input Name="in_roughness"><Pos>-170,-40</Pos></Input>
+                <Input Name="in_metalness"><Pos>-170,-20</Pos></Input>
+                <Input Name="in_specular"><Pos>-170,20</Pos></Input>
+                <Input Name="in_height"><Pos>-170,40</Pos></Input>
+                <Input Name="in_normal"><Pos>-170,60</Pos></Input>
+            </Inputs>
+
+            <Outputs>
+                <Output Name="out_diffuse"><Pos>170,-60</Pos></Output>
+                <Output Name="out_glossiness"><Pos>170,40</Pos></Output>
+                <Output Name="out_specular"><Pos>170,20</Pos></Output>
+                <Output Name="out_height"><Pos>170,-40</Pos></Output>
+                <Output Name="out_normal"><Pos>170,-20</Pos></Output>
+
+            </Outputs>
+
+        </Context>
+        <Context Type="GLSL">
+            <Shader ShaderType='Fragment'>
+                <Inputs>
+                <Input Name="in_baseColor"><Default>vec4(0.0,0.0,0.0,1.0)</Default></Input>
+                <Input Name="in_roughness"><Default>vec4(0.0,0.0,0.0,1.0)</Default></Input>
+                <Input Name="in_metalness"><Default>vec4(0.0,0.0,0.0,1.0)</Default></Input>
+                <Input Name="in_specular"><Default>vec4(0.5,0.5,0.5,1.0)</Default></Input>
+                <Input Name="in_height"><Default>vec4(0.0,0.0,0.0,1.0)</Default></Input>
+                <Input Name="in_normal"><Default>vec4(0.0,0.0,0.0,1.0)</Default></Input>
+                </Inputs>
+
+            </Shader>
+            <Shader>
+                <Body><![CDATA[
+
+                vec4 glossiness = vec4(1.0) - #in_roughness;
+                glossiness = vec4(glossiness.r,glossiness.g,glossiness.b,1.0);
+
+                vec4 diffuse = mix(#in_baseColor,vec4(0.0,0.0,0.0,1.0),#in_metalness);
+                float f0Specular = 0.08 * #in_specular.r;
+                vec4 specular = mix(vec4(f0Specular),#in_baseColor,#in_metalness.r);
+
+                out_diffuse = vec4(diffuse.rgb,1.0);
+                out_glossiness = glossiness;
+                out_specular = vec4(specular.rgb,1.0);
+                out_height = #in_height;
+                out_normal = #in_normal;
+
+                ]]></Body>
+            </Shader>
+        </Context>
+    </Contexts>
+</Node>

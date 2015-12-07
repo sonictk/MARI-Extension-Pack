@@ -1,0 +1,106 @@
+////////////////////////////////////////////////////////////////////////////////
+// Texture Scatter UV
+// Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
+////////////////////////////////////////////////////////////////////////////////
+// File: JK_TexScatterUV.glslh
+// Description: UV Based Texture Bombing Function(s) for use in JK_TextureScatter_UV.
+////////////////////////////////////////////////////////////////////////////////
+// Author: Jens Kafitz
+// Web: www.campi3d.com
+// Email: MariIdeas@campi3d.com
+////////////////////////////////////////////////////////////////////////////////
+// Modified Date: December 21, 2014
+////////////////////////////////////////////////////////////////////////////////
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are met:
+//
+// 1. Redistributions of source code must retain the above copyright
+// notice, this list of conditions and the following disclaimer.
+//
+// 2. Redistributions in binary form must reproduce the above copyright
+// notice, this list of conditions and the following disclaimer in the
+// documentation and/or other materials provided with the distribution.
+//
+// 3. Neither the name of the copyright holder nor the names of its
+// contributors may be used to endorse or promote products derived from
+// this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+// IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+// THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+// PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+// CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+// EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+// PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+// OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+// WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+// OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+// ADVISED OF HE POSSIBILITY OF SUCH DAMAGE.
+////////////////////////////////////////////////////////////////////////////////
+
+
+// ------------------------------------------------------------------------
+// FUNCTIONS
+// ------------------------------------------------------------------------
+
+
+vec4 JK_texScatterUV(
+					vec2 UV,
+					float scale,
+					float ScaleRnd,
+                    float ScaleRndWeight,
+					float frequency,
+					float layers,
+					float noise_scale_A,
+					bool forceTile,
+					float jitter_scale,
+					float rot_min,
+					float rot_max,
+					int BlendMode,
+					vec4 TexSize,
+					vec4 RndSize,
+					float HSVSeed,
+					float ValueOffset,
+					float LayerAttenuation,
+					float A_minH,
+					float A_maxH,
+					float A_minS,
+					float A_maxS,
+					float A_minV,
+					float A_maxV,
+					vec4 HSMix,
+					vec4 ValMix,
+					float clampValues,
+					sampler2D textureA,
+					int textureA_AlphaMode,
+					bool UseMapB,
+					sampler2D textureB,
+          			int textureB_AlphaMode,
+          			bool UseMapC,
+          			sampler2D textureC,
+          			int textureC_AlphaMode,
+          			bool UseMapD,
+          			sampler2D textureD,
+          			int textureD_AlphaMode,
+					vec4 Map_Weight,
+					vec4 Clumping,
+					vec4 invert,
+					vec4 Fade,
+					vec4 Hardness,
+					vec4 roundness
+				);
+
+
+//1D Random Function with Thresholding
+float rnd1d_threshold(float x,float lo,float hi,float threshold,float threshold_bound);
+
+// voronoi cellular pattern generator from DT3D_CellularNoise.glslc
+// but a little simplified for better performance and with a threshold.
+void voronoi_simple(vec3 position, float jitterD,out vec3 f1cell,float threshold,float threshold_bound);
+
+// simple Noise based cells
+float udn(float x,float scale,float lo,float hi);
+
+
+// A very expensive, voronoi based noise for seeding.
+float udnVor(float x,float scale,float lo,float hi, float threshold, float threshold_bound);

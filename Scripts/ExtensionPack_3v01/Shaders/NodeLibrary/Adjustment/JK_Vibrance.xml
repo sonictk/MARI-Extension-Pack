@@ -1,0 +1,135 @@
+<!--
+================================================================================
+== Vibrance
+== Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
+================================================================================
+== File: JK_Vibrance.xml
+== Description: Vibrance will saturate pixels with lower saturation.
+================================================================================
+== Author: Jens Kafitz
+== Web: www.campi3d.com
+== Email: MariIdeas@campi3d.com
+================================================================================
+== Modified Date: June, 16 2014
+================================================================================
+== Redistribution and use in source and binary forms, with or without
+== modification, are permitted provided that the following conditions are met:
+==
+== 1. Redistributions of source code must retain the above copyright
+== notice, this list of conditions and the following disclaimer.
+==
+== 2. Redistributions in binary form must reproduce the above copyright
+== notice, this list of conditions and the following disclaimer in the
+== documentation and/or other materials provided with the distribution.
+==
+== 3. Neither the name of the copyright holder nor the names of its
+== contributors may be used to endorse or promote products derived from
+== this software without specific prior written permission.
+==
+== THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
+== IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+== THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+== PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
+== CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+== EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+== PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+== OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+== WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+== OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+== ADVISED OF HE POSSIBILITY OF SUCH DAMAGE.
+================================================================================
+-->
+
+<Node>
+    <ID>Vibrance</ID>
+    <DefaultName>Vibrance</DefaultName>
+    <Category>Filter/Extension Pack/Color Correction/</Category>
+    <Tags>
+        <Tag>_adjustment</Tag>
+    </Tags>
+    <Inputs>
+        <Input Name="Input"></Input>
+    </Inputs>
+    <Attributes>
+        <!--===============================================================================================================-->
+        <Attribute Name="Vib" PrettyName="Vibrance" Group="" Type="double" Min="0" Max="1">0.0</Attribute>
+        <Attribute Name="Sat" PrettyName="Saturation" Group="" Type="double" Min="0" Max="1">0.0</Attribute>
+        <Attribute Name="Mult" PrettyName="Multiplier" Group="" Type="double" Min="0" Max="10">1</Attribute>
+        <Attribute Name="inv" PrettyName="Desaturate" Max="true" Min="false" Type="bool">false</Attribute>
+        <!--===============================================================================================================-->
+        <Attribute Name="Map" PrettyName="Saturation Curve" Group="Curves" Type="curve">0,1,0.35,0.786364,0.5975,0.566818,0.8375,0.299545,1,0</Attribute>
+        <!--===============================================================================================================-->
+    </Attributes>
+    <Contexts>
+        <Context Type="NodeGraphView">
+            <Inputs>
+                <Input Name="Input"><Pos>0,-50</Pos></Input>
+            </Inputs>
+        </Context>
+        <Context Type="GLSL">
+            <Shader>
+                <Inputs>
+                    <Input Name="Input"><Default>vec4(1,1,1,1)</Default></Input>
+                </Inputs>
+                <Body><![CDATA[
+
+                vec4 _Input = #Input;
+                vec4 hsv = mriRgb2Hsv(_Input);
+                vec4 trhsv = vec4(1,1,1,1);
+
+                // isolating the saturation component via hsv
+                float satClamp = hsv.g;
+
+                // halving the multiplier slider so that values of 1 produce best result
+                float mult = $Mult * 0.5;
+
+                // remapping the existing saturation against the curve
+                float curveInputA = mriCurveLookup($Map,satClamp);
+
+                // inverting the values
+                float curveremapA =  1.0 - curveInputA;
+
+                // multiplying saturation with slider
+                float saturation = curveremapA*$Sat;
+                float csat = saturation;
+
+                if ($Vib > 0.0001)
+                {
+                    float rVib = mult * $Vib;
+                    float gain = 1.0 - rVib;
+
+                    if (csat >0.01)
+                    {
+                        saturation = pow(csat,gain);
+                    }else{
+                        saturation = pow(0.01,gain);
+                    }
+
+                }else{
+                    saturation = csat;
+                }
+
+                if ($inv == true)
+                {
+                    satClamp = satClamp - saturation;
+
+                    // some funky clamping to prevent mari from flattening into transparent layer
+                    trhsv = clamp(vec4(hsv.r,satClamp,hsv.b,_Input.a),vec4(-1000,0,-1000,0),vec4(1000,1,1000,1));
+                }
+                else
+                {
+                    satClamp = satClamp + saturation;
+
+                    // some funky clamping to prevent mari from flattening into transparent layer
+                    trhsv = clamp(vec4(hsv.r,satClamp,hsv.b,_Input.a),vec4(-1000,0,-1000,0),vec4(1000,1,1000,1));
+                }
+
+                vec4 result = mriHsv2Rgb(trhsv);
+                Output = vec4(result.r,result.g,result.b,_Input.a);
+
+                ]]></Body>
+            </Shader>
+        </Context>
+    </Contexts>
+</Node>
+
