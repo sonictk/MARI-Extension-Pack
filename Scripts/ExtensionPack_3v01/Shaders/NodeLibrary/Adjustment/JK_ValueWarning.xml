@@ -46,7 +46,7 @@
 <Node>
   <ID>IllegalColorWarning</ID>
       <DefaultName>Illegal Value Warning</DefaultName>
-    <Category>Filter/Custom/Utils/</Category>
+    <Category>Filter/Extension Pack/Utils/</Category>
   <Inputs>
     <Input Name="Albedo"></Input>
   </Inputs>

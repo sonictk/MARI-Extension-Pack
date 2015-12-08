@@ -61,10 +61,14 @@
         <Attribute Name="rotateY" PrettyName="Rotate Y" Group="Transform Rotate" Type="float" Min="0" Max="360">0</Attribute>
         <Attribute Name="rotateZ" PrettyName="Rotate Z" Group="Transform Rotate" Type="float" Min="0" Max="360">0</Attribute>
         <!--===============================================================================================================-->
-        <Attribute Name="transX" PrettyName="Translate X" Group="Transform Translate" Type="float" Min="0" Max="100" Logarithmic="1">0</Attribute>
-        <Attribute Name="transY" PrettyName="Translate Y" Group="Transform Translate" Type="float" Min="0" Max="100" Logarithmic="1">0</Attribute>
-        <Attribute Name="transZ" PrettyName="Translate Z" Group="Transform Translate" Type="float" Min="0" Max="100" Logarithmic="1">0</Attribute>
+        <Attribute Name="transX" PrettyName="Translate X" Group="Transform Translate" Type="float" Min="0" Max="1000" Logarithmic="1">0</Attribute>
+        <Attribute Name="transX_fine" PrettyName="Offset" Group="Transform Translate" Type="float" Min="0" Max="10" Logarithmic="1">0</Attribute>
+        <Attribute Name="transY" PrettyName="Translate Y" Group="Transform Translate" Type="float" Min="0" Max="1000" Logarithmic="1">0</Attribute>
+        <Attribute Name="transY_fine" PrettyName="Offset" Group="Transform Translate" Type="float" Min="0" Max="10" Logarithmic="1">0</Attribute>
+        <Attribute Name="transZ" PrettyName="Translate Z" Group="Transform Translate" Type="float" Min="0" Max="1000" Logarithmic="1">0</Attribute>
+        <Attribute Name="transZ_fine" PrettyName="Offset" Group="Transform Translate" Type="float" Min="0" Max="10" Logarithmic="1">0</Attribute>
         <!--===============================================================================================================-->
+        <Attribute Name="offsetMult" PrettyName="Offset Multiplier" Group="Extra Attributes" Type="float" Min="0">1</Attribute>
 </Attributes>
  <Contexts>
         <Context Type="NodeGraphView">
@@ -81,7 +85,7 @@
                 <Input Name="Coordinates" ><Default>vec4(State.Position,1.0)</Default></Input>
                 <Input Name="Scale" ><Default>vec4( vec3($scaleX,$scaleY,$scaleZ) * vec3($WorldScale),1.0)</Default></Input>
                 <Input Name="Rotate" ><Default>vec4($rotateX,$rotateY,$rotateZ,1.0)</Default></Input>
-                <Input Name="Translate" ><Default>vec4($transX,$transY,$transZ,1.0)</Default></Input>
+                <Input Name="Translate" ><Default>vec4($transX+($transX_fine*$offsetMult),$transY+($transY_fine*$offsetMult),$transZ+($transZ_fine*$offsetMult),1.0)</Default></Input>
                 </Inputs>
             </Shader>
             <Shader ShaderType='TessEvaluation'>
@@ -89,16 +93,16 @@
                 <Input Name="Coordinates" ><Default>vec4(State.Position,1.0)</Default></Input>
                 <Input Name="Scale" ><Default>vec4( vec3($scaleX,$scaleY,$scaleZ) * vec3($WorldScale),1.0)</Default></Input>
                 <Input Name="Rotate" ><Default>vec4($rotateX,$rotateY,$rotateZ,1.0)</Default></Input>
-                <Input Name="Translate" ><Default>vec4($transX,$transY,$transZ,1.0)</Default></Input>
+                <Input Name="Translate" ><Default>vec4($transX+($transX_fine*$offsetMult),$transY+($transY_fine*$offsetMult),$transZ+($transZ_fine*$offsetMult),1.0)</Default></Input>
                 </Inputs>
             </Shader>
             <Shader>
                 <Body><![CDATA[
 
-    // Initialize Sliders
-    float INIT = $scaleX; INIT = $scaleY; INIT = $scaleZ; INIT = $WorldScale;
-    INIT = $rotateX; INIT = $rotateY; INIT = $rotateZ;
-    INIT = $transX; INIT = $transY; INIT = $transZ;
+    // Initialize Sliders - do not remove comment
+    // float INIT = $scaleX; INIT = $scaleY; INIT = $scaleZ; INIT = $WorldScale;
+    // INIT = $rotateX; INIT = $rotateY; INIT = $rotateZ;
+    // INIT = $transX; INIT = $transY; INIT = $transZ; $transX_fine, $transZ_fine, $transY_fine, $offsetMult
 
 
     Output =  vec4( positionTransform(#Coordinates.xyz,#Translate.xyz,#Rotate.xyz,vec3(1.0)/#Scale.xyz),1.0);

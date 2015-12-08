@@ -49,7 +49,7 @@
 <Node>
   <ID>Posterize</ID>
     <DefaultName>Posterize</DefaultName>
-    <Category>Filter/Custom/Filter/</Category>
+    <Category>Filter/Extension Pack/Filter/</Category>
   <Tags>
     <Tag>_adjustment</Tag>
   </Tags>

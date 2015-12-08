@@ -39,7 +39,7 @@
 <Node>
   <ID>JK_Float</ID>
   <DefaultName>Float</DefaultName>
-  <Category>Basic/</Category>
+  <Category>Basic/Extension Pack/</Category>
   <Cost>0.001</Cost>
   <CostDescription>Trivial operation</CostDescription>
   <Attributes>

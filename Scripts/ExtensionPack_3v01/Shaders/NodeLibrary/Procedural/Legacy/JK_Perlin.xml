@@ -44,7 +44,7 @@
 <Node>
     <ID>Legacy Perlin</ID>
     <DefaultName>Legacy Perlin</DefaultName>
-    <Category>Procedural/Custom/Perlin/</Category>
+    <Category>Procedural/Extension Pack/Perlin/</Category>
     <Inputs>
         <Input Name="Transform" PrettyName="Manifold"></Input>
         <Input Name="Size"></Input>

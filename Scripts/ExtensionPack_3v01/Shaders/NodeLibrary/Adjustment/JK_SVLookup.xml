@@ -44,7 +44,7 @@
 <Node>
     <ID>JK_SVLookup</ID>
     <DefaultName>SV Lookup</DefaultName>
-    <Category>Filter/Custom/Color Correction/</Category>
+    <Category>Filter/Extension Pack/Color Correction/</Category>
   <Description>Explicity set the curve loopup for Hue, saturation and value</Description>
   <Cost>0.02</Cost>
   <CostDescription>Possibly some texture reads</CostDescription>

@@ -47,7 +47,7 @@
 <Node>
     <ID>Cellular Noise</ID>
     <DefaultName>Cellular Noise</DefaultName>
-    <Category>Procedural/Custom/Voronoi/</Category>
+    <Category>Procedural/Extension Pack/Voronoi/</Category>
     <Inputs>
         <Input Name="Transform" PrettyName="Manifold"></Input>
         <Input Name="Frequency"></Input>

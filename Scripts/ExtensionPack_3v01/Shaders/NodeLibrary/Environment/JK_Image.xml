@@ -1,7 +1,7 @@
 <Node>
     <ID>JK_TileImage</ID>
     <DefaultName>Image</DefaultName>
-    <Category>Environment/Custom/</Category>
+    <Category>Environment/Extension Pack/</Category>
     <Cost>0.02</Cost>
     <CostDescription>Some calculations and a texture read</CostDescription>
     <Inputs>

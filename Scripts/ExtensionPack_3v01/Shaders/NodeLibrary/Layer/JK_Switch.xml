@@ -43,7 +43,7 @@
 <Node>
     <ID>JK_Switch</ID>
     <DefaultName>Input Switch</DefaultName>
-    <Category>Layer/Custom/</Category>
+    <Category>Layer/Extension Pack/</Category>
     <Inputs>
         <Input Name="Case_A" PrettyName='Case A'></Input>
         <Input Name="Case_B" PrettyName='Case B'></Input>

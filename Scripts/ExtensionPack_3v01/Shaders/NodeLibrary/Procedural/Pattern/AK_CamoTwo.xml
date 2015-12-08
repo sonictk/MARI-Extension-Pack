@@ -46,7 +46,7 @@
 <Node>
     <ID>Military Camo</ID>
     <DefaultName>Military Camo</DefaultName>
-    <Category>Procedural/Custom/Pattern/</Category>
+    <Category>Procedural/Extension Pack/Pattern/</Category>
     <Inputs>
         <Input Name="Transform" PrettyName="Manifold"></Input>
         <Input Name="Size" ></Input>

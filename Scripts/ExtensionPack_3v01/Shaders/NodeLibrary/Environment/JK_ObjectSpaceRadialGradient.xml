@@ -1,9 +1,9 @@
 <!--
 ================================================================================
-== World Space Radial Gradient
+== Object Space Radial Gradient
 == Copyright (c) 2015 Jens Kafitz. All Rights Reserved.
 ================================================================================
-== File: JK_WorldSpaceRadialGradient.xml
+== File: JK_ObjectdSpaceRadialGradient.xml
 == Description: Generates a radial gradient around a defined pivot
 ================================================================================
 == Author: Jens Kafitz
@@ -41,9 +41,9 @@
 -->
 
 <Node>
-    <ID>JK_WorldSpaceRadialGradient</ID>
-    <DefaultName>World Space Radial Gradient</DefaultName>
-    <Category>Environment/Custom/</Category>
+    <ID>JK_ObjectSpaceRadialGradient</ID>
+    <DefaultName>Object Space Radial Gradient</DefaultName>
+    <Category>Environment/Extension Pack/</Category>
     <Inputs>
         <Input Name="Transform" PrettyName="Manifold"></Input>
     </Inputs>
@@ -102,8 +102,7 @@
                 vec3 scale = vec3(1.0) / vec3($scaleX*$Size,$scaleY*$Size,$scaleZ*$Size);
 
                 #if defined MRI_SHADER_FRAGMENT || defined MRI_SHADER_TESS_EVALUATION
-
-                vec3 P = positionTransform(#Transform.rgb,trans,rotate,scale);
+                vec3 P = positionTransform(#Transform.rgb,trans+u_MriObjectCenter,rotate,scale);
 
                 float curvP = length(P) * ($Intensity*$Intensity) ;
                 curvP = clamp(curvP,0.0,1.0);

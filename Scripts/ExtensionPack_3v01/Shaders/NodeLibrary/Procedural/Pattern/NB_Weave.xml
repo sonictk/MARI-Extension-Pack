@@ -47,7 +47,7 @@
 <Node>
     <ID>Weave 2D</ID>
     <DefaultName>Weave 2D</DefaultName>
-    <Category>Procedural/Custom/Pattern/</Category>
+    <Category>Procedural/Extension Pack/Pattern/</Category>
     <Inputs>
         <Input Name="Transform" PrettyName="Manifold (UV)"></Input>
         <Input Name="Width" ></Input>

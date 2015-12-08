@@ -43,7 +43,7 @@
 <Node>
     <ID>JK_EdgeFromNormal</ID>
     <DefaultName>Edge from Normal Map</DefaultName>
-    <Category>Filter/Custom/Normal Map/</Category>
+    <Category>Filter/Extension Pack/Normal Map/</Category>
     <Tags>
         <Tag>_adjustment</Tag>
     </Tags>

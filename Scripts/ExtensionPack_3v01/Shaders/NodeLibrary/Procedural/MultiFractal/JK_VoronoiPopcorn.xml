@@ -44,7 +44,7 @@
 <Node>
     <ID>VoronoiPopcorn</ID>
     <DefaultName>VoronoiPopcorn</DefaultName>
-    <Category>Procedural/Custom/MultiFractal/</Category>
+    <Category>Procedural/Extension Pack/MultiFractal/</Category>
     <Inputs>
         <Input Name="Transform" PrettyName="Manifold"></Input>
         <Input Name="vScale" PrettyName="Primary Scale"></Input>
